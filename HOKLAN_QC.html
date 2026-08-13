@@ -7,6 +7,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- The published version, readable without running the app: fetching the page
+     is enough to tell which build is live. This tag is the single source of
+     truth — APP_VERSION reads it — so there is one number to bump, not two. -->
+<meta name="app-version" content="1.4">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -250,6 +254,13 @@ input.bad{border-color:var(--red)}
 .lang button{width:auto;padding:7px 18px;margin:0 4px;font-size:14px;
   background:#0c1b2d;color:var(--muted)}
 .lang button.on{background:var(--accent);color:#04121e;border-color:var(--accent)}
+/* Amber on the start screen only: it is the one decision to take before the
+   inspection begins, and choosing the wrong language issues the whole report in
+   the wrong one. On the later screens it stays blue, where it is a setting
+   rather than a decision. */
+.lang:not(.mini) button{color:var(--amber);border-color:#6b5320}
+.lang:not(.mini) button.on{background:var(--amber);color:#2b1d02;
+  border-color:var(--amber)}
 /* Compact variant for screens where the language switch must not take space
    away from the checklist itself. */
 .lang.mini{justify-content:flex-end;margin-bottom:8px}
@@ -299,7 +310,8 @@ input.bad{border-color:var(--red)}
    one written by an English-speaking one.
 ============================================================================ */
 
-const APP_VERSION = "1.3";
+const APP_VERSION =
+  (document.querySelector('meta[name="app-version"]') || {}).content || "1.4";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
