@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="1.5">
+<meta name="app-version" content="1.6">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -304,7 +304,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "1.5";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "1.6";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -2593,9 +2593,37 @@ async function savePdfNow(){
   window.scrollTo(0,0);
   // The report is hundreds of images; give the browser a frame to lay them out
   // before the print dialog freezes the page, or the first pages come out blank.
-  setTimeout(() => { if(S.screen === "report") window.print(); }, 600);
+  setTimeout(() => { if(S.screen === "report") printReport(); }, 600);
 }
-function printReport(){ window.print(); }
+
+/* The PDF has to arrive with the same name as the ZIP, so that a report sent on
+   its own and the full packet of the same inspection sit next to each other in
+   a folder instead of looking like two unrelated files.
+
+   Browsers take the suggested PDF file name from the document title — there is
+   no API for it — so the title is swapped for the packet name, the dialog is
+   opened, and the title is put back. It is restored on `afterprint`, plus a
+   timeout: that event never fires in some mobile browsers, and leaving the tab
+   titled with the packet name would also rename the home-screen shortcut. */
+function printReport(){
+  const prev = document.title;
+  let restored = false;
+  const restore = () => {
+    if(restored) return;
+    restored = true;
+    document.title = prev;
+  };
+  document.title = packetName();
+  window.addEventListener("afterprint", restore, {once:true});
+  setTimeout(restore, 120000);
+  try{ window.print(); }
+  finally{
+    // On desktop print() blocks until the dialog closes, so by here the name has
+    // already been used and the title can go back immediately. On mobile it
+    // returns at once and `afterprint` does the job instead.
+    setTimeout(restore, 1500);
+  }
+}
 
 /* ---------- spreadsheet export --------------------------------------------
    One row per checked point, not one per test. That is what lets Quality
