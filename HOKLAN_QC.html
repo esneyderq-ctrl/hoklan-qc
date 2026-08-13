@@ -1,0 +1,3261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050b14">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>HOKLAN QC</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
+<style>
+:root{
+  --bg:#050b14; --panel:rgba(11,24,41,.86); --ink:#e8eef6; --muted:#8fa6bf;
+  --accent:#2ea3f2; --border:#1f3f63; --green:#2ecc71; --red:#ff5d55;
+  --amber:#f5b942; --grey:#93a5b8;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,sans-serif;
+  font-size:16px}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);min-height:100vh}
+.wrap{max-width:640px;margin:0 auto;padding:16px 14px 96px}
+h1{font-size:22px;margin:4px 0 2px;letter-spacing:1px}
+h2{font-size:19px;margin:0 0 4px;color:var(--accent)}
+.sub{color:var(--muted);font-size:13px;margin:0 0 18px;letter-spacing:2px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;
+  padding:14px;margin-bottom:14px}
+label{display:block;font-size:13px;color:var(--muted);margin:12px 0 5px}
+input,select,textarea{width:100%;background:#0c1b2d;color:var(--ink);
+  border:1px solid var(--border);border-radius:9px;padding:13px;font-size:16px;
+  font-family:inherit;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{min-height:80px;resize:vertical}
+button{font-family:inherit;font-size:16px;border-radius:10px;border:1px solid var(--border);
+  background:#143253;color:var(--ink);padding:14px;width:100%;font-weight:600}
+button:active{transform:scale(.99)}
+.primary{background:linear-gradient(90deg,#1c6fb0,#2ea3f2);border-color:#4fb8ff;
+  color:#04121e;font-size:17px;padding:17px;letter-spacing:1px}
+.row{display:flex;margin:0 -5px}
+.row>*{flex:1;margin:0 5px}
+.bar{height:8px;background:#0c1b2d;border-radius:5px;overflow:hidden;margin:10px 0 16px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#1c6fb0,#2ea3f2);
+  transition:width .25s}
+.steps{counter-reset:s;padding:0;margin:0;list-style:none}
+.steps li{counter-increment:s;position:relative;padding:0 0 14px 38px;font-size:15.5px;
+  line-height:1.5}
+.steps li::before{content:counter(s);position:absolute;left:0;top:-1px;width:26px;
+  height:26px;border-radius:50%;background:var(--accent);color:#04121e;font-weight:700;
+  font-size:14px;display:flex;align-items:center;justify-content:center}
+
+.grp{background:var(--panel);border:1px solid var(--border);border-radius:12px;
+  margin-bottom:10px;overflow:hidden}
+.grp.done{border-color:#2b6b46}
+.grp.bad{border-color:#7a3a36}
+.grp-h{display:flex;align-items:center;padding:13px 14px;cursor:pointer}
+.grp-h b{flex:1;color:var(--ink);font-size:14.5px;font-weight:600}
+.grp-h em{font-style:normal;font-size:11px;font-weight:700;padding:3px 9px;
+  border-radius:6px;background:#10273f;color:var(--muted);margin-right:8px}
+.grp-h em.ok{background:rgba(46,204,113,.18);color:var(--green)}
+.grp-h em.bad{background:rgba(255,93,85,.18);color:var(--red)}
+.grp-h i{font-style:normal;color:var(--muted);font-size:15px;width:18px;text-align:center}
+.grp-b{padding:0 14px 12px}
+.help-b{width:28px;height:28px;padding:0;flex:none;margin-right:8px;border-radius:8px;
+  background:#14304a;border:1px solid #2b5f92;color:var(--accent);font-size:17px;
+  font-weight:700;line-height:1}
+.help-b.on{background:var(--accent);color:#04121e;border-color:var(--accent)}
+.grp-help{margin:0 14px 12px;padding:11px;border-radius:9px;background:#0d1f33;
+  border:1px solid #24466b;color:#cfe0f2;font-size:14px;line-height:1.55}
+.na-btn{font-size:12px !important;letter-spacing:0}
+
+/* One question, with a row per speaker underneath it */
+.q{border-top:1px solid #16304d;padding-top:4px}
+.q:first-child{border-top:none}
+.q-h{font-size:14.5px;line-height:1.4;color:#e8f1fb;padding:9px 0 3px;
+  font-weight:600}
+.q .pt{border-top:none;padding:5px 0}
+.q .pt u{flex:0 0 76px;margin-right:auto;text-decoration:none;font-size:11px;
+  font-weight:700;letter-spacing:.5px;color:var(--accent);background:#0f2c47;
+  border:1px solid #23507d;border-radius:5px;padding:5px 0;text-align:center}
+.q .pt u + span{display:none}   /* the question is already written above */
+
+.pt{display:flex;align-items:center;gap:0;padding:9px 0;
+  border-top:1px solid #16304d}
+.pt:first-child{border-top:none}
+.pt span{flex:1;font-size:14.5px;line-height:1.35;padding-right:8px}
+/* Evidence box for a failed point */
+.pf{background:rgba(122,34,28,.28);border:1px solid var(--red);border-radius:9px;
+  padding:11px;margin:2px 0 10px}
+.pf-h{font-size:12px;font-weight:700;color:#ffc9c5;letter-spacing:.5px;
+  margin-bottom:9px}
+.pf textarea{min-height:64px;margin-top:9px;font-size:15px}
+.pf-w{background:rgba(245,185,66,.16);border:1px solid var(--amber);
+  border-radius:7px;padding:8px 10px;font-size:12.5px;color:#ffe9bd;margin-top:9px}
+.pf-ok{background:rgba(30,120,70,.18);border:1px solid var(--green);
+  border-radius:7px;padding:8px 10px;font-size:12.5px;color:#b6f0cd;margin-top:9px;
+  font-weight:600}
+/* Folded evidence: one green line, tappable to reopen */
+.pf-c{display:flex;align-items:center;gap:8px;cursor:pointer;
+  background:rgba(30,120,70,.16);border:1px solid var(--green);border-radius:9px;
+  padding:9px 11px;margin:2px 0 10px}
+.pf-c b{color:var(--green);font-size:14px;flex:none}
+.pf-c span{flex:1;color:#b6f0cd;font-size:12.5px;line-height:1.35;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pf-c i{color:var(--green);font-style:normal;font-size:13px;flex:none}
+.p-help{width:auto;padding:4px 0 9px;background:none;border:none;
+  color:var(--accent);font-size:12.5px;font-weight:600;text-align:left;
+  letter-spacing:.3px}
+.p-help.on{color:var(--muted)}
+.pt-help{color:#cfe0f2;font-size:13.5px;line-height:1.55;
+  border-left:2px solid var(--accent);padding:2px 0 11px 10px;margin:0 0 6px 2px}
+.pt button{width:42px;padding:9px 0;font-size:16px;font-weight:700;flex:none;
+  margin-left:5px;background:#0f2438;border-color:#26466b;color:var(--muted)}
+.pt button.on-p{background:#14663a;border-color:var(--green);color:#d8ffe8}
+.pt button.on-f{background:#7a221c;border-color:var(--red);color:#ffe3e1}
+.pt button.on-n{background:#33414f;border-color:var(--grey);color:#e6edf4}
+
+.shot{background:var(--panel);border:1px solid var(--border);border-radius:12px;
+  padding:12px;margin-bottom:10px}
+.shot.ok{border-color:#2b6b46}
+.shot-head{display:flex;align-items:center;margin-bottom:9px}
+.shot-head b{flex:1;font-size:15px}
+.shot-head em{font-style:normal;font-size:11px;font-weight:700;padding:3px 8px;
+  border-radius:6px;background:rgba(46,204,113,.18);color:var(--green)}
+.shot-head em.miss{background:rgba(245,185,66,.18);color:var(--amber)}
+.shot-head em.na{background:#33414f;color:#e6edf4}
+
+.jump{background:none;border:none;color:var(--accent);font-size:13px;padding:6px 0;
+  width:auto;text-align:left;font-weight:600}
+.ix{display:flex;align-items:center;padding:14px 0;border-top:1px solid #16304d}
+.ix:first-child{border-top:none}
+.ix b{width:26px;color:var(--muted);font-size:13px;flex:none}
+.ix span{flex:1;font-size:15px}
+.ix i{font-style:normal;font-size:12px;color:var(--muted);display:block;margin-top:2px}
+.ix em{font-style:normal;font-size:12px;font-weight:700;padding:4px 9px;
+  border-radius:6px;background:#10273f;color:var(--muted);flex:none}
+.ix em.PASS{background:rgba(46,204,113,.18);color:var(--green)}
+.ix em.FAIL{background:rgba(255,93,85,.18);color:var(--red)}
+.ix em.now{background:var(--accent);color:#04121e}
+
+.media{display:flex;flex-wrap:wrap;margin:10px -5px 0}
+.thumb{position:relative;width:78px;height:78px;border-radius:9px;overflow:hidden;
+  border:1px solid var(--border);background:#0c1b2d;margin:0 5px 10px}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover}
+.thumb b{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);
+  font-size:10px;text-align:center;padding:2px;font-weight:400}
+.thumb span{position:absolute;top:2px;right:2px;background:rgba(255,93,85,.9);
+  width:20px;height:20px;border-radius:50%;font-size:13px;display:flex;
+  align-items:center;justify-content:center;font-weight:700}
+
+.actions{position:fixed;left:0;right:0;bottom:0;padding:10px 9px;
+  padding-bottom:calc(10px + env(safe-area-inset-bottom));
+  background:linear-gradient(transparent,var(--bg) 22%);display:flex;
+  max-width:640px;margin:0 auto}
+.actions>button{margin:0 5px}
+.skip{font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td{padding:9px 4px;border-bottom:1px solid #16304d}
+td:last-child{text-align:right;font-weight:700}
+.PASS{color:var(--green)} .FAIL{color:var(--red)} .NA{color:var(--grey)}
+.INCOMPLETE{color:var(--amber)}
+.big{font-size:34px;font-weight:700;text-align:center;padding:20px;border-radius:12px;
+  letter-spacing:3px;margin-bottom:14px}
+.hint{color:var(--muted);font-size:13px;line-height:1.5;margin-top:10px}
+.warn{background:rgba(122,34,28,.5);border:1px solid var(--red);border-radius:9px;
+  padding:11px;font-size:14px;margin-top:10px}
+.needed{background:rgba(245,185,66,.15);border:1px solid var(--amber);
+  border-radius:9px;padding:11px;font-size:14px;margin-top:10px;color:#ffe9bd}
+/* Always-reachable way back to the start screen, from anywhere in a long
+   inspection. */
+.totop{position:fixed;right:14px;width:auto;padding:9px 16px;border-radius:22px;
+  bottom:calc(78px + env(safe-area-inset-bottom));background:#14304a;
+  border:1px solid var(--accent);color:var(--accent);font-size:13px;
+  font-weight:700;letter-spacing:1px;
+  box-shadow:0 3px 12px rgba(0,0,0,.5);display:none;z-index:5}
+.totop.show{display:block}
+.hidden{display:none}
+/* No-JavaScript fallback */
+.nojs{margin-top:60px;background:#10273f;border:1px solid var(--accent);
+  border-radius:12px;padding:22px;text-align:center}
+.nojs b{display:block;font-size:22px;letter-spacing:3px;color:var(--accent);
+  margin-bottom:14px}
+.nojs p{font-size:15px;line-height:1.6;color:#e8f1fb;margin:0 0 14px}
+.nojs p.sm{font-size:13px;color:var(--muted);margin-bottom:0}
+/* What the evidence should show. Stated where the camera button is, not in a
+   manual: an instruction the operator reads three weeks before the photo does
+   not change the photo. */
+.ask{list-style:none;margin:0 0 11px;padding:0}
+.ask li{font-size:12.5px;line-height:1.5;color:#bcd0e4;padding:5px 0 5px 11px;
+  border-left:2px solid #23507d;margin-bottom:5px}
+.ask li b{color:var(--accent);font-weight:600;margin-right:4px}
+/* What the packet contains, listed before it is built */
+.packet{list-style:none;margin:0 0 10px;padding:0}
+.packet li{padding:7px 0 7px 12px;border-left:2px solid var(--accent);
+  margin-bottom:6px;font-size:13px;line-height:1.45;color:#cfe0f2}
+.packet li b{color:var(--accent);font-family:ui-monospace,Menlo,Consolas,monospace}
+/* How many speakers this inspection covers: 1-5, one tap */
+.units{display:flex;gap:7px;margin-top:4px}
+.units button{flex:1;padding:12px 0;font-size:17px;font-weight:700;
+  background:#0f2438;border:1px solid #26466b;color:var(--muted);margin:0}
+.units button.on{background:var(--accent);border-color:var(--accent);color:#04121f}
+/* Which speaker is on the bench right now */
+.unit-tag{display:inline-block;background:var(--accent);color:#04121f;
+  border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700;
+  letter-spacing:.6px;margin-right:6px}
+.tag{display:inline-block;background:#10273f;border:1px solid var(--border);
+  border-radius:6px;padding:3px 9px;font-size:12px;color:var(--muted);margin-right:6px}
+/* Result of the test-ID lookup: same weight in both directions, so a wrong
+   code is as obvious as a right one. */
+.code{margin:10px 0 0;padding:11px;border-radius:9px;text-align:center;
+  font-size:17px;font-weight:700;letter-spacing:1px}
+.code.ok{background:rgba(46,204,113,.15);border:1px solid var(--green);
+  color:var(--green)}
+.code.bad{background:rgba(255,93,85,.15);border:1px solid var(--red);
+  color:var(--red);letter-spacing:0}
+input.bad{border-color:var(--red)}
+.lang{display:flex;justify-content:center;margin-bottom:14px}
+.lang button{width:auto;padding:7px 18px;margin:0 4px;font-size:14px;
+  background:#0c1b2d;color:var(--muted)}
+.lang button.on{background:var(--accent);color:#04121e;border-color:var(--accent)}
+/* Compact variant for screens where the language switch must not take space
+   away from the checklist itself. */
+.lang.mini{justify-content:flex-end;margin-bottom:8px}
+.lang.mini button{padding:4px 11px;margin:0 0 0 5px;font-size:11.5px;
+  border-radius:7px}
+
+#report{background:#fff;color:#16212e;padding:10px;border-radius:10px}
+@media print{
+  /* Browsers drop background colours when printing unless told otherwise, and
+     the watermark is a background: without this it prints blank. */
+  body{background:#fff;padding:0;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{max-width:none;padding:0}
+  .actions,.noprint{display:none !important}
+  #report{padding:0;border-radius:0}
+}
+</style>
+</head>
+<body>
+<!-- Shown only where scripts do not run — WeChat's file preview on iPhone is
+     the usual case. The first render() replaces it. A blank screen tells the
+     operator nothing; this tells them exactly what to do. -->
+<div class="wrap" id="app">
+  <div class="nojs">
+    <b>HOKLAN QC</b>
+    <p>请用浏览器打开本文件。<br>微信的文件预览无法运行本应用。</p>
+    <p>Open this file in a browser.<br>WeChat's file preview cannot run the app.</p>
+    <p class="sm">iPhone: ··· → 用其他应用打开 → Safari<br>
+       Android: ··· → 用浏览器打开</p>
+  </div>
+</div>
+<button id="toTop" class="totop" onclick="goHome()"></button>
+<div class="actions" id="actions"></div>
+
+<script>
+/* ============================================================================
+   HOKLAN QC — mobile inspection checklist
+   ----------------------------------------------------------------------------
+   Single file: no server, no build, no app store. Works offline once loaded,
+   and "Add to home screen" makes it behave like an installed app.
+
+   Bilingual, English and Simplified Chinese. Every operator-facing string is a
+   {en, zh} pair; the language switch only changes what is displayed, never what
+   is recorded, so a report written by a Chinese operator reads identically to
+   one written by an English-speaking one.
+============================================================================ */
+
+const APP_VERSION = "1.1";
+
+/* ==== BEGIN GENERATED CONFIG ==== */
+const CONFIG = {
+  /* Test IDs. The operator types the three digits and the app completes the
+     rest. The factory name is never shown or stored anywhere - only the code
+     travels in the report, the file name and the spreadsheet. The short keys
+     below are internal, used solely to filter the reference list. */
+  "test_ids": {
+    "583": {"code":"583-R7H9Y2M4E", "key":"RHY"},
+    "741": {"code":"741-Y9I4S2I6N", "key":"YIS"},
+    "926": {"code":"926-E4A7G2L9E", "key":"EAG"},
+    "418": {"code":"418-V7T2R9U4S", "key":"LES"}
+  },
+
+  "models": {
+    "HK-ALP101":"YIS","HK-ARC101":"YIS","HK-ARC103":"YIS","HK-ARC104":"YIS",
+    "HK-ARC104A2":"YIS","HK-ARC105":"YIS","HK-ARC105PLO":"YIS",
+    "HK-ARC106A2":"YIS","HK-ARC108A2":"YIS","HK-BAS115A1":"RHY",
+    "HK-BAS118A1":"RHY","HK-BRA208A1":"YIS","HK-BRA208B1":"YIS",
+    "HK-BRA210A1":"YIS","HK-BRA210B1":"YIS","HK-BRA212B1":"YIS",
+    "HK-DEC115A1":"RHY","HK-DEL101":"RHY","HK-DEL103":"RHY","HK-DEL103P":"RHY",
+    "HK-DEL105":"RHY","HK-DEL110":"RHY","HK-DEL110B1":"RHY","HK-DEL115B1":"RHY",
+    "HK-DEL210A1":"RHY","HK-EPS112A1":"RHY","HK-NOV01":"YIS",
+    "HK-NOV01-ARG":"YIS","HK-NOV02":"YIS","HK-NOV02-ARG":"YIS",
+    "HK-POW101":"YIS","HK-POW102":"YIS","HK-POW103":"YIS","HK-POW104":"YIS",
+    "HK-RES101":"YIS","HK-RES102":"YIS","HK-RES103":"YIS","HK-RES104":"YIS",
+    "HK-RES106":"YIS","HK-RES106B1":"YIS","HK-RES108B1":"YIS",
+    "HK-RES109":"YIS","HK-RES115B2":"YIS","HK-RHO101":"LES",
+    "HK-RHO102":"LES","HK-RHO102-BAG":"LES","HK-RNW101":"YIS",
+    "HK-RNW102":"YIS","HK-RNW103":"YIS","HK-RNW105":"YIS",
+    "HK-RNW212A2":"YIS","HK-SKA108A1":"YIS","HK-SKA108B1":"YIS",
+    "HK-STB103":"EAG"
+  },
+
+  "failure_codes": {
+    "PWR-001":{"en":"No power","zh":"无法开机"},
+    "PWR-002":{"en":"Unexpected restart","zh":"异常重启"},
+    "PWR-003":{"en":"Unstable power","zh":"供电不稳定"},
+    "PWR-004":{"en":"Display does not start","zh":"显示屏无法启动"},
+    "USB-001":{"en":"USB not recognised","zh":"无法识别 U 盘"},
+    "USB-002":{"en":"Does not play audio","zh":"无法播放音频"},
+    "USB-003":{"en":"Audio cuts out","zh":"声音中断"},
+    "USB-006":{"en":"Track change does not work","zh":"切换歌曲无效"},
+    "USB-007":{"en":"Hum or interference on USB","zh":"U 盘播放有杂音或干扰"},
+    "USB-010":{"en":"Play / pause does not work","zh":"播放/暂停键无效"},
+    "USB-011":{"en":"Folder change does not work","zh":"切换文件夹无效"},
+    "USB-012":{"en":"Repeat one / all does not work","zh":"单曲/全部循环无效"},
+    "USB-013":{"en":"Recording to USB does not work","zh":"无法录音到 U 盘"},
+    "USB-014":{"en":"Does not auto-start on power on","zh":"开机不自动播放"},
+    "SD-001":{"en":"SD card not recognised","zh":"无法识别 SD 卡"},
+    "SD-002":{"en":"Does not play audio","zh":"无法播放音频"},
+    "SD-003":{"en":"Audio cuts out","zh":"声音中断"},
+    "SD-006":{"en":"Track change does not work","zh":"切换歌曲无效"},
+    "SD-007":{"en":"Hum or interference on SD","zh":"SD 卡播放有杂音或干扰"},
+    "SD-010":{"en":"Play / pause does not work","zh":"播放/暂停键无效"},
+    "SD-011":{"en":"Folder change does not work","zh":"切换文件夹无效"},
+    "SD-012":{"en":"Repeat one / all does not work","zh":"单曲/全部循环无效"},
+    "SD-013":{"en":"Recording to SD does not work","zh":"无法录音到 SD 卡"},
+    "SD-014":{"en":"Does not auto-start on power on","zh":"开机不自动播放"},
+    "SD-015":{"en":"Cannot delete recordings from SD","zh":"无法删除 SD 卡录音"},
+    "BT-003":{"en":"Disconnects during playback","zh":"播放中断开连接"},
+    "BT-004":{"en":"No audio over Bluetooth","zh":"蓝牙无声音"},
+    "BT-006":{"en":"Does not connect to iPhone","zh":"无法连接 iPhone"},
+    "BT-007":{"en":"Does not connect to Android","zh":"无法连接安卓手机"},
+    "BT-008":{"en":"Does not reconnect on power on","zh":"开机不自动回连"},
+    "BT-009":{"en":"Play / pause does not work","zh":"播放/暂停键无效"},
+    "BT-010":{"en":"TWS mode does not work","zh":"TWS 串联功能无效"},
+    "BT-011":{"en":"Hum or interference on Bluetooth","zh":"蓝牙有杂音或干扰"},
+    "FM-002":{"en":"Weak or unstable reception","zh":"信号弱或不稳定"},
+    "FM-003":{"en":"No audio on radio","zh":"收音无声音"},
+    "FM-005":{"en":"Auto search does not work","zh":"自动搜台无效"},
+    "FM-007":{"en":"Station next / back does not work","zh":"上/下一台按键无效"},
+    "FM-008":{"en":"Does not keep the last station","zh":"不记忆上次电台"},
+    "FM-009":{"en":"Lights do not switch off in radio mode","zh":"收音模式灯光未关闭"},
+    "AUX-001":{"en":"AUX input not detected","zh":"未检测到 AUX 输入"},
+    "AUX-002":{"en":"No audio on AUX","zh":"AUX 无声音"},
+    "AUX-003":{"en":"Hum or noise on AUX","zh":"AUX 有杂音"},
+    "AUX-004":{"en":"Audio cuts out","zh":"声音中断"},
+    "AUX-005":{"en":"Play / pause does not work","zh":"播放/暂停键无效"},
+    "MIC-001":{"en":"Microphone does not connect","zh":"麦克风无法连接"},
+    "MIC-002":{"en":"No microphone audio","zh":"麦克风无声音"},
+    "MIC-003":{"en":"Interference or feedback","zh":"干扰或啸叫"},
+    "MIC-004":{"en":"Microphone audio cuts out","zh":"麦克风声音中断"},
+    "MIC-005":{"en":"Microphone priority does not work","zh":"麦克风优先功能无效"},
+    "MIC-006":{"en":"Microphone volume does not work","zh":"麦克风音量调节无效"},
+    "MIC-007":{"en":"Echo does not work","zh":"回声功能无效"},
+    "MIC-008":{"en":"Reverb does not work","zh":"混响功能无效"},
+    "CHG-005":{"en":"AC charging cable does not work","zh":"AC 充电线无效"},
+    "BAT-001":{"en":"External battery not detected","zh":"无法识别外置电池"},
+    "BAT-002":{"en":"Does not power on with the external battery","zh":"外置电池无法开机"},
+    "BAT-003":{"en":"Battery switch does not work","zh":"电池切换开关无效"},
+    "BAT-004":{"en":"No playback on the external battery","zh":"外置电池供电时无法播放"},
+    "BAT-005":{"en":"Fails with AC connected on the external battery","zh":"外置电池接入时连接 AC 电源出现异常"},
+    "BAT-006":{"en":"Internal battery could not be disconnected","zh":"无法断开内置电池"},
+    "BAT-007":{"en":"Speaker not left as found after the test","zh":"测试后未恢复原状"},
+    "AUD-001":{"en":"Woofer no sound","zh":"低音单元无声"},
+    "AUD-002":{"en":"Tweeter no sound","zh":"高音单元无声"},
+    "AUD-003":{"en":"Distortion","zh":"失真"},
+    "AUD-004":{"en":"Abnormal speaker vibration","zh":"箱体异常振动"},
+    "AUD-005":{"en":"Abnormal noise","zh":"异响"},
+    "AUD-006":{"en":"Volume or its indicator does not work","zh":"音量或音量显示无效"},
+    "AUD-007":{"en":"Treble control does not work","zh":"高音调节无效"},
+    "AUD-008":{"en":"Bass control does not work","zh":"低音调节无效"},
+    "AUD-009":{"en":"Guitar volume does not work","zh":"吉他音量无效"},
+    "AUD-010":{"en":"X-BASS does not work or distorts","zh":"X-BASS 无效或失真"},
+    "DSP-001":{"en":"Missing segment","zh":"显示缺笔段"},
+    "DSP-002":{"en":"Display flickers","zh":"显示闪烁"},
+    "DSP-004":{"en":"Wrong characters","zh":"显示字符错误"},
+    "DSP-005":{"en":"Mode change does not work","zh":"模式切换无效"},
+    "LED-001":{"en":"Power LED abnormal","zh":"电源指示灯异常"},
+    "LED-002":{"en":"Charging LED abnormal","zh":"充电指示灯异常"},
+    "LED-003":{"en":"Mode LED abnormal","zh":"模式指示灯异常"},
+    "LED-004":{"en":"Speaker LED abnormal","zh":"音箱灯异常"},
+    "LED-006":{"en":"Light does not switch on or off","zh":"灯光无法开关"},
+    "LED-007":{"en":"Light mode change does not work","zh":"灯光模式切换无效"},
+    "CHG-001":{"en":"Does not charge","zh":"无法充电"},
+    "CHG-002":{"en":"Charging indicator incorrect","zh":"充电指示不正确"},
+    "CHG-003":{"en":"Unstable charging","zh":"充电不稳定"},
+    "RMT-001":{"en":"Power button does not respond","zh":"电源键无响应"},
+    "RMT-002":{"en":"MUTE button does not respond","zh":"静音键无响应"},
+    "RMT-003":{"en":"FM RADIO button does not respond","zh":"收音键无响应"},
+    "RMT-004":{"en":"USB button does not respond","zh":"USB 键无响应"},
+    "RMT-005":{"en":"BLUETOOTH button does not respond","zh":"蓝牙键无响应"},
+    "RMT-006":{"en":"SD button does not respond","zh":"SD 键无响应"},
+    "RMT-007":{"en":"AUX button does not respond","zh":"AUX 键无响应"},
+    "RMT-008":{"en":"Mic priority button does not respond","zh":"麦克风优先键无响应"},
+    "RMT-009":{"en":"REC button does not respond","zh":"录音键无响应"},
+    "RMT-010":{"en":"REC PLAY button does not respond","zh":"录音播放键无响应"},
+    "RMT-011":{"en":"VOICE OUT button does not respond","zh":"VOICE OUT 键无响应"},
+    "RMT-012":{"en":"Mode button does not respond","zh":"模式键无响应"},
+    "RMT-013":{"en":"Next track button does not respond","zh":"下一曲键无响应"},
+    "RMT-014":{"en":"Previous track button does not respond","zh":"上一曲键无响应"},
+    "RMT-015":{"en":"PLAY / PAUSE button does not respond","zh":"播放/暂停键无响应"},
+    "RMT-016":{"en":"VOL + button does not respond","zh":"音量加键无响应"},
+    "RMT-017":{"en":"VOL − button does not respond","zh":"音量减键无响应"},
+    "RMT-018":{"en":"Fast forward button does not respond","zh":"快进键无响应"},
+    "RMT-019":{"en":"Rewind button does not respond","zh":"快退键无响应"},
+    "RMT-020":{"en":"Numeric keypad does not respond","zh":"数字键盘无响应"},
+    "RMT-021":{"en":"Folder forward button does not respond","zh":"下一文件夹键无响应"},
+    "RMT-022":{"en":"Folder back button does not respond","zh":"上一文件夹键无响应"},
+    "RMT-023":{"en":"EQ button does not respond","zh":"EQ 键无响应"},
+    "RMT-024":{"en":"Repeat button does not respond","zh":"循环键无响应"},
+    "RMT-025":{"en":"Remote does not respond at all","zh":"遥控器完全无响应"}
+  },
+
+  "plans": {
+    "default": {
+      "plan_version": 2,
+      "tests": [
+        {"id":"USB","optional":false,
+         "label":{"en":"USB","zh":"USB"},
+         "steps":[
+           {"en":"Insert the HOKLAN test USB drive into the speaker","zh":"将 HOKLAN 测试 U 盘插入音箱"},
+           {"en":"Select USB mode on the speaker","zh":"在音箱上切换到 USB 模式"},
+           {"en":"Wait until it reads the USB drive and starts playing","zh":"等待识别 U 盘并开始播放"},
+           {"en":"Let the HOKLAN USB play, listening for dropouts","zh":"让测试音频播放，注意是否有中断"},
+           {"en":"With the USB drive playing, check each control on the list","zh":"在播放状态下，逐项检查下列功能"},
+           {"en":"Finally, switch the speaker off and on to see if it starts in USB","zh":"最后重新开机，确认是否自动进入 USB 模式"}],
+         "points":[
+           {"section":{"en":"Playback","zh":"播放"},
+            "help":{"en":"Insert the HOKLAN test USB and select USB mode. Wait until it reads the USB drive and plays. At the end, switch the speaker off and on to see whether it starts in USB by itself.",
+                    "zh":"插入 HOKLAN 测试 U 盘并切换到 USB 模式，等待识别并播放。最后重新开机，确认是否自动进入 USB 播放。"}},
+           {"id":"recognized","code":"USB-001","label":{"en":"Speaker reads the USB drive and shows USB mode","zh":"识别 U 盘并显示 USB 模式"},
+            "help":{"en":"Insert the USB drive. Within a few seconds the display must switch to USB and show a track number. If it stays blank or keeps searching, it is a fail.",
+                    "zh":"插入 U 盘后几秒内，显示屏应切换到 USB 并显示曲目编号。若一直空白或持续搜索，判定为不合格。"}},
+           {"id":"playback","code":"USB-002","label":{"en":"Plays the audio from the USB drive","zh":"播放 U 盘音频"},
+            "help":{"en":"Sound must start on its own, or after pressing play. Confirm it really comes out of the speaker, not from another speaker nearby.",
+                    "zh":"应自动开始播放，或按播放键后出声。确认声音确实来自本机，而不是旁边的音箱。"}},
+           {"id":"continuous","code":"USB-003","label":{"en":"No dropouts during playback","zh":"播放过程无中断"},
+            "help":{"en":"Let one full track play without touching anything. Listen for cuts, stutters or moments of silence.",
+                    "zh":"完整播放一首曲目，中途不做任何操作。注意是否有断音、卡顿或瞬间静音。"}},
+           {"id":"quality","code":"USB-007","label":{"en":"No hum or interference","zh":"无杂音或干扰"},
+            "help":{"en":"Listen close to the grille at medium volume. Behind the music there must be no hum, hiss or crackle.",
+                    "zh":"中等音量下靠近网罩细听，音乐背景不应有嗡嗡声、嘶声或爆音。"}},
+           {"id":"autostart","code":"USB-014","label":{"en":"Starts in USB automatically on power on","zh":"开机自动进入 USB 播放"},
+            "help":{"en":"With the USB drive still inserted, switch the speaker off and on. It must return to USB mode and start playing without pressing anything.",
+                    "zh":"U 盘保持插入，关机后再开机。应自动回到 USB 模式并开始播放，无需按任何键。"}},
+           {"section":{"en":"Sound quality","zh":"音质"},
+            "help":{"en":"Listen at medium and then high volume. Put your hand on the speaker to feel for abnormal vibration or rattles.",
+                    "zh":"先中等音量再大音量试听。用手触摸箱体，感受是否有异常振动或杂音。"}},
+           {"id":"woofer","code":"AUD-001","label":{"en":"Woofer sounds","zh":"低音单元出声"},
+            "help":{"en":"Play a track with bass. Hold your hand in front of the woofer and feel it move. The low end must be present and clean, not weak or muffled.",
+                    "zh":"播放有低音的曲目，手放在低音单元前感受振动。低频应饱满干净，不应无力或发闷。"}},
+           {"id":"tweeter","code":"AUD-002","label":{"en":"Tweeter sounds","zh":"高音单元出声"},
+            "help":{"en":"Listen for cymbals and high detail. Cover the woofer with your hand: the treble must still be clearly audible.",
+                    "zh":"注意听镲片和高频细节。用手挡住低音单元，高音仍应清晰可闻。"}},
+           {"id":"distortion","code":"AUD-003","label":{"en":"No distortion at high volume","zh":"大音量无失真"},
+            "help":{"en":"Raise the volume to maximum for a few seconds. The sound must stay clean, without breaking up, buzzing or going harsh.",
+                    "zh":"将音量调到最大持续几秒。声音应保持干净，不破音、不嗡响、不刺耳。"}},
+           {"id":"vibration","code":"AUD-004","label":{"en":"No abnormal speaker vibration","zh":"箱体无异常振动"},
+            "help":{"en":"At high volume run your hand over the speaker, grille and back panel. Nothing must rattle, buzz or feel loose.",
+                    "zh":"大音量时用手抚过箱体、网罩和后盖。不应有松动、嗡响或异常抖动。"}},
+           {"id":"strange_noise","code":"AUD-005","label":{"en":"No abnormal noise","zh":"无异响"},
+            "help":{"en":"Pause the track with the speaker still on. The speakers must be silent: no hiss, hum or clicking.",
+                    "zh":"保持开机并暂停播放。喇叭应完全安静，无嘶声、嗡声或咔哒声。"}},
+           {"section":{"en":"Playback controls","zh":"播放控制"},
+            "help":{"en":"With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat, record and mode.",
+                    "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环、录音和模式。"}},
+           {"id":"song_next","code":"USB-006","label":{"en":"Next track button","zh":"下一曲按键"},
+            "help":{"en":"Press it three times. The track number must advance one at a time and the music must change with each press.",
+                    "zh":"连续按三次。曲目编号应逐一递增，每按一次音乐都要随之切换。"}},
+           {"id":"song_prev","code":"USB-006","label":{"en":"Previous track button","zh":"上一曲按键"},
+            "help":{"en":"Press it three times. The track number must go back one at a time, not jump or restart from the beginning.",
+                    "zh":"连续按三次。曲目编号应逐一递减，不应跳号或跳回第一首。"}},
+           {"id":"folder_next","code":"USB-011","label":{"en":"Next folder button","zh":"下一文件夹按键"},
+            "help":{"en":"Press it and confirm the folder number changes and playback jumps to a different folder on the USB drive.",
+                    "zh":"按下后确认文件夹编号变化，并跳到 U 盘上的另一个文件夹播放。"}},
+           {"id":"folder_prev","code":"USB-011","label":{"en":"Previous folder button","zh":"上一文件夹按键"},
+            "help":{"en":"Press it and confirm it returns to the previous folder, not to the start of the USB drive.",
+                    "zh":"按下后确认返回上一个文件夹，而不是回到 U 盘开头。"}},
+           {"id":"play_pause","code":"USB-010","label":{"en":"PLAY / PAUSE button","zh":"播放/暂停按键"},
+            "help":{"en":"Press once: the sound must stop and the display must show pause. Press again: it must resume from the same point, not from the start.",
+                    "zh":"按一次，声音应停止且屏幕显示暂停；再按一次应从原位置继续，而不是从头播放。"}},
+           {"id":"repeat","code":"USB-012","label":{"en":"Repeat one / all button","zh":"单曲/全部循环按键"},
+            "help":{"en":"Set repeat-one and let the track end: the same track must play again. Then set repeat-all: at the end it must move to the next track.",
+                    "zh":"设为单曲循环，让曲目播完：应重复播放同一首。再设为全部循环：播完应自动进入下一首。"}},
+           {"id":"record","code":"USB-013","label":{"en":"REC button: records and saves to the USB drive","zh":"REC 录音按键：保存到 U 盘"},
+            "help":{"en":"Press REC, speak into the microphone for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.",
+                    "zh":"按 REC，对着麦克风说几秒后停止。在音箱上回放该录音，确认文件确实已保存。"}},
+           {"id":"modes","code":"DSP-005","label":{"en":"Mode button","zh":"模式按键"},
+            "help":{"en":"Press the mode button through the full cycle until it returns to USB. The display must follow every change.",
+                    "zh":"反复按模式键走完一轮回到 USB。显示屏应随每一次切换变化。"}},
+           {"section":{"en":"Audio controls","zh":"音频控制"},
+            "help":{"en":"Move each control through its full range and check the on-screen indicator follows it.",
+                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。"}},
+           {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum and its on-screen indicator","zh":"音量调到最大及屏幕显示"},
+            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
+                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。"}},
+           {"id":"treble","code":"AUD-007","label":{"en":"Treble level and its on-screen indicator","zh":"高音调节及屏幕显示"},
+            "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible and the indicator must follow it.",
+                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+           {"id":"bass","code":"AUD-008","label":{"en":"Bass level and its on-screen indicator","zh":"低音调节及屏幕显示"},
+            "help":{"en":"With music playing, take the bass fully down and fully up. The change must be clearly audible and the indicator must follow it.",
+                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+           {"id":"xbass","code":"AUD-010","only":["HK-BRA210B1"],
+            "label":{"en":"X-BASS function","zh":"X-BASS 功能"},
+            "help":{"en":"Playing from the USB drive, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.",
+                    "zh":"用 U 盘播放时，反复开关 X-BASS。开启时低音应明显增强，关闭时恢复原状，屏幕应显示状态变化。随后在开启 X-BASS 的状态下将音量调到最大：低音应保持干净，不失真，低音单元不应有异响。"}},
+           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
+            "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
+                    "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
+           {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
+            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
+            "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
+                    "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
+            "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
+                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
+            "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
+                    "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
+           {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
+            "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
+                    "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
+           {"section":{"en":"Lights","zh":"灯光"},
+            "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
+                    "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
+           {"id":"light","code":"LED-006","label":{"en":"Light on / off","zh":"灯光开关"},
+            "help":{"en":"Press the light button several times. It must switch on and off cleanly every time, with no flicker and no LED left lit.",
+                    "zh":"多次按下灯光键。每次都应干脆地开和关，不闪烁，也不应有个别灯珠残亮。"}},
+           {"id":"light_pattern","code":"LED-007","label":{"en":"Light pattern change","zh":"灯光模式切换"},
+            "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
+                    "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}},
+           {"section":{"en":"AC charging","zh":"AC 充电"},
+            "help":{"en":"Connect the AC charging cable with the speaker switched on and watch the display.",
+                    "zh":"在开机状态下接上 AC 充电线，观察显示屏。"}},
+           {"id":"ac_charge","code":"CHG-002","label":{"en":"Charging indicator","zh":"充电指示"},
+            "help":{"en":"Plug the AC cable in. The charging indicator must appear on the display within a few seconds, and stay on while the cable is connected.",
+                    "zh":"接上 AC 充电线。几秒内显示屏应出现充电指示，并在连接期间保持显示。"}}]},
+
+        {"id":"SD","optional":true,
+         "label":{"en":"SD CARD","zh":"SD 卡"},
+         "steps":[
+           {"en":"Insert the HOKLAN test SD card into the speaker","zh":"将 HOKLAN 测试 SD 卡插入音箱"},
+           {"en":"Select SD mode on the speaker","zh":"在音箱上切换到 SD 模式"},
+           {"en":"Wait until it reads the card and starts playing","zh":"等待识别 SD 卡并开始播放"},
+           {"en":"Let the HOKLAN SD play, listening for dropouts","zh":"让测试音频播放，注意是否有中断"},
+           {"en":"With the SD playing, check each control on the list","zh":"在播放状态下，逐项检查下列功能"},
+           {"en":"Finally, switch the speaker off and on to see if it starts in SD","zh":"最后重新开机，确认是否自动进入 SD 模式"}],
+         "points":[
+           {"section":{"en":"Playback","zh":"播放"},
+            "help":{"en":"Insert the HOKLAN test SD card and select SD mode. Wait until it reads the card and plays. At the end, switch the speaker off and on to see whether it starts in SD by itself.",
+                    "zh":"插入 HOKLAN 测试 SD 卡并切换到 SD 模式，等待识别并播放。最后重新开机，确认是否自动进入 SD 播放。"}},
+           {"id":"recognized","code":"SD-001","label":{"en":"Speaker reads the card and shows SD mode","zh":"识别 SD 卡并显示 SD 模式"},
+            "help":{"en":"Insert the card fully until it clicks. Within a few seconds the display must switch to SD and show a track number.",
+                    "zh":"将卡完全插入至卡扣到位。几秒内显示屏应切换到 SD 并显示曲目编号。"}},
+           {"id":"playback","code":"SD-002","label":{"en":"Plays the audio from the card","zh":"播放 SD 卡音频"},
+            "help":{"en":"Sound must start on its own, or after pressing play. Confirm it really comes out of the speaker.",
+                    "zh":"应自动开始播放，或按播放键后出声。确认声音确实来自本机。"}},
+           {"id":"continuous","code":"SD-003","label":{"en":"No dropouts during playback","zh":"播放过程无中断"},
+            "help":{"en":"Let one full track play without touching anything. Listen for cuts, stutters or moments of silence.",
+                    "zh":"完整播放一首曲目，中途不做任何操作。注意是否有断音、卡顿或瞬间静音。"}},
+           {"id":"quality","code":"SD-007","label":{"en":"No hum or interference","zh":"无杂音或干扰"},
+            "help":{"en":"Listen close to the grille at medium volume. Behind the music there must be no hum, hiss or crackle.",
+                    "zh":"中等音量下靠近网罩细听，音乐背景不应有嗡嗡声、嘶声或爆音。"}},
+           {"id":"autostart","code":"SD-014","label":{"en":"Starts in SD automatically on power on","zh":"开机自动进入 SD 播放"},
+            "help":{"en":"With the card still inserted, switch the speaker off and on. It must return to SD mode and start playing without pressing anything.",
+                    "zh":"SD 卡保持插入，关机后再开机。应自动回到 SD 模式并开始播放，无需按任何键。"}},
+           {"section":{"en":"Playback controls","zh":"播放控制"},
+            "help":{"en":"With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat, record and mode.",
+                    "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环、录音和模式。"}},
+           {"id":"song_next","code":"SD-006","label":{"en":"Next track button","zh":"下一曲按键"},
+            "help":{"en":"Press it three times. The track number must advance one at a time and the music must change with each press.",
+                    "zh":"连续按三次。曲目编号应逐一递增，每按一次音乐都要随之切换。"}},
+           {"id":"song_prev","code":"SD-006","label":{"en":"Previous track button","zh":"上一曲按键"},
+            "help":{"en":"Press it three times. The track number must go back one at a time, not jump or restart from the beginning.",
+                    "zh":"连续按三次。曲目编号应逐一递减，不应跳号或跳回第一首。"}},
+           {"id":"folder_next","code":"SD-011","label":{"en":"Next folder button","zh":"下一文件夹按键"},
+            "help":{"en":"Press it and confirm the folder number changes and playback jumps to a different folder on the card.",
+                    "zh":"按下后确认文件夹编号变化，并跳到卡上的另一个文件夹播放。"}},
+           {"id":"folder_prev","code":"SD-011","label":{"en":"Previous folder button","zh":"上一文件夹按键"},
+            "help":{"en":"Press it and confirm it returns to the previous folder, not to the start of the card.",
+                    "zh":"按下后确认返回上一个文件夹，而不是回到卡的开头。"}},
+           {"id":"play_pause","code":"SD-010","label":{"en":"PLAY / PAUSE button","zh":"播放/暂停按键"},
+            "help":{"en":"Press once: the sound must stop and the display must show pause. Press again: it must resume from the same point.",
+                    "zh":"按一次，声音应停止且屏幕显示暂停；再按一次应从原位置继续播放。"}},
+           {"id":"repeat","code":"SD-012","label":{"en":"Repeat one / all button","zh":"单曲/全部循环按键"},
+            "help":{"en":"Set repeat-one and let the track end: the same track must play again. Then set repeat-all: at the end it must move to the next track.",
+                    "zh":"设为单曲循环，让曲目播完：应重复播放同一首。再设为全部循环：播完应自动进入下一首。"}},
+           {"id":"record","code":"SD-013","label":{"en":"REC button: records and saves to the SD","zh":"REC 录音按键：保存到 SD 卡"},
+            "help":{"en":"Press REC, speak into the microphone for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.",
+                    "zh":"按 REC，对着麦克风说几秒后停止。在音箱上回放该录音，确认文件确实已保存。"}},
+           {"id":"erase","code":"SD-015","label":{"en":"Delete recordings button","zh":"删除录音按键"},
+            "help":{"en":"Delete the recording you just made and confirm it no longer plays back. The music tracks must remain untouched.",
+                    "zh":"删除刚才的录音并确认无法再回放。音乐曲目不应被一并删除。"}},
+           {"id":"modes","code":"DSP-005","label":{"en":"Mode button","zh":"模式按键"},
+            "help":{"en":"Press the mode button through the full cycle until it returns to SD. The display must follow every change.",
+                    "zh":"反复按模式键走完一轮回到 SD。显示屏应随每一次切换变化。"}},
+           {"section":{"en":"Audio controls","zh":"音频控制"},
+            "help":{"en":"Move each control through its full range and check the on-screen indicator follows it.",
+                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。"}},
+           {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum and its on-screen indicator","zh":"音量调到最大及屏幕显示"},
+            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
+                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。"}},
+           {"id":"treble","code":"AUD-007","label":{"en":"Treble level and its on-screen indicator","zh":"高音调节及屏幕显示"},
+            "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible and the indicator must follow it.",
+                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+           {"id":"bass","code":"AUD-008","label":{"en":"Bass level and its on-screen indicator","zh":"低音调节及屏幕显示"},
+            "help":{"en":"With music playing, take the bass fully down and fully up. The change must be clearly audible and the indicator must follow it.",
+                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+           {"id":"xbass","code":"AUD-010","only":["HK-BRA210B1"],
+            "label":{"en":"X-BASS function","zh":"X-BASS 功能"},
+            "help":{"en":"Playing from the SD card, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.",
+                    "zh":"用 SD 卡播放时，反复开关 X-BASS。开启时低音应明显增强，关闭时恢复原状，屏幕应显示状态变化。随后在开启 X-BASS 的状态下将音量调到最大：低音应保持干净，不失真，低音单元不应有异响。"}},
+           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
+            "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
+                    "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
+           {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
+            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
+            "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
+                    "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
+            "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
+                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
+            "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
+                    "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
+           {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
+            "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
+                    "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
+           {"section":{"en":"Lights","zh":"灯光"},
+            "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
+                    "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
+           {"id":"light","code":"LED-006","label":{"en":"Light on / off","zh":"灯光开关"},
+            "help":{"en":"Press the light button several times. It must switch on and off cleanly every time, with no flicker and no LED left lit.",
+                    "zh":"多次按下灯光键。每次都应干脆地开和关，不闪烁，也不应有个别灯珠残亮。"}},
+           {"id":"light_pattern","code":"LED-007","label":{"en":"Light pattern change","zh":"灯光模式切换"},
+            "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
+                    "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}}]},
+
+        {"id":"BLUETOOTH","optional":false,
+         "label":{"en":"BLUETOOTH","zh":"蓝牙"},
+         "steps":[
+           {"en":"Put the speaker in Bluetooth mode and leave it discoverable","zh":"将音箱切换到蓝牙模式并保持可被搜索"},
+           {"en":"Pair an iPhone and play audio","zh":"配对 iPhone 并播放音频"},
+           {"en":"Disconnect, pair an Android phone and play audio","zh":"断开后配对安卓手机并播放音频"},
+           {"en":"Switch the speaker off and on to see if it reconnects by itself","zh":"重新开机，确认是否自动回连"},
+           {"en":"With the audio playing, check each control on the list","zh":"在播放状态下，逐项检查下列功能"},
+           {"en":"Finally, enable TWS mode and link it to a second speaker","zh":"最后开启 TWS 模式，与第二台音箱串联"}],
+         "points":[
+           {"section":{"en":"Connection","zh":"连接"},
+            "help":{"en":"Put the speaker in Bluetooth mode. Pair an iPhone and play; then disconnect and pair an Android. Finally switch the speaker off and on to see whether it reconnects by itself.",
+                    "zh":"将音箱切换到蓝牙模式。先配对 iPhone 播放，断开后再配对安卓手机。最后重新开机，确认是否自动回连。"}},
+           {"id":"iphone","code":"BT-006","label":{"en":"Connection with iPhone","zh":"连接 iPhone"},
+            "help":{"en":"Search from the iPhone. The speaker must appear in the list, pair without a PIN and connect within a few seconds.",
+                    "zh":"用 iPhone 搜索。音箱应出现在列表中，无需 PIN 码即可配对，并在几秒内连接成功。"}},
+           {"id":"android","code":"BT-007","label":{"en":"Connection with Android","zh":"连接安卓手机"},
+            "help":{"en":"Disconnect the iPhone first, then pair an Android. Both must work: it is common for a speaker to connect with one and fail with the other.",
+                    "zh":"先断开 iPhone，再配对安卓手机。两者都必须正常：只连其中一种的情况很常见。"}},
+           {"id":"autoconnect","code":"BT-008","label":{"en":"Reconnects automatically on power on","zh":"开机自动回连"},
+            "help":{"en":"With the phone paired and nearby, switch the speaker off and on. It must reconnect by itself, without pairing again.",
+                    "zh":"手机保持已配对且在附近，关机后再开机。音箱应自动回连，无需重新配对。"}},
+           {"id":"stable","code":"BT-003","label":{"en":"Does not disconnect during playback","zh":"播放中不断开"},
+            "help":{"en":"Play for at least 30 seconds with the phone about 3 metres away. There must be no dropouts or disconnections.",
+                    "zh":"手机放在约 3 米外，持续播放至少 30 秒。不应出现断音或断开连接。"}},
+           {"section":{"en":"Playback","zh":"播放"},
+            "help":{"en":"Play the test track from the phone and listen for at least 30 seconds, checking for dropouts and hum.",
+                    "zh":"用手机播放测试音乐，至少试听 30 秒，注意是否有断音或杂音。"}},
+           {"id":"audio","code":"BT-004","label":{"en":"Audio comes out of the speaker","zh":"音箱正常出声"},
+            "help":{"en":"A connected phone does not prove sound. Play music and confirm it really comes out of this speaker, not the phone or a nearby speaker.",
+                    "zh":"连接成功不等于有声音。播放音乐并确认声音确实来自本机，而不是手机或旁边的音箱。"}},
+           {"id":"quality","code":"BT-011","label":{"en":"No hum or interference","zh":"无杂音或干扰"},
+            "help":{"en":"Listen close to the grille at medium volume. Behind the music there must be no hum, hiss or digital crackle.",
+                    "zh":"中等音量下靠近网罩细听，音乐背景不应有嗡嗡声、嘶声或数字爆音。"}},
+           {"id":"play_pause","code":"BT-009","label":{"en":"PLAY / PAUSE button","zh":"播放/暂停按键"},
+            "help":{"en":"Press it on the speaker, not on the phone. The music must pause and the phone must show it paused too.",
+                    "zh":"在音箱上按，不要在手机上按。音乐应暂停，手机端也应显示暂停。"}},
+           {"id":"modes","code":"DSP-005","label":{"en":"Mode button","zh":"模式按键"},
+            "help":{"en":"Press the mode button through the full cycle until it returns to Bluetooth. The connection must survive the round trip.",
+                    "zh":"反复按模式键走完一轮回到蓝牙。切换一圈后连接不应断开。"}},
+           {"section":{"en":"Audio controls","zh":"音频控制"},
+            "help":{"en":"Move each control through its full range and check the on-screen indicator follows it.",
+                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。"}},
+           {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum and its on-screen indicator","zh":"音量调到最大及屏幕显示"},
+            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
+                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。"}},
+           {"id":"treble","code":"AUD-007","label":{"en":"Treble level and its on-screen indicator","zh":"高音调节及屏幕显示"},
+            "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible and the indicator must follow it.",
+                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+           {"id":"bass","code":"AUD-008","label":{"en":"Bass level and its on-screen indicator","zh":"低音调节及屏幕显示"},
+            "help":{"en":"With music playing, take the bass fully down and fully up. The change must be clearly audible and the indicator must follow it.",
+                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+           {"id":"xbass","code":"AUD-010","only":["HK-BRA210B1"],
+            "label":{"en":"X-BASS function","zh":"X-BASS 功能"},
+            "help":{"en":"Playing over Bluetooth, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.",
+                    "zh":"通过蓝牙播放时，反复开关 X-BASS。开启时低音应明显增强，关闭时恢复原状，屏幕应显示状态变化。随后在开启 X-BASS 的状态下将音量调到最大：低音应保持干净，不失真，低音单元不应有异响。"}},
+           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
+            "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
+                    "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
+           {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
+            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
+            "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
+                    "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
+            "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
+                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
+            "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
+                    "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
+           {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
+            "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
+                    "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
+           {"section":{"en":"Lights","zh":"灯光"},
+            "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
+                    "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
+           {"id":"light","code":"LED-006","label":{"en":"Light on / off","zh":"灯光开关"},
+            "help":{"en":"Press the light button several times. It must switch on and off cleanly every time, with no flicker and no LED left lit.",
+                    "zh":"多次按下灯光键。每次都应干脆地开和关，不闪烁，也不应有个别灯珠残亮。"}},
+           {"id":"light_pattern","code":"LED-007","label":{"en":"Light pattern change","zh":"灯光模式切换"},
+            "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
+                    "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}},
+           {"section":{"en":"AC charging","zh":"AC 充电"},
+            "help":{"en":"Connect the AC charging cable with the speaker switched on and watch the display.",
+                    "zh":"在开机状态下接上 AC 充电线，观察显示屏。"}},
+           {"id":"ac_charge","code":"CHG-002","label":{"en":"Charging indicator","zh":"充电指示"},
+            "help":{"en":"Plug the AC cable in. The charging indicator must appear on the display within a few seconds, and stay on while the cable is connected.",
+                    "zh":"接上 AC 充电线。几秒内显示屏应出现充电指示，并在连接期间保持显示。"}},
+           {"section":{"en":"TWS","zh":"TWS"},
+            "help":{"en":"Enable TWS mode and link the speaker to a second speaker. Confirm both play together. Mark N/A if this reference has no TWS.",
+                    "zh":"开启 TWS 模式，与第二台音箱串联，确认两台同时出声。本型号没有 TWS 时标记为“不适用”。"}},
+           {"id":"tws","code":"BT-010","label":{"en":"TWS mode: link with a second speaker","zh":"TWS 模式：与第二台音箱串联"},
+            "help":{"en":"Enable TWS on both speakers and wait for them to pair with each other. Play music: both must sound together and in sync. Mark N/A if this reference has no TWS.",
+                    "zh":"在两台音箱上都开启 TWS，等待互相配对。播放音乐：两台应同时出声且同步。本型号没有 TWS 时标记为“不适用”。"}}]},
+
+        {"id":"RADIO_FM","optional":true,
+         "label":{"en":"FM RADIO","zh":"调频收音"},
+         "steps":[
+           {"en":"Select radio mode on the speaker","zh":"将音箱切换到收音模式"},
+           {"en":"Run the auto search and store the stations","zh":"执行自动搜台并保存电台"},
+           {"en":"Step through the stations with the next and back buttons","zh":"用上/下一台按键切换电台"},
+           {"en":"Switch off and on to see if it keeps the last station","zh":"重新开机，确认是否记忆上次电台"},
+           {"en":"With the radio playing, check each control on the list","zh":"在收音状态下，逐项检查下列功能"},
+           {"en":"Check that the lights stay off in radio mode","zh":"确认收音模式下灯光保持关闭"}],
+         "points":[
+           {"section":{"en":"Tuning","zh":"调台"},
+            "help":{"en":"Select radio mode and run the auto search to store stations. Step through them with next and back. Then switch the speaker off and on to check it keeps the last station.",
+                    "zh":"切换到收音模式并执行自动搜台保存电台，用上/下一台按键切换。之后重新开机，确认是否记忆上次电台。"}},
+           {"id":"search","code":"FM-005","label":{"en":"Searches and stores stations","zh":"搜索并保存电台"},
+            "help":{"en":"Run the auto search and let it finish. It must find several stations and store them; a speaker that finds one or none has an antenna problem.",
+                    "zh":"执行自动搜台并等待完成。应搜到多个电台并保存；只搜到一个或搜不到通常是天线问题。"}},
+           {"id":"station_next","code":"FM-007","label":{"en":"Next station button","zh":"下一台按键"},
+            "help":{"en":"Press it several times. The frequency must move to the next stored station each time, not scan endlessly.",
+                    "zh":"连续按几次。每次应跳到下一个已存电台，而不是一直扫描。"}},
+           {"id":"station_prev","code":"FM-007","label":{"en":"Previous station button","zh":"上一台按键"},
+            "help":{"en":"Press it several times. It must go back through the stored stations one at a time.",
+                    "zh":"连续按几次。应逐一退回到上一个已存电台。"}},
+           {"id":"memory","code":"FM-008","label":{"en":"Keeps the last station after power off","zh":"关机后记忆上次电台"},
+            "help":{"en":"Select the station stored in preset 2 and write down its frequency. Switch the speaker off, wait a few seconds and switch it on again. It must come back on preset 2, on the same frequency — not on preset 1 and not scanning.",
+                    "zh":"切换到第 2 个预存电台并记下其频率。关机，等待几秒后再开机。开机后应回到第 2 个预存电台、同一频率，而不是回到第 1 个电台，也不应重新搜台。"}},
+           {"id":"reception","code":"FM-002","label":{"en":"Stable reception","zh":"信号稳定"},
+            "help":{"en":"Listen to one station for 30 seconds without touching the speaker. The signal must not drift, fade or fill with static.",
+                    "zh":"固定一个电台听 30 秒，不要触碰音箱。信号不应漂移、忽强忽弱或出现噪声。"}},
+           {"id":"audio","code":"FM-003","label":{"en":"Clean audio, no noise","zh":"声音清晰无杂音"},
+            "help":{"en":"On a strong station the voice must be clear. Constant hiss on every station points to the tuner or the antenna, not the broadcast.",
+                    "zh":"在信号强的电台上人声应清晰。如果每个台都有持续嘶声，问题在调谐器或天线，而不是电台。"}},
+           {"section":{"en":"Modes","zh":"模式"},
+            "help":{"en":"Press the mode button and confirm the speaker changes source and the display follows.",
+                    "zh":"按模式键，确认音箱切换音源且显示屏同步变化。"}},
+           {"id":"modes","code":"DSP-005","label":{"en":"Mode button","zh":"模式按键"}},
+           {"section":{"en":"Audio controls","zh":"音频控制"},
+            "help":{"en":"Move each control through its full range and check the on-screen indicator follows it.",
+                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。"}},
+           {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum and its on-screen indicator","zh":"音量调到最大及屏幕显示"},
+            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
+                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。"}},
+           {"id":"treble","code":"AUD-007","label":{"en":"Treble level and its on-screen indicator","zh":"高音调节及屏幕显示"},
+            "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible and the indicator must follow it.",
+                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+           {"id":"bass","code":"AUD-008","label":{"en":"Bass level and its on-screen indicator","zh":"低音调节及屏幕显示"},
+            "help":{"en":"With music playing, take the bass fully down and fully up. The change must be clearly audible and the indicator must follow it.",
+                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
+            "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
+                    "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
+           {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
+            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
+            "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
+                    "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
+            "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
+                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
+            "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
+                    "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
+           {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
+            "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
+                    "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
+           {"section":{"en":"Lights","zh":"灯光"},
+            "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
+                    "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
+           {"id":"lights_off","code":"FM-009","label":{"en":"Lights stay off in radio mode","zh":"收音模式下灯光保持关闭"},
+            "help":{"en":"In radio mode the lights must stay off by design: the LED drivers interfere with FM reception. If they come on, it is a firmware fault.",
+                    "zh":"收音模式下灯光应按设计保持关闭：灯板驱动会干扰调频接收。若灯亮起，属于固件缺陷。"}}]},
+
+        {"id":"AUX","optional":false,
+         "label":{"en":"AUX LINE","zh":"AUX 音频输入"},
+         "steps":[
+           {"en":"Select AUX mode on the speaker first","zh":"先在音箱上切换到 AUX 模式"},
+           {"en":"Connect the AUX cable between the test source and the speaker","zh":"再用音频线连接测试音源与音箱 AUX 接口"},
+           {"en":"Play audio from the source and confirm it comes out of the speaker","zh":"播放音源并确认音箱出声"},
+           {"en":"With the audio playing, check each control on the list","zh":"在播放状态下，逐项检查下列功能"}],
+         "points":[
+           {"section":{"en":"AUX input","zh":"AUX 输入"},
+            "help":{"en":"Connect the AUX cable between the test source and the speaker, select AUX mode and play audio.",
+                    "zh":"用音频线连接测试音源与音箱 AUX 接口，切换到 AUX 模式并播放。"}},
+           {"id":"input","code":"AUX-001","label":{"en":"Speaker detects the AUX input","zh":"音箱检测到 AUX 输入"},
+            "help":{"en":"First select AUX mode on the speaker and confirm the display shows it. Only then connect the cable and play from the source: the sound must come through.",
+                    "zh":"先在音箱上选择 AUX 模式，确认屏幕显示已切换。之后再接上音频线并播放音源，声音应正常传出。"}},
+           {"id":"audio","code":"AUX-002","label":{"en":"Audio comes out of the speaker","zh":"音箱正常出声"},
+            "help":{"en":"Play from the source and confirm sound in both channels. Wiggle the plug gently: the sound must not cut out.",
+                    "zh":"从音源播放并确认左右声道都有声音。轻轻晃动插头，声音不应中断。"}},
+           {"id":"noise","code":"AUX-003","label":{"en":"No hum or interference","zh":"无杂音或干扰"},
+            "help":{"en":"With the cable connected but the source paused, listen close to the grille. There must be no hum or buzz from the cable or the mains.",
+                    "zh":"连接音频线但暂停音源，靠近网罩细听。不应有来自线材或电源的嗡嗡声。"}},
+           {"id":"continuous","code":"AUX-004","label":{"en":"No dropouts during playback","zh":"播放过程无中断"},
+            "help":{"en":"Let one full track play without touching anything. Listen for cuts, stutters or channels dropping out.",
+                    "zh":"完整播放一首曲目，中途不做任何操作。注意是否有断音、卡顿或某个声道消失。"}},
+           {"section":{"en":"Playback controls","zh":"播放控制"},
+            "help":{"en":"With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat, record and mode.",
+                    "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环、录音和模式。"}},
+           {"id":"play_pause","code":"AUX-005","label":{"en":"PLAY / PAUSE button","zh":"播放/暂停按键"},
+            "help":{"en":"Press it on the speaker. The sound must stop and resume. Mark N/A if this reference does not control the AUX source.",
+                    "zh":"在音箱上按下。声音应停止并可恢复。本型号无法控制 AUX 音源时标记为“不适用”。"}},
+           {"id":"modes","code":"DSP-005","label":{"en":"Mode button","zh":"模式按键"},
+            "help":{"en":"Press the mode button through the full cycle until it returns to AUX. The display must follow every change.",
+                    "zh":"反复按模式键走完一轮回到 AUX。显示屏应随每一次切换变化。"}},
+           {"section":{"en":"Audio controls","zh":"音频控制"},
+            "help":{"en":"Move each control through its full range and check the on-screen indicator follows it.",
+                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。"}},
+           {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum and its on-screen indicator","zh":"音量调到最大及屏幕显示"},
+            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
+                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。"}},
+           {"id":"treble","code":"AUD-007","label":{"en":"Treble level and its on-screen indicator","zh":"高音调节及屏幕显示"},
+            "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible and the indicator must follow it.",
+                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+           {"id":"bass","code":"AUD-008","label":{"en":"Bass level and its on-screen indicator","zh":"低音调节及屏幕显示"},
+            "help":{"en":"With music playing, take the bass fully down and fully up. The change must be clearly audible and the indicator must follow it.",
+                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
+            "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
+                    "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
+           {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
+            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
+            "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
+                    "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
+            "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
+                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
+            "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
+                    "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
+           {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
+            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+           {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
+            "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
+                    "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
+           {"section":{"en":"Lights","zh":"灯光"},
+            "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
+                    "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
+           {"id":"light","code":"LED-006","label":{"en":"Light on / off","zh":"灯光开关"},
+            "help":{"en":"Press the light button several times. It must switch on and off cleanly every time, with no flicker and no LED left lit.",
+                    "zh":"多次按下灯光键。每次都应干脆地开和关，不闪烁，也不应有个别灯珠残亮。"}},
+           {"id":"light_pattern","code":"LED-007","label":{"en":"Light pattern change","zh":"灯光模式切换"},
+            "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
+                    "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}}]},
+
+        {"id":"REMOTE","optional":true,
+         "label":{"en":"REMOTE CONTROL","zh":"遥控器"},
+         "steps":[
+           {"en":"Check the remote has a battery; remove the insulator if new","zh":"确认遥控器有电池，新品请抽出绝缘片"},
+           {"en":"Point at the speaker from about 3 metres","zh":"距离音箱约 3 米对准操作"},
+           {"en":"Press each button on the list and confirm on the speaker","zh":"逐个按下列按键，并在音箱上确认反应"},
+           {"en":"Repeat some buttons at an angle, not only straight on","zh":"部分按键需侧向角度再测一次，不只正对"}],
+         "points":[
+           {"section":{"en":"Power and mute","zh":"电源与静音"},
+            "help":{"en":"Check the remote has a battery and remove the insulator if new. Point at the speaker from about 3 metres.",
+                    "zh":"确认遥控器有电池，新品请抽出绝缘片。距离音箱约 3 米对准操作。"}},
+           {"id":"power","code":"RMT-001","label":{"en":"Power on / off","zh":"电源开关"},
+            "help":{"en":"Press it to switch the speaker off, then again to switch it on. Both directions must work from 3 metres.",
+                    "zh":"按下关闭音箱，再按一次开机。3 米距离下开和关都必须有效。"}},
+           {"id":"mute","code":"RMT-002","label":{"en":"MUTE","zh":"静音"},
+            "help":{"en":"With music playing, press MUTE: the sound must stop instantly. Press again: it must come back at the same volume.",
+                    "zh":"播放音乐时按静音键，声音应立即消失；再按一次应以原音量恢复。"}},
+           {"section":{"en":"Source selection","zh":"音源选择"},
+            "help":{"en":"Press each source key and confirm the speaker switches to it. Mark N/A for sources this reference does not have.",
+                    "zh":"逐个按下音源键，确认音箱切换到对应音源。本型号没有的音源标记为“不适用”。"}},
+           {"id":"src_fm","code":"RMT-003","label":{"en":"FM RADIO","zh":"收音"},
+            "help":{"en":"Press it from another source. The speaker must switch straight to radio and the display must show it.",
+                    "zh":"在其他音源下按此键，音箱应直接切到收音，屏幕应显示。"}},
+           {"id":"src_usb","code":"RMT-004","label":{"en":"USB","zh":"USB"},
+            "help":{"en":"With the USB drive inserted, press it from another source. The speaker must switch to USB and start playing.",
+                    "zh":"插着 U 盘时从其他音源按此键，音箱应切到 USB 并开始播放。"}},
+           {"id":"src_bt","code":"RMT-005","label":{"en":"BLUETOOTH","zh":"蓝牙"},
+            "help":{"en":"Press it from another source. The speaker must switch to Bluetooth and become discoverable or reconnect to the phone.",
+                    "zh":"在其他音源下按此键，音箱应切到蓝牙并可被搜索或自动回连手机。"}},
+           {"id":"src_sd","code":"RMT-006","label":{"en":"SD","zh":"SD 卡"},
+            "help":{"en":"With the card inserted, press it from another source. Mark N/A if this reference has no SD slot.",
+                    "zh":"插着 SD 卡时从其他音源按此键。本型号没有 SD 卡槽时标记为“不适用”。"}},
+           {"id":"src_aux","code":"RMT-007","label":{"en":"AUX","zh":"AUX"},
+            "help":{"en":"With the AUX cable connected, press it from another source. The speaker must switch to AUX.",
+                    "zh":"连接 AUX 音频线后从其他音源按此键，音箱应切到 AUX。"}},
+           {"id":"modes","code":"RMT-012","label":{"en":"Mode button","zh":"模式键"},
+            "help":{"en":"Press it repeatedly. The speaker must step through every source in order and return to the first.",
+                    "zh":"连续按此键，音箱应依次切换所有音源并回到第一个。"}},
+           {"section":{"en":"Playback keys","zh":"播放按键"},
+            "help":{"en":"With a source playing, press each key and confirm the speaker reacts.",
+                    "zh":"在有音源播放时按下每个键，确认音箱有反应。"}},
+           {"id":"play_pause","code":"RMT-015","label":{"en":"PLAY / PAUSE","zh":"播放/暂停"},
+            "help":{"en":"Press once: the sound must stop. Press again: it must resume from the same point, not from the start.",
+                    "zh":"按一次声音应停止；再按一次应从原位置继续，而不是从头播放。"}},
+           {"id":"song_next","code":"RMT-013","label":{"en":"Next track","zh":"下一曲"},
+            "help":{"en":"Press it three times. The track number must advance one at a time from the remote, just as it does from the panel.",
+                    "zh":"连续按三次。曲目编号应逐一递增，与面板操作效果一致。"}},
+           {"id":"song_prev","code":"RMT-014","label":{"en":"Previous track","zh":"上一曲"},
+            "help":{"en":"Press it three times. The track number must go back one at a time, without jumping or restarting.",
+                    "zh":"连续按三次。曲目编号应逐一递减，不应跳号或重头开始。"}},
+           {"id":"fast_fwd","code":"RMT-018","label":{"en":"Fast forward","zh":"快进"},
+            "help":{"en":"Hold it down during a track. The music must move forward while held and carry on normally when released.",
+                    "zh":"播放中长按此键。按住时音乐应快速前进，松开后正常继续播放。"}},
+           {"id":"rewind","code":"RMT-019","label":{"en":"Rewind","zh":"快退"},
+            "help":{"en":"Hold it down during a track. The music must move backward while held and carry on normally when released.",
+                    "zh":"播放中长按此键。按住时音乐应快速后退，松开后正常继续播放。"}},
+           {"id":"repeat","code":"RMT-024","label":{"en":"Repeat track","zh":"循环播放"},
+            "help":{"en":"Press it and check the repeat icon changes on the display, then let a track end to confirm the mode really applies.",
+                    "zh":"按下后确认屏幕循环图标变化，再让曲目播完，确认循环模式确实生效。"}},
+           {"id":"folder_next","code":"RMT-021","label":{"en":"Folder forward","zh":"下一文件夹"},
+            "help":{"en":"Press it and confirm the folder number changes and playback jumps to another folder.",
+                    "zh":"按下后确认文件夹编号变化，并跳到另一个文件夹播放。"}},
+           {"id":"folder_prev","code":"RMT-022","label":{"en":"Folder back","zh":"上一文件夹"},
+            "help":{"en":"Press it and confirm it returns to the previous folder.",
+                    "zh":"按下后确认返回上一个文件夹。"}},
+           {"id":"keypad","code":"RMT-020","label":{"en":"Numeric keypad","zh":"数字键盘"},
+            "help":{"en":"Type a track number, for example 005. The speaker must jump straight to that track. Test every digit from 0 to 9, not just one.",
+                    "zh":"输入曲目编号，例如 005，音箱应直接跳到该曲。0 到 9 每个数字键都要测，不能只测一个。"}},
+           {"section":{"en":"Volume and audio","zh":"音量与音效"},
+            "help":{"en":"Hold VOL + and VOL − and confirm the level moves on the display. Press EQ and check the preset changes.",
+                    "zh":"长按音量加/减键，确认屏幕音量数值变化。按 EQ 键确认音效模式切换。"}},
+           {"id":"vol_up","code":"RMT-016","label":{"en":"VOL +","zh":"音量 +"},
+            "help":{"en":"Press it several times and hold it once. The level must rise step by step on the display and the sound must follow.",
+                    "zh":"连按几次并长按一次。屏幕音量应逐级上升，声音应随之变大。"}},
+           {"id":"vol_down","code":"RMT-017","label":{"en":"VOL −","zh":"音量 −"},
+            "help":{"en":"Press it several times and hold it once. The level must fall step by step, all the way down to zero.",
+                    "zh":"连按几次并长按一次。音量应逐级下降，直到降为零。"}},
+           {"id":"eq","code":"RMT-023","label":{"en":"EQ button","zh":"EQ 键"},
+            "help":{"en":"Press it through every preset. The display must show the name change and the sound must be audibly different between presets.",
+                    "zh":"逐一切换所有音效预设。屏幕应显示名称变化，且不同预设之间声音应有明显差异。"}},
+           {"section":{"en":"Microphone and recording","zh":"麦克风与录音"},
+            "help":{"en":"Record a few seconds with REC, play it back with REC PLAY. Retest some keys at an angle, not only straight on.",
+                    "zh":"用 REC 键录几秒，再用 REC PLAY 播放。部分按键需侧向角度再测一次，不只正对。"}},
+           {"id":"mic_priority","code":"RMT-008","label":{"en":"Microphone priority","zh":"麦克风优先"},
+            "help":{"en":"With music playing, press it and speak into the microphone. The music must drop while you speak and return afterwards.",
+                    "zh":"播放音乐时按下此键并对麦克风说话。说话时音乐应减小，停止后恢复。"}},
+           {"id":"rec","code":"RMT-009","label":{"en":"REC — record","zh":"REC — 录音"},
+            "help":{"en":"Press REC and speak for a few seconds. The display must show it is recording, and pressing it again must stop the recording.",
+                    "zh":"按 REC 并说话几秒。屏幕应显示正在录音，再按一次应停止录音。"}},
+           {"id":"rec_play","code":"RMT-010","label":{"en":"REC PLAY — play the recording","zh":"REC PLAY — 播放录音"},
+            "help":{"en":"Press it and confirm the recording you just made plays back clearly through the speaker.",
+                    "zh":"按下后确认刚才的录音能通过音箱清晰回放。"}},
+           {"id":"voice_out","code":"RMT-011","label":{"en":"VOICE OUT","zh":"VOICE OUT"},
+            "help":{"en":"Press it while speaking into the microphone and listen for the change in the voice effect. Mark N/A if this reference has no VOICE OUT.",
+                    "zh":"对麦克风说话时按下此键，注意人声效果的变化。本型号没有 VOICE OUT 时标记为“不适用”。"}}]},
+
+        {"id":"EXTERNAL","optional":false,"type":"photos","no_na":true,
+         "label":{"en":"EXTERNAL PARTS","zh":"外观部件"},
+         "steps":[
+           {"en":"Place the speaker in good light, avoiding direct reflections","zh":"将音箱置于光线充足处，避免反光"},
+           {"en":"Photograph each area on the list, looking for scratches, dents, stains or paint defects","zh":"逐项拍摄，检查刮痕、凹陷、污渍或喷涂缺陷"},
+           {"en":"Check the alignment of parts, joints and visible screws","zh":"检查部件对位、接缝和外露螺丝"},
+           {"en":"Confirm logos and labels are straight, complete and legible","zh":"确认标志和标签端正、完整、清晰"},
+           {"en":"If you find a defect, take a close-up as well as the general photo","zh":"发现缺陷时，除整体照外再拍一张特写"},
+           {"en":"Mark N/A anything this reference does not include","zh":"本型号不包含的项目请标记为 N/A"}],
+         "points":[
+           {"id":"frontal","label":{"en":"Front","zh":"正面"}},
+           {"id":"trasera","label":{"en":"Back","zh":"背面"}},
+           {"id":"lateral_der","label":{"en":"Right side","zh":"右侧面"},
+            "help":{"en":"Stand at the right of the speaker, looking at it from the front. Photograph the whole side, including the handle and the joint with the front and back panels.",
+                    "zh":"面向音箱正面时站在其右侧。拍摄整个右侧面，包含提手以及与前后面板的接缝。"}},
+           {"id":"lateral_izq","label":{"en":"Left side","zh":"左侧面"},
+            "help":{"en":"Same photo on the opposite side. Both sides are asked for separately because a scratch on only one of them is easy to miss in a single picture.",
+                    "zh":"在另一侧拍摄同样的照片。左右分开拍摄，是因为只出现在一侧的刮痕在单张照片中很容易被漏掉。"}},
+           {"id":"superior","label":{"en":"Top","zh":"顶部"}},
+           {"id":"inferior","label":{"en":"Bottom","zh":"底部"}},
+           {"id":"pantalla","label":{"en":"Display","zh":"显示屏"}},
+           {"id":"panel","label":{"en":"Panel","zh":"面板"}},
+           {"id":"perillas","label":{"en":"Knobs","zh":"旋钮"}},
+           {"id":"malla","label":{"en":"Grille","zh":"网罩"}},
+           {"id":"logo_malla","label":{"en":"Logo on the grille","zh":"网罩上的标志"},
+            "help":{"en":"Close-up of the logo on the grille. It must be straight, complete, well fixed and with no scratched or faded lettering.",
+                    "zh":"拍摄网罩上标志的特写。标志应端正、完整、牢固，字体不应有刮伤或褪色。"}},
+           {"id":"logo_panel","label":{"en":"Logo on the panel","zh":"面板上的标志"},
+            "help":{"en":"Close-up of the logo printed or fixed on the panel. Check it matches the one on the grille in size, colour and finish.",
+                    "zh":"拍摄面板上印制或固定的标志特写。确认其与网罩上的标志在尺寸、颜色和工艺上一致。"}},
+           {"id":"ruedas","label":{"en":"Wheels","zh":"轮子"}}]},
+
+        {"id":"ACCESSORIES","optional":false,"type":"photos",
+         "label":{"en":"ACCESSORIES","zh":"配件"},
+         "steps":[
+           {"en":"Take the accessories out of the box onto a clear surface","zh":"将配件从箱中取出，放在干净台面上"},
+           {"en":"Each accessory has a front and a back slot: fill both","zh":"每个配件都有正面和背面两个上传位，两者都要填写"},
+           {"en":"Include a photo of the connector or tip of each cable","zh":"每条线材的插头或端子需单独拍照"},
+           {"en":"Check that brand, model and condition are visible","zh":"确认品牌、型号和外观状态清晰可见"},
+           {"en":"Mark N/A anything this reference does not include","zh":"本型号不包含的项目请标记为 N/A"}],
+         "points":[
+           {"id":"control_remoto_front","label":{"en":"Remote control — front","zh":"遥控器 — 正面"},
+            "help":{"en":"The face with the buttons, with the printing legible and the battery cover in place.",
+                    "zh":"拍摄有按键的一面，印字应清晰可读，电池盖应装好。"}},
+           {"id":"control_remoto_back","label":{"en":"Remote control — back","zh":"遥控器 — 背面"},
+            "help":{"en":"The back, showing the battery cover and any label. Front and back are asked for separately because a cracked cover only shows from behind.",
+                    "zh":"拍摄背面，需拍到电池盖和标签。正反面分开拍摄，是因为电池盖开裂只有从背面才看得到。"}},
+           {"id":"cable_poder","label":{"en":"Power cable","zh":"电源线"},
+            "help":{"en":"One photo of the whole cable with both plugs visible. There is no second side to check on a cable.",
+                    "zh":"拍摄整条电源线，两端插头都要入镜。线材没有需要另行检查的另一面。"}},
+           {"id":"microfonos_front","label":{"en":"Microphones — front","zh":"麦克风 — 正面"},
+            "help":{"en":"The head and body of each microphone, with the grille and the brand visible.",
+                    "zh":"拍摄每支麦克风的网头和机身，需拍到网罩和品牌标识。"}},
+           {"id":"microfonos_back","label":{"en":"Microphones — back","zh":"麦克风 — 背面"},
+            "help":{"en":"The opposite side, showing the switch, the battery compartment and the connector.",
+                    "zh":"拍摄另一面，需拍到开关、电池仓和接头。"}},
+           {"id":"tripode_front","label":{"en":"Tripod — front","zh":"三脚架 — 正面"},
+            "help":{"en":"The tripod assembled, seen from the front: legs, column and mounting plate.",
+                    "zh":"拍摄组装好的三脚架正面：支脚、立柱和安装盘。"}},
+           {"id":"tripode_back","label":{"en":"Tripod — back","zh":"三脚架 — 背面"},
+            "help":{"en":"The back, showing the locking knobs and the welds.",
+                    "zh":"拍摄背面，需拍到锁紧旋钮和焊接部位。"}}]},
+
+        {"id":"GRAPHICS","optional":false,"type":"photos","no_na":true,
+         "label":{"en":"PRINTED MATERIAL","zh":"印刷品"},
+         "steps":[
+           {"en":"Take a photo of each item on the list","zh":"逐项拍摄下列物品"},
+           {"en":"The box has one slot per face: front, back, both sides, top and bottom","zh":"彩盒的每个面都有独立上传位：正面、背面、左右侧面、顶面和底面"},
+           {"en":"Make sure the text and codes are clearly legible","zh":"确保文字和条码清晰可读"},
+           {"en":"Avoid shadows and reflections on the labels","zh":"避免标签上出现阴影和反光"},
+           {"en":"Mark N/A anything this reference does not include","zh":"本型号不包含的项目请标记为 N/A"}],
+         "points":[
+           {"id":"manual_front","label":{"en":"Manual — front cover","zh":"说明书 — 封面"},
+            "help":{"en":"The front cover, readable and with no glare over the text.",
+                    "zh":"拍摄封面，文字清晰可读，不得有反光遮挡。"}},
+           {"id":"manual_back","label":{"en":"Manual — back cover","zh":"说明书 — 封底"},
+            "help":{"en":"The back cover, readable and with no glare over the text.",
+                    "zh":"拍摄封底，文字清晰可读，不得有反光遮挡。"}},
+           {"id":"tag_front","label":{"en":"Tag — front","zh":"吊牌 — 正面"},
+            "help":{"en":"The printed face of the tag, complete and legible.",
+                    "zh":"拍摄吊牌有印刷的一面，内容完整、清晰可读。"}},
+           {"id":"tag_back","label":{"en":"Tag — back","zh":"吊牌 — 背面"},
+            "help":{"en":"The other face. Both are asked for separately because the barcode and the country of origin are usually printed only on the back.",
+                    "zh":"拍摄另一面。正反面分开拍摄，是因为条码和产地通常只印在背面。"}},
+           {"id":"carta_fidelizacion","label":{"en":"Loyalty card","zh":"客户回馈卡"},
+            "help":{"en":"The card inviting the customer to register the product. Photograph both faces if it is printed on both, and check the QR code or web address is legible.",
+                    "zh":"拍摄邀请客户注册产品的卡片。若双面印刷则两面都要拍，并确认二维码或网址清晰可读。"}},
+           {"id":"bolsa","label":{"en":"Bag","zh":"包装袋"}},
+           {"id":"sello_garantia","label":{"en":"Warranty seal","zh":"保修封签"}},
+           {"id":"sello_calidad","label":{"en":"Quality control seal","zh":"质检封签"}},
+           {"id":"etiqueta_esp","label":{"en":"Technical specification label","zh":"技术规格标签"},
+            "help":{"en":"Close-up of the label. Voltage, power, model and serial must all be legible in the photo.",
+                    "zh":"标签特写。电压、功率、型号和序列号在照片中都必须清晰可读。"}},
+           {"id":"caja_frente","label":{"en":"Box — front","zh":"彩盒 — 正面"},
+            "help":{"en":"The main printed face of the box, the one facing the buyer on the shelf.",
+                    "zh":"拍摄彩盒的主展示面，即货架上朝向顾客的一面。"}},
+           {"id":"caja_atras","label":{"en":"Box — back","zh":"彩盒 — 背面"},
+            "help":{"en":"The opposite face, usually carrying the specifications and the barcode.",
+                    "zh":"拍摄相对的一面，通常印有规格参数和条码。"}},
+           {"id":"caja_lado_der","label":{"en":"Box — right side","zh":"彩盒 — 右侧面"},
+            "help":{"en":"The narrow side on the right, looking at the front of the box.",
+                    "zh":"面向彩盒正面时，拍摄右侧的窄面。"}},
+           {"id":"caja_lado_izq","label":{"en":"Box — left side","zh":"彩盒 — 左侧面"},
+            "help":{"en":"The narrow side on the left. Each face is asked for on its own so a crushed corner or a missing label can be traced to one side of the box.",
+                    "zh":"拍摄左侧的窄面。六面分开拍摄，是为了在出现压角或缺标签时能准确定位是哪一面。"}},
+           {"id":"caja_superior","label":{"en":"Box — top","zh":"彩盒 — 顶面"},
+            "help":{"en":"The top, including the closing flaps and the tape.",
+                    "zh":"拍摄顶面，需拍到封口摇盖和胶带。"}},
+           {"id":"caja_inferior","label":{"en":"Box — bottom","zh":"彩盒 — 底面"},
+            "help":{"en":"The bottom, including the seal and any shipping label.",
+                    "zh":"拍摄底面，需拍到封口和运输标签。"}}]},
+
+        {"id":"EXT_BATTERY","optional":true,"skip_factory":["RHY"],
+         "label":{"en":"EXTERNAL BATTERY","zh":"外置电池"},
+         "steps":[
+           {"en":"Switch the speaker off and disconnect it from the mains","zh":"关机并断开市电"},
+           {"en":"Open the speaker and disconnect the internal battery","zh":"打开箱体，断开内置电池"},
+           {"en":"Connect the external battery","zh":"接上外置电池"},
+           {"en":"Set the switch to external battery","zh":"将开关拨到外置电池"},
+           {"en":"Switch the speaker on, insert the USB drive and play at maximum volume","zh":"开机，插入 U 盘并以最大音量播放"},
+           {"en":"Then plug in the AC cable, still on the external battery, and play at maximum volume","zh":"随后在外置电池仍接入的状态下接上 AC 电源线，并以最大音量播放"}],
+         "points":[
+           {"id":"internal_off","code":"BAT-006","label":{"en":"Internal battery disconnected","zh":"内置电池已断开"},
+            "help":{"en":"With the speaker off and unplugged from the mains, open it and unplug the internal battery connector. Leave it disconnected for the whole test.",
+                    "zh":"在关机并断开市电的状态下打开箱体，拔掉内置电池插头。整个测试过程保持断开。"}},
+           {"id":"external_on","code":"BAT-001","label":{"en":"External battery connected and detected","zh":"外置电池已连接并被识别"},
+            "help":{"en":"Connect the external battery and set the switch to the external position. The speaker must recognise it as its power source.",
+                    "zh":"接上外置电池并将开关拨到外置位置。音箱应识别其为供电来源。"}},
+           {"id":"switch","code":"BAT-003","label":{"en":"Battery switch works","zh":"电池切换开关有效"},
+            "help":{"en":"Move the switch between internal and external. The speaker must respond to the change, not stay dead in one of the positions.",
+                    "zh":"在内置与外置之间拨动开关。音箱应对切换有反应，不应在某一档位完全无电。"}},
+           {"id":"power_on","code":"BAT-002","label":{"en":"Speaker powers on with the external battery","zh":"外置电池可以开机"},
+            "help":{"en":"Switch the speaker on with the mains cable unplugged. It must start up fully on the external battery alone.",
+                    "zh":"在不接市电的情况下开机。仅靠外置电池应能完整启动。"}},
+           {"id":"usb_play","code":"BAT-004","label":{"en":"Plays from USB on the external battery at maximum volume","zh":"外置电池供电时可最大音量播放 U 盘"},
+            "help":{"en":"Insert the USB drive and take the volume to maximum. Hold it there for at least a minute. The sound must not cut out or distort, the speaker must not switch off or restart, and the external battery must not shut down under the load.",
+                    "zh":"插入 U 盘并将音量调到最大，持续至少一分钟。声音不应中断或失真，音箱不应关机或重启，外置电池也不应因大电流而保护关断。"}},
+           {"id":"ac_with_battery","code":"BAT-005","label":{"en":"AC cable connected with the external battery, at maximum volume","zh":"外置电池接入时连接 AC 电源并最大音量播放"},
+            "help":{"en":"With the external battery still powering the speaker and music playing, plug in the AC power cable and take the volume to maximum. The speaker must keep playing without cutting out, resetting or losing the source; the charging indicator must appear; and neither the battery nor the AC input must trip. Check the connector and the battery for heat after a minute.",
+                    "zh":"在外置电池继续供电且正在播放的状态下，接入 AC 电源线并将音量调到最大。音箱应持续播放，不中断、不重启、不丢失音源；充电指示应出现；电池与 AC 输入均不应保护断电。一分钟后检查接头和电池是否发烫。"}},
+           {"id":"reassemble","code":"BAT-007","label":{"en":"Internal battery reconnected and speaker closed","zh":"内置电池已复原、箱体已装回"},
+            "help":{"en":"Reconnect the internal battery, set the switch back to internal and close the speaker. Confirm it still works before finishing.",
+                    "zh":"重新接上内置电池，将开关拨回内置，并装回箱体。确认恢复后仍能正常工作再结束。"}}]},
+
+        {"id":"INTERNAL","optional":true,"type":"photos","no_na":true,
+         "label":{"en":"INTERNAL PARTS","zh":"内部部件"},
+         "steps":[
+           {"en":"Remove the screws and open the speaker carefully","zh":"拆下螺丝，小心打开箱体"},
+           {"en":"Photograph each component from several angles","zh":"每个部件从多个角度拍摄"},
+           {"en":"Take a close-up of each component's label: brand, model and part number","zh":"拍摄每个部件标签特写：品牌、型号和料号"},
+           {"en":"For the FM antenna, show its full routing and fixing point","zh":"收音天线需拍出完整走线和固定位置"},
+           {"en":"Mark N/A anything this reference does not include","zh":"本型号不包含的项目请标记为 N/A"}],
+         "points":[
+           {"id":"woofer_front","label":{"en":"Woofer — front","zh":"低音单元 — 正面"},
+            "help":{"en":"The cone and surround, seen from the front. Look for tears, glue marks or a misaligned dust cap.",
+                    "zh":"正面拍摄振膜和折环，注意是否有破损、溢胶或防尘帽偏位。"}},
+           {"id":"woofer_back","label":{"en":"Woofer — back","zh":"低音单元 — 背面"},
+            "help":{"en":"The magnet, with its label readable: brand, size and impedance. This is what proves the specified woofer was used.",
+                    "zh":"拍摄磁钢及其标签：品牌、尺寸和阻抗必须清晰可读。这是核对是否使用指定喇叭的依据。"}},
+           {"id":"tweeter","label":{"en":"Tweeter","zh":"高音单元"}},
+           {"id":"fuente","label":{"en":"Power supply","zh":"电源板"}},
+           {"id":"amp_front","label":{"en":"Amplifier — component side","zh":"功放板 — 元件面"},
+            "help":{"en":"The side carrying the chips. The board reference and the main IC markings must be readable.",
+                    "zh":"拍摄有芯片的一面。板号和主要芯片丝印必须清晰可读。"}},
+           {"id":"amp_back","label":{"en":"Amplifier — solder side","zh":"功放板 — 焊接面"},
+            "help":{"en":"The solder side. Look for cold joints, flux residue, bridges or reworked areas.",
+                    "zh":"拍摄焊接面。注意是否有虚焊、助焊剂残留、连锡或补焊痕迹。"}},
+           {"id":"bateria","label":{"en":"Battery","zh":"电池"},
+            "help":{"en":"Photograph the face that carries the specifications: voltage, capacity in mAh, chemistry and manufacturer. A photo of the wrapped battery without the label proves nothing.",
+                    "zh":"拍摄带规格的一面：电压、容量（mAh）、电芯类型和生产厂家。只拍电池外观而看不到标签没有意义。"}},
+           {"id":"antena_fm","label":{"en":"FM antenna position","zh":"收音天线位置"}}]}
+      ]
+    }
+  }
+};
+/* ==== END GENERATED CONFIG ==== */
+
+/* ---------- interface strings --------------------------------------------- */
+const T = {
+ en:{
+  subtitle:"QUALITY CONTROL", test_id:"Test ID", bad_id:"Unknown code",
+  reference:"Reference",
+  inspection:"Inspection date", po:"Purchase order (PO)", operator:"Operator",
+  select:"— select —", pick_factory:"— enter the test ID first —",
+  start:"START INSPECTION", plan_info:"%n tests · plan v%v",
+  units:"Speakers for simultaneous inspection",
+  units_report:"Speakers inspected",
+  plan_info_n:"%n tests × %u speakers = %tot checks · plan v%v",
+  speaker:"Speaker", speaker_n:"SPEAKER %n", units_tag:"%n speakers",
+  need_photo_n:"At least one photo of the speakers is required, whether they pass or fail. Photos of a defect go in the red box of the point that failed.",
+  by_unit:"Result by speaker",
+  report_note:"A report with the photos is generated at the end.",
+  how_test:"How to perform the test", how_photos:"How to take the photos",
+  remaining:"<b>%n</b> point(s) remaining. Tap a section to open it.",
+  all_done:"All points answered.", checks:"Checks",
+  evidence:"Evidence", required:"— required", optional:"(optional)",
+  photo:"Photo", video:"Video",
+  ask_video:"one clip of a minute or more showing the test being run.",
+  ask_photo:"the process and the tools used: USB drive, SD card, battery, cables, phone.",
+  need_photo:"At least one photo is required, whether the test passes or fails.",
+  notes:"Notes", notes_fail_ph:"What exactly happened? e.g. sound cuts out after 20 seconds",
+  notes_ph:"Observations on this test",
+  next:"NEXT", finish:"FINISH", na:"N/A",
+  go_other:"☰ Go to another test", tests_title:"Tests",
+  index_hint:"Tap any test to go straight to it. What you already marked is kept.",
+  back_to_test:"BACK TO TEST", here:"HERE", photos_tag:"PHOTOS",
+  points_n:"%n point(s)", files_n:"%n file(s)", is_optional:"optional",
+  final:"FINAL RESULT", failures:"Failures:",
+  evidence_total:"%n evidence file(s) · %s",
+  too_big:"The report is very large. If the phone struggles to generate it, delete duplicate photos from the ☰ menu.",
+  download:"⬇ DOWNLOAD", share:"📤 SHARE",
+  view_report:"VIEW REPORT", save_pdf:"SAVE AS PDF", back:"BACK",
+  review:"☰ Review or correct a test",
+  packet:"What gets sent",
+  rm_report_en:"— the full report in English, with the photos.",
+  rm_report_zh:"— the same report in Chinese. Both are always included.",
+  rm_csv:"— one row per point checked, opens in Excel.",
+  rm_photos:"— %n photo(s), named by test.",
+  rm_naming:"File names: evidence of a defect reads TEST_point_FAIL_speakerN; general evidence of a test reads TEST only.",
+  wm_line:"HOKLAN · Official quality document", incomplete:"INCOMPLETE",
+  rm_videos:"— %n video(s) recorded during the inspection.",
+  rm_lost:"%n video(s) could not be included: the page was reloaded after recording them.",
+  rm_pdf:"To get the PDF: open REPORT_EN.html or REPORT_ZH.html in any browser, then Print → Save as PDF.",
+  packet_note:"All of it travels as one ZIP file. Sending three separate attachments is how one of them gets lost.",
+  packing:"Preparing the file… this takes a moment when there are videos.",
+  packet_done:"<b>%f</b> · %s · %n photo(s), %v video(s)",
+  saved_as:"<b>Saved:</b> %f<br>It is in the phone's <b>Downloads</b> folder.",
+  saved_hint:"<br><br>Attach it from Downloads to send it by WeChat or e-mail.",
+  share_fallback:"<br><br>This browser cannot share files directly, so the packet was downloaded instead. Attach it from <b>Downloads</b>.",
+  a_no_share:"This browser can neither share nor download files.\n\nOpen this page in Chrome or Safari — tap the ⋯ menu and choose \"Open in browser\" — and try again.",
+  a_no_download:"This browser cannot download files.\n\nUse SHARE, or open the page in Chrome or Safari.",
+  a_pack_fail:"The packet could not be built:",
+  dl_no:"This browser cannot download files%w. Use <b>SHARE</b>, or open the page in Chrome or Safari.",
+  in_wechat:" (WeChat in-app browser)", in_ios:" (Safari on iPhone)",
+  pdf_how:"Tap the button below, then choose <b>Save as PDF</b> as the destination instead of a printer. The PDF is saved to the phone and opens in any PDF app — Acrobat, WPS, Files — not only in the browser.",
+  save_pdf_btn:"OPEN THE PRINT DIALOG",
+  report_title:"Quality Control Inspection Report",
+  overall:"Overall conclusion", general_info:"GENERAL INFORMATION",
+  inspection_summary:"INSPECTION SUMMARY", remarks:"REMARKS",
+  evidence_sec:"PHOTOGRAPHIC EVIDENCE", conclusion:"CONCLUSION",
+  th_remark:"Remark", plan:"Test plan",
+  remarks_note:"Points recorded as failed during the inspection, in the order they were found.",
+  videos_n:"%n video(s) recorded, held on the phone and not embedded in this report.",
+  concl_fail:"%n point(s) failed. See section III.",
+  concl_pass:"All applicable points passed.",
+  footer_note:"Generated by HOKLAN QC. Photo timestamps come from the phone at the moment of capture.",
+  th_test:"Test", th_point:"Point checked", th_result:"Result", th_code:"Code",
+  ok:"OK", fail:"FAIL", documented:"DOCUMENTED", pending:"PENDING",
+  photographed:"%a of %b items photographed",
+  a_select_factory:"Enter a valid test ID.", a_select_model:"Select the reference.",
+  a_operator:"The operator is required.",
+  a_pending:"%n point(s) still to answer.",
+  a_photo:"Photo missing.\n\nEvery test must be left with evidence, pass or fail.",
+  a_describe:"Describe what happened.\n\nA code with no description is useless for analysis later.",
+  a_missing_photos:"Photo missing for:", a_and_more:"… and %n more",
+  a_mark_na:"Mark N/A anything this reference does not include.",
+  a_resume:"There is an unfinished inspection.\n\nContinue where you left off?",
+  a_lost:"\n\nNOTE: the photos did not fit in the browser's storage and were NOT kept. Your answers were. Retake the photos from the ☰ menu before generating the report.",
+  na_title:"Does not apply to this reference",
+  excel:"EXCEL", open_report:"VIEW REPORT / SAVE PDF",
+  excel_note:"<b>EXCEL</b> exports one row per point checked, ready to filter and pivot. The photos are only in the report.",
+  a_no_csv:"This browser cannot download files. Use VIEW REPORT and save it as PDF.",
+  home:"HOME",
+  a_home:"Go back to the start screen?\n\nThe current inspection will be discarded. Download the report first if you have not.",
+  how_to:"How to check this",
+  open_fails:"%n failed point(s) still need a photo and a note.",
+  fail_evidence:"EVIDENCE REQUIRED FOR THIS DEFECT",
+  fail_required:"Attach at least one photo or video and describe what happened. You cannot continue without both.",
+  fail_ready:"✓ Evidence complete. Carry on with the remaining points.",
+  n_photos:"%n photo(s)", n_videos:"%n video(s)",
+  a_fail_evidence:"These failed points still need a photo and a description:",
+  wipe:"Clear stored data",
+  a_wipe:"Clear all stored data?\n\nAnswers, photos and any unfinished draft will be deleted, so the next report starts clean. Reports you already downloaded are not affected.",
+  a_wiped:"Data cleared. Ready for a new inspection."
+ },
+ zh:{
+  subtitle:"质量控制", test_id:"测试编号", bad_id:"编号无效",
+  reference:"型号",
+  inspection:"检验日期", po:"订单号 (PO)", operator:"检验员",
+  select:"— 请选择 —", pick_factory:"— 请先输入测试编号 —",
+  start:"开始检验", plan_info:"%n 项测试 · 方案 v%v",
+  units:"同时检验的音箱数量",
+  units_report:"已检验音箱数量",
+  plan_info_n:"%n 项测试 × %u 台音箱 = 共 %tot 项 · 方案 v%v",
+  speaker:"音箱", speaker_n:"音箱 %n", units_tag:"%n 台音箱",
+  need_photo_n:"无论合格与否，本项至少需要一张音箱照片。具体不良的照片请放在该不良项的红色方框内。",
+  by_unit:"各音箱结果",
+  report_note:"检验结束后将生成含照片的报告。",
+  how_test:"测试步骤", how_photos:"拍照要求",
+  remaining:"还有 <b>%n</b> 项未完成。点击分组展开。",
+  all_done:"所有项目已完成。", checks:"检查项",
+  evidence:"证据照片", required:"— 必填", optional:"（选填）",
+  photo:"拍照", video:"录像",
+  ask_video:"一段一分钟以上的视频，拍摄测试的实际操作过程。",
+  ask_photo:"拍摄操作过程和所用工具：U 盘、SD 卡、电池、线材、手机。",
+  need_photo:"无论合格与否，本项至少需要一张照片。",
+  notes:"备注", notes_fail_ph:"具体发生了什么？例如：播放 20 秒后声音中断",
+  notes_ph:"关于本项测试的说明",
+  next:"下一项", finish:"完成", na:"不适用",
+  go_other:"☰ 跳转到其他测试", tests_title:"测试项目",
+  index_hint:"点击任一测试直接跳转，已填写的内容会保留。",
+  back_to_test:"返回测试", here:"当前", photos_tag:"照片",
+  points_n:"%n 个检查项", files_n:"%n 个文件", is_optional:"选做",
+  final:"最终结果", failures:"不合格项：",
+  evidence_total:"%n 个证据文件 · %s",
+  too_big:"报告文件很大。如果手机生成时卡顿，请从 ☰ 菜单删除重复照片。",
+  download:"⬇ 下载", share:"📤 分享",
+  view_report:"查看报告", save_pdf:"另存为 PDF", back:"返回",
+  review:"☰ 检查或修改某项测试",
+  packet:"发送内容",
+  rm_report_en:"— 英文版完整报告，含照片。",
+  rm_report_zh:"— 同一份报告的中文版。两个版本始终同时提供。",
+  rm_csv:"— 每个检查项一行，可用 Excel 打开。",
+  rm_photos:"— %n 张照片，按测试项命名。",
+  rm_naming:"命名规则：不良项为 测试_检查项_FAIL；测试的整体证据仅用 测试 名称。",
+  wm_line:"HOKLAN · 官方质量文件", incomplete:"未完成",
+  rm_videos:"— 检验过程中录制的 %n 段视频。",
+  rm_lost:"有 %n 段视频未能打包：录制后页面被重新加载。",
+  rm_pdf:"获取 PDF：用任意浏览器打开 REPORT_EN.html 或 REPORT_ZH.html，然后选择 打印 → 另存为 PDF。",
+  packet_note:"以上内容打包为一个 ZIP 文件一起发送。分成三个附件发送，往往会漏掉其中一个。",
+  packing:"正在生成文件……包含视频时需要稍等片刻。",
+  packet_done:"<b>%f</b> · %s · %n 张照片，%v 段视频",
+  saved_as:"<b>已保存：</b>%f<br>文件在手机的<b>下载</b>文件夹中。",
+  saved_hint:"<br><br>请从“下载”文件夹中选取该文件，通过微信或邮件发送。",
+  share_fallback:"<br><br>当前浏览器无法直接分享文件，已改为下载。请从<b>下载</b>文件夹中选取并发送。",
+  a_no_share:"当前浏览器既无法分享也无法下载文件。\n\n请在 Chrome 或 Safari 中打开本页面（点击 ⋯ 菜单，选择“在浏览器中打开”），然后重试。",
+  a_no_download:"当前浏览器无法下载文件。\n\n请使用“分享”，或在 Chrome、Safari 中打开本页面。",
+  a_pack_fail:"打包失败：",
+  dl_no:"当前浏览器无法下载文件%w。请使用<b>分享</b>，或在 Chrome、Safari 中打开本页面。",
+  in_wechat:"（微信内置浏览器）", in_ios:"（iPhone Safari）",
+  pdf_how:"点击下方按钮，在打印目标中选择<b>另存为 PDF</b>，而不是选择打印机。PDF 会保存到手机，可用任意 PDF 应用打开（Acrobat、WPS、文件管理），不限于浏览器。",
+  save_pdf_btn:"打开打印对话框",
+  report_title:"质量检验报告",
+  overall:"总体结论", general_info:"基本信息",
+  inspection_summary:"检验汇总", remarks:"不合格项说明",
+  evidence_sec:"照片证据", conclusion:"结论",
+  th_remark:"备注编号", plan:"测试方案",
+  remarks_note:"检验过程中判定为不合格的项目，按发现顺序排列。",
+  videos_n:"已录制 %n 个视频，保存在手机中，未嵌入本报告。",
+  concl_fail:"共 %n 项不合格，详见第 III 节。",
+  concl_pass:"所有适用项目均合格。",
+  footer_note:"由 HOKLAN QC 生成。照片时间戳取自拍摄时手机的时间。",
+  th_test:"测试", th_point:"检查项", th_result:"结果", th_code:"代码",
+  ok:"合格", fail:"不合格", documented:"已记录", pending:"未完成",
+  photographed:"已拍摄 %a / %b 项",
+  a_select_factory:"请输入有效的测试编号。", a_select_model:"请选择型号。",
+  a_operator:"请填写检验员。",
+  a_pending:"还有 %n 项未回答。",
+  a_photo:"缺少照片。\n\n无论合格与否，每项测试都必须留下照片证据。",
+  a_describe:"请填写说明。\n\n只有代码没有说明，后续无法分析。",
+  a_missing_photos:"以下项目缺少照片：", a_and_more:"…… 还有 %n 项",
+  a_mark_na:"本型号不包含的项目请标记为“不适用”。",
+  a_resume:"有一次未完成的检验。\n\n是否从上次中断处继续？",
+  a_lost:"\n\n注意：照片超出浏览器存储上限，未能保存；回答已保留。生成报告前请从 ☰ 菜单重新拍照。",
+  na_title:"本型号不适用",
+  excel:"EXCEL", open_report:"查看报告 / 保存 PDF",
+  excel_note:"<b>EXCEL</b> 导出每个检查项一行，可直接筛选和透视分析。照片仅包含在报告中。",
+  a_no_csv:"当前浏览器无法下载文件。请使用“查看报告”并另存为 PDF。",
+  home:"首页",
+  a_home:"返回首页？\n\n当前检验记录将被清除。如果还没有下载报告，请先下载。",
+  how_to:"如何检查",
+  open_fails:"仍有 %n 个不良项缺少照片和说明。",
+  fail_evidence:"此不良项必须提供证据",
+  fail_required:"请至少上传一张照片或一段视频，并说明问题。两项缺一不可，否则无法继续。",
+  fail_ready:"✓ 证据已完整，可继续检查其余项目。",
+  n_photos:"%n 张照片", n_videos:"%n 段视频",
+  a_fail_evidence:"以下不良项仍缺少照片或说明：",
+  wipe:"清除已保存的数据",
+  a_wipe:"清除所有已保存的数据？\n\n所有回答、照片和未完成的记录都会被删除，下一份报告将从空白开始。已经下载的报告不受影响。",
+  a_wiped:"数据已清除，可以开始新的检验。"
+ }
+};
+
+let LANG = "en";
+try{ LANG = localStorage.getItem("hoklan_qc_lang") || "en"; }catch(e){}
+
+const tr = k => (T[LANG] && T[LANG][k]) || T.en[k] || k;
+// Localised value of a {en, zh} pair. Plain strings pass through unchanged.
+const L = v => !v ? "" : (typeof v === "string" ? v : (v[LANG] || v.en || ""));
+const fmt = (k, map) => {
+  let s = tr(k);
+  // Longest placeholder first, or %t would eat the start of %tot.
+  Object.keys(map || {}).sort((a,b) => b.length - a.length)
+    .forEach(key => { s = s.split("%" + key).join(map[key]); });
+  return s;
+};
+
+function setLang(code){
+  LANG = code;
+  try{ localStorage.setItem("hoklan_qc_lang", code); }catch(e){}
+  document.documentElement.lang = code === "zh" ? "zh-CN" : "en";
+  render();
+}
+
+/* ---------- state --------------------------------------------------------- */
+const S = {
+  screen:"setup",
+  idDigits:"",   // what the operator typed
+  testId:"",     // the completed code — this is what gets recorded
+  factory:"",    // internal key, only to filter references; never displayed
+  model:"", po:"", operator:"",
+  units:1,       // how many speakers are on the bench
+  data:[[]],     // data[speaker][testIndex] — every speaker's own answers
+  index:0, open:{}, startedAt:null
+};
+
+/* The checklist is walked once and each question is answered for every speaker
+   on the bench, so `data` is read by speaker index everywhere; there is no
+   "current speaker". Test-level evidence and notes are kept on speaker 1,
+   because they document the test rather than any one unit. */
+const MAX_UNITS = 5;
+
+const app = document.getElementById("app");
+const actions = document.getElementById("actions");
+
+const esc = s => String(s === null || s === undefined ? "" : s)
+  .replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const UA = navigator.userAgent || "";
+const IS_WECHAT = /MicroMessenger/i.test(UA);
+const IS_IOS = /iPad|iPhone|iPod/.test(UA) ||
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const CAN_DOWNLOAD = !IS_WECHAT && !IS_IOS &&
+  "download" in document.createElement("a");
+
+const plan = () => CONFIG.plans["default"];
+
+/* Not every reference carries every test. Two filters, both optional:
+     "only":["HK-BRA210B1"]   — this reference and no other
+     "skip_factory":["RHY"]   — everyone except these factories
+   They apply to whole tests and to single points alike. Filtering the plan is
+   better than asking the operator to mark N/A: a speaker that has no external
+   battery should not carry a row saying its battery was "not applicable". */
+function fits(o){
+  if(o.only && o.only.indexOf(S.model) < 0) return false;
+  if(o.skip_factory && o.skip_factory.indexOf(S.factory) >= 0) return false;
+  return true;
+}
+const tests = () => plan().tests.filter(fits);
+const current = () => tests()[S.index];
+const modelsOf = f => Object.keys(CONFIG.models)
+  .filter(m => CONFIG.models[m] === f).sort();
+const pointsOf = t => (t.points || []).filter(fits);
+const realPoints = t => pointsOf(t).filter(p => p.id);
+const ANSWERED = ["PASS","FAIL","NA"];
+
+function codeText(code){
+  const e = CONFIG.failure_codes[code];
+  return e ? L(e) : "";
+}
+
+function inspectionDate(ms){
+  const d = new Date(ms || Date.now());
+  const p = n => String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ` +
+         `${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function sectionsOf(t){
+  const out = []; let cur = null;
+  pointsOf(t).forEach(p => {
+    if(p.section){
+      cur = {name:L(p.section), help:L(p.help), points:[]}; out.push(cur); return;
+    }
+    if(!cur){ cur = {name:"", help:"", points:[]}; out.push(cur); }
+    cur.points.push(p);
+  });
+  return out.filter(s => s.points.length);
+}
+
+/* Per-section instructions, folded away behind a + . The old single block of
+   steps at the top of the test was read once and then scrolled past; the help
+   an operator actually needs is the one attached to the group in front of
+   them. */
+function toggleHelp(name){
+  const k = "h|" + secKey(name);
+  S.open[k] = !S.open[k];
+  render();
+}
+const helpOpen = name => !!S.open["h|" + secKey(name)];
+
+/* Evidence box for a failed point. Default: open while something is missing,
+   folded once photo and note are both there. Storing the flag only when the
+   operator overrides it means the box goes back to folding itself as soon as
+   they move on. */
+const failKey = (u, id) => "f|" + S.index + "|" + u + "|" + id;
+const failBoxOpen = (u, id, ok) => {
+  const e = S.open[failKey(u, id)];
+  return e !== undefined ? e : !ok;
+};
+function toggleFail(u, id, ok){
+  S.open[failKey(u, id)] = !failBoxOpen(u, id, ok);
+  render();
+}
+
+/* Called when the operator leaves the note field — on a short delay, so that a
+   tap on the camera button lands on the live button instead of on an element
+   this render has already replaced. Folds only when nothing is missing. */
+function closeFail(u, id){
+  const t = current();
+  if(!t || t.type === "photos") return;
+  const p = realPoints(t).find(x => x.id === id);
+  if(!p || failOpen(row(u), p)) return;
+  if(!document.getElementById("pfw_" + u + "_" + id)) return;   // already folded
+  delete S.open[failKey(u, id)];
+  collapseIfDone(id);
+  render();
+}
+function evSummary(shots, note){
+  const ph = shots.filter(m => m.kind === "photo").length;
+  const vd = shots.length - ph;
+  const bits = [];
+  if(ph) bits.push(fmt("n_photos",{n:ph}));
+  if(vd) bits.push(fmt("n_videos",{n:vd}));
+  const txt = note.trim().replace(/\s+/g," ");
+  bits.push(txt.length > 42 ? txt.slice(0,42) + "…" : txt);
+  return bits.join(" · ");
+}
+
+function togglePointHelp(id){
+  const k = "p|" + S.index + "|" + id;
+  S.open[k] = !S.open[k];
+  render();
+}
+const pointHelpOpen = id => !!S.open["p|" + S.index + "|" + id];
+
+const secKey = name => S.index + "|" + name;
+function sectionOpen(name, answered, total){
+  const e = S.open[secKey(name)];
+  return e !== undefined ? e : answered < total;
+}
+function toggleSection(name, answered, total){
+  S.open[secKey(name)] = !sectionOpen(name, answered, total);
+  render();
+}
+
+/* ---------- persistence --------------------------------------------------- */
+const DRAFT_KEY = "hoklan_qc_draft";
+
+function withoutMedia(state){
+  return Object.assign({}, state, {
+    mediaDropped:true,
+    data: (state.data || []).map(unit =>
+      (unit || []).map(r => r ? Object.assign({}, r, {media:[]}) : r))
+  });
+}
+function save(){
+  try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(S)); return; }catch(e){}
+  try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(withoutMedia(S))); }catch(e){}
+}
+function restore(){
+  try{
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if(!raw) return false;
+    const d = JSON.parse(raw);
+    if(d && (d.screen === "test" || d.screen === "index") && d.model){
+      // A draft written before speakers existed carries `results`, not `data`,
+      // and an intermediate one may carry a flat `data`. Reading either as
+      // speaker 1 keeps the work instead of throwing it away.
+      if(!Array.isArray(d.data)) d.data = [d.results || []];
+      if(d.data.length && !Array.isArray(d.data[0])) d.data = [d.data];
+      delete d.results;
+      Object.assign(S, d);
+
+      S.units = Math.min(MAX_UNITS, Math.max(1, S.units || S.data.length || 1));
+      S.index = Math.min(Math.max(0, S.index|0), tests().length - 1);
+      S.open = S.open || {};
+
+      // A restored row can be missing anything the browser dropped when it hit
+      // the storage quota. Filling the gaps here keeps every later `r.media`
+      // and `r.points` from having to guard itself.
+      S.data = allUnits().map(u => (S.data[u] || []).map(r => r && Object.assign(
+        {media:[], points:{}, notes:{}, comment:""}, r)));
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+function clearDraft(){ try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
+
+function evidenceBytes(){
+  let total = 0;
+  allUnits().forEach(u => unitRows(u).forEach(r => {
+    if(r) (r.media || []).forEach(m => {
+      // A photo is a data URL, so its length is its weight. A video is an
+      // object URL — a short string — and only `size` says what it costs.
+      // Measuring both by url length reported a 40 MB clip as 60 bytes.
+      total += m.kind === "video" ? (m.size || 0)
+             : m.url ? m.url.length * 0.75 : (m.size || 0);
+    });
+  }));
+  return total;
+}
+const humanSize = b => b > 1048576 ? (b/1048576).toFixed(1)+" MB"
+                                   : Math.round(b/1024)+" KB";
+
+/* ---------- media --------------------------------------------------------- */
+const MAX_PHOTO_PX = 1280, JPEG_QUALITY = 0.7;
+
+function shrink(file){
+  return new Promise(resolve => {
+    if(!file.type.startsWith("image/")){
+      resolve({kind:"video", name:file.name, size:file.size, file,
+               url:URL.createObjectURL(file)});
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, MAX_PHOTO_PX / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width*scale); c.height = Math.round(img.height*scale);
+        c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+        resolve({kind:"photo", name:file.name, size:file.size,
+                 url:c.toDataURL("image/jpeg", JPEG_QUALITY)});
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* `u` is the speaker the picture belongs to. Evidence of a defect is filed
+   against the speaker that has it; general evidence of the test goes on
+   speaker 1, which is where the report looks for it. */
+async function addMedia(input, u, slot){
+  const r = row(u || 0);
+  const files = Array.prototype.slice.call(input.files);
+  for(let i=0;i<files.length;i++){
+    const m = await shrink(files[i]);
+    m.uid = String(Date.now())+"-"+i+"-"+Math.random().toString(36).slice(2,7);
+    m.at = Date.now();        // stamped on the photo, as inspection reports do
+    if(slot) m.slot = slot;
+    r.media.push(m);
+  }
+  input.value = "";
+  if(slot) collapseIfDone(slot);
+  render(); save();
+}
+const shotsFor = (r, slot) => r.media.filter(m => m.slot === slot);
+
+function dropMedia(uid){
+  // The photo belongs to some speaker's record for this test; which one is not
+  // worth passing through the DOM, so it is looked up.
+  for(const u of allUnits()){
+    const r = row(u);
+    const i = r.media.findIndex(m => m.uid === uid);
+    if(i >= 0){ r.media.splice(i,1); break; }
+  }
+  render(); save();
+}
+
+/* ---------- answers -------------------------------------------------------
+   The operator has all the speakers on the bench at once, so the checklist is
+   walked once and every point is answered for each speaker in turn. One row
+   per speaker under the same question. */
+function blank(i){
+  const t = tests()[i === undefined ? S.index : i];
+  return {id:t.id, label:L(t.label), verdict:null, code:null, comment:"",
+          media:[], points:{}, notes:{}, startedAt:Date.now()};
+}
+
+/* The record of one speaker for one test, created on demand. */
+function row(u, i){
+  const idx = i === undefined ? S.index : i;
+  const unit = S.data[u] = S.data[u] || [];
+  return unit[idx] || (unit[idx] = blank(idx));
+}
+
+function setPoint(u, pointId, value){
+  const r = row(u);
+  const next = (r.points[pointId] === value) ? null : value;
+  r.points[pointId] = next;
+
+  // Answering a point on the last speaker folds its instructions away: they
+  // were needed to decide, not afterwards.
+  if(next && allUnits().every(x => ANSWERED.indexOf(row(x).points[pointId]) >= 0))
+    S.open["p|" + S.index + "|" + pointId] = false;
+
+  if(next) collapseIfDone(pointId);
+
+  render(); save();
+}
+
+/* Once every point of a section is answered for every speaker, the section
+   folds itself up, so what stays on screen is what is still pending. Deleting
+   the explicit flag (rather than setting it to false) hands the section back to
+   sectionOpen's default rule — otherwise a section the operator had opened by
+   hand would stay frozen open forever. A section holding a failure with no
+   evidence yet stays open: folding it would hide the box we are demanding. */
+function collapseIfDone(pointId){
+  const sec = sectionsOf(current()).find(s => s.points.some(p => p.id === pointId));
+  if(!sec) return;
+  const done = allUnits().every(u =>
+    sec.points.every(p => ANSWERED.indexOf(row(u).points[p.id]) >= 0));
+  const pending = allUnits().some(u =>
+    sec.points.some(p => failOpen(row(u), p)));
+  if(done && !pending) delete S.open[secKey(sec.name)];
+}
+
+function setNote(u, pointId, text){
+  const r = row(u);
+  r.notes = r.notes || {};
+  r.notes[pointId] = text;      // no re-render: it would fight the keyboard
+  syncFail(u, pointId);
+  save();
+}
+
+/* Counts run across every speaker: a point is done when all of them answered. */
+function pendingCount(){
+  let n = 0;
+  realPoints(current()).forEach(p => allUnits().forEach(u => {
+    if(ANSWERED.indexOf(row(u).points[p.id]) < 0) n++;
+  }));
+  return n;
+}
+const pointsAnswered = () => pendingCount() === 0;
+
+function nextTest(){
+  const t = current();
+  const comment = (document.getElementById("comment")||{}).value || "";
+
+  if(t.type === "photos"){
+    // Photo tests document the shipment, not one speaker: a single set of
+    // pictures covers the lot, so they are recorded once, on speaker 1.
+    const r = row(0);
+    const missing = realPoints(t).filter(p =>
+      shotsFor(r,p.id).length === 0 && (t.no_na || r.points[p.id] !== "NA"));
+    if(missing.length){
+      alert(tr("a_missing_photos") + "\n\n" +
+        missing.slice(0,6).map(p => "· " + L(p.label)).join("\n") +
+        (missing.length>6 ? "\n"+fmt("a_and_more",{n:missing.length-6}) : "") +
+        "\n\n" + tr("a_mark_na"));
+      return;
+    }
+    allUnits().forEach(u => {
+      const ru = row(u);
+      ru.comment = comment;
+      ru.seconds = Math.round((Date.now()-ru.startedAt)/1000);
+      ru.verdict = "DOC"; ru.code = null; ru.failedPoints = [];
+    });
+    advance(); return;
+  }
+
+  const pending = pendingCount();
+  if(pending){ alert(fmt("a_pending",{n:pending})); return; }
+
+  // Every failed point must carry its own evidence and its own description.
+  // A defect recorded with neither is a code nobody can act on months later.
+  const gaps = [];
+  allUnits().forEach(u => realPoints(t).forEach(p => {
+    if(failOpen(row(u), p))
+      gaps.push((S.units>1 ? fmt("speaker_n",{n:u+1}) + " · " : "") + L(p.label));
+  }));
+  if(gaps.length){
+    alert(tr("a_fail_evidence") + "\n\n" +
+      gaps.slice(0,6).map(s => "· " + s).join("\n") +
+      (gaps.length > 6 ? "\n" + fmt("a_and_more",{n:gaps.length-6}) : ""));
+    return;
+  }
+
+  if(row(0).media.filter(m => !m.slot).length === 0){ alert(tr("a_photo")); return; }
+
+  allUnits().forEach(u => {
+    const r = row(u);
+    r.comment = comment;
+    r.seconds = Math.round((Date.now()-r.startedAt)/1000);
+    const failed = realPoints(t).filter(p => r.points[p.id] === "FAIL");
+    const applicable = realPoints(t).filter(p => r.points[p.id] !== "NA");
+    r.verdict = failed.length ? "FAIL" : applicable.length ? "PASS" : "N/A";
+    r.code = failed.length ? failed[0].code : null;
+    r.failedPoints = failed.map(p => ({
+      code: p.code, label: L(p.label),
+      note: (r.notes && r.notes[p.id]) || ""
+    }));
+  });
+
+  advance();
+}
+
+function advance(){
+  S.index++;
+  if(S.index >= tests().length) S.screen = "done";
+  window.scrollTo(0,0);
+  render(); save();
+}
+
+function skipTest(){
+  allUnits().forEach(u => {
+    const r = row(u);
+    r.verdict = "N/A";
+    r.seconds = Math.round((Date.now()-r.startedAt)/1000);
+  });
+  advance();
+}
+function prevTest(){
+  if(S.index > 0){ S.index--; window.scrollTo(0,0); render(); save(); }
+}
+
+/* One speaker's verdict. A speaker whose checklist is not finished is
+   INCOMPLETE, never PASS — an empty list must not read as "everything fine". */
+function unitVerdict(rows){
+  const rs = rows || [];
+  // Walked by index, never with .some/.every: jumping straight to test 11 from
+  // the index screen leaves 0-9 as *holes*, and array methods skip holes. That
+  // read as "no unanswered test found" and reported a green PASS on an
+  // inspection where ten tests had never been opened.
+  const n = tests().length;
+  let missing = false;
+  for(let i = 0; i < n; i++){
+    const r = rs[i];
+    if(r && r.verdict === "FAIL") return "FAIL";
+    if(!r || !r.verdict) missing = true;
+  }
+  return missing ? "INCOMPLETE" : "PASS";
+}
+/* The verdict is stored as a key, never as text: the report is issued in both
+   languages from the same answers, so it has to be translated at print time. */
+const verdictText = v => v === "PASS" ? tr("ok")
+  : v === "FAIL" ? tr("fail")
+  : v === "INCOMPLETE" ? tr("incomplete")
+  : v === "DOC" ? tr("documented") : (v || tr("pending"));
+
+const unitRows = i => S.data[i] || [];
+const allUnits = () => Array.from({length:S.units}, (_,i) => i);
+
+/* Verdict of the whole inspection: one failed speaker fails the lot. */
+function finalVerdict(){
+  const vs = allUnits().map(i => unitVerdict(unitRows(i)));
+  if(vs.indexOf("FAIL") >= 0) return "FAIL";
+  if(vs.indexOf("INCOMPLETE") >= 0) return "INCOMPLETE";
+  return "PASS";
+}
+
+/* ---------- report -------------------------------------------------------- */
+function fileName(){
+  const clean = s => String(s||"").replace(/[^A-Za-z0-9._-]+/g,"-");
+  return `QC_${clean(S.testId)}_${clean(S.model)}_${stamp()}.html`;
+}
+function stamp(){
+  const d = new Date(), p = n => String(n).padStart(2,"0");
+  return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;
+}
+
+/* Report layout follows the pre-shipment inspection format the client already
+   receives from third-party inspectors: banner repeated on every page, numbered
+   sections, a summary table that fits on the first page, numbered findings
+   (R1, R2, …) with their evidence, and a conclusion page. Someone used to those
+   reports can read this one without being told how. */
+/* The HOKLAN mark, drawn rather than pasted: an SVG prints sharp at any size,
+   weighs a few hundred bytes instead of a photograph, and has no black
+   background to punch a hole in a white page. */
+const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96">
+  <g fill="#0f3f6b">
+    <text x="0" y="70" font-family="Helvetica,Arial,sans-serif"
+      font-size="62" font-weight="300" letter-spacing="9">H</text>
+    <text x="150" y="70" font-family="Helvetica,Arial,sans-serif"
+      font-size="62" font-weight="300" letter-spacing="9">KLAN</text>
+  </g>
+  <g transform="translate(105,42)">
+    <circle r="26" fill="none" stroke="#0f3f6b" stroke-width="6"/>
+    <circle r="8" fill="#0f3f6b"/>
+    <path d="M -26 0 A 26 26 0 0 1 -8 -24" fill="none" stroke="#fff"
+      stroke-width="9" stroke-linecap="round"/>
+  </g>
+</svg>`;
+const LOGO_URL = "data:image/svg+xml;charset=utf-8," +
+  encodeURIComponent(LOGO_SVG.replace(/\s+/g," "));
+
+function watermark(){
+  const line = tr("wm_line");
+  return `<div class="wm" aria-hidden="true">
+    <img class="wm-mark" src="${LOGO_URL}" alt="">
+    <div class="wm-rows">${
+      new Array(28).fill(0).map(()=>`<span>${esc(line)}</span>`).join("")}</div>
+  </div>`;
+}
+
+function shotStamp(ms){
+  if(!ms) return "";
+  const d = new Date(ms), p = n => String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ` +
+         `${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function buildFindings(){
+  const out = [];
+  allUnits().forEach(u => unitRows(u).forEach((r,i)=>{
+    if(!r || r.verdict !== "FAIL") return;
+    const t = tests()[i];
+    realPoints(t).forEach(p => {
+      if(r.points[p.id] !== "FAIL") return;
+      // Only the evidence captured on the point itself. Falling back to the
+      // test-level photos would print the same picture under every finding of
+      // that test, and the reader could not tell which defect is which.
+      const note = ((r.notes && r.notes[p.id]) || "").trim();
+      out.push({
+        // The plan's label, not the one stored when the operator answered:
+        // the report is issued in both languages, and a stored label would
+        // print the answering language inside the other one's report.
+        unit: u, test: L(t.label), point: L(p.label), code: p.code,
+        desc: codeText(p.code), note: note || r.comment,
+        media: shotsFor(r, p.id).filter(m => m.kind === "photo")
+      });
+    });
+  }));
+  return out;
+}
+
+function reportHtml(){
+  const v = finalVerdict();
+  const colour = v === "PASS" ? "#17743a" : v === "FAIL" ? "#b3261e" : "#9a6b00";
+  const findings = buildFindings();
+  let shot = 0;   // running photo number across the whole report
+
+  const banner = `<div class="bnr">
+    <div class="bnr-l"><b>HOKLAN</b><span>QC</span></div>
+    <div class="bnr-c"><b>${tr("report_title")}</b>
+      <span>${tr("test_id")}: ${esc(S.testId)} &nbsp;|&nbsp; ${esc(inspectionDate(S.startedAt))}</span></div>
+    <div class="bnr-r"><span>${tr("overall")}</span><b style="color:${colour}">${verdictText(v)}</b></div>
+  </div>`;
+
+  let h = `<!DOCTYPE html><html lang="${LANG==="zh"?"zh-CN":"en"}"><head><meta charset="utf-8">
+<title>QC ${esc(S.testId)} ${esc(S.model)}</title><style>
+*{box-sizing:border-box}
+body{font-family:"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+  color:#16212e;max-width:900px;margin:0 auto;padding:14px;font-size:11pt}
+.bnr{display:flex;align-items:stretch;border:1px solid #b9c6d4;margin-bottom:14px}
+.bnr-l{padding:8px 14px;border-right:1px solid #b9c6d4;display:flex;
+  align-items:center;gap:6px}
+.bnr-l b{font-size:15pt;letter-spacing:1px;color:#16212e}
+.bnr-l span{font-size:9pt;font-weight:700;color:#fff;background:#0f3f6b;
+  padding:2px 6px;border-radius:3px;margin-left:6px}
+.bnr-c{flex:1;padding:8px 14px;text-align:center;border-right:1px solid #b9c6d4}
+.bnr-c b{display:block;font-size:11pt;color:#16212e}
+.bnr-c span{font-size:8.5pt;color:#5a6b7d}
+.bnr-r{padding:8px 14px;text-align:center;min-width:130px}
+.bnr-r span{display:block;font-size:8pt;color:#5a6b7d}
+.bnr-r b{font-size:12pt}
+.sec{display:flex;align-items:center;background:#eef2f6;border:1px solid #b9c6d4;
+  margin:16px 0 0}
+.sec i{font-style:normal;background:#0f3f6b;color:#fff;font-weight:700;
+  padding:6px 11px;font-size:10pt;min-width:34px;text-align:center}
+.sec b{padding:6px 12px;font-size:10.5pt;letter-spacing:1px;color:#16212e}
+table{width:100%;border-collapse:collapse;font-size:9.5pt}
+th{background:#eef2f6;padding:6px 8px;text-align:left;border:1px solid #b9c6d4;
+  font-size:9pt;color:#33475b}
+td{padding:6px 8px;border:1px solid #d5dde6;vertical-align:top}
+/* Field name in bold, value in plain text: the eye finds the field it is
+   looking for and then reads the answer, instead of the other way round. */
+td.k{background:#f7f9fb;width:170px;color:#33475b;font-weight:700}
+td.v{font-weight:400}
+.c{text-align:center}
+.p{color:#17743a;font-weight:700}
+.f{color:#b3261e;font-weight:700}
+.na{color:#7a8a99}
+.grid{display:flex;flex-wrap:wrap;margin:0 -4px}
+.cell{width:50%;padding:4px;page-break-inside:avoid;break-inside:avoid}
+.cell .ph{position:relative;border:1px solid #c9d6e2}
+.cell img{width:100%;display:block}
+.cell .ts{position:absolute;right:4px;bottom:4px;background:rgba(0,0,0,.55);
+  color:#fff;font-size:7.5pt;padding:1px 5px;border-radius:2px}
+.cell .cap{font-size:8.5pt;color:#33475b;padding:4px 2px 0;text-align:center}
+.find{border:1px solid #b9c6d4;margin-top:10px;page-break-inside:avoid}
+.find-h{display:flex;background:#fdf1e6;border-bottom:1px solid #b9c6d4}
+.find-h i{font-style:normal;background:#e8720c;color:#fff;font-weight:700;
+  padding:6px 10px;font-size:9.5pt}
+.find-h span{flex:1;padding:6px 10px;font-size:9.5pt}
+.find-h em{font-style:normal;padding:6px 10px;font-weight:700;color:#b3261e;
+  font-size:9.5pt}
+.find-b{padding:8px 10px}
+.concl{border:2px solid ${colour};padding:24px;text-align:center;margin-top:10px}
+.concl b{display:block;font-size:26pt;color:${colour};letter-spacing:3px}
+.concl span{font-size:9.5pt;color:#5a6b7d}
+.note{font-size:8.5pt;color:#5a6b7d;margin-top:6px}
+
+/* Watermark. Fixed rather than tiled on the body, because a fixed element is
+   what browsers repeat on every printed page; a background image would only
+   appear on the first one. It sits under the content, never over it: a
+   watermark that competes with a defect photo is worse than none. */
+.wm{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;
+  pointer-events:none;overflow:hidden;
+  display:flex;align-items:center;justify-content:center}
+.wm-mark{width:46%;max-width:360px;opacity:.07}
+.wm-rows{position:absolute;left:-25%;top:-25%;width:150%;height:150%;
+  transform:rotate(-32deg);display:flex;flex-wrap:wrap;
+  align-content:space-around;justify-content:space-around;opacity:.055}
+.wm-rows span{white-space:nowrap;padding:16px 30px;font-size:12pt;
+  font-weight:700;letter-spacing:3.5px;color:#0f3f6b;text-transform:uppercase}
+/* Two selectors on purpose: in the exported file the report is made of body
+   children, while the in-app preview nests the same markup inside #report. */
+body > *:not(.wm), #report > *:not(.wm){position:relative;z-index:1}
+
+@media print{
+  body{padding:0;max-width:none;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .bnr{position:running(top)}
+  .sec,.find,.cell{page-break-inside:avoid}
+  .brk{page-break-before:always}
+}
+</style></head><body>
+${watermark()}
+${banner}
+
+<div class="sec"><i>I</i><b>${tr("general_info")}</b></div>
+<table>
+  <tr><td class="k">${tr("test_id")}</td><td class="v">${esc(S.testId)}</td>
+      <td class="k">${tr("inspection")}</td><td class="v">${esc(inspectionDate(S.startedAt))}</td></tr>
+  <tr><td class="k">${tr("reference")}</td><td class="v">${esc(S.model)}</td>
+      <td class="k">${tr("po")}</td><td class="v">${esc(S.po||"—")}</td></tr>
+  <tr><td class="k">${tr("operator")}</td><td class="v">${esc(S.operator)}</td>
+      <td class="k">${tr("plan")}</td><td class="v">v${plan().plan_version} · HOKLAN QC ${APP_VERSION}</td></tr>
+  <tr><td class="k">${tr("units_report")}</td><td class="v">${S.units}</td>
+      <td class="k">${tr("by_unit")}</td><td class="v">${allUnits().map(i=>{
+        const uv = unitVerdict(unitRows(i));
+        return `<span class="${uv==="PASS"?"p":uv==="FAIL"?"f":"na"}">${
+          fmt("speaker_n",{n:i+1})}: ${verdictText(uv)}</span>`;
+      }).join(" &nbsp;|&nbsp; ")}</td></tr>
+</table>
+
+<div class="sec"><i>II</i><b>${tr("inspection_summary")}</b></div>
+<table>
+  <tr><th>${tr("th_test")}</th><th class="c" style="width:60px">${tr("ok")}</th>
+      <th class="c" style="width:60px">${tr("fail")}</th>
+      <th class="c" style="width:60px">N/A</th>
+      <th class="c" style="width:70px">${tr("th_result")}</th>
+      <th style="width:110px">${tr("th_remark")}</th></tr>`;
+
+  let rIndex = 0;
+  allUnits().forEach(u => {
+  // With several speakers the summary stays one table, split by a banner row.
+  // Separate tables would break the column alignment the reader compares down.
+  if(S.units > 1){
+    const uv = unitVerdict(unitRows(u));
+    h += `<tr><td colspan="5" style="background:#eef2f6;font-weight:700">
+      ${fmt("speaker_n",{n:u+1})}</td>
+      <td style="background:#eef2f6" class="${
+        uv==="PASS"?"p":uv==="FAIL"?"f":"na"}">${verdictText(uv)}</td></tr>`;
+  }
+  unitRows(u).forEach((r,i)=>{
+    if(!r) return;
+    const t = tests()[i];
+    if(t.type === "photos" && u > 0) return;   // documented once for the lot
+    const defs = realPoints(t);
+    let ok = 0, bad = 0, na = 0, refs = [];
+
+    if(r.verdict === "DOC"){
+      ok = defs.filter(p => shotsFor(r,p.id).length).length;
+      na = defs.filter(p => r.points[p.id] === "NA").length;
+    } else {
+      defs.forEach(p => {
+        const val = r.points[p.id];
+        if(val === "PASS") ok++;
+        else if(val === "FAIL"){
+          bad++;
+          // Only a test that was closed as FAIL produces findings in III, so
+          // only those advance the R counter — otherwise this column cites an
+          // R number that section III never prints.
+          if(r.verdict === "FAIL"){ rIndex++; refs.push("R"+rIndex); }
+        }
+        else if(val === "NA") na++;
+      });
+    }
+
+    const label = r.verdict === "DOC" ? tr("documented")
+                : r.verdict === "PASS" ? tr("ok")
+                : r.verdict === "FAIL" ? tr("fail") : (r.verdict || tr("pending"));
+    const cls = r.verdict === "FAIL" ? "f" : r.verdict === "PASS" ? "p" : "na";
+
+    h += `<tr><td>${esc(L(t.label))}</td>
+      <td class="c">${ok||"—"}</td><td class="c ${bad?"f":""}">${bad||"—"}</td>
+      <td class="c">${na||"—"}</td>
+      <td class="c ${cls}">${label}</td>
+      <td style="color:#e8720c">${refs.join(" ")}</td></tr>`;
+  });
+  });
+  h += `</table>`;
+
+  /* ---- III REMARKS ---- */
+  if(findings.length){
+    h += `<div class="sec"><i>III</i><b>${tr("remarks")}</b></div>
+      <p class="note">${tr("remarks_note")}</p>`;
+    findings.forEach((f,k)=>{
+      h += `<div class="find">
+        <div class="find-h"><i>R${k+1}</i>
+          <span>${S.units>1?`<b style="color:#0f3f6b">${
+            fmt("speaker_n",{n:f.unit+1})}</b> · `:""}<b>${esc(f.test)}</b> — ${esc(f.point)}</span>
+          <em>${esc(f.code)}</em></div>
+        <div class="find-b">
+          <div>${esc(f.desc)}</div>
+          ${f.note?`<div class="note"><b>${tr("notes")}:</b> ${esc(f.note)}</div>`:""}
+          ${f.media.length?`<div class="grid" style="margin-top:6px">${
+            f.media.map(s=>{ shot++; return `<div class="cell">
+              <div class="ph"><img src="${s.url}">
+                <span class="ts">${shotStamp(s.at)}</span></div>
+              <div class="cap">#${shot} R${k+1}</div></div>`; }).join("")}</div>`:""}
+        </div></div>`;
+    });
+  }
+
+  /* ---- IV EVIDENCE ----
+     General evidence only: the pictures of a specific defect were already
+     printed with their finding in III, and printing them twice makes the
+     report look padded and the numbering harder to follow. */
+  const general = r => (r.media || []).filter(m => m.kind === "photo" && !m.slot);
+  const anyPhoto = allUnits().some(u =>
+    unitRows(u).some(r => r && general(r).length));
+  if(anyPhoto){
+    // General evidence belongs to the test, not to a speaker — it lives on
+    // speaker 1 only because it has to live somewhere — so no SPEAKER banner
+    // here: it would claim the bench photo shows unit 1 in particular.
+    h += `<div class="sec brk"><i>IV</i><b>${tr("evidence_sec")}</b></div>`;
+    allUnits().forEach(u => {
+    unitRows(u).forEach((r,i)=>{
+      if(!r) return;
+      const t = tests()[i];
+      const isDoc = t && t.type === "photos";
+      const photos = isDoc ? r.media.filter(m => m.kind === "photo") : general(r);
+      if(!photos.length) return;
+
+      h += `<div class="sec" style="background:#f7f9fb"><i>&nbsp;</i><b>${esc(L(t.label))}</b></div>
+        <div class="grid">`;
+      if(isDoc){
+        realPoints(t).forEach(p => {
+          shotsFor(r,p.id).forEach(s => {
+            shot++;
+            h += `<div class="cell"><div class="ph"><img src="${s.url}">
+              <span class="ts">${shotStamp(s.at)}</span></div>
+              <div class="cap">#${shot} ${esc(L(p.label))}</div></div>`;
+          });
+        });
+      } else {
+        photos.forEach(s => {
+          shot++;
+          const bad = r.verdict === "FAIL";
+          h += `<div class="cell"><div class="ph"><img src="${s.url}">
+            <span class="ts">${shotStamp(s.at)}</span></div>
+            <div class="cap">#${shot} ${esc(L(t.label))} | <span class="${
+              bad?"f":"p"}">${bad?tr("fail"):tr("ok")}</span></div></div>`;
+        });
+      }
+      h += `</div>`;
+    });
+    });
+  }
+
+  /* Videos cannot be embedded in a printable report, so they are listed. This
+     runs over every speaker independently of section IV: a video attached to a
+     defect on speaker 3 has no general photo next to it and would otherwise
+     never be mentioned anywhere. */
+  const vids = [];
+  allUnits().forEach(u => unitRows(u).forEach(r => {
+    if(!r) return;
+    (r.media || []).forEach(m => { if(m.kind === "video") vids.push(m); });
+  }));
+  if(vids.length) h += `<p class="note">${fmt("videos_n",{n:vids.length})}</p>`;
+
+  /* ---- V CONCLUSION ---- */
+  h += `<div class="sec"><i>V</i><b>${tr("conclusion")}</b></div>
+    ${S.units>1?`<table style="margin-bottom:10px">
+      <tr><th>${tr("speaker")}</th><th class="c" style="width:90px">${tr("th_result")}</th>
+        <th style="width:180px">${tr("failures")}</th></tr>
+      ${allUnits().map(i=>{
+        const uv = unitVerdict(unitRows(i));
+        const cs = unitRows(i).filter(r=>r&&r.verdict==="FAIL")
+          .reduce((a,r)=>a.concat((r.failedPoints||[]).map(p=>p.code)),[]);
+        return `<tr><td>${fmt("speaker_n",{n:i+1})}</td>
+          <td class="c ${uv==="PASS"?"p":uv==="FAIL"?"f":"na"}">${verdictText(uv)}</td>
+          <td>${esc(cs.join(", ")) || "—"}</td></tr>`;
+      }).join("")}
+    </table>`:""}
+    <div class="concl">
+      <b>${verdictText(v)}</b>
+      <span>${tr("operator")}: ${esc(S.operator)} · ${esc(inspectionDate(S.startedAt))}</span>
+      ${findings.length?`<div class="note" style="margin-top:10px">
+        ${fmt("concl_fail",{n:findings.length})}</div>`:
+        `<div class="note" style="margin-top:10px">${tr("concl_pass")}</div>`}
+    </div>
+    <p class="note">${tr("footer_note")}</p>`;
+
+  return h + `</body></html>`;
+}
+
+function showReport(){ S.screen = "report"; render(); }
+function printReport(){ window.print(); }
+
+/* ---------- spreadsheet export --------------------------------------------
+   One row per checked point, not one per test. That is what lets Quality
+   pivot the data later - "which USB defect is most common across YIS?" - which
+   a one-row-per-inspection sheet can never answer.
+
+   CSV with a UTF-8 BOM: Excel needs the BOM or every Chinese character opens
+   as mojibake, and CSV avoids the "file format does not match extension"
+   warning that a fake .xls throws in current Excel.
+--------------------------------------------------------------------------- */
+function csvCell(v){
+  const s = String(v === null || v === undefined ? "" : v);
+  return /[",;\n\r]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+}
+
+function reportCsv(){
+  /* Two kinds of column on purpose:
+     · *_key  — language-independent identifiers. Group and filter on these,
+                otherwise an English CSV and a Chinese one split the same test
+                into two rows in the dashboard.
+     · label  — human text in whatever language the operator used, for reading. */
+  /* `Speaker` and `Speaker result` come before the point columns so the sheet
+     can be filtered or pivoted by unit: with 5 speakers the same point_key
+     appears 5 times, and without this column they would be indistinguishable
+     and would collapse into one another in the dashboard. */
+  const head = LANG === "zh"
+    ? ["测试编号","型号","订单号","检验员","检验日期","最终结果",
+       "音箱","音箱数量","音箱结果",
+       "test_key","point_key","result_key",
+       "测试","分组","检查项","结果","代码","代码说明","备注","照片数"]
+    : ["Test ID","Reference","PO","Operator","Inspection","Final result",
+       "Speaker","Speakers","Speaker result",
+       "test_key","point_key","result_key",
+       "Test","Section","Point","Result","Code","Code description","Notes","Photos"];
+
+  const base = [S.testId, S.model, S.po, S.operator,
+                inspectionDate(S.startedAt), finalVerdict()];
+  const rows = [head];
+
+  allUnits().forEach(u => {
+  const lead = base.concat([u + 1, S.units, unitVerdict(unitRows(u))]);
+  unitRows(u).forEach((r,i)=>{
+    if(!r) return;
+    const t = tests()[i];
+    // Photo tests document the shipment, not each speaker: the pictures live
+    // on speaker 1 only, so emitting them again for 2..N would write rows that
+    // look pending when the documentation is in fact complete.
+    if(t.type === "photos" && u > 0) return;
+    let section = "";
+
+    pointsOf(t).forEach(p => {
+      if(p.section){ section = L(p.section); return; }
+
+      let key, result, code = "", desc = "", photos = shotsFor(r, p.id).length;
+      let note = ((r.notes && r.notes[p.id]) || "").trim();
+      if(t.type === "photos"){
+        key = r.points[p.id] === "NA" ? "NA" : photos ? "DOC" : "PENDING";
+        result = key === "NA" ? "N/A"
+               : key === "DOC" ? tr("documented") : tr("pending");
+      } else {
+        const v = r.points[p.id];
+        key = v || "PENDING";
+        result = v === "PASS" ? tr("ok") : v === "FAIL" ? tr("fail")
+               : v === "NA" ? "N/A" : tr("pending");
+        if(v === "FAIL"){ code = p.code || ""; desc = codeText(p.code); }
+        // A failed point carries its own count and its own note; anything else
+        // reports the test-level evidence.
+        if(v !== "FAIL"){ photos = r.media.filter(m => !m.slot).length; note = ""; }
+      }
+
+      rows.push(lead.concat([
+        t.id, p.id, key,
+        L(t.label), section, L(p.label), result, code, desc,
+        note || r.comment || "", photos
+      ]));
+    });
+  });
+  });
+
+  return "﻿" + rows.map(r => r.map(csvCell).join(",")).join("\r\n");
+}
+
+/* ---------- the packet ----------------------------------------------------
+   Everything the inspection produced travels as one file: the report, the
+   spreadsheet and the videos. Sending three separate attachments over WeChat
+   is how one of them gets lost.
+
+   The ZIP is written by hand, stored (no compression). Photos and videos are
+   already compressed formats, so deflating them would cost seconds of phone
+   CPU to save almost nothing; and writing "stored" needs no library, which is
+   what keeps this app a single offline file.
+--------------------------------------------------------------------------- */
+const CRC_TABLE = (()=>{
+  const t = new Uint32Array(256);
+  for(let n=0;n<256;n++){
+    let c = n;
+    for(let k=0;k<8;k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(bytes){
+  let c = 0xFFFFFFFF;
+  for(let i=0;i<bytes.length;i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+async function makeZip(entries){
+  const enc = new TextEncoder();
+  const now = new Date();
+  const time = ((now.getHours()<<11) | (now.getMinutes()<<5) | (now.getSeconds()>>1)) & 0xFFFF;
+  const date = (((now.getFullYear()-1980)<<9) | ((now.getMonth()+1)<<5) | now.getDate()) & 0xFFFF;
+
+  const parts = [], dir = [];
+  let offset = 0;
+
+  for(const e of entries){
+    const blob = e.data instanceof Blob ? e.data : new Blob([e.data]);
+    // Read one file at a time and push the Blob, not the bytes: the browser can
+    // spill Blobs to disk, so a 200 MB video never sits in memory as an array.
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    const name = enc.encode(e.name);
+    const crc = crc32(bytes), size = bytes.length;
+
+    const lfh = new Uint8Array(30 + name.length);
+    const h = new DataView(lfh.buffer);
+    h.setUint32(0, 0x04034b50, true);
+    h.setUint16(4, 20, true);
+    h.setUint16(6, 0x0800, true);      // names are UTF-8
+    h.setUint16(8, 0, true);           // stored
+    h.setUint16(10, time, true);
+    h.setUint16(12, date, true);
+    h.setUint32(14, crc, true);
+    h.setUint32(18, size, true);
+    h.setUint32(22, size, true);
+    h.setUint16(26, name.length, true);
+    lfh.set(name, 30);
+
+    parts.push(lfh, blob);
+    dir.push({name, crc, size, offset});
+    offset += lfh.length + size;
+  }
+
+  const cd = [];
+  let dirSize = 0;
+  for(const e of dir){
+    const rec = new Uint8Array(46 + e.name.length);
+    const h = new DataView(rec.buffer);
+    h.setUint32(0, 0x02014b50, true);
+    h.setUint16(4, 20, true);
+    h.setUint16(6, 20, true);
+    h.setUint16(8, 0x0800, true);
+    h.setUint16(10, 0, true);
+    h.setUint16(12, time, true);
+    h.setUint16(14, date, true);
+    h.setUint32(16, e.crc, true);
+    h.setUint32(20, e.size, true);
+    h.setUint32(24, e.size, true);
+    h.setUint16(28, e.name.length, true);
+    h.setUint32(42, e.offset, true);
+    rec.set(e.name, 46);
+    cd.push(rec); dirSize += rec.length;
+  }
+
+  const eocd = new Uint8Array(22);
+  const h = new DataView(eocd.buffer);
+  h.setUint32(0, 0x06054b50, true);
+  h.setUint16(8, dir.length, true);
+  h.setUint16(10, dir.length, true);
+  h.setUint32(12, dirSize, true);
+  h.setUint32(16, offset, true);
+
+  return new Blob(parts.concat(cd, [eocd]), {type:"application/zip"});
+}
+
+/* Every photo and video with the context it was taken in, so the file name can
+   say what it shows without anyone having to open it. */
+function mediaList(){
+  const out = [];
+  allUnits().forEach(u => unitRows(u).forEach((r,i)=>{
+    if(!r) return;
+    const t = tests()[i];
+    (r.media || []).forEach(m => {
+      const p = m.slot && t ? realPoints(t).find(x => x.id === m.slot) : null;
+      out.push({
+        m, unit:u,
+        test: t ? t.id : (r.id || "TEST"),
+        point: p ? p.id : "",
+        verdict: p ? (r.points[p.id] || "") : "",
+        // Photo tests document the shipment, not one unit: their pictures are
+        // filed on speaker 1 for storage reasons only, so the file name must
+        // not claim they show speaker 1 in particular.
+        lot: !!(t && t.type === "photos")
+      });
+    });
+  }));
+  return out;
+}
+/* Naming rule, as agreed with quality:
+     evidence of a point   TEST_point_FAIL_speaker2_01.jpg
+     evidence of the test  TEST_01.jpg
+   The point-level file carries its verdict because that is the one somebody
+   goes looking for months later; the test-level one documents the whole test
+   and needs nothing more than the test name. */
+function mediaName(v, n){
+  const slug = s => String(s||"").replace(/[^A-Za-z0-9]+/g,"_")
+                                 .replace(/^_+|_+$/g,"").toUpperCase();
+  const bits = [slug(v.test)];
+  if(v.point){
+    bits.push(slug(v.point));
+    if(v.verdict === "PASS" || v.verdict === "FAIL") bits.push(v.verdict);
+    if(S.units > 1 && !v.lot) bits.push("speaker" + (v.unit + 1));
+  }
+  bits.push(String(n).padStart(2,"0"));
+  return bits.join("_");
+}
+
+function dataUrlToBlob(url){
+  const cut = url.indexOf(",");
+  const type = (url.slice(0, cut).match(/data:([^;]+)/) || [,"image/jpeg"])[1];
+  const bin = atob(url.slice(cut + 1));
+  const buf = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) buf[i] = bin.charCodeAt(i);
+  return new Blob([buf], {type});
+}
+
+function packetName(){
+  return fileName().replace(/\.html$/, "");
+}
+
+/* Run something with the report language forced, then put it back. The whole
+   report is built from tr()/L(), so this is all it takes to issue it twice. */
+function inLang(code, fn){
+  const prev = LANG;
+  LANG = code;
+  try{ return fn(); }
+  finally{ LANG = prev; }
+}
+
+async function buildPacket(){
+  const base = packetName();
+
+  let lost = 0, photos = 0, videos = 0;
+  const files = [];
+  const seen = {};   // same name twice would silently overwrite in some tools
+
+  mediaList().forEach(v => {
+    const isVideo = v.m.kind === "video";
+    let stem = mediaName(v, 1), n = 1;
+    while(seen[stem]) stem = mediaName(v, ++n);
+    seen[stem] = true;
+
+    if(isVideo){
+      // A video only survives while the page is open: what is stored is an
+      // object URL, and reloading the page invalidates it. Tested with
+      // `instanceof Blob`, not for truthiness — JSON.stringify turns a File
+      // into `{}`, which is truthy, and a restored draft would then pack a
+      // 15-byte file containing "[object Object]" and report nothing lost.
+      if(!(v.m.file instanceof Blob)){ lost++; return; }
+      const ext = (v.m.name && v.m.name.indexOf(".") >= 0)
+        ? v.m.name.split(".").pop().toLowerCase().slice(0,4) : "mp4";
+      files.push({name: `${base}/videos/${stem}.${ext}`, data: v.m.file});
+      videos++;
+    } else {
+      // Photos also travel as files, not only embedded in the report: named
+      // this way they can be browsed, forwarded or attached to a claim
+      // without opening anything.
+      //
+      // Guarded one by one. A single unreadable photo used to abort the whole
+      // packet from inside atob(); losing one picture and saying so is a far
+      // better outcome than losing the videos and the report with it.
+      try{
+        if(!v.m.url || v.m.url.indexOf("data:") !== 0) throw new Error("no data");
+        files.push({name: `${base}/photos/${stem}.jpg`,
+                    data: dataUrlToBlob(v.m.url)});
+        photos++;
+      }catch(err){ lost++; }
+    }
+  });
+
+  // Both languages, always. The factory fills the checklist in Chinese and the
+  // office in Colombia reads English; issuing only the operator's language
+  // means somebody has to translate a quality record by hand.
+  const entries = [
+    {name: base + "/REPORT_EN.html",
+     data: new Blob([inLang("en", reportHtml)], {type:"text/html;charset=utf-8"})},
+    {name: base + "/REPORT_ZH.html",
+     data: new Blob([inLang("zh", reportHtml)], {type:"text/html;charset=utf-8"})},
+    {name: base + "/DATA.csv",
+     data: new Blob([reportCsv()], {type:"text/csv;charset=utf-8"})},
+    {name: base + "/READ_ME.txt",
+     data: new Blob([packetReadme(photos, videos, lost)],
+                    {type:"text/plain;charset=utf-8"})}
+  ].concat(files);
+
+  return {blob: await makeZip(entries), name: base + ".zip",
+          videos, photos, lost};
+}
+
+function packetReadme(photos, videos, lost){
+  const out = [];   // not `L`: that is the localisation helper
+  out.push("HOKLAN QC — " + S.testId + " — " + S.model);
+  out.push(inspectionDate(S.startedAt) + "  ·  " + S.operator);
+  out.push(S.units > 1 ? S.units + " speakers" : "1 speaker");
+  out.push("");
+  out.push("REPORT_EN.html  " + tr("rm_report_en"));
+  out.push("REPORT_ZH.html  " + tr("rm_report_zh"));
+  out.push("DATA.csv        " + tr("rm_csv"));
+  if(photos) out.push("photos/         " + fmt("rm_photos",{n:photos}));
+  if(videos) out.push("videos/         " + fmt("rm_videos",{n:videos}));
+  out.push("");
+  out.push(tr("rm_naming"));
+  if(lost){ out.push(""); out.push("!! " + fmt("rm_lost",{n:lost})); }
+  out.push("");
+  out.push(tr("rm_pdf"));
+  // BOM: Notepad on Windows shows the Chinese and the em-dashes as mojibake
+  // without it.
+  return "﻿" + out.join("\r\n") + "\r\n";
+}
+
+function saveBlob(blob, name){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name; a.style.display = "none";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href), 20000);
+}
+
+function showSaved(html){
+  const el = document.getElementById("saved");
+  if(!el) return;
+  // An empty string hides the box: otherwise cancelling the share dialog left
+  // a blank green bar sitting on the screen.
+  el.innerHTML = html || "";
+  el.classList.toggle("hidden", !html);
+}
+
+let packing = false;
+async function withPacket(use){
+  if(packing) return;
+  packing = true;
+  const btns = Array.prototype.slice.call(actions.querySelectorAll("button"));
+  btns.forEach(b => b.disabled = true);
+  showSaved(tr("packing"));
+  try{
+    const p = await buildPacket();
+    await use(p);
+  }catch(err){
+    showSaved(tr("a_pack_fail") + " " + esc(err && err.message ? err.message : err));
+  }finally{
+    packing = false;
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+function packetSummary(p){
+  return fmt("packet_done",{f:esc(p.name), s:humanSize(p.blob.size),
+                            n:p.photos, v:p.videos}) +
+         (p.lost ? " " + fmt("rm_lost",{n:p.lost}) : "");
+}
+
+function downloadPacket(){
+  if(!CAN_DOWNLOAD){ alert(tr("a_no_download")); return; }
+  withPacket(async p => {
+    saveBlob(p.blob, p.name);
+    showSaved(packetSummary(p) + tr("saved_hint"));
+    clearDraft();
+  });
+}
+
+function sharePacket(){
+  withPacket(async p => {
+    const file = new File([p.blob], p.name, {type:"application/zip"});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{
+        await navigator.share({files:[file], title:"HOKLAN QC " + S.testId});
+        showSaved(packetSummary(p));
+        clearDraft();
+        return;
+      }catch(err){
+        if(err && err.name === "AbortError") { showSaved(""); return; }
+      }
+    }
+    // No file sharing here — WeChat's browser is the usual case. Falling back
+    // to a download at least leaves the packet on the phone to attach by hand.
+    if(CAN_DOWNLOAD){
+      saveBlob(p.blob, p.name);
+      showSaved(packetSummary(p) + tr("share_fallback"));
+      clearDraft();
+    } else {
+      showSaved("");
+      alert(tr("a_no_share"));
+    }
+  });
+}
+
+/* ---------- screens ------------------------------------------------------- */
+function render(){
+  if(S.screen === "setup")  renderSetup();
+  else if(S.screen === "test")   renderTest();
+  else if(S.screen === "index")  renderIndex();
+  else if(S.screen === "report") renderReport();
+  else renderDone();
+  if(typeof updateTopBtn === "function") updateTopBtn();
+}
+
+function langBar(mini){
+  return `<div class="lang${mini?" mini noprint":""}">
+    <button class="${LANG==="en"?"on":""}" onclick="setLang('en')">English</button>
+    <button class="${LANG==="zh"?"on":""}" onclick="setLang('zh')">中文</button>
+  </div>`;
+}
+
+function renderSetup(){
+  const valid = !!S.testId;
+  const bad = S.idDigits.length === 3 && !valid;
+  const list = valid ? modelsOf(S.factory) : [];
+  const models = `<option value="">${tr("select")}</option>` +
+    list.map(m=>`<option ${m===S.model?"selected":""}>${esc(m)}</option>`).join("");
+
+  // Nothing about the references is shown until the code is valid: an invalid
+  // code must reveal no part of the catalogue.
+  const codeLine = valid
+    ? `<div class="code ok">${esc(S.testId)}</div>`
+    : bad ? `<div class="code bad">${tr("bad_id")}</div>` : "";
+
+  app.innerHTML = `
+    ${langBar()}
+    <h1>HOKLAN QC</h1>
+    <p class="sub">${tr("subtitle")}</p>
+    <div class="card">
+      <label>${tr("test_id")}</label>
+      <input id="idDigits" inputmode="numeric" maxlength="3" autocomplete="off"
+        placeholder="000" value="${esc(S.idDigits)}" oninput="setTestId(this.value)"
+        class="${bad?"bad":""}"
+        style="letter-spacing:6px;font-size:22px;text-align:center;font-weight:700">
+      ${codeLine}
+      ${valid?`
+      <label>${tr("reference")}</label>
+      <select id="model">${models}</select>`:""}
+      <label>${tr("inspection")}</label>
+      <input value="${esc(inspectionDate())}" readonly
+             style="color:var(--muted);background:#0a1523">
+      <label>${tr("po")}</label>
+      <input id="po" value="${esc(S.po)}" placeholder="1693"
+        inputmode="numeric" maxlength="12" autocomplete="off"
+        oninput="onlyDigits(this)">
+      <label>${tr("operator")}</label>
+      <input id="operator" value="${esc(S.operator)}" maxlength="40"
+        autocomplete="off" oninput="onlyLetters(this)">
+      <label>${tr("units")}</label>
+      <div class="units">${Array.from({length:MAX_UNITS},(_,i)=>
+        `<button class="${S.units===i+1?"on":""}"
+          onclick="setUnits(${i+1})">${i+1}</button>`).join("")}</div>
+      <input id="units" class="hidden" value="${S.units}">
+      <p class="hint">${fmt(S.units>1?"plan_info_n":"plan_info",
+        {n:tests().length, v:plan().plan_version,
+         u:S.units, tot:tests().length*S.units})}<br>
+      ${tr("report_note")}</p>
+    </div>
+    <p class="hint" style="text-align:center;opacity:.6">HOKLAN QC v${APP_VERSION}</p>
+    <p style="text-align:center">
+      <button class="jump" style="text-align:center;width:100%;opacity:.7"
+        onclick="wipeData()">${tr("wipe")}</button></p>`;
+  actions.innerHTML = `<button class="primary" onclick="start()">${tr("start")}</button>`;
+}
+
+/* How many speakers this inspection covers. Kept on the setup screen only —
+   changing it once the checklist has started would orphan answers already
+   given, so the control is not offered later. */
+function setUnits(n){
+  S.units = Math.min(MAX_UNITS, Math.max(1, parseInt(n,10) || 1));
+  // Everything already typed has to be read back before the form is rebuilt,
+  // the reference select included — it sits above these buttons, so it is
+  // normally filled in first and would otherwise be silently cleared.
+  S.model = (document.getElementById("model")||{}).value || S.model;
+  S.po = (document.getElementById("po")||{}).value || S.po;
+  S.operator = (document.getElementById("operator")||{}).value || S.operator;
+  render();
+}
+
+/* Typed characters are filtered as they are typed, without re-rendering: the
+   caret is put back where it was, or the cursor jumps to the end mid-word on
+   every keystroke. A purely numeric keypad is not enough — the operator can
+   still paste, and some Chinese keyboards ignore inputmode entirely. */
+function filterInput(el, re){
+  const at = el.selectionStart;
+  const before = el.value;
+  const after = before.replace(re, "");
+  if(after === before) return;
+  el.value = after;
+  const back = before.length - after.length;
+  try{ el.setSelectionRange(Math.max(0, at - back), Math.max(0, at - back)); }
+  catch(e){}
+}
+function onlyDigits(el){ filterInput(el, /[^0-9]/g); }
+// Letters of any script, plus what a person's name legitimately contains.
+function onlyLetters(el){ filterInput(el, /[^\p{L}\p{M} .'’-]/gu); }
+
+function setTestId(value){
+  const digits = String(value).replace(/\D/g,"").slice(0,3);
+  const entry = CONFIG.test_ids[digits];
+  const newKey = entry ? entry.key : "";
+
+  const wasBad = S.idDigits.length === 3 && !S.testId;
+  const isBad = digits.length === 3 && !entry;
+
+  S.idDigits = digits;
+  S.testId = entry ? entry.code : "";
+
+  // Rebuild only when what is on screen actually changes: the reference list
+  // appearing or disappearing, or the error state flipping. Re-rendering on
+  // every keystroke would fight the operator typing.
+  if(newKey !== S.factory || isBad !== wasBad){
+    S.factory = newKey;
+    S.model = "";
+    S.po = (document.getElementById("po")||{}).value || S.po;
+    S.operator = (document.getElementById("operator")||{}).value || S.operator;
+    render();
+    const box = document.getElementById("idDigits");
+    if(box && !entry){
+      box.focus();
+      box.setSelectionRange(box.value.length, box.value.length);
+    }
+  }
+}
+
+function start(){
+  const sel = document.getElementById("model");
+  S.model = sel ? sel.value : "";
+  S.po = document.getElementById("po").value.replace(/[^0-9]/g,"").trim();
+  S.operator = document.getElementById("operator").value
+    .replace(/[^\p{L}\p{M} .'’-]/gu,"").replace(/\s+/g," ").trim();
+  if(!S.testId){ alert(tr("a_select_factory")); return; }
+  if(!S.model){ alert(tr("a_select_model")); return; }
+  if(!S.operator){ alert(tr("a_operator")); return; }
+  const un = document.getElementById("units");
+  S.units = un ? Math.min(MAX_UNITS, Math.max(1, parseInt(un.value,10)||1)) : 1;
+  S.index = 0; S.open = {};
+  S.data = Array.from({length:S.units}, () => []);
+  S.startedAt = Date.now(); S.screen = "test";
+  render(); save();
+}
+
+function goHomeReset(){
+  S.idDigits = ""; S.testId = ""; S.factory = ""; S.model = "";
+}
+
+/* Wipe everything the app is holding, so the next report starts from an empty
+   sheet: no leftover answers, no leftover photos, no half-finished draft. */
+function wipeData(){
+  if(!confirm(tr("a_wipe"))) return;
+  clearDraft();
+  S.data = [[]]; S.units = 1; S.index = 0; S.open = {};
+  S.po = ""; S.operator = ""; S.startedAt = null; S.mediaDropped = false;
+  S.screen = "setup";
+  goHomeReset();
+  window.scrollTo(0,0);
+  render();
+  alert(tr("a_wiped"));
+}
+
+function header(t, done, total){
+  return `
+    ${langBar(true)}
+    ${S.units > 1 ? `<div class="unit-tag">${
+      fmt("units_tag",{n:S.units})}</div>` : ""}
+    <div class="tag">${esc(S.testId)}</div><div class="tag">${esc(S.model)}</div>
+    <div class="tag">${esc(inspectionDate(S.startedAt))}</div>
+    <div class="bar"><i style="width:${(done/total*100).toFixed(0)}%"></i></div>
+    <h2>${done+1} / ${total} · ${esc(L(t.label))}</h2>
+    <button class="jump" onclick="showIndex()">${tr("go_other")}</button>`;
+}
+
+function mediaBlock(r){
+  return `<div class="media">${r.media.filter(m=>!m.slot).map(m=>`
+    <div class="thumb">
+      ${m.kind==="photo"?`<img src="${m.url}">`:`<video src="${m.url}" muted></video>`}
+      <b>${m.kind==="photo"?tr("photo"):tr("video")}</b>
+      <span onclick="dropMedia('${m.uid}')">×</span>
+    </div>`).join("")}</div>`;
+}
+
+/* One point, one speaker: the label, the three buttons, and — when it failed —
+   its own evidence box. Rendered once per speaker under the same question, so
+   the operator answers the question for each unit on the bench without losing
+   sight of what the question is. */
+function pointRow(p, u, showTag){
+  const r = row(u);
+  const v = r.points[p.id];
+  const shots = shotsFor(r, p.id);
+  const note = (r.notes && r.notes[p.id]) || "";
+  const evOk = shots.length > 0 && note.trim() !== "";
+  const id = u + "_" + p.id;
+
+  // Once the evidence is complete the box folds into one green line, so a test
+  // with four failures does not become four screens of thumbnails. It reopens
+  // with a tap. Folding happens on the next render, never while the operator is
+  // typing — that would close the phone keyboard.
+  const fold = v === "FAIL" && evOk && !failBoxOpen(u, p.id, evOk) ? `
+    <div class="pf-c" onclick="toggleFail(${u},'${p.id}',true)">
+      <b>✓</b><span>${esc(evSummary(shots, note))}</span><i>▸</i>
+    </div>` : "";
+
+  const fail = v === "FAIL" && !fold ? `
+    <div class="pf">
+      <div class="pf-h">${tr("fail_evidence")}${showTag?
+        " · " + fmt("speaker_n",{n:u+1}):""}</div>
+      <div class="row">
+        <button onclick="document.getElementById('pc_${id}').click()">📷 ${tr("photo")}</button>
+        <button onclick="document.getElementById('pv_${id}').click()">🎥 ${tr("video")}</button>
+      </div>
+      <input id="pc_${id}" class="hidden" type="file" accept="image/*"
+        capture="environment" multiple onchange="addMedia(this,${u},'${p.id}')">
+      <input id="pv_${id}" class="hidden" type="file" accept="video/*"
+        capture="environment" multiple onchange="addMedia(this,${u},'${p.id}')">
+      <div class="media">${shots.map(m=>`
+        <div class="thumb">
+          ${m.kind==="photo"?`<img src="${m.url}">`:`<video src="${m.url}" muted></video>`}
+          <b>${m.kind==="photo"?tr("photo"):tr("video")}</b>
+          <span onclick="dropMedia('${m.uid}')">×</span>
+        </div>`).join("")}</div>
+      <textarea placeholder="${tr("notes_fail_ph")}"
+        oninput="setNote(${u},'${p.id}', this.value)"
+        onblur="setTimeout(function(){closeFail(${u},'${p.id}')},180)">${esc(note)}</textarea>
+      <div id="pfw_${id}" class="${evOk?"pf-ok":"pf-w"}">${
+        evOk?tr("fail_ready"):tr("fail_required")}</div>
+    </div>` : "";
+
+  return `<div class="pt">
+      ${showTag?`<u>${fmt("speaker_n",{n:u+1})}</u>`:""}
+      <span>${esc(L(p.label))}</span>
+      <button class="${v==="PASS"?"on-p":""}" onclick="setPoint(${u},'${p.id}','PASS')">✓</button>
+      <button class="${v==="FAIL"?"on-f":""}" onclick="setPoint(${u},'${p.id}','FAIL')">✗</button>
+      <button class="na-btn ${v==="NA"?"on-n":""}" onclick="setPoint(${u},'${p.id}','NA')"
+        title="${tr("na_title")}">N/A</button></div>
+    ${fail}${fold}`;
+}
+
+function renderTest(){
+  const t = current();
+  const done = S.index, total = tests().length;
+
+  if(t.type === "photos") return renderPhotoTest(t, row(0), done, total);
+
+  const shared = row(0);      // test-level evidence and notes live on speaker 1
+  const pending = pendingCount();
+  const needsPhoto = shared.media.filter(m => !m.slot).length === 0;
+  // A failure without its photo and its note is as blocking as an unanswered
+  // point, so the Next button has to dim for it too.
+  let openFails = 0;
+  allUnits().forEach(u => realPoints(t).forEach(p => {
+    if(failOpen(row(u), p)) openFails++;
+  }));
+  const ready = pending === 0 && !needsPhoto && openFails === 0;
+  const many = S.units > 1;
+
+  const groups = sectionsOf(t).map(sec => {
+    const tot = sec.points.length * S.units;
+    let ans = 0, bad = 0;
+    allUnits().forEach(u => sec.points.forEach(p => {
+      const v = row(u).points[p.id];
+      if(ANSWERED.indexOf(v) >= 0) ans++;
+      if(v === "FAIL") bad++;
+    }));
+    const open = sectionOpen(sec.name, ans, tot);
+    const badge = bad ? `<em class="bad">${bad} ✗</em>`
+                : ans===tot ? `<em class="ok">✓ ${tot}</em>` : `<em>${ans}/${tot}</em>`;
+    const rows = sec.points.map(p => {
+      const ph = L(p.help);
+      const pOpen = pointHelpOpen(p.id);
+      // The question is written once; the speakers hang underneath it.
+      return `<div class="q">
+        ${many?`<div class="q-h">${esc(L(p.label))}</div>`:""}
+        ${allUnits().map(u => pointRow(p, u, many)).join("")}
+        ${ph?`<button class="p-help ${pOpen?"on":""}"
+          onclick="togglePointHelp('${p.id}')">${pOpen?"−":"+"} ${tr("how_to")}</button>`:""}
+        ${pOpen&&ph?`<div class="pt-help">${esc(ph)}</div>`:""}
+      </div>`;
+    }).join("");
+    const cls = bad ? "bad" : ans===tot ? "done" : "";
+    const safe = String(sec.name).replace(/['"\\]/g,"");
+    const hOpen = helpOpen(sec.name);
+    return `<div class="grp ${cls}">
+      <div class="grp-h">
+        <b onclick="toggleSection('${safe}',${ans},${tot})">${esc(sec.name || tr("checks"))}</b>
+        ${badge}
+        ${sec.help?`<button class="help-b ${hOpen?"on":""}"
+          onclick="toggleHelp('${safe}')">${hOpen?"−":"+"}</button>`:""}
+        <i onclick="toggleSection('${safe}',${ans},${tot})">${open?"▾":"▸"}</i>
+      </div>
+      ${hOpen&&sec.help?`<div class="grp-help">${esc(sec.help)}</div>`:""}
+      ${open?`<div class="grp-b">${rows}</div>`:""}</div>`;
+  }).join("");
+
+  app.innerHTML = `
+    ${header(t, done, total)}
+    <p class="hint" id="hint" style="margin:0 0 10px">${hintHtml(t)}</p>
+    ${groups}
+    <div class="card">
+      <label style="margin-top:0">${tr("evidence")}${needsPhoto?
+        ` <span style="color:var(--amber)">${tr("required")}</span>`:""}</label>
+      <ul class="ask">
+        <li><b>${tr("video")}</b> ${tr("ask_video")}</li>
+        <li><b>${tr("photo")}</b> ${tr("ask_photo")}</li>
+      </ul>
+      <div class="row">
+        <button onclick="document.getElementById('cam').click()">📷 ${tr("photo")}</button>
+        <button onclick="document.getElementById('vid').click()">🎥 ${tr("video")}</button>
+      </div>
+      <input id="cam" class="hidden" type="file" accept="image/*" capture="environment" multiple onchange="addMedia(this,0)">
+      <input id="vid" class="hidden" type="file" accept="video/*" capture="environment" multiple onchange="addMedia(this,0)">
+      ${mediaBlock(shared)}
+      ${needsPhoto?`<div class="needed">${
+        many ? tr("need_photo_n") : tr("need_photo")}</div>`:""}
+    </div>
+    <div class="card">
+      <label style="margin-top:0">${tr("notes")} ${tr("optional")}</label>
+      <textarea id="comment" placeholder="${tr("notes_ph")}">${esc(shared.comment)}</textarea>
+    </div>`;
+
+  actions.innerHTML = `
+    ${done>0?`<button class="skip" style="flex:0 0 52px" onclick="prevTest()">‹</button>`:""}
+    <button class="primary" id="btn-next" style="flex:4${ready?"":";opacity:.5"}" onclick="nextTest()">
+      ${done+1===total?tr("finish"):tr("next")}</button>
+    ${t.optional?`<button class="skip" style="flex:0 0 66px" onclick="skipTest()">${tr("na")}</button>`:""}`;
+}
+
+/* Typing a note cannot trigger a full render — the textarea would be rebuilt
+   and the phone keyboard would close on every keystroke. So the three things
+   that depend on that note are patched in place instead. */
+const failOpen = (r,p) => r.points[p.id] === "FAIL" &&
+  (shotsFor(r,p.id).length === 0 || !((r.notes && r.notes[p.id]) || "").trim());
+
+function openFailCount(t){
+  let n = 0;
+  allUnits().forEach(u => realPoints(t).forEach(p => {
+    if(failOpen(row(u), p)) n++;
+  }));
+  return n;
+}
+
+function hintHtml(t){
+  const pending = pendingCount();
+  if(pending) return fmt("remaining",{n:pending});
+  const open = openFailCount(t);
+  return open ? `<b style="color:var(--red)">${fmt("open_fails",{n:open})}</b>`
+              : `<b style="color:var(--green)">${tr("all_done")}</b>`;
+}
+
+function syncFail(u, pointId){
+  const t = current();
+  if(!t || t.type === "photos") return;
+
+  const p = realPoints(t).find(x => x.id === pointId);
+  const box = document.getElementById("pfw_" + u + "_" + pointId);
+  if(p && box){
+    const ok = !failOpen(row(u), p);
+    box.className = ok ? "pf-ok" : "pf-w";
+    box.textContent = ok ? tr("fail_ready") : tr("fail_required");
+  }
+
+  const hint = document.getElementById("hint");
+  if(hint) hint.innerHTML = hintHtml(t);
+
+  const btn = document.getElementById("btn-next");
+  if(btn){
+    const ready = pendingCount() === 0 &&
+      row(0).media.filter(m => !m.slot).length > 0 && openFailCount(t) === 0;
+    btn.style.opacity = ready ? "" : ".5";
+  }
+}
+
+function renderPhotoTest(t, r, done, total){
+  const items = realPoints(t);
+  const missing = items.filter(p =>
+    shotsFor(r,p.id).length === 0 && (t.no_na || r.points[p.id] !== "NA")).length;
+
+  const allowNA = !t.no_na;
+
+  const rows = items.map(p => {
+    const shots = shotsFor(r,p.id);
+    const na = allowNA && r.points[p.id] === "NA";
+    const ph = L(p.help);
+    const pOpen = pointHelpOpen(p.id);
+    return `<div class="shot ${shots.length||na?"ok":""}">
+      <div class="shot-head"><b>${esc(L(p.label))}</b>
+        ${shots.length?`<em>${shots.length}</em>`:
+          na?`<em class="na">N/A</em>`:`<em class="miss">${tr("required").replace("— ","")}</em>`}
+      </div>
+      ${ph?`<button class="p-help ${pOpen?"on":""}"
+        onclick="togglePointHelp('${p.id}')">${pOpen?"−":"+"} ${tr("how_to")}</button>`:""}
+      ${pOpen&&ph?`<div class="pt-help">${esc(ph)}</div>`:""}
+      <div class="row">
+        <button onclick="document.getElementById('s_${p.id}').click()">📷 ${tr("photo")}</button>
+        ${allowNA?`<button class="${na?"on-n":""}" style="flex:0 0 66px"
+          onclick="setPoint(0,'${p.id}','${na?"":"NA"}')">${tr("na")}</button>`:""}
+      </div>
+      <input id="s_${p.id}" class="hidden" type="file" accept="image/*"
+        capture="environment" multiple onchange="addMedia(this,0,'${p.id}')">
+      <div class="media">${shots.map(m=>`
+        <div class="thumb"><img src="${m.url}">
+          <span onclick="dropMedia('${m.uid}')">×</span></div>`).join("")}</div>
+    </div>`;
+  }).join("");
+
+  app.innerHTML = `
+    ${header(t, done, total)}
+    <div class="card">
+      <label style="margin-top:0">${tr("how_photos")}</label>
+      <ol class="steps">${t.steps.map(s=>`<li>${esc(L(s))}</li>`).join("")}</ol>
+    </div>
+    <p class="hint" style="margin:0 0 10px">${missing?
+      fmt("remaining",{n:missing}) :
+      `<b style="color:var(--green)">${tr("all_done")}</b>`}</p>
+    ${rows}
+    <div class="card">
+      <label style="margin-top:0">${tr("notes")} ${tr("optional")}</label>
+      <textarea id="comment" placeholder="${tr("notes_ph")}">${esc(r.comment)}</textarea>
+    </div>`;
+
+  actions.innerHTML = `
+    ${done>0?`<button class="skip" style="flex:0 0 52px" onclick="prevTest()">‹</button>`:""}
+    <button class="primary" style="flex:4${missing?";opacity:.5":""}" onclick="nextTest()">
+      ${done+1===total?tr("finish"):tr("next")}</button>
+    ${t.optional?`<button class="skip" style="flex:0 0 66px" onclick="skipTest()">${tr("na")}</button>`:""}`;
+}
+
+function showIndex(){ S.screen = "index"; render(); }
+function goTest(i){
+  S.index = i; S.screen = "test";
+  window.scrollTo(0,0);   // a new test must start at its first step
+  render(); save();
+}
+function finish(){ S.screen = "done"; render(); save(); }
+
+function renderIndex(){
+  const list = tests().map((t,i)=>{
+    const r = (S.data[0]||[])[i];
+    // A test counts as failed if it failed on any speaker, and as answered only
+    // when every speaker has been answered.
+    const total = realPoints(t).length * (t.type === "photos" ? 1 : S.units);
+    let status = "—", cls = "";
+    const verdicts = allUnits().map(u => ((S.data[u]||[])[i]||{}).verdict);
+    if(i === S.index){ status = tr("here"); cls = "now"; }
+    else if(r && r.verdict === "DOC"){ status = tr("photos_tag"); cls = "PASS"; }
+    else if(verdicts.indexOf("FAIL") >= 0){ status = "FAIL"; cls = "FAIL"; }
+    else if(r && r.verdict){ status = r.verdict; cls = r.verdict; }
+    else {
+      let n = 0;
+      if(t.type === "photos"){
+        if(r) n = realPoints(t).filter(p => shotsFor(r,p.id).length).length;
+      } else {
+        allUnits().forEach(u => {
+          const ru = (S.data[u]||[])[i];
+          if(ru) n += realPoints(t)
+            .filter(p => ANSWERED.indexOf(ru.points[p.id])>=0).length;
+        });
+      }
+      if(n) status = n + "/" + total;
+    }
+    const files = allUnits().reduce((a,u)=>
+      a + (((S.data[u]||[])[i]||{}).media||[]).length, 0);
+    return `<div class="ix" onclick="goTest(${i})">
+      <b>${i+1}</b>
+      <span>${esc(L(t.label))}
+        <i>${fmt("points_n",{n:total})}${files?" · "+fmt("files_n",{n:files}):""}${
+          t.optional?" · "+tr("is_optional"):""}</i></span>
+      <em class="${cls}">${esc(status)}</em></div>`;
+  }).join("");
+
+  // Where each speaker stands. Read-only: the checklist is walked once, so
+  // there is nothing to navigate to here — a tap would only mislead.
+  const units = S.units < 2 ? "" : `
+    <h2>${tr("by_unit")}</h2>
+    <div class="card">${allUnits().map(i=>{
+      const rows = unitRows(i);
+      const doneN = rows.filter(r => r && r.verdict).length;
+      const v = unitVerdict(rows);
+      return `<div class="ix" style="cursor:default">
+        <b>${i+1}</b>
+        <span>${fmt("speaker_n",{n:i+1})}
+          <i>${doneN}/${tests().length}</i></span>
+        <em class="${v==="INCOMPLETE"?"":v}">${
+          v === "INCOMPLETE" ? "—" : v}</em></div>`;
+    }).join("")}</div>`;
+
+  app.innerHTML = `${langBar(true)}
+    ${units}
+    <h2>${tr("tests_title")}</h2>
+    <p class="hint" style="margin:0 0 12px">${tr("index_hint")}</p>
+    <div class="card">${list}</div>`;
+
+  const complete = allUnits().every(i => unitVerdict(unitRows(i)) !== "INCOMPLETE");
+  actions.innerHTML = `
+    <button class="primary" onclick="goTest(${Math.min(S.index, tests().length-1)})">
+      ${tr("back_to_test")}</button>
+    ${complete?`<button onclick="finish()">${tr("finish")}</button>`:""}`;
+}
+
+function renderDone(){
+  const v = finalVerdict();
+  const colour = v==="PASS"?"var(--green)":v==="FAIL"?"var(--red)":"var(--amber)";
+
+  // One block per speaker: a lot that failed has to say which unit failed and
+  // on what, or the operator has to reopen the report to find out.
+  const blocks = allUnits().map(i=>{
+    const rows = unitRows(i);
+    const uv = unitVerdict(rows);
+    const fails = [];
+    // Indexed over the plan, not over the stored rows: a test never opened has
+    // no row at all, and it has to show as pending rather than vanish.
+    const table = tests().map((t,k)=>{
+      const r = rows[k];
+      if(r && r.verdict === "FAIL") fails.push({r, t});
+      // The plan's label, not the one frozen when the operator answered:
+      // switching language on this screen has to translate the table too.
+      return `<tr><td>${esc(L(t.label))}</td>
+        <td class="${r&&r.verdict!=="DOC"?r.verdict:""}">${
+          esc(verdictText(r && r.verdict))}</td></tr>`;
+    }).join("");
+    return `<div class="card">
+      ${S.units>1?`<div class="unit-tag">${fmt("speaker_n",{n:i+1})}</div>
+        <span class="${uv}" style="font-weight:700">${verdictText(uv)}</span>`:""}
+      <table>${table}</table>
+      ${fails.length?`<div class="warn"><b>${tr("failures")}</b><br>${fails.map(f=>
+        realPoints(f.t).filter(p => f.r.points[p.id] === "FAIL")
+          .map(p => esc(p.code) + " — " + esc(L(p.label))).join("<br>")
+      ).join("<br>")}</div>`:""}
+    </div>`;
+  }).join("");
+
+  const files = allUnits().reduce((n,u)=>
+    n + unitRows(u).reduce((m,r)=>m+(r?(r.media||[]).length:0),0), 0);
+  const all = mediaList();
+  const vids = all.filter(m => m.m.kind === "video").length;
+  const pics = all.length - vids;
+
+  app.innerHTML = `
+    ${langBar(true)}
+    <div class="big" style="color:${colour};border:2px solid ${colour}">${v}</div>
+    <div class="card">
+      <div class="tag">${esc(S.testId)}</div><div class="tag">${esc(S.model)}</div>
+      <div class="tag">${esc(inspectionDate(S.startedAt))}</div>
+      <div class="tag">${esc(S.operator)}</div>
+      ${S.units>1?`<div class="tag">${fmt("units_tag",{n:S.units})}</div>`:""}
+      <p class="hint">${fmt("evidence_total",{n:files,s:humanSize(evidenceBytes())})}</p>
+      ${evidenceBytes() > 25*1048576 ? `<div class="warn">${tr("too_big")}</div>`:""}
+      <button class="jump" onclick="showIndex()">${tr("review")}</button>
+    </div>
+    ${blocks}
+    <div class="card">
+      <label style="margin-top:0">${tr("packet")}</label>
+      <ul class="packet">
+        <li><b>REPORT_EN.html</b> ${tr("rm_report_en")}</li>
+        <li><b>REPORT_ZH.html</b> ${tr("rm_report_zh")}</li>
+        <li><b>DATA.csv</b> ${tr("rm_csv")}</li>
+        ${pics?`<li><b>photos/</b> ${fmt("rm_photos",{n:pics})}</li>`:""}
+        ${vids?`<li><b>videos/</b> ${fmt("rm_videos",{n:vids})}</li>`:""}
+      </ul>
+      <p class="hint" style="margin-top:0">${tr("rm_naming")}</p>
+      <p class="hint" style="margin-top:0">${tr("packet_note")}</p>
+      ${!CAN_DOWNLOAD?`<p class="hint">${
+        fmt("dl_no",{w: IS_WECHAT?tr("in_wechat"):IS_IOS?tr("in_ios"):""})}</p>`:""}
+      <button class="jump" onclick="showReport()">${tr("open_report")}</button>
+      <div id="saved" class="warn hidden"
+        style="background:rgba(20,102,58,.45);border-color:var(--green)"></div>
+    </div>`;
+
+  actions.innerHTML = `
+    <button class="primary" onclick="sharePacket()">${tr("share")}</button>
+    <button style="flex:0 0 44%" onclick="downloadPacket()">${tr("download")}</button>`;
+}
+
+function renderReport(){
+  // Reuse the report's own stylesheet so the preview matches the PDF exactly.
+  const full = reportHtml();
+  const css = (full.match(/<style>([\s\S]*?)<\/style>/) || ["",""])[1];
+  const body = full.replace(/^[\s\S]*<body>/, "").replace(/<\/body>[\s\S]*$/, "");
+
+  app.innerHTML = `
+    ${langBar(true)}
+    <div class="card noprint">
+      <label style="margin-top:0">${tr("save_pdf")}</label>
+      <p class="hint" style="margin-top:0">${tr("pdf_how")}</p>
+      <button class="jump" onclick="printReport()">${tr("save_pdf_btn")}</button>
+    </div>
+    <div id="report"><style>${css}</style>${body}</div>`;
+  actions.innerHTML = `
+    <button class="primary" onclick="printReport()">${tr("save_pdf")}</button>
+    <button onclick="backToDone()">${tr("back")}</button>`;
+}
+function backToDone(){ S.screen = "done"; render(); }
+
+/* ---------- back to the start screen -------------------------------------- */
+function goHome(){
+  // An inspection in progress is real work; never discard it on one tap.
+  const working = S.screen !== "setup" &&
+    S.data.some(u => (u || []).some(r => r));
+  if(working && !confirm(tr("a_home"))) return;
+
+  clearDraft();
+  S.screen = "setup"; S.index = 0; S.units = 1;
+  S.data = [[]]; S.open = {};
+  S.startedAt = null; S.mediaDropped = false;
+  goHomeReset();
+  window.scrollTo(0,0);
+  render();
+}
+
+const topBtn = document.getElementById("toTop");
+function updateTopBtn(){
+  const show = S.screen !== "setup";
+  topBtn.className = "totop" + (show ? " show" : "");
+  topBtn.textContent = tr("home");
+}
+
+/* ---------- boot ---------------------------------------------------------- */
+document.documentElement.lang = LANG === "zh" ? "zh-CN" : "en";
+
+if(restore()){
+  const lost = S.mediaDropped ? tr("a_lost") : "";
+  if(confirm(tr("a_resume") + lost)){ S.mediaDropped = false; }
+  else {
+    clearDraft(); S.screen="setup"; S.data=[[]]; S.units=1;
+    S.index=0; S.mediaDropped=false; goHomeReset();
+  }
+}
+render();
+
+window.addEventListener("beforeunload", e => {
+  if(S.screen === "test"){ e.preventDefault(); e.returnValue = ""; }
+});
+updateTopBtn();
+</script>
+</body>
+</html>
