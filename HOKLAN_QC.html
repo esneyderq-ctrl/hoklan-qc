@@ -49,6 +49,33 @@ button:active{transform:scale(.99)}
   height:26px;border-radius:50%;background:var(--accent);color:#04121e;font-weight:700;
   font-size:14px;display:flex;align-items:center;justify-content:center}
 
+/* Tabs. Only on the start screen and inside Admin: offering them mid-checklist
+   would put a way to walk out of an unfinished inspection next to the answers. */
+.tabs{display:flex;gap:8px;margin:0 0 14px}
+.tabs button{flex:1;background:transparent;border:1px solid var(--border);
+  color:var(--grey);padding:12px 8px;font-size:14px;letter-spacing:.5px}
+.tabs button.on{background:rgba(46,163,242,.16);border-color:var(--accent);
+  color:var(--accent)}
+/* The reference catalogue: one tappable row each, and there are fifty-odd of
+   them, so the list is filterable and the rows are kept to one line. */
+.rlist{display:flex;flex-direction:column;gap:6px}
+.rlist button{display:flex;align-items:center;justify-content:space-between;
+  gap:10px;background:#0a1523;padding:12px;font-size:14.5px;font-weight:600;
+  text-align:left}
+.rlist button em{font-style:normal;font-size:10.5px;color:var(--grey);
+  letter-spacing:1.5px;font-weight:700;white-space:nowrap}
+/* One selectable test. The box on the left is drawn, not an <input>: a real
+   checkbox cannot be styled consistently across Android and iOS. */
+.pk{display:flex;align-items:center;gap:11px;background:#0a1523;padding:11px 12px;
+  margin-bottom:6px;text-align:left;font-size:14.5px;font-weight:500}
+.pk.on{border-color:var(--accent);background:rgba(46,163,242,.12)}
+.pk i{font-style:normal;flex:none;width:22px;height:22px;border-radius:6px;
+  border:1px solid var(--border);display:flex;align-items:center;
+  justify-content:center;font-size:13px;color:#04121e;background:#0c1b2d}
+.pk.on i{background:var(--accent);border-color:var(--accent)}
+.pk b{flex:1;font-weight:500}
+.pk em{font-style:normal;font-size:10.5px;color:var(--grey);font-weight:700}
+
 .grp{background:var(--panel);border:1px solid var(--border);border-radius:12px;
   margin-bottom:10px;overflow:hidden}
 .grp.done{border-color:#2b6b46}
@@ -175,6 +202,11 @@ td:last-child{text-align:right;font-weight:700}
   box-shadow:0 3px 12px rgba(0,0,0,.5);display:none;z-index:5}
 .totop.show{display:block}
 .hidden{display:none}
+/* The English line under a note. Deliberately quiet: it is a reading aid for
+   the office, not something the operator has to check. */
+.en-line{font-size:12px;line-height:1.45;color:#8fa6bd;margin-top:6px;
+  padding-left:8px;border-left:2px solid rgba(143,166,189,.35);
+  white-space:pre-wrap}
 /* No-JavaScript fallback */
 .nojs{margin-top:60px;background:#10273f;border:1px solid var(--accent);
   border-radius:12px;padding:22px;text-align:center}
@@ -243,10 +275,12 @@ input.bad{border-color:var(--red)}
 <div class="wrap" id="app">
   <div class="nojs">
     <b>HOKLAN QC</b>
-    <p>请用浏览器打开本文件。<br>微信的文件预览无法运行本应用。</p>
-    <p>Open this file in a browser.<br>WeChat's file preview cannot run the app.</p>
-    <p class="sm">iPhone: ··· → 用其他应用打开 → Safari<br>
-       Android: ··· → 用浏览器打开</p>
+    <p>正在加载……如果一直显示本页面，请在 Safari 或 Chrome 中打开本页，
+       并确认已启用 JavaScript。</p>
+    <p>Loading… If this message stays on screen, open the page in Safari or
+       Chrome and make sure JavaScript is enabled.</p>
+    <p class="sm">微信内置浏览器：··· → 在浏览器中打开<br>
+       WeChat in-app browser: ··· → Open in browser</p>
   </div>
 </div>
 <button id="toTop" class="totop" onclick="goHome()"></button>
@@ -265,7 +299,7 @@ input.bad{border-color:var(--red)}
    one written by an English-speaking one.
 ============================================================================ */
 
-const APP_VERSION = "1.1";
+const APP_VERSION = "1.3";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -413,7 +447,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 2,
+      "plan_version": 3,
       "tests": [
         {"id":"USB","optional":false,
          "label":{"en":"USB","zh":"USB"},
@@ -1066,7 +1100,10 @@ const CONFIG = {
            {"id":"logo_panel","label":{"en":"Logo on the panel","zh":"面板上的标志"},
             "help":{"en":"Close-up of the logo printed or fixed on the panel. Check it matches the one on the grille in size, colour and finish.",
                     "zh":"拍摄面板上印制或固定的标志特写。确认其与网罩上的标志在尺寸、颜色和工艺上一致。"}},
-           {"id":"ruedas","label":{"en":"Wheels","zh":"轮子"}}]},
+           {"id":"ruedas","label":{"en":"Wheels","zh":"轮子"}},
+           {"id":"num_lote","label":{"en":"Lot number","zh":"批号"},
+            "help":{"en":"Close-up of the lot or batch number of the speaker: the code printed or labelled on the product itself, usually next to the specification label. Every digit must be sharp and legible in the photo, and it must match the lot recorded on the inspection paperwork. If this reference carries no lot number, photograph the serial number instead and say so in the notes.",
+                    "zh":"拍摄音箱批号（生产批次号）的特写：即印制或贴在产品本体上的编号，通常在规格标签旁边。照片中每一位数字都必须清晰可读，且必须与检验单上记录的批号一致。若本型号没有批号，则改拍序列号，并在备注中说明。"}}]},
 
         {"id":"ACCESSORIES","optional":false,"type":"photos",
          "label":{"en":"ACCESSORIES","zh":"配件"},
@@ -1195,7 +1232,12 @@ const CONFIG = {
            {"id":"woofer_back","label":{"en":"Woofer — back","zh":"低音单元 — 背面"},
             "help":{"en":"The magnet, with its label readable: brand, size and impedance. This is what proves the specified woofer was used.",
                     "zh":"拍摄磁钢及其标签：品牌、尺寸和阻抗必须清晰可读。这是核对是否使用指定喇叭的依据。"}},
-           {"id":"tweeter","label":{"en":"Tweeter","zh":"高音单元"}},
+           {"id":"tweeter_front","label":{"en":"Tweeter — front","zh":"高音单元 — 正面"},
+            "help":{"en":"The diaphragm and horn seen from the front. Look for a dented dome, glue marks, or a horn that is not properly seated.",
+                    "zh":"正面拍摄振膜和号角。注意振膜是否凹陷、是否有溢胶、号角是否装配到位。"}},
+           {"id":"tweeter_back","label":{"en":"Tweeter — back","zh":"高音单元 — 背面"},
+            "help":{"en":"The magnet and the terminals, with the label readable: brand, model and impedance. Front and back are asked for separately because the label that proves which tweeter was fitted is only visible from behind.",
+                    "zh":"拍摄磁钢和接线端子，标签需清晰可读：品牌、型号和阻抗。正反面分开拍摄，是因为证明所用高音单元型号的标签只有从背面才看得到。"}},
            {"id":"fuente","label":{"en":"Power supply","zh":"电源板"}},
            {"id":"amp_front","label":{"en":"Amplifier — component side","zh":"功放板 — 元件面"},
             "help":{"en":"The side carrying the chips. The board reference and the main IC markings must be readable.",
@@ -1236,8 +1278,13 @@ const T = {
   ask_video:"one clip of a minute or more showing the test being run.",
   ask_photo:"the process and the tools used: USB drive, SD card, battery, cables, phone.",
   need_photo:"At least one photo is required, whether the test passes or fails.",
+  need_video:"A video of the test being run is required, whether it passes or fails.",
+  need_both:"Both are required, whether the test passes or fails: at least one photo and one video of the test being run.",
   notes:"Notes", notes_fail_ph:"What exactly happened? e.g. sound cuts out after 20 seconds",
   notes_ph:"Observations on this test",
+  notes_en:"English", translating:"translating…",
+  tr_fail:"Automatic translation unavailable — check the connection. The note is kept as written.",
+  video_att:"Video attached — %n file(s) in the videos/ folder of the packet:",
   next:"NEXT", finish:"FINISH", na:"N/A",
   go_other:"☰ Go to another test", tests_title:"Tests",
   index_hint:"Tap any test to go straight to it. What you already marked is kept.",
@@ -1246,7 +1293,9 @@ const T = {
   final:"FINAL RESULT", failures:"Failures:",
   evidence_total:"%n evidence file(s) · %s",
   too_big:"The report is very large. If the phone struggles to generate it, delete duplicate photos from the ☰ menu.",
-  download:"⬇ DOWNLOAD", share:"📤 SHARE",
+  download:"⬇ DOWNLOAD",
+  save_pdf_dl:"⬇ SAVE AS PDF",
+  pdf_wait:"Preparing the report…",
   view_report:"VIEW REPORT", save_pdf:"SAVE AS PDF", back:"BACK",
   review:"☰ Review or correct a test",
   packet:"What gets sent",
@@ -1264,11 +1313,9 @@ const T = {
   packet_done:"<b>%f</b> · %s · %n photo(s), %v video(s)",
   saved_as:"<b>Saved:</b> %f<br>It is in the phone's <b>Downloads</b> folder.",
   saved_hint:"<br><br>Attach it from Downloads to send it by WeChat or e-mail.",
-  share_fallback:"<br><br>This browser cannot share files directly, so the packet was downloaded instead. Attach it from <b>Downloads</b>.",
-  a_no_share:"This browser can neither share nor download files.\n\nOpen this page in Chrome or Safari — tap the ⋯ menu and choose \"Open in browser\" — and try again.",
-  a_no_download:"This browser cannot download files.\n\nUse SHARE, or open the page in Chrome or Safari.",
+  a_no_download:"This browser cannot download files.\n\nOpen this page in Safari or Chrome — in WeChat, tap the ⋯ menu and choose \"Open in browser\" — and try again.",
   a_pack_fail:"The packet could not be built:",
-  dl_no:"This browser cannot download files%w. Use <b>SHARE</b>, or open the page in Chrome or Safari.",
+  dl_no:"This browser cannot download files%w. Open the page in <b>Safari</b> or <b>Chrome</b> — tap the ⋯ menu and choose \"Open in browser\" — and download the packet there.",
   in_wechat:" (WeChat in-app browser)", in_ios:" (Safari on iPhone)",
   pdf_how:"Tap the button below, then choose <b>Save as PDF</b> as the destination instead of a printer. The PDF is saved to the phone and opens in any PDF app — Acrobat, WPS, Files — not only in the browser.",
   save_pdf_btn:"OPEN THE PRINT DIALOG",
@@ -1289,6 +1336,8 @@ const T = {
   a_operator:"The operator is required.",
   a_pending:"%n point(s) still to answer.",
   a_photo:"Photo missing.\n\nEvery test must be left with evidence, pass or fail.",
+  a_video:"Video missing.\n\nEvery test must be left with a clip of it being run, pass or fail.",
+  a_both:"Photo and video missing.\n\nEvery test must be left with at least one photo and one video, pass or fail.",
   a_describe:"Describe what happened.\n\nA code with no description is useless for analysis later.",
   a_missing_photos:"Photo missing for:", a_and_more:"… and %n more",
   a_mark_na:"Mark N/A anything this reference does not include.",
@@ -1307,6 +1356,20 @@ const T = {
   fail_ready:"✓ Evidence complete. Carry on with the remaining points.",
   n_photos:"%n photo(s)", n_videos:"%n video(s)",
   a_fail_evidence:"These failed points still need a photo and a description:",
+  tab_factory:"FACTORY TESTS", tab_admin:"ADMIN",
+  to_start:"← START SCREEN",
+  admin_refs:"References", search:"Filter references",
+  admin_refs_hint:"%n references. Tap one to choose which tests to run.",
+  no_match:"No reference matches that text.",
+  tests_pick:"Tests to run", all_on:"Select all", all_off:"Clear all",
+  n_selected:"<b>%n</b> of %tot tests selected.",
+  admin_start:"START SELECTED TESTS",
+  abort:"✕ ABORT INSPECTION",
+  a_abort:"Abort this inspection?\n\nEverything answered and every photo taken will be discarded, and nothing will be reported.",
+  a_pick_tests:"Select at least one test.",
+  scope:"Scope", scope_full:"Complete plan",
+  scope_part:"PARTIAL — only %n of the %tot tests in the plan were performed",
+  scope_part_note:"This is a partial inspection: only the tests listed in section II were performed. It does not certify the tests that were not.",
   wipe:"Clear stored data",
   a_wipe:"Clear all stored data?\n\nAnswers, photos and any unfinished draft will be deleted, so the next report starts clean. Reports you already downloaded are not affected.",
   a_wiped:"Data cleared. Ready for a new inspection."
@@ -1332,8 +1395,13 @@ const T = {
   ask_video:"一段一分钟以上的视频，拍摄测试的实际操作过程。",
   ask_photo:"拍摄操作过程和所用工具：U 盘、SD 卡、电池、线材、手机。",
   need_photo:"无论合格与否，本项至少需要一张照片。",
+  need_video:"无论合格与否，本项均需一段测试过程的视频。",
+  need_both:"无论合格与否，本项均需至少一张照片和一段测试过程的视频。",
   notes:"备注", notes_fail_ph:"具体发生了什么？例如：播放 20 秒后声音中断",
   notes_ph:"关于本项测试的说明",
+  notes_en:"英文", translating:"正在翻译……",
+  tr_fail:"自动翻译不可用，请检查网络连接。备注将按原文保留。",
+  video_att:"已附视频 — 共 %n 个文件，位于压缩包的 videos/ 文件夹：",
   next:"下一项", finish:"完成", na:"不适用",
   go_other:"☰ 跳转到其他测试", tests_title:"测试项目",
   index_hint:"点击任一测试直接跳转，已填写的内容会保留。",
@@ -1342,7 +1410,9 @@ const T = {
   final:"最终结果", failures:"不合格项：",
   evidence_total:"%n 个证据文件 · %s",
   too_big:"报告文件很大。如果手机生成时卡顿，请从 ☰ 菜单删除重复照片。",
-  download:"⬇ 下载", share:"📤 分享",
+  download:"⬇ 下载",
+  save_pdf_dl:"⬇ 保存为 PDF",
+  pdf_wait:"正在准备报告……",
   view_report:"查看报告", save_pdf:"另存为 PDF", back:"返回",
   review:"☰ 检查或修改某项测试",
   packet:"发送内容",
@@ -1360,11 +1430,9 @@ const T = {
   packet_done:"<b>%f</b> · %s · %n 张照片，%v 段视频",
   saved_as:"<b>已保存：</b>%f<br>文件在手机的<b>下载</b>文件夹中。",
   saved_hint:"<br><br>请从“下载”文件夹中选取该文件，通过微信或邮件发送。",
-  share_fallback:"<br><br>当前浏览器无法直接分享文件，已改为下载。请从<b>下载</b>文件夹中选取并发送。",
-  a_no_share:"当前浏览器既无法分享也无法下载文件。\n\n请在 Chrome 或 Safari 中打开本页面（点击 ⋯ 菜单，选择“在浏览器中打开”），然后重试。",
-  a_no_download:"当前浏览器无法下载文件。\n\n请使用“分享”，或在 Chrome、Safari 中打开本页面。",
+  a_no_download:"当前浏览器无法下载文件。\n\n请在 Safari 或 Chrome 中打开本页面（在微信中点击 ⋯ 菜单，选择“在浏览器中打开”），然后重试。",
   a_pack_fail:"打包失败：",
-  dl_no:"当前浏览器无法下载文件%w。请使用<b>分享</b>，或在 Chrome、Safari 中打开本页面。",
+  dl_no:"当前浏览器无法下载文件%w。请在 <b>Safari</b> 或 <b>Chrome</b> 中打开本页面（点击 ⋯ 菜单，选择“在浏览器中打开”），然后在浏览器中下载。",
   in_wechat:"（微信内置浏览器）", in_ios:"（iPhone Safari）",
   pdf_how:"点击下方按钮，在打印目标中选择<b>另存为 PDF</b>，而不是选择打印机。PDF 会保存到手机，可用任意 PDF 应用打开（Acrobat、WPS、文件管理），不限于浏览器。",
   save_pdf_btn:"打开打印对话框",
@@ -1385,6 +1453,8 @@ const T = {
   a_operator:"请填写检验员。",
   a_pending:"还有 %n 项未回答。",
   a_photo:"缺少照片。\n\n无论合格与否，每项测试都必须留下照片证据。",
+  a_video:"缺少视频。\n\n无论合格与否，每项测试都必须留下测试过程的视频。",
+  a_both:"缺少照片和视频。\n\n无论合格与否，每项测试都必须留下至少一张照片和一段视频。",
   a_describe:"请填写说明。\n\n只有代码没有说明，后续无法分析。",
   a_missing_photos:"以下项目缺少照片：", a_and_more:"…… 还有 %n 项",
   a_mark_na:"本型号不包含的项目请标记为“不适用”。",
@@ -1403,6 +1473,20 @@ const T = {
   fail_ready:"✓ 证据已完整，可继续检查其余项目。",
   n_photos:"%n 张照片", n_videos:"%n 段视频",
   a_fail_evidence:"以下不良项仍缺少照片或说明：",
+  tab_factory:"工厂测试", tab_admin:"管理",
+  to_start:"← 返回首页",
+  admin_refs:"型号目录", search:"筛选型号",
+  admin_refs_hint:"共 %n 个型号。点击其中一个以选择要执行的测试。",
+  no_match:"没有匹配的型号。",
+  tests_pick:"要执行的测试", all_on:"全选", all_off:"全部取消",
+  n_selected:"已选择 <b>%n</b> / %tot 项测试。",
+  admin_start:"开始所选测试",
+  abort:"✕ 中止检验",
+  a_abort:"确定中止本次检验？\n\n已填写的所有回答和拍摄的所有照片都将被丢弃，且不会生成任何报告。",
+  a_pick_tests:"请至少选择一项测试。",
+  scope:"检验范围", scope_full:"完整方案",
+  scope_part:"部分检验 — 方案共 %tot 项，仅执行了 %n 项",
+  scope_part_note:"本次为部分检验：仅执行了第 II 节所列的测试项目，未执行的项目不在本报告的判定范围内。",
   wipe:"清除已保存的数据",
   a_wipe:"清除所有已保存的数据？\n\n所有回答、照片和未完成的记录都会被删除，下一份报告将从空白开始。已经下载的报告不受影响。",
   a_wiped:"数据已清除，可以开始新的检验。"
@@ -1437,6 +1521,10 @@ const S = {
   testId:"",     // the completed code — this is what gets recorded
   factory:"",    // internal key, only to filter references; never displayed
   model:"", po:"", operator:"",
+  // A targeted inspection launched from Admin: `pick` is the list of test ids
+  // to run, and `fromAdmin` is what puts the ABORT button on the screen. Both
+  // null/false in the normal factory flow, which always runs the whole plan.
+  pick:null, fromAdmin:false, adminQuery:"",
   units:1,       // how many speakers are on the bench
   data:[[]],     // data[speaker][testIndex] — every speaker's own answers
   index:0, open:{}, startedAt:null
@@ -1458,7 +1546,11 @@ const UA = navigator.userAgent || "";
 const IS_WECHAT = /MicroMessenger/i.test(UA);
 const IS_IOS = /iPad|iPhone|iPod/.test(UA) ||
   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-const CAN_DOWNLOAD = !IS_WECHAT && !IS_IOS &&
+/* iOS is no longer excluded: Safari has downloaded blobs to the Files app since
+   iOS 13, and with the SHARE button gone this is the only way off the phone.
+   WeChat's in-app browser stays out — there the download silently does nothing,
+   and the operator has to open the page in a real browser first. */
+const CAN_DOWNLOAD = !IS_WECHAT &&
   "download" in document.createElement("a");
 
 const plan = () => CONFIG.plans["default"];
@@ -1474,8 +1566,25 @@ function fits(o){
   if(o.skip_factory && o.skip_factory.indexOf(S.factory) >= 0) return false;
   return true;
 }
-const tests = () => plan().tests.filter(fits);
+/* Every test this reference carries. This is the whole plan, and it is what
+   Admin offers to choose from. */
+const planTests = () => plan().tests.filter(fits);
+/* The tests this inspection actually runs. Same thing, unless Admin picked a
+   subset — then the checklist, the progress bar, the verdict and the report all
+   work off the subset, which is why the filter lives here and nowhere else. */
+const tests = () => {
+  const all = planTests();
+  if(!S.pick || !S.pick.length) return all;
+  return all.filter(t => S.pick.indexOf(t.id) >= 0);
+};
 const current = () => tests()[S.index];
+/* Null on a complete inspection; otherwise how much of the plan was covered.
+   Read by the report and the spreadsheet: a PASS on two tests out of fourteen
+   must never be filed as if the speaker had passed everything. */
+function partialScope(){
+  const tot = planTests().length, n = tests().length;
+  return n < tot ? {n, tot} : null;
+}
 const modelsOf = f => Object.keys(CONFIG.models)
   .filter(m => CONFIG.models[m] === f).sort();
 const pointsOf = t => (t.points || []).filter(fits);
@@ -1608,7 +1717,14 @@ function restore(){
       // the storage quota. Filling the gaps here keeps every later `r.media`
       // and `r.points` from having to guard itself.
       S.data = allUnits().map(u => (S.data[u] || []).map(r => r && Object.assign(
-        {media:[], points:{}, notes:{}, comment:""}, r)));
+        {media:[], points:{}, notes:{}, notesEn:{}, notesEnFor:{},
+         comment:"", commentEn:"", commentEnFor:null}, r)));
+
+      // A draft written before Admin existed has neither field. An empty pick
+      // list must read as "the whole plan", never as "no tests at all".
+      if(!Array.isArray(S.pick) || !S.pick.length) S.pick = null;
+      S.fromAdmin = !!S.fromAdmin;
+      S.adminQuery = S.adminQuery || "";
       return true;
     }
   }catch(e){}
@@ -1689,6 +1805,139 @@ function dropMedia(uid){
   render(); save();
 }
 
+/* ---------- notes in English ----------------------------------------------
+   The inspector writes in his own language; the report is read in Colombia. So
+   every note is kept verbatim *and* carries an English line under it. The
+   original is never replaced: a translation is an aid, not the quality record.
+
+   Two services, in order. Google is the better translator but is unreachable
+   from most factory networks in China, so MyMemory backs it up. If both fail
+   the note still travels, on its own line, and the report says the translation
+   was unavailable rather than leaving a blank where the note should be. */
+const TR_CACHE = {};
+const hasCJK = s => /[㐀-䶿一-鿿぀-ヿ]/.test(s);
+
+async function translateToEn(text){
+  const t = String(text || "").trim();
+  if(!t) return "";
+  if(TR_CACHE[t] !== undefined) return TR_CACHE[t];
+  let out = "";
+  try{
+    const res = await fetch("https://translate.googleapis.com/translate_a/single" +
+      "?client=gtx&sl=auto&tl=en&dt=t&q=" + encodeURIComponent(t));
+    if(res.ok){
+      const j = await res.json();
+      // The payload is an array of sentence fragments; joining them back is
+      // what keeps a three-line note from arriving as its first line only.
+      if(Array.isArray(j) && Array.isArray(j[0]))
+        out = j[0].map(s => (s && s[0]) || "").join("");
+    }
+  }catch(e){}
+  if(!out){
+    try{
+      const pair = (hasCJK(t) ? "zh-CN" : "es") + "|en";
+      const res = await fetch("https://api.mymemory.translated.net/get?langpair=" +
+        pair + "&q=" + encodeURIComponent(t.slice(0,480)));
+      if(res.ok){
+        const j = await res.json();
+        const c = j && j.responseData && j.responseData.translatedText;
+        // This service answers its own errors inside the translation field.
+        if(c && !/MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID/i.test(c)) out = c;
+      }
+    }catch(e){}
+  }
+  out = String(out || "").trim();
+  if(out) TR_CACHE[t] = out;
+  return out;
+}
+
+/* What was translated is stored next to the translation. Without it, editing a
+   note would leave the previous English line attached to the new text — the
+   worst possible failure for a document somebody signs. */
+function storeEn(r, kind, pointId, value, src){
+  if(kind === "note"){
+    r.notesEn = r.notesEn || {}; r.notesEnFor = r.notesEnFor || {};
+    r.notesEn[pointId] = value; r.notesEnFor[pointId] = src;
+  } else {
+    r.commentEn = value; r.commentEnFor = src;
+  }
+}
+const enOf = (r, kind, pointId) => kind === "note"
+  ? (((r.notesEn || {})[pointId] || "") &&
+     ((r.notesEnFor || {})[pointId] === (r.notes || {})[pointId]
+        ? r.notesEn[pointId] : ""))
+  : ((r.commentEn || "") && (r.commentEnFor === r.comment ? r.commentEn : ""));
+
+const TR_TIMER = {};
+
+function enBox(id, text){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = text || "";
+  el.classList.toggle("hidden", !text);
+}
+
+/* Typing commits the note and asks for its translation once the operator stops
+   writing — a request per keystroke would be both useless and rude to the
+   service. Never triggers a render: that would close the phone keyboard. */
+function noteTyped(u, pointId, text){
+  setNote(u, pointId, text);
+  queueEn("note", u, pointId);
+}
+function commentTyped(text){
+  const r = row(0);
+  r.comment = text;
+  save();
+  queueEn("comment", 0, null);
+}
+function queueEn(kind, u, pointId){
+  const k = kind + "|" + u + "|" + (pointId || "") + "|" + S.index;
+  clearTimeout(TR_TIMER[k]);
+  TR_TIMER[k] = setTimeout(() => runEn(kind, u, pointId), 1400);
+}
+async function runEn(kind, u, pointId){
+  const r = row(u);
+  const boxId = kind === "note" ? "en_" + u + "_" + pointId : "en_comment";
+  const src = String((kind === "note"
+    ? (r.notes && r.notes[pointId]) : r.comment) || "");
+  const t = src.trim();
+  if(!t){ storeEn(r, kind, pointId, "", src); save(); enBox(boxId, ""); return; }
+  enBox(boxId, tr("translating"));
+  const out = await translateToEn(t);
+  storeEn(r, kind, pointId, out, src);
+  save();
+  // The operator may have kept typing while the request was in flight; in that
+  // case the box belongs to the newer text and a later run will fill it.
+  const now = String((kind === "note"
+    ? (r.notes && r.notes[pointId]) : r.comment) || "");
+  if(now !== src) return;
+  enBox(boxId, out ? tr("notes_en") + ": " + out : tr("tr_fail"));
+}
+
+/* Nothing reaches the report untranslated. Whatever the debounce missed — a
+   note typed and followed straight away by FINISH — is caught here, before the
+   report or the packet is built. */
+async function ensureTranslations(){
+  const jobs = [];
+  allUnits().forEach(u => unitRows(u).forEach(r => {
+    if(!r) return;
+    const c = String(r.comment || "").trim();
+    if(c && r.commentEnFor !== r.comment)
+      jobs.push(translateToEn(c).then(x => {
+        r.commentEn = x; r.commentEnFor = r.comment; }));
+    Object.keys(r.notes || {}).forEach(pid => {
+      const n = String(r.notes[pid] || "").trim();
+      if(n && (r.notesEnFor || {})[pid] !== r.notes[pid])
+        jobs.push(translateToEn(n).then(x => {
+          r.notesEn = r.notesEn || {}; r.notesEnFor = r.notesEnFor || {};
+          r.notesEn[pid] = x; r.notesEnFor[pid] = r.notes[pid]; }));
+    });
+  }));
+  if(!jobs.length) return;
+  try{ await Promise.all(jobs); }catch(e){}
+  save();
+}
+
 /* ---------- answers -------------------------------------------------------
    The operator has all the speakers on the bench at once, so the checklist is
    walked once and every point is answered for each speaker in turn. One row
@@ -1696,7 +1945,9 @@ function dropMedia(uid){
 function blank(i){
   const t = tests()[i === undefined ? S.index : i];
   return {id:t.id, label:L(t.label), verdict:null, code:null, comment:"",
-          media:[], points:{}, notes:{}, startedAt:Date.now()};
+          commentEn:"", commentEnFor:null,
+          media:[], points:{}, notes:{}, notesEn:{}, notesEnFor:{},
+          startedAt:Date.now()};
 }
 
 /* The record of one speaker for one test, created on demand. */
@@ -1772,9 +2023,11 @@ function nextTest(){
         "\n\n" + tr("a_mark_na"));
       return;
     }
+    const cEn = row(0).commentEn, cFor = row(0).commentEnFor;
     allUnits().forEach(u => {
       const ru = row(u);
       ru.comment = comment;
+      ru.commentEn = cEn; ru.commentEnFor = cFor;
       ru.seconds = Math.round((Date.now()-ru.startedAt)/1000);
       ru.verdict = "DOC"; ru.code = null; ru.failedPoints = [];
     });
@@ -1798,11 +2051,18 @@ function nextTest(){
     return;
   }
 
-  if(row(0).media.filter(m => !m.slot).length === 0){ alert(tr("a_photo")); return; }
+  const miss = missingEvidence(0);
+  if(miss.photo || miss.video){
+    alert(miss.photo && miss.video ? tr("a_both")
+        : miss.video ? tr("a_video") : tr("a_photo"));
+    return;
+  }
 
+  const cEn = row(0).commentEn, cFor = row(0).commentEnFor;
   allUnits().forEach(u => {
     const r = row(u);
     r.comment = comment;
+    r.commentEn = cEn; r.commentEnFor = cFor;
     r.seconds = Math.round((Date.now()-r.startedAt)/1000);
     const failed = realPoints(t).filter(p => r.points[p.id] === "FAIL");
     const applicable = realPoints(t).filter(p => r.points[p.id] !== "NA");
@@ -1822,6 +2082,9 @@ function advance(){
   if(S.index >= tests().length) S.screen = "done";
   window.scrollTo(0,0);
   render(); save();
+  // Translate the note just left behind while the operator reads the next test:
+  // by the time the report is asked for, the English lines are already there.
+  ensureTranslations();
 }
 
 function skipTest(){
@@ -1874,7 +2137,10 @@ function finalVerdict(){
 /* ---------- report -------------------------------------------------------- */
 function fileName(){
   const clean = s => String(s||"").replace(/[^A-Za-z0-9._-]+/g,"-");
-  return `QC_${clean(S.testId)}_${clean(S.model)}_${stamp()}.html`;
+  // A partial inspection says so in its own file name. Six months later nobody
+  // opens the report to find out why it only covers two tests.
+  const part = partialScope() ? "_PARTIAL" : "";
+  return `QC_${clean(S.testId)}_${clean(S.model)}${part}_${stamp()}.html`;
 }
 function stamp(){
   const d = new Date(), p = n => String(n).padStart(2,"0");
@@ -1933,13 +2199,17 @@ function buildFindings(){
       // test-level photos would print the same picture under every finding of
       // that test, and the reader could not tell which defect is which.
       const note = ((r.notes && r.notes[p.id]) || "").trim();
+      // The English line follows whichever note is printed: the point's own if
+      // it has one, the test-level comment otherwise.
+      const noteEn = (note ? enOf(r, "note", p.id) : enOf(r, "comment")).trim();
       out.push({
         // The plan's label, not the one stored when the operator answered:
         // the report is issued in both languages, and a stored label would
         // print the answering language inside the other one's report.
         unit: u, test: L(t.label), point: L(p.label), code: p.code,
-        desc: codeText(p.code), note: note || r.comment,
-        media: shotsFor(r, p.id).filter(m => m.kind === "photo")
+        desc: codeText(p.code), note: note || r.comment, noteEn: noteEn,
+        media: shotsFor(r, p.id).filter(m => m.kind === "photo"),
+        videos: shotsFor(r, p.id).filter(m => m.kind === "video")
       });
     });
   }));
@@ -1950,7 +2220,25 @@ function reportHtml(){
   const v = finalVerdict();
   const colour = v === "PASS" ? "#17743a" : v === "FAIL" ? "#b3261e" : "#9a6b00";
   const findings = buildFindings();
+  const scope = partialScope();
   let shot = 0;   // running photo number across the whole report
+
+  /* The names the packet will give the videos, computed exactly as buildPacket
+     computes them — same order, same duplicate counter. Printing the original
+     phone name (IMG_4471.MOV) would name a file that exists nowhere. */
+  const videoFiles = {};
+  (function(){
+    const seen = {};
+    mediaList().forEach(v => {
+      let stem = mediaName(v,1), n = 1;
+      while(seen[stem]) stem = mediaName(v, ++n);
+      seen[stem] = true;
+      if(v.m.kind !== "video") return;
+      const ext = (v.m.name && v.m.name.indexOf(".") >= 0)
+        ? v.m.name.split(".").pop().toLowerCase().slice(0,4) : "mp4";
+      videoFiles[v.m.uid] = stem + "." + ext;
+    });
+  })();
 
   const banner = `<div class="bnr">
     <div class="bnr-l"><b>HOKLAN</b><span>QC</span></div>
@@ -2012,6 +2300,14 @@ td.v{font-weight:400}
 .concl b{display:block;font-size:26pt;color:${colour};letter-spacing:3px}
 .concl span{font-size:9.5pt;color:#5a6b7d}
 .note{font-size:8.5pt;color:#5a6b7d;margin-top:6px}
+/* The note is printed as the inspector wrote it, with its English line under
+   it. Same size, slightly darker: it is a translation, not a footnote. */
+.note .en{display:block;margin-top:3px;color:#33475b}
+/* Videos cannot be embedded in a printed page, so the section that has one says
+   so and names the file, which is what makes it findable in the packet. */
+.att{font-size:8.5pt;color:#0f3f6b;margin-top:6px;padding:5px 8px;
+  background:#eef4fa;border-left:3px solid #0f3f6b;
+  page-break-inside:avoid;break-inside:avoid}
 
 /* Watermark. Fixed rather than tiled on the body, because a fixed element is
    what browsers repeat on every printed page; a background image would only
@@ -2055,7 +2351,11 @@ ${banner}
         return `<span class="${uv==="PASS"?"p":uv==="FAIL"?"f":"na"}">${
           fmt("speaker_n",{n:i+1})}: ${verdictText(uv)}</span>`;
       }).join(" &nbsp;|&nbsp; ")}</td></tr>
+  <tr><td class="k">${tr("scope")}</td><td class="v" colspan="3">${
+    scope ? `<b class="f">${fmt("scope_part",{n:scope.n, tot:scope.tot})}</b>`
+          : tr("scope_full")}</td></tr>
 </table>
+${scope?`<p class="att">${tr("scope_part_note")}</p>`:""}
 
 <div class="sec"><i>II</i><b>${tr("inspection_summary")}</b></div>
 <table>
@@ -2127,7 +2427,14 @@ ${banner}
           <em>${esc(f.code)}</em></div>
         <div class="find-b">
           <div>${esc(f.desc)}</div>
-          ${f.note?`<div class="note"><b>${tr("notes")}:</b> ${esc(f.note)}</div>`:""}
+          ${f.note?`<div class="note"><b>${tr("notes")}:</b> ${esc(f.note)}${
+            f.noteEn && f.noteEn !== f.note
+              ? `<span class="en"><b>${tr("notes_en")}:</b> ${esc(f.noteEn)}</span>`
+              : ""}</div>`:""}
+          ${f.videos && f.videos.length?`<div class="att">🎥 <b>${
+            fmt("video_att",{n:f.videos.length})}</b><br>${
+            f.videos.map(m => esc(videoFiles[m.uid] || m.name || "video"))
+              .join("<br>")}</div>`:""}
           ${f.media.length?`<div class="grid" style="margin-top:6px">${
             f.media.map(s=>{ shot++; return `<div class="cell">
               <div class="ph"><img src="${s.url}">
@@ -2138,48 +2445,84 @@ ${banner}
   }
 
   /* ---- IV EVIDENCE ----
-     General evidence only: the pictures of a specific defect were already
-     printed with their finding in III, and printing them twice makes the
-     report look padded and the numbering harder to follow. */
+     General evidence, the notes and the videos of each test. The pictures of a
+     specific defect were already printed with their finding in III, and
+     printing them twice makes the report look padded and the numbering harder
+     to follow — so the same rule applies to a video already named up there. */
   const general = r => (r.media || []).filter(m => m.kind === "photo" && !m.slot);
-  const anyPhoto = allUnits().some(u =>
-    unitRows(u).some(r => r && general(r).length));
-  if(anyPhoto){
-    // General evidence belongs to the test, not to a speaker — it lives on
-    // speaker 1 only because it has to live somewhere — so no SPEAKER banner
-    // here: it would claim the bench photo shows unit 1 in particular.
-    h += `<div class="sec brk"><i>IV</i><b>${tr("evidence_sec")}</b></div>`;
-    allUnits().forEach(u => {
-    unitRows(u).forEach((r,i)=>{
-      if(!r) return;
-      const t = tests()[i];
-      const isDoc = t && t.type === "photos";
-      const photos = isDoc ? r.media.filter(m => m.kind === "photo") : general(r);
-      if(!photos.length) return;
+  const shownVideos = {};
+  findings.forEach(f => (f.videos || []).forEach(m => { shownVideos[m.uid] = true; }));
 
-      h += `<div class="sec" style="background:#f7f9fb"><i>&nbsp;</i><b>${esc(L(t.label))}</b></div>
-        <div class="grid">`;
-      if(isDoc){
-        realPoints(t).forEach(p => {
-          shotsFor(r,p.id).forEach(s => {
+  /* One block per test rather than per speaker. General evidence, the notes and
+     the videos all document the test itself, not any one unit — they live on
+     speaker 1 because they have to live somewhere — so there is no SPEAKER
+     banner here: it would claim the bench photo shows unit 1 in particular.
+     Videos are the exception: one attached to a defect on speaker 3 is filed
+     against speaker 3, so they are collected across every unit and each says
+     which point and which speaker it belongs to. */
+  const blocksIV = tests().map((t,i) => {
+    const r0 = unitRows(0)[i];
+    const isDoc = t.type === "photos";
+    const photos = !r0 ? []
+      : isDoc ? r0.media.filter(m => m.kind === "photo") : general(r0);
+    const videos = [];
+    allUnits().forEach(u => {
+      const r = unitRows(u)[i];
+      if(!r) return;
+      (r.media || []).forEach(m => {
+        if(m.kind === "video" && !shownVideos[m.uid]) videos.push({m, u});
+      });
+    });
+    const note = ((r0 && r0.comment) || "").trim();
+    const noteEn = r0 ? String(enOf(r0, "comment") || "").trim() : "";
+    return {t, r0, isDoc, photos, videos, note, noteEn};
+  }).filter(b => b.photos.length || b.videos.length || b.note);
+
+  if(blocksIV.length){
+    h += `<div class="sec brk"><i>IV</i><b>${tr("evidence_sec")}</b></div>`;
+    blocksIV.forEach(b => {
+      h += `<div class="sec" style="background:#f7f9fb"><i>&nbsp;</i><b>${
+        esc(L(b.t.label))}</b></div>`;
+
+      if(b.note)
+        h += `<p class="note"><b>${tr("notes")}:</b> ${esc(b.note)}${
+          b.noteEn && b.noteEn !== b.note
+            ? `<span class="en"><b>${tr("notes_en")}:</b> ${esc(b.noteEn)}</span>`
+            : ""}</p>`;
+
+      if(b.videos.length)
+        h += `<div class="att">🎥 <b>${fmt("video_att",{n:b.videos.length})}</b><br>${
+          b.videos.map(v => {
+            const p = v.m.slot ? realPoints(b.t).find(x => x.id === v.m.slot) : null;
+            return esc([videoFiles[v.m.uid] || v.m.name || "video",
+                        p ? L(p.label) : "",
+                        S.units > 1 && !b.isDoc ? fmt("speaker_n",{n:v.u+1}) : ""]
+                       .filter(Boolean).join("  ·  "));
+          }).join("<br>")}</div>`;
+
+      if(b.photos.length){
+        h += `<div class="grid">`;
+        if(b.isDoc){
+          realPoints(b.t).forEach(p => {
+            shotsFor(b.r0, p.id).forEach(s => {
+              shot++;
+              h += `<div class="cell"><div class="ph"><img src="${s.url}">
+                <span class="ts">${shotStamp(s.at)}</span></div>
+                <div class="cap">#${shot} ${esc(L(p.label))}</div></div>`;
+            });
+          });
+        } else {
+          const bad = b.r0 && b.r0.verdict === "FAIL";
+          b.photos.forEach(s => {
             shot++;
             h += `<div class="cell"><div class="ph"><img src="${s.url}">
               <span class="ts">${shotStamp(s.at)}</span></div>
-              <div class="cap">#${shot} ${esc(L(p.label))}</div></div>`;
+              <div class="cap">#${shot} ${esc(L(b.t.label))} | <span class="${
+                bad?"f":"p"}">${bad?tr("fail"):tr("ok")}</span></div></div>`;
           });
-        });
-      } else {
-        photos.forEach(s => {
-          shot++;
-          const bad = r.verdict === "FAIL";
-          h += `<div class="cell"><div class="ph"><img src="${s.url}">
-            <span class="ts">${shotStamp(s.at)}</span></div>
-            <div class="cap">#${shot} ${esc(L(t.label))} | <span class="${
-              bad?"f":"p"}">${bad?tr("fail"):tr("ok")}</span></div></div>`;
-        });
+        }
+        h += `</div>`;
       }
-      h += `</div>`;
-    });
     });
   }
 
@@ -2214,13 +2557,39 @@ ${banner}
       ${findings.length?`<div class="note" style="margin-top:10px">
         ${fmt("concl_fail",{n:findings.length})}</div>`:
         `<div class="note" style="margin-top:10px">${tr("concl_pass")}</div>`}
+      ${scope?`<div class="note" style="margin-top:8px"><b>${
+        fmt("scope_part",{n:scope.n, tot:scope.tot})}</b></div>`:""}
     </div>
     <p class="note">${tr("footer_note")}</p>`;
 
   return h + `</body></html>`;
 }
 
-function showReport(){ S.screen = "report"; render(); }
+/* The report is drawn at once from what is already translated, then redrawn if
+   a pending translation lands: waiting on the network before showing anything
+   would leave the operator looking at a blank screen on a bad connection. */
+function showReport(){
+  S.screen = "report";
+  render();
+  ensureTranslations().then(() => { if(S.screen === "report") render(); });
+}
+
+/* PDF in one tap, from the finish screen. No browser can write a PDF file on
+   its own — what exists is the print dialog with "Save as PDF" as the
+   destination — so this opens the report and calls it straight away instead of
+   making the operator find it. The English lines are filled in first: printing
+   a report and then translating it would issue the wrong document. */
+async function savePdfNow(){
+  showSaved(tr("pdf_wait"));
+  try{ await ensureTranslations(); }catch(e){}
+  showSaved("");
+  S.screen = "report";
+  render();
+  window.scrollTo(0,0);
+  // The report is hundreds of images; give the browser a frame to lay them out
+  // before the print dialog freezes the page, or the first pages come out blank.
+  setTimeout(() => { if(S.screen === "report") window.print(); }, 600);
+}
 function printReport(){ window.print(); }
 
 /* ---------- spreadsheet export --------------------------------------------
@@ -2248,17 +2617,23 @@ function reportCsv(){
      appears 5 times, and without this column they would be indistinguishable
      and would collapse into one another in the dashboard. */
   const head = LANG === "zh"
-    ? ["测试编号","型号","订单号","检验员","检验日期","最终结果",
+    ? ["测试编号","型号","订单号","检验员","检验日期","最终结果","检验范围",
        "音箱","音箱数量","音箱结果",
        "test_key","point_key","result_key",
-       "测试","分组","检查项","结果","代码","代码说明","备注","照片数"]
-    : ["Test ID","Reference","PO","Operator","Inspection","Final result",
+       "测试","分组","检查项","结果","代码","代码说明","备注","备注（英文）","照片数"]
+    : ["Test ID","Reference","PO","Operator","Inspection","Final result","Scope",
        "Speaker","Speakers","Speaker result",
        "test_key","point_key","result_key",
-       "Test","Section","Point","Result","Code","Code description","Notes","Photos"];
+       "Test","Section","Point","Result","Code","Code description",
+       "Notes","Notes (EN)","Photos"];
 
+  // The scope travels on every row: a dashboard that groups by test_key has to
+  // be able to exclude partial inspections, and it can only do that if the
+  // column is on the row it is reading.
+  const sc = partialScope();
   const base = [S.testId, S.model, S.po, S.operator,
-                inspectionDate(S.startedAt), finalVerdict()];
+                inspectionDate(S.startedAt), finalVerdict(),
+                sc ? fmt("scope_part",{n:sc.n, tot:sc.tot}) : tr("scope_full")];
   const rows = [head];
 
   allUnits().forEach(u => {
@@ -2292,10 +2667,16 @@ function reportCsv(){
         if(v !== "FAIL"){ photos = r.media.filter(m => !m.slot).length; note = ""; }
       }
 
+      // Both columns describe the same note: the original as the inspector
+      // wrote it, and its English line. Whichever note is printed, its own
+      // translation goes next to it — never the other one's.
+      const shownNote = note || r.comment || "";
+      const shownEn = note ? enOf(r, "note", p.id) : enOf(r, "comment");
+
       rows.push(lead.concat([
         t.id, p.id, key,
         L(t.label), section, L(p.label), result, code, desc,
-        note || r.comment || "", photos
+        shownNote, shownEn || "", photos
       ]));
     });
   });
@@ -2526,6 +2907,8 @@ function packetReadme(photos, videos, lost){
   out.push("HOKLAN QC — " + S.testId + " — " + S.model);
   out.push(inspectionDate(S.startedAt) + "  ·  " + S.operator);
   out.push(S.units > 1 ? S.units + " speakers" : "1 speaker");
+  const sc = partialScope();
+  if(sc) out.push("!! " + fmt("scope_part",{n:sc.n, tot:sc.tot}));
   out.push("");
   out.push("REPORT_EN.html  " + tr("rm_report_en"));
   out.push("REPORT_ZH.html  " + tr("rm_report_zh"));
@@ -2567,6 +2950,9 @@ async function withPacket(use){
   btns.forEach(b => b.disabled = true);
   showSaved(tr("packing"));
   try{
+    // Last chance to fill in any English line the debounce did not catch: after
+    // this the report is written and the ZIP is closed.
+    await ensureTranslations();
     const p = await buildPacket();
     await use(p);
   }catch(err){
@@ -2592,40 +2978,251 @@ function downloadPacket(){
   });
 }
 
-function sharePacket(){
-  withPacket(async p => {
-    const file = new File([p.blob], p.name, {type:"application/zip"});
-    if(navigator.canShare && navigator.canShare({files:[file]})){
-      try{
-        await navigator.share({files:[file], title:"HOKLAN QC " + S.testId});
-        showSaved(packetSummary(p));
-        clearDraft();
-        return;
-      }catch(err){
-        if(err && err.name === "AbortError") { showSaved(""); return; }
-      }
-    }
-    // No file sharing here — WeChat's browser is the usual case. Falling back
-    // to a download at least leaves the packet on the phone to attach by hand.
-    if(CAN_DOWNLOAD){
-      saveBlob(p.blob, p.name);
-      showSaved(packetSummary(p) + tr("share_fallback"));
-      clearDraft();
-    } else {
-      showSaved("");
-      alert(tr("a_no_share"));
-    }
-  });
-}
+/* There is no SHARE button: the packet is downloaded and attached by hand. The
+   system share sheet was removed on request — on iOS that made the download the
+   only route off the phone, which is why CAN_DOWNLOAD no longer excludes it. */
 
 /* ---------- screens ------------------------------------------------------- */
 function render(){
   if(S.screen === "setup")  renderSetup();
+  else if(S.screen === "admin")     renderAdmin();
+  else if(S.screen === "adminPick") renderAdminPick();
   else if(S.screen === "test")   renderTest();
   else if(S.screen === "index")  renderIndex();
   else if(S.screen === "report") renderReport();
   else renderDone();
   if(typeof updateTopBtn === "function") updateTopBtn();
+}
+
+/* ---------- admin ---------------------------------------------------------
+   A second tab where the whole reference catalogue is listed and a single test
+   can be launched on its own — a re-test of one defect without walking the
+   entire plan again.
+
+   The way in is the Test ID field on the start screen: typing the admin code
+   there opens this tab instead of starting an inspection. There is no extra
+   box on the screen, and the app looks untouched until somebody knows the code.
+
+   What that is worth: the code sits in a file anyone can read, next to the
+   catalogue it guards. It stops an operator from wandering in; it stops nobody
+   who opens the page source. Actually restricting Admin would need a server.
+--------------------------------------------------------------------------- */
+const ADMIN_ID = {digits:"365", code:"365-H8Q2K7L4"};
+let ADMIN_OK = false;      // per session on purpose: never remembered on disk
+
+const inAdmin = () => S.screen === "admin" || S.screen === "adminPick";
+
+/* Inside Admin only. The start screen has to be the same screen it is when the
+   app is opened — nothing added, nothing highlighted — so the tabs live here,
+   where they say which mode you are in and offer the way out. */
+function tabBar(){
+  if(!inAdmin()) return "";
+  return `<div class="tabs noprint">
+    <button onclick="exitAdmin()">${tr("tab_factory")}</button>
+    <button class="on">${tr("tab_admin")}</button>
+  </div>`;
+}
+
+/* Leaving Admin locks it again: the way back in is the code, the same way in as
+   the first time. Everything Admin touched is cleared, so what appears is the
+   start screen exactly as it opens — no reference chosen, no test selection
+   left behind, no field pre-filled. */
+function exitAdmin(){
+  ADMIN_OK = false;
+  S.adminQuery = "";
+  S.pick = null; S.fromAdmin = false;
+  S.idDigits = ""; S.testId = ""; S.factory = ""; S.model = "";
+  S.screen = "setup";
+  window.scrollTo(0,0);
+  render();
+}
+/* Back to the reference list. Without the session flag there is no Admin to go
+   back to, so this lands on the start screen instead. */
+function goAdminTab(){
+  if(!ADMIN_OK){ exitAdmin(); return; }
+  S.screen = "admin";
+  window.scrollTo(0,0);
+  render();
+}
+
+function renderAdmin(){
+  // Reached only through the code. A reload drops the session flag, so this
+  // sends anyone who lands here without it back to the start screen.
+  if(!ADMIN_OK){ S.screen = "setup"; renderSetup(); return; }
+
+  const list = refList();
+
+  app.innerHTML = `
+    ${langBar()}
+    <h1>HOKLAN QC</h1>
+    <p class="sub">${tr("tab_admin")}</p>
+    ${tabBar()}
+    <div class="card">
+      <div class="tag">${esc(ADMIN_ID.code)}</div>
+      <label>${tr("admin_refs")}</label>
+      <input id="q" value="${esc(S.adminQuery)}" placeholder="${tr("search")}"
+        autocomplete="off" oninput="setAdminQuery(this.value)">
+      <p class="hint" id="qhint">${fmt("admin_refs_hint",{n:list.length})}</p>
+      <div class="rlist" id="rlist">${refRows(list)}</div>
+    </div>`;
+  actions.innerHTML =
+    `<button onclick="exitAdmin()">${tr("to_start")}</button>`;
+}
+
+/* The references the filter currently leaves. */
+function refList(){
+  const q = String(S.adminQuery || "").trim().toUpperCase();
+  const all = Object.keys(CONFIG.models).sort();
+  return q ? all.filter(m => m.toUpperCase().indexOf(q) >= 0) : all;
+}
+function refRows(list){
+  if(!list.length) return `<p class="hint" style="margin:0">${tr("no_match")}</p>`;
+  return list.map(m => `<button onclick="adminOpen('${esc(m)}')">
+      <span>${esc(m)}</span><em>${esc(codeOfModel(m))}</em></button>`).join("");
+}
+
+/* Filtering must not rebuild the input being typed into, so the list and its
+   count are patched in place and the field is left alone. Both are addressed by
+   id: the empty result is a message inside the same container, so there is
+   always something to write into — a filter that matched nothing used to leave
+   the previous list on screen. */
+function setAdminQuery(value){
+  S.adminQuery = value;
+  const list = refList();
+  const hint = document.getElementById("qhint");
+  const box = document.getElementById("rlist");
+  if(hint) hint.innerHTML = fmt("admin_refs_hint",{n:list.length});
+  if(box) box.innerHTML = refRows(list);
+}
+
+/* The reference decides the factory, and each factory has exactly one test ID,
+   so picking a reference in Admin fills in the code the report has to carry —
+   there is nothing for the operator to type and nothing to get wrong. */
+const keyOfModel = m => CONFIG.models[m] || "";
+function digitsOfKey(key){
+  return Object.keys(CONFIG.test_ids)
+    .find(d => CONFIG.test_ids[d].key === key) || "";
+}
+function codeOfModel(m){
+  const d = digitsOfKey(keyOfModel(m));
+  return d ? CONFIG.test_ids[d].code : "—";
+}
+
+function adminOpen(model){
+  S.model = model;
+  S.factory = keyOfModel(model);
+  S.idDigits = digitsOfKey(S.factory);
+  S.testId = S.idDigits ? CONFIG.test_ids[S.idDigits].code : "";
+  // Everything ticked to begin with: the common case is "all of it, on this
+  // reference", and unticking three is less work than ticking eleven.
+  S.pick = planTests().map(t => t.id);
+  S.screen = "adminPick";
+  window.scrollTo(0,0);
+  render();
+}
+
+/* Read the form back before any rebuild, exactly as setUnits does: the fields
+   sit above the controls that trigger a render and would be silently cleared. */
+function readAdminForm(){
+  S.po = (document.getElementById("po")||{}).value || S.po;
+  S.operator = (document.getElementById("operator")||{}).value || S.operator;
+}
+
+function togglePick(id){
+  readAdminForm();
+  S.pick = S.pick || [];
+  const i = S.pick.indexOf(id);
+  if(i >= 0) S.pick.splice(i,1); else S.pick.push(id);
+  render();
+}
+function pickAll(on){
+  readAdminForm();
+  S.pick = on ? planTests().map(t => t.id) : [];
+  render();
+}
+
+function renderAdminPick(){
+  const all = planTests();
+  const picked = S.pick || [];
+  const rows = all.map(t => {
+    const on = picked.indexOf(t.id) >= 0;
+    const n = realPoints(t).length;
+    return `<button class="pk ${on?"on":""}" onclick="togglePick('${t.id}')">
+      <i>${on?"✓":""}</i><b>${esc(L(t.label))}</b>
+      <em>${fmt("points_n",{n})}${t.optional?" · "+tr("is_optional"):""}</em>
+    </button>`;
+  }).join("");
+
+  app.innerHTML = `
+    ${langBar()}
+    <h1>HOKLAN QC</h1>
+    <p class="sub">${tr("tab_admin")}</p>
+    ${tabBar()}
+    <div class="card">
+      <div class="tag">${esc(S.model)}</div><div class="tag">${esc(S.testId)}</div>
+      <div class="tag">${esc(inspectionDate())}</div>
+      <label>${tr("tests_pick")}</label>
+      <div class="row" style="margin-bottom:8px">
+        <button onclick="pickAll(true)">${tr("all_on")}</button>
+        <button onclick="pickAll(false)">${tr("all_off")}</button>
+      </div>
+      ${rows}
+      <p class="hint">${fmt("n_selected",{n:picked.length, tot:all.length})}</p>
+    </div>
+    <div class="card">
+      <label style="margin-top:0">${tr("po")}</label>
+      <input id="po" value="${esc(S.po)}" placeholder="1693"
+        inputmode="numeric" maxlength="12" autocomplete="off"
+        oninput="onlyDigits(this)">
+      <label>${tr("operator")}</label>
+      <input id="operator" value="${esc(S.operator)}" maxlength="40"
+        autocomplete="off" oninput="onlyLetters(this)">
+      <label>${tr("units")}</label>
+      <div class="units">${Array.from({length:MAX_UNITS},(_,i)=>
+        `<button class="${S.units===i+1?"on":""}"
+          onclick="setUnitsAdmin(${i+1})">${i+1}</button>`).join("")}</div>
+    </div>`;
+
+  actions.innerHTML = `
+    <button style="flex:0 0 40%" onclick="goAdminTab()">${tr("back")}</button>
+    <button class="primary" style="flex:4${picked.length?"":";opacity:.5"}"
+      onclick="adminStart()">${tr("admin_start")}</button>`;
+}
+
+function setUnitsAdmin(n){
+  readAdminForm();
+  S.units = Math.min(MAX_UNITS, Math.max(1, parseInt(n,10) || 1));
+  render();
+}
+
+function adminStart(){
+  readAdminForm();
+  S.po = String(S.po||"").replace(/[^0-9]/g,"").trim();
+  S.operator = String(S.operator||"")
+    .replace(/[^\p{L}\p{M} .'’-]/gu,"").replace(/\s+/g," ").trim();
+  if(!S.model || !S.testId){ alert(tr("a_select_model")); return; }
+  if(!S.operator){ alert(tr("a_operator")); return; }
+  if(!S.pick || !S.pick.length){ alert(tr("a_pick_tests")); return; }
+
+  S.fromAdmin = true;
+  S.index = 0; S.open = {};
+  S.data = Array.from({length:S.units}, () => []);
+  S.startedAt = Date.now(); S.screen = "test";
+  window.scrollTo(0,0);
+  render(); save();
+}
+
+/* Abort throws the inspection away on purpose — that is what it is for. It asks
+   first, because what it discards is an hour of somebody's work. */
+function abortTest(){
+  if(!confirm(tr("a_abort"))) return;
+  clearDraft();
+  S.data = [[]]; S.units = 1; S.index = 0; S.open = {};
+  S.startedAt = null; S.mediaDropped = false;
+  S.pick = null; S.fromAdmin = false;
+  S.screen = ADMIN_OK ? "admin" : "setup";
+  window.scrollTo(0,0);
+  render();
 }
 
 function langBar(mini){
@@ -2723,6 +3320,19 @@ function onlyLetters(el){ filterInput(el, /[^\p{L}\p{M} .'’-]/gu); }
 
 function setTestId(value){
   const digits = String(value).replace(/\D/g,"").slice(0,3);
+
+  // The admin code is not a factory. It is consumed here — the field is left
+  // empty and nothing is stored — so it can never reach a report, a file name
+  // or the spreadsheet the way a real test ID does.
+  if(digits === ADMIN_ID.digits){
+    ADMIN_OK = true;
+    S.idDigits = ""; S.testId = ""; S.factory = ""; S.model = "";
+    S.screen = "admin";
+    window.scrollTo(0,0);
+    render();
+    return;
+  }
+
   const entry = CONFIG.test_ids[digits];
   const newKey = entry ? entry.key : "";
 
@@ -2760,6 +3370,10 @@ function start(){
   if(!S.operator){ alert(tr("a_operator")); return; }
   const un = document.getElementById("units");
   S.units = un ? Math.min(MAX_UNITS, Math.max(1, parseInt(un.value,10)||1)) : 1;
+  // The factory flow always runs the whole plan: any selection left over from
+  // an Admin session is dropped here, or a partial plan would leak into a
+  // normal inspection and report as if it were complete.
+  S.pick = null; S.fromAdmin = false;
   S.index = 0; S.open = {};
   S.data = Array.from({length:S.units}, () => []);
   S.startedAt = Date.now(); S.screen = "test";
@@ -2777,6 +3391,7 @@ function wipeData(){
   clearDraft();
   S.data = [[]]; S.units = 1; S.index = 0; S.open = {};
   S.po = ""; S.operator = ""; S.startedAt = null; S.mediaDropped = false;
+  S.pick = null; S.fromAdmin = false;
   S.screen = "setup";
   goHomeReset();
   window.scrollTo(0,0);
@@ -2794,6 +3409,15 @@ function header(t, done, total){
     <div class="bar"><i style="width:${(done/total*100).toFixed(0)}%"></i></div>
     <h2>${done+1} / ${total} · ${esc(L(t.label))}</h2>
     <button class="jump" onclick="showIndex()">${tr("go_other")}</button>`;
+}
+
+/* Only a targeted inspection launched from Admin can be walked out of. In the
+   factory flow the way out is finishing, or the home button with its warning —
+   an operator does not get a one-tap discard next to the checklist. */
+function abortBlock(){
+  return S.fromAdmin ? `<p style="text-align:center;margin:0">
+    <button class="jump" style="width:100%;color:var(--red);border-color:#7a3a36"
+      onclick="abortTest()">${tr("abort")}</button></p>` : "";
 }
 
 function mediaBlock(r){
@@ -2814,6 +3438,7 @@ function pointRow(p, u, showTag){
   const v = r.points[p.id];
   const shots = shotsFor(r, p.id);
   const note = (r.notes && r.notes[p.id]) || "";
+  const noteEn = enOf(r, "note", p.id);
   const evOk = shots.length > 0 && note.trim() !== "";
   const id = u + "_" + p.id;
 
@@ -2845,8 +3470,10 @@ function pointRow(p, u, showTag){
           <span onclick="dropMedia('${m.uid}')">×</span>
         </div>`).join("")}</div>
       <textarea placeholder="${tr("notes_fail_ph")}"
-        oninput="setNote(${u},'${p.id}', this.value)"
+        oninput="noteTyped(${u},'${p.id}', this.value)"
         onblur="setTimeout(function(){closeFail(${u},'${p.id}')},180)">${esc(note)}</textarea>
+      <div id="en_${id}" class="en-line${noteEn?"":" hidden"}">${
+        noteEn?esc(tr("notes_en") + ": " + noteEn):""}</div>
       <div id="pfw_${id}" class="${evOk?"pf-ok":"pf-w"}">${
         evOk?tr("fail_ready"):tr("fail_required")}</div>
     </div>` : "";
@@ -2868,15 +3495,17 @@ function renderTest(){
   if(t.type === "photos") return renderPhotoTest(t, row(0), done, total);
 
   const shared = row(0);      // test-level evidence and notes live on speaker 1
+  const sharedEn = enOf(shared, "comment");
   const pending = pendingCount();
-  const needsPhoto = shared.media.filter(m => !m.slot).length === 0;
+  const needsPhoto = missingEvidence(0).photo;
+  const needsVideo = missingEvidence(0).video;
   // A failure without its photo and its note is as blocking as an unanswered
   // point, so the Next button has to dim for it too.
   let openFails = 0;
   allUnits().forEach(u => realPoints(t).forEach(p => {
     if(failOpen(row(u), p)) openFails++;
   }));
-  const ready = pending === 0 && !needsPhoto && openFails === 0;
+  const ready = pending === 0 && !needsPhoto && !needsVideo && openFails === 0;
   const many = S.units > 1;
 
   const groups = sectionsOf(t).map(sec => {
@@ -2922,11 +3551,15 @@ function renderTest(){
     <p class="hint" id="hint" style="margin:0 0 10px">${hintHtml(t)}</p>
     ${groups}
     <div class="card">
-      <label style="margin-top:0">${tr("evidence")}${needsPhoto?
+      <label style="margin-top:0">${tr("evidence")}${needsPhoto||needsVideo?
         ` <span style="color:var(--amber)">${tr("required")}</span>`:""}</label>
       <ul class="ask">
-        <li><b>${tr("video")}</b> ${tr("ask_video")}</li>
-        <li><b>${tr("photo")}</b> ${tr("ask_photo")}</li>
+        <li><b>${tr("video")}</b> ${tr("ask_video")}${needsVideo
+          ? ` <b style="color:var(--amber)">${tr("required")}</b>`
+          : ` <b style="color:var(--green)">✓</b>`}</li>
+        <li><b>${tr("photo")}</b> ${tr("ask_photo")}${needsPhoto
+          ? ` <b style="color:var(--amber)">${tr("required")}</b>`
+          : ` <b style="color:var(--green)">✓</b>`}</li>
       </ul>
       <div class="row">
         <button onclick="document.getElementById('cam').click()">📷 ${tr("photo")}</button>
@@ -2935,13 +3568,19 @@ function renderTest(){
       <input id="cam" class="hidden" type="file" accept="image/*" capture="environment" multiple onchange="addMedia(this,0)">
       <input id="vid" class="hidden" type="file" accept="video/*" capture="environment" multiple onchange="addMedia(this,0)">
       ${mediaBlock(shared)}
-      ${needsPhoto?`<div class="needed">${
-        many ? tr("need_photo_n") : tr("need_photo")}</div>`:""}
+      ${needsPhoto||needsVideo?`<div class="needed">${
+        needsPhoto && needsVideo ? tr("need_both")
+        : needsVideo ? tr("need_video")
+        : (many ? tr("need_photo_n") : tr("need_photo"))}</div>`:""}
     </div>
     <div class="card">
       <label style="margin-top:0">${tr("notes")} ${tr("optional")}</label>
-      <textarea id="comment" placeholder="${tr("notes_ph")}">${esc(shared.comment)}</textarea>
-    </div>`;
+      <textarea id="comment" placeholder="${tr("notes_ph")}"
+        oninput="commentTyped(this.value)">${esc(shared.comment)}</textarea>
+      <div id="en_comment" class="en-line${sharedEn?"":" hidden"}">${
+        sharedEn?esc(tr("notes_en") + ": " + sharedEn):""}</div>
+    </div>
+    ${abortBlock()}`;
 
   actions.innerHTML = `
     ${done>0?`<button class="skip" style="flex:0 0 52px" onclick="prevTest()">‹</button>`:""}
@@ -2955,6 +3594,21 @@ function renderTest(){
    that depend on that note are patched in place instead. */
 const failOpen = (r,p) => r.points[p.id] === "FAIL" &&
   (shotsFor(r,p.id).length === 0 || !((r.notes && r.notes[p.id]) || "").trim());
+
+/* The evidence every test has to be left with: one photo *and* one clip of it
+   being run. Both are demanded because they answer different questions — the
+   photo shows the setup and the tools used, the video shows the speaker
+   actually working. Evidence of a specific defect carries a slot and is
+   accounted for on its own point, so it does not count here. */
+function missingEvidence(u){
+  const gen = row(u || 0).media.filter(m => !m.slot);
+  return {photo: !gen.some(m => m.kind === "photo"),
+          video: !gen.some(m => m.kind === "video")};
+}
+function evidenceComplete(){
+  const m = missingEvidence(0);
+  return !m.photo && !m.video;
+}
 
 function openFailCount(t){
   let n = 0;
@@ -2990,12 +3644,13 @@ function syncFail(u, pointId){
   const btn = document.getElementById("btn-next");
   if(btn){
     const ready = pendingCount() === 0 &&
-      row(0).media.filter(m => !m.slot).length > 0 && openFailCount(t) === 0;
+      evidenceComplete() && openFailCount(t) === 0;
     btn.style.opacity = ready ? "" : ".5";
   }
 }
 
 function renderPhotoTest(t, r, done, total){
+  const rEn = enOf(r, "comment");
   const items = realPoints(t);
   const missing = items.filter(p =>
     shotsFor(r,p.id).length === 0 && (t.no_na || r.points[p.id] !== "NA")).length;
@@ -3040,8 +3695,12 @@ function renderPhotoTest(t, r, done, total){
     ${rows}
     <div class="card">
       <label style="margin-top:0">${tr("notes")} ${tr("optional")}</label>
-      <textarea id="comment" placeholder="${tr("notes_ph")}">${esc(r.comment)}</textarea>
-    </div>`;
+      <textarea id="comment" placeholder="${tr("notes_ph")}"
+        oninput="commentTyped(this.value)">${esc(r.comment)}</textarea>
+      <div id="en_comment" class="en-line${rEn?"":" hidden"}">${
+        rEn?esc(tr("notes_en") + ": " + rEn):""}</div>
+    </div>
+    ${abortBlock()}`;
 
   actions.innerHTML = `
     ${done>0?`<button class="skip" style="flex:0 0 52px" onclick="prevTest()">‹</button>`:""}
@@ -3056,7 +3715,7 @@ function goTest(i){
   window.scrollTo(0,0);   // a new test must start at its first step
   render(); save();
 }
-function finish(){ S.screen = "done"; render(); save(); }
+function finish(){ S.screen = "done"; render(); save(); ensureTranslations(); }
 
 function renderIndex(){
   const list = tests().map((t,i)=>{
@@ -3192,7 +3851,7 @@ function renderDone(){
     </div>`;
 
   actions.innerHTML = `
-    <button class="primary" onclick="sharePacket()">${tr("share")}</button>
+    <button class="primary" onclick="savePdfNow()">${tr("save_pdf_dl")}</button>
     <button style="flex:0 0 44%" onclick="downloadPacket()">${tr("download")}</button>`;
 }
 
@@ -3227,6 +3886,7 @@ function goHome(){
   S.screen = "setup"; S.index = 0; S.units = 1;
   S.data = [[]]; S.open = {};
   S.startedAt = null; S.mediaDropped = false;
+  S.pick = null; S.fromAdmin = false;
   goHomeReset();
   window.scrollTo(0,0);
   render();
@@ -3234,7 +3894,9 @@ function goHome(){
 
 const topBtn = document.getElementById("toTop");
 function updateTopBtn(){
-  const show = S.screen !== "setup";
+  // Not in Admin: the tabs are already the way back, and a HOME button next to
+  // them would just be a second one that does something slightly different.
+  const show = S.screen !== "setup" && !inAdmin();
   topBtn.className = "totop" + (show ? " show" : "");
   topBtn.textContent = tr("home");
 }
