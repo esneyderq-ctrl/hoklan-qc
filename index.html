@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="2.0">
+<meta name="app-version" content="2.1">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -329,7 +329,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "2.0";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "2.1";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -1337,8 +1337,12 @@ const CONFIG = {
    has to be a quiet blank rather than a broken page.
 ------------------------------------------------------------------------- */
 const REF_IMG_DIR = "img/";
+/* PNG first because that is what the catalogue exports. The order matters: the
+   second format is only tried after the first has failed, so getting it wrong
+   costs one wasted request per reference — fifty-three trips to nowhere on a
+   factory connection. */
 const refImgUrl = (model, ext) =>
-  REF_IMG_DIR + encodeURIComponent(String(model || "")) + "." + (ext || "jpg");
+  REF_IMG_DIR + encodeURIComponent(String(model || "")) + "." + (ext || "png");
 
 /* ---------- Spanish for the plan -----------------------------------------
    The config above is generated, so Spanish cannot live inside it: the next
@@ -4057,11 +4061,11 @@ function refImgOk(){
 }
 
 function refImgFail(img){
-  // One retry as .png before giving up: whoever exports the photos should not
+  // One retry as .jpg before giving up: whoever exports the photos should not
   // have to care which of the two formats came out of the catalogue.
   if(!img.dataset.retry){
     img.dataset.retry = "1";
-    img.src = refImgUrl(S.model, "png");
+    img.src = refImgUrl(S.model, "jpg");
     return;
   }
   const row = document.getElementById("refimg");
