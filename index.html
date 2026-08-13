@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="1.9">
+<meta name="app-version" content="2.0">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -239,6 +239,29 @@ td:last-child{text-align:right;font-weight:700}
 .unit-tag{display:inline-block;background:var(--accent);color:#04121f;
   border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700;
   letter-spacing:.6px;margin-right:6px}
+/* Reference photo: one compact row, so the form still fits on one screen and the
+   START button stays within thumb reach. A large picture here would push the
+   button below the fold for a glance that lasts a second. */
+.refimg{display:flex;gap:11px;align-items:center;background:#0c1b2d;
+  border:1px solid var(--border);border-radius:9px;padding:9px;margin-top:9px}
+.refimg .ri-thumb{width:58px;height:58px;flex:none;border-radius:7px;
+  background:#0a1523;border:1px solid var(--border);overflow:hidden;
+  display:flex;align-items:center;justify-content:center}
+.refimg img{width:100%;height:100%;object-fit:contain;display:none}
+.refimg.ok img{display:block}
+.refimg.ok .ri-thumb{cursor:zoom-in}
+.refimg .ri-txt{min-width:0}
+.refimg .ri-txt b{display:block;font-size:13px;font-weight:600}
+.refimg .ri-txt span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.refimg.miss{border-style:dashed;background:#0a1523}
+/* Enlarged. Tapping anywhere closes it: on a phone, hunting for an × with one
+   hand while holding a speaker in the other is not a design. */
+.ri-zoom{position:fixed;inset:0;z-index:60;background:rgba(3,8,15,.94);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:22px}
+.ri-zoom img{max-width:100%;max-height:76vh;object-fit:contain;border-radius:10px}
+.ri-zoom span{color:var(--muted);font-size:13px;letter-spacing:1px}
+
 .tag{display:inline-block;background:#10273f;border:1px solid var(--border);
   border-radius:6px;padding:3px 9px;font-size:12px;color:var(--muted);margin-right:6px}
 /* Result of the test-ID lookup: same weight in both directions, so a wrong
@@ -306,7 +329,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "1.9";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "2.0";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -1303,6 +1326,20 @@ const CONFIG = {
 };
 /* ==== END GENERATED CONFIG ==== */
 
+/* ---------- reference photos ----------------------------------------------
+   One file per reference, next to the app: img/HK-ARC101.jpg. Loaded on demand,
+   never embedded — fifty-three photos inside this file would multiply its weight
+   by ten so that every phone downloads all of them to look at one.
+
+   The photo is there to confirm the right model was selected, and nothing more:
+   it is not evidence, it never enters the report, and its absence never blocks
+   an inspection. Photos will not all arrive on the same day, and a missing one
+   has to be a quiet blank rather than a broken page.
+------------------------------------------------------------------------- */
+const REF_IMG_DIR = "img/";
+const refImgUrl = (model, ext) =>
+  REF_IMG_DIR + encodeURIComponent(String(model || "")) + "." + (ext || "jpg");
+
 /* ---------- Spanish for the plan -----------------------------------------
    The config above is generated, so Spanish cannot live inside it: the next
    regeneration would wipe it. It lives here instead, keyed by the English
@@ -1713,6 +1750,10 @@ const T = {
  en:{
   subtitle:"QUALITY CONTROL", test_id:"Test ID", bad_id:"Unknown code",
   reference:"Reference",
+  ref_img:"Reference photo", ref_img_tap:"tap to enlarge",
+  ref_img_loading:"loading photo…",
+  ref_img_none:"no reference photo for this model yet",
+  ref_img_off:"the photo did not load — check the connection",
   inspection:"Inspection date", po:"Purchase order (PO)", operator:"Operator",
   select:"— select —", pick_factory:"— enter the test ID first —",
   start:"START INSPECTION", plan_info:"%n tests · plan v%v",
@@ -1836,6 +1877,10 @@ const T = {
  es:{
   subtitle:"CONTROL DE CALIDAD", test_id:"Código de prueba", bad_id:"Código inválido",
   reference:"Referencia",
+  ref_img:"Imagen de referencia", ref_img_tap:"toque para ampliar",
+  ref_img_loading:"cargando imagen…",
+  ref_img_none:"esta referencia aún no tiene imagen",
+  ref_img_off:"la imagen no cargó — revise la conexión",
   inspection:"Fecha de inspección", po:"Orden de compra (OC)", operator:"Inspector",
   select:"— seleccione —", pick_factory:"— primero ingrese el código de prueba —",
   start:"INICIAR INSPECCIÓN", plan_info:"%n pruebas · plan v%v",
@@ -1959,6 +2004,10 @@ const T = {
  zh:{
   subtitle:"质量控制", test_id:"测试编号", bad_id:"编号无效",
   reference:"型号",
+  ref_img:"参考图片", ref_img_tap:"点击放大",
+  ref_img_loading:"正在加载图片……",
+  ref_img_none:"本型号暂无参考图片",
+  ref_img_off:"图片加载失败 — 请检查网络连接",
   inspection:"检验日期", po:"订单号 (PO)", operator:"检验员",
   select:"— 请选择 —", pick_factory:"— 请先输入测试编号 —",
   start:"开始检验", plan_info:"%n 项测试 · 方案 v%v",
@@ -3912,6 +3961,7 @@ function renderAdminPick(){
     <div class="card">
       <div class="tag">${esc(S.model)}</div><div class="tag">${esc(S.testId)}</div>
       <div class="tag">${esc(inspectionDate())}</div>
+      ${refImageRow(S.model)}
       <label>${tr("tests_pick")}</label>
       <div class="row" style="margin-bottom:8px">
         <button onclick="pickAll(true)">${tr("all_on")}</button>
@@ -3985,6 +4035,66 @@ function langBar(mini){
   </div>`;
 }
 
+/* The row itself. Rendered only once a reference is chosen: before that there is
+   nothing to show and an empty frame would just be furniture. */
+function refImageRow(model){
+  if(!model) return "";
+  return `<div class="refimg" id="refimg">
+      <div class="ri-thumb" onclick="zoomRef()">
+        <img id="riImg" src="${refImgUrl(model)}" alt=""
+          onload="refImgOk()" onerror="refImgFail(this)">
+      </div>
+      <div class="ri-txt"><b>${esc(model)}</b>
+        <span id="riMsg">${tr("ref_img_loading")}</span></div>
+    </div>`;
+}
+
+function refImgOk(){
+  const row = document.getElementById("refimg");
+  const msg = document.getElementById("riMsg");
+  if(row) row.classList.add("ok");
+  if(msg) msg.textContent = tr("ref_img_tap");
+}
+
+function refImgFail(img){
+  // One retry as .png before giving up: whoever exports the photos should not
+  // have to care which of the two formats came out of the catalogue.
+  if(!img.dataset.retry){
+    img.dataset.retry = "1";
+    img.src = refImgUrl(S.model, "png");
+    return;
+  }
+  const row = document.getElementById("refimg");
+  const msg = document.getElementById("riMsg");
+  if(row) row.classList.add("miss");
+  // A 404 and a dead network both arrive here as the same event, so the wording
+  // is chosen by what the browser knows about the connection.
+  if(msg) msg.textContent = navigator.onLine === false
+    ? tr("ref_img_off") : tr("ref_img_none");
+}
+
+function zoomRef(){
+  const img = document.getElementById("riImg");
+  if(!img || !img.complete || !img.naturalWidth) return;   // nothing loaded yet
+  const box = document.createElement("div");
+  box.className = "ri-zoom";
+  box.onclick = () => box.remove();
+  box.innerHTML = `<img src="${esc(img.src)}" alt="">
+    <span>${esc(S.model)} · ${esc(tr("ref_img"))}</span>`;
+  document.body.appendChild(box);
+}
+
+/* Choosing a reference re-renders: the photo has to appear, and the test count
+   in the hint below depends on the model too — some tests only apply to one
+   reference, so before this the line could claim eleven tests for a model that
+   runs ten. Whatever is already typed is read back first, as setUnits does. */
+function setModel(value){
+  S.model = value;
+  S.po = (document.getElementById("po")||{}).value || S.po;
+  S.operator = (document.getElementById("operator")||{}).value || S.operator;
+  render();
+}
+
 function renderSetup(){
   const valid = !!S.testId;
   const bad = S.idDigits.length === 3 && !valid;
@@ -4011,7 +4121,8 @@ function renderSetup(){
       ${codeLine}
       ${valid?`
       <label>${tr("reference")}</label>
-      <select id="model">${models}</select>`:""}
+      <select id="model" onchange="setModel(this.value)">${models}</select>
+      ${refImageRow(S.model)}`:""}
       <label>${tr("inspection")}</label>
       <input value="${esc(inspectionDate())}" readonly
              style="color:var(--muted);background:#0a1523">

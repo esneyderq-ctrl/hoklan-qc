@@ -1,0 +1,43 @@
+IMÁGENES DE REFERENCIA
+======================
+
+Aquí van las fotos de producto que la app muestra cuando el inspector elige una
+referencia. Sirven para confirmar que se seleccionó el modelo correcto.
+
+REGLA DE NOMBRE
+---------------
+El nombre del archivo es el código de la referencia, exacto, más .jpg
+
+    HK-ARC101.jpg
+    HK-BRA210B1.jpg
+    HK-RHO102-BAG.jpg
+
+En mayúsculas y con los guiones tal como aparecen en el catálogo de la app. Si
+el nombre no coincide carácter por carácter, la app muestra "esta referencia aún
+no tiene imagen" — no da error, simplemente no la encuentra.
+
+También acepta .png: si no encuentra el .jpg, lo intenta una vez con .png.
+
+TAMAÑO
+------
+Unos 600 px de ancho y por debajo de 80 KB. La foto se muestra en un recuadro de
+58 px y ampliada a pantalla completa; más resolución que eso no se nota y sí se
+siente en la red de una fábrica.
+
+Fondo claro o blanco funciona mejor: el recuadro es oscuro y el producto resalta.
+
+QUÉ NO PONER AQUÍ
+-----------------
+- Fotos con precios, condiciones comerciales o datos de proveedores. Esta carpeta
+  se publica en internet junto con la app, y las cuentas de fábrica también la
+  ven.
+- Evidencia de inspecciones. Estas imágenes son de catálogo; la evidencia va
+  dentro del informe y no se mezcla.
+
+CÓMO SE PUBLICAN
+----------------
+Van al repositorio, en una carpeta llamada img en la raíz — al mismo nivel que
+index.html. La app las pide como img/HK-ARC101.jpg
+
+Faltan referencias por fotografiar: mientras una no esté, esa referencia se
+inspecciona igual. La imagen nunca bloquea nada.
