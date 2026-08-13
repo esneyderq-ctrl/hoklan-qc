@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="1.6">
+<meta name="app-version" content="1.7">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -251,7 +251,9 @@ td:last-child{text-align:right;font-weight:700}
   color:var(--red);letter-spacing:0}
 input.bad{border-color:var(--red)}
 .lang{display:flex;justify-content:center;margin-bottom:14px}
-.lang button{width:auto;padding:7px 18px;margin:0 4px;font-size:14px;
+/* Three languages have to fit on a 320 px screen, so the padding is tighter
+   than a two-button bar would need. */
+.lang button{width:auto;padding:7px 13px;margin:0 3px;font-size:13.5px;
   background:#0c1b2d;color:var(--muted)}
 .lang button.on{background:var(--accent);color:#04121e;border-color:var(--accent)}
 /* Compact variant for screens where the language switch must not take space
@@ -304,7 +306,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "1.6";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "1.7";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -340,114 +342,114 @@ const CONFIG = {
   },
 
   "failure_codes": {
-    "PWR-001":{"en":"No power","zh":"无法开机"},
-    "PWR-002":{"en":"Unexpected restart","zh":"异常重启"},
-    "PWR-003":{"en":"Unstable power","zh":"供电不稳定"},
-    "PWR-004":{"en":"Display does not start","zh":"显示屏无法启动"},
-    "USB-001":{"en":"USB not recognised","zh":"无法识别 U 盘"},
-    "USB-002":{"en":"Does not play audio","zh":"无法播放音频"},
-    "USB-003":{"en":"Audio cuts out","zh":"声音中断"},
-    "USB-006":{"en":"Track change does not work","zh":"切换歌曲无效"},
-    "USB-007":{"en":"Hum or interference on USB","zh":"U 盘播放有杂音或干扰"},
-    "USB-010":{"en":"Play / pause does not work","zh":"播放/暂停键无效"},
-    "USB-011":{"en":"Folder change does not work","zh":"切换文件夹无效"},
-    "USB-012":{"en":"Repeat one / all does not work","zh":"单曲/全部循环无效"},
-    "USB-013":{"en":"Recording to USB does not work","zh":"无法录音到 U 盘"},
-    "USB-014":{"en":"Does not auto-start on power on","zh":"开机不自动播放"},
-    "SD-001":{"en":"SD card not recognised","zh":"无法识别 SD 卡"},
-    "SD-002":{"en":"Does not play audio","zh":"无法播放音频"},
-    "SD-003":{"en":"Audio cuts out","zh":"声音中断"},
-    "SD-006":{"en":"Track change does not work","zh":"切换歌曲无效"},
-    "SD-007":{"en":"Hum or interference on SD","zh":"SD 卡播放有杂音或干扰"},
-    "SD-010":{"en":"Play / pause does not work","zh":"播放/暂停键无效"},
-    "SD-011":{"en":"Folder change does not work","zh":"切换文件夹无效"},
-    "SD-012":{"en":"Repeat one / all does not work","zh":"单曲/全部循环无效"},
-    "SD-013":{"en":"Recording to SD does not work","zh":"无法录音到 SD 卡"},
-    "SD-014":{"en":"Does not auto-start on power on","zh":"开机不自动播放"},
-    "SD-015":{"en":"Cannot delete recordings from SD","zh":"无法删除 SD 卡录音"},
-    "BT-003":{"en":"Disconnects during playback","zh":"播放中断开连接"},
-    "BT-004":{"en":"No audio over Bluetooth","zh":"蓝牙无声音"},
-    "BT-006":{"en":"Does not connect to iPhone","zh":"无法连接 iPhone"},
-    "BT-007":{"en":"Does not connect to Android","zh":"无法连接安卓手机"},
-    "BT-008":{"en":"Does not reconnect on power on","zh":"开机不自动回连"},
-    "BT-009":{"en":"Play / pause does not work","zh":"播放/暂停键无效"},
-    "BT-010":{"en":"TWS mode does not work","zh":"TWS 串联功能无效"},
-    "BT-011":{"en":"Hum or interference on Bluetooth","zh":"蓝牙有杂音或干扰"},
-    "FM-002":{"en":"Weak or unstable reception","zh":"信号弱或不稳定"},
-    "FM-003":{"en":"No audio on radio","zh":"收音无声音"},
-    "FM-005":{"en":"Auto search does not work","zh":"自动搜台无效"},
-    "FM-007":{"en":"Station next / back does not work","zh":"上/下一台按键无效"},
-    "FM-008":{"en":"Does not keep the last station","zh":"不记忆上次电台"},
-    "FM-009":{"en":"Lights do not switch off in radio mode","zh":"收音模式灯光未关闭"},
-    "AUX-001":{"en":"AUX input not detected","zh":"未检测到 AUX 输入"},
-    "AUX-002":{"en":"No audio on AUX","zh":"AUX 无声音"},
-    "AUX-003":{"en":"Hum or noise on AUX","zh":"AUX 有杂音"},
-    "AUX-004":{"en":"Audio cuts out","zh":"声音中断"},
-    "AUX-005":{"en":"Play / pause does not work","zh":"播放/暂停键无效"},
-    "MIC-001":{"en":"Microphone does not connect","zh":"麦克风无法连接"},
-    "MIC-002":{"en":"No microphone audio","zh":"麦克风无声音"},
-    "MIC-003":{"en":"Interference or feedback","zh":"干扰或啸叫"},
-    "MIC-004":{"en":"Microphone audio cuts out","zh":"麦克风声音中断"},
-    "MIC-005":{"en":"Microphone priority does not work","zh":"麦克风优先功能无效"},
-    "MIC-006":{"en":"Microphone volume does not work","zh":"麦克风音量调节无效"},
-    "MIC-007":{"en":"Echo does not work","zh":"回声功能无效"},
-    "MIC-008":{"en":"Reverb does not work","zh":"混响功能无效"},
-    "CHG-005":{"en":"AC charging cable does not work","zh":"AC 充电线无效"},
-    "BAT-001":{"en":"External battery not detected","zh":"无法识别外置电池"},
-    "BAT-002":{"en":"Does not power on with the external battery","zh":"外置电池无法开机"},
-    "BAT-003":{"en":"Battery switch does not work","zh":"电池切换开关无效"},
-    "BAT-004":{"en":"No playback on the external battery","zh":"外置电池供电时无法播放"},
-    "BAT-005":{"en":"Fails with AC connected on the external battery","zh":"外置电池接入时连接 AC 电源出现异常"},
-    "BAT-006":{"en":"Internal battery could not be disconnected","zh":"无法断开内置电池"},
-    "BAT-007":{"en":"Speaker not left as found after the test","zh":"测试后未恢复原状"},
-    "AUD-001":{"en":"Woofer no sound","zh":"低音单元无声"},
-    "AUD-002":{"en":"Tweeter no sound","zh":"高音单元无声"},
-    "AUD-003":{"en":"Distortion","zh":"失真"},
-    "AUD-004":{"en":"Abnormal speaker vibration","zh":"箱体异常振动"},
-    "AUD-005":{"en":"Abnormal noise","zh":"异响"},
-    "AUD-006":{"en":"Volume or its indicator does not work","zh":"音量或音量显示无效"},
-    "AUD-007":{"en":"Treble control does not work","zh":"高音调节无效"},
-    "AUD-008":{"en":"Bass control does not work","zh":"低音调节无效"},
-    "AUD-009":{"en":"Guitar volume does not work","zh":"吉他音量无效"},
-    "AUD-010":{"en":"X-BASS does not work or distorts","zh":"X-BASS 无效或失真"},
-    "DSP-001":{"en":"Missing segment","zh":"显示缺笔段"},
-    "DSP-002":{"en":"Display flickers","zh":"显示闪烁"},
-    "DSP-004":{"en":"Wrong characters","zh":"显示字符错误"},
-    "DSP-005":{"en":"Mode change does not work","zh":"模式切换无效"},
-    "LED-001":{"en":"Power LED abnormal","zh":"电源指示灯异常"},
-    "LED-002":{"en":"Charging LED abnormal","zh":"充电指示灯异常"},
-    "LED-003":{"en":"Mode LED abnormal","zh":"模式指示灯异常"},
-    "LED-004":{"en":"Speaker LED abnormal","zh":"音箱灯异常"},
-    "LED-006":{"en":"Light does not switch on or off","zh":"灯光无法开关"},
-    "LED-007":{"en":"Light mode change does not work","zh":"灯光模式切换无效"},
-    "CHG-001":{"en":"Does not charge","zh":"无法充电"},
-    "CHG-002":{"en":"Charging indicator incorrect","zh":"充电指示不正确"},
-    "CHG-003":{"en":"Unstable charging","zh":"充电不稳定"},
-    "RMT-001":{"en":"Power button does not respond","zh":"电源键无响应"},
-    "RMT-002":{"en":"MUTE button does not respond","zh":"静音键无响应"},
-    "RMT-003":{"en":"FM RADIO button does not respond","zh":"收音键无响应"},
-    "RMT-004":{"en":"USB button does not respond","zh":"USB 键无响应"},
-    "RMT-005":{"en":"BLUETOOTH button does not respond","zh":"蓝牙键无响应"},
-    "RMT-006":{"en":"SD button does not respond","zh":"SD 键无响应"},
-    "RMT-007":{"en":"AUX button does not respond","zh":"AUX 键无响应"},
-    "RMT-008":{"en":"Mic priority button does not respond","zh":"麦克风优先键无响应"},
-    "RMT-009":{"en":"REC button does not respond","zh":"录音键无响应"},
-    "RMT-010":{"en":"REC PLAY button does not respond","zh":"录音播放键无响应"},
-    "RMT-011":{"en":"VOICE OUT button does not respond","zh":"VOICE OUT 键无响应"},
-    "RMT-012":{"en":"Mode button does not respond","zh":"模式键无响应"},
-    "RMT-013":{"en":"Next track button does not respond","zh":"下一曲键无响应"},
-    "RMT-014":{"en":"Previous track button does not respond","zh":"上一曲键无响应"},
-    "RMT-015":{"en":"PLAY / PAUSE button does not respond","zh":"播放/暂停键无响应"},
-    "RMT-016":{"en":"VOL + button does not respond","zh":"音量加键无响应"},
-    "RMT-017":{"en":"VOL − button does not respond","zh":"音量减键无响应"},
-    "RMT-018":{"en":"Fast forward button does not respond","zh":"快进键无响应"},
-    "RMT-019":{"en":"Rewind button does not respond","zh":"快退键无响应"},
-    "RMT-020":{"en":"Numeric keypad does not respond","zh":"数字键盘无响应"},
-    "RMT-021":{"en":"Folder forward button does not respond","zh":"下一文件夹键无响应"},
-    "RMT-022":{"en":"Folder back button does not respond","zh":"上一文件夹键无响应"},
-    "RMT-023":{"en":"EQ button does not respond","zh":"EQ 键无响应"},
-    "RMT-024":{"en":"Repeat button does not respond","zh":"循环键无响应"},
-    "RMT-025":{"en":"Remote does not respond at all","zh":"遥控器完全无响应"}
+    "PWR-001":{"en":"No power","zh":"无法开机","es":"No enciende"},
+    "PWR-002":{"en":"Unexpected restart","zh":"异常重启","es":"Reinicio inesperado"},
+    "PWR-003":{"en":"Unstable power","zh":"供电不稳定","es":"Alimentación inestable"},
+    "PWR-004":{"en":"Display does not start","zh":"显示屏无法启动","es":"La pantalla no arranca"},
+    "USB-001":{"en":"USB not recognised","zh":"无法识别 U 盘","es":"No reconoce la memoria USB"},
+    "USB-002":{"en":"Does not play audio","zh":"无法播放音频","es":"No reproduce audio"},
+    "USB-003":{"en":"Audio cuts out","zh":"声音中断","es":"El sonido se corta"},
+    "USB-006":{"en":"Track change does not work","zh":"切换歌曲无效","es":"El cambio de pista no funciona"},
+    "USB-007":{"en":"Hum or interference on USB","zh":"U 盘播放有杂音或干扰","es":"Zumbido o interferencia en USB"},
+    "USB-010":{"en":"Play / pause does not work","zh":"播放/暂停键无效","es":"Reproducir / pausar no funciona"},
+    "USB-011":{"en":"Folder change does not work","zh":"切换文件夹无效","es":"El cambio de carpeta no funciona"},
+    "USB-012":{"en":"Repeat one / all does not work","zh":"单曲/全部循环无效","es":"Repetir una / todas no funciona"},
+    "USB-013":{"en":"Recording to USB does not work","zh":"无法录音到 U 盘","es":"La grabación en USB no funciona"},
+    "USB-014":{"en":"Does not auto-start on power on","zh":"开机不自动播放","es":"No arranca solo al encender"},
+    "SD-001":{"en":"SD card not recognised","zh":"无法识别 SD 卡","es":"No reconoce la tarjeta SD"},
+    "SD-002":{"en":"Does not play audio","zh":"无法播放音频","es":"No reproduce audio"},
+    "SD-003":{"en":"Audio cuts out","zh":"声音中断","es":"El sonido se corta"},
+    "SD-006":{"en":"Track change does not work","zh":"切换歌曲无效","es":"El cambio de pista no funciona"},
+    "SD-007":{"en":"Hum or interference on SD","zh":"SD 卡播放有杂音或干扰","es":"Zumbido o interferencia en SD"},
+    "SD-010":{"en":"Play / pause does not work","zh":"播放/暂停键无效","es":"Reproducir / pausar no funciona"},
+    "SD-011":{"en":"Folder change does not work","zh":"切换文件夹无效","es":"El cambio de carpeta no funciona"},
+    "SD-012":{"en":"Repeat one / all does not work","zh":"单曲/全部循环无效","es":"Repetir una / todas no funciona"},
+    "SD-013":{"en":"Recording to SD does not work","zh":"无法录音到 SD 卡","es":"La grabación en SD no funciona"},
+    "SD-014":{"en":"Does not auto-start on power on","zh":"开机不自动播放","es":"No arranca solo al encender"},
+    "SD-015":{"en":"Cannot delete recordings from SD","zh":"无法删除 SD 卡录音","es":"No se pueden borrar las grabaciones de la SD"},
+    "BT-003":{"en":"Disconnects during playback","zh":"播放中断开连接","es":"Se desconecta durante la reproducción"},
+    "BT-004":{"en":"No audio over Bluetooth","zh":"蓝牙无声音","es":"Sin audio por Bluetooth"},
+    "BT-006":{"en":"Does not connect to iPhone","zh":"无法连接 iPhone","es":"No se conecta a iPhone"},
+    "BT-007":{"en":"Does not connect to Android","zh":"无法连接安卓手机","es":"No se conecta a Android"},
+    "BT-008":{"en":"Does not reconnect on power on","zh":"开机不自动回连","es":"No se reconecta al encender"},
+    "BT-009":{"en":"Play / pause does not work","zh":"播放/暂停键无效","es":"Reproducir / pausar no funciona"},
+    "BT-010":{"en":"TWS mode does not work","zh":"TWS 串联功能无效","es":"El modo TWS no funciona"},
+    "BT-011":{"en":"Hum or interference on Bluetooth","zh":"蓝牙有杂音或干扰","es":"Zumbido o interferencia en Bluetooth"},
+    "FM-002":{"en":"Weak or unstable reception","zh":"信号弱或不稳定","es":"Recepción débil o inestable"},
+    "FM-003":{"en":"No audio on radio","zh":"收音无声音","es":"Sin audio en la radio"},
+    "FM-005":{"en":"Auto search does not work","zh":"自动搜台无效","es":"La búsqueda automática no funciona"},
+    "FM-007":{"en":"Station next / back does not work","zh":"上/下一台按键无效","es":"Emisora siguiente / anterior no funciona"},
+    "FM-008":{"en":"Does not keep the last station","zh":"不记忆上次电台","es":"No memoriza la última emisora"},
+    "FM-009":{"en":"Lights do not switch off in radio mode","zh":"收音模式灯光未关闭","es":"Las luces no se apagan en modo radio"},
+    "AUX-001":{"en":"AUX input not detected","zh":"未检测到 AUX 输入","es":"No detecta la entrada AUX"},
+    "AUX-002":{"en":"No audio on AUX","zh":"AUX 无声音","es":"Sin audio en AUX"},
+    "AUX-003":{"en":"Hum or noise on AUX","zh":"AUX 有杂音","es":"Zumbido o ruido en AUX"},
+    "AUX-004":{"en":"Audio cuts out","zh":"声音中断","es":"El sonido se corta"},
+    "AUX-005":{"en":"Play / pause does not work","zh":"播放/暂停键无效","es":"Reproducir / pausar no funciona"},
+    "MIC-001":{"en":"Microphone does not connect","zh":"麦克风无法连接","es":"El micrófono no conecta"},
+    "MIC-002":{"en":"No microphone audio","zh":"麦克风无声音","es":"Sin audio del micrófono"},
+    "MIC-003":{"en":"Interference or feedback","zh":"干扰或啸叫","es":"Interferencia o acople"},
+    "MIC-004":{"en":"Microphone audio cuts out","zh":"麦克风声音中断","es":"El audio del micrófono se corta"},
+    "MIC-005":{"en":"Microphone priority does not work","zh":"麦克风优先功能无效","es":"La prioridad de micrófono no funciona"},
+    "MIC-006":{"en":"Microphone volume does not work","zh":"麦克风音量调节无效","es":"El volumen del micrófono no funciona"},
+    "MIC-007":{"en":"Echo does not work","zh":"回声功能无效","es":"El eco no funciona"},
+    "MIC-008":{"en":"Reverb does not work","zh":"混响功能无效","es":"La reverberación no funciona"},
+    "CHG-005":{"en":"AC charging cable does not work","zh":"AC 充电线无效","es":"El cable de carga AC no funciona"},
+    "BAT-001":{"en":"External battery not detected","zh":"无法识别外置电池","es":"No detecta la batería externa"},
+    "BAT-002":{"en":"Does not power on with the external battery","zh":"外置电池无法开机","es":"No enciende con la batería externa"},
+    "BAT-003":{"en":"Battery switch does not work","zh":"电池切换开关无效","es":"El selector de batería no funciona"},
+    "BAT-004":{"en":"No playback on the external battery","zh":"外置电池供电时无法播放","es":"No reproduce con la batería externa"},
+    "BAT-005":{"en":"Fails with AC connected on the external battery","zh":"外置电池接入时连接 AC 电源出现异常","es":"Falla al conectar AC con la batería externa"},
+    "BAT-006":{"en":"Internal battery could not be disconnected","zh":"无法断开内置电池","es":"No se pudo desconectar la batería interna"},
+    "BAT-007":{"en":"Speaker not left as found after the test","zh":"测试后未恢复原状","es":"El parlante no quedó como estaba tras la prueba"},
+    "AUD-001":{"en":"Woofer no sound","zh":"低音单元无声","es":"El woofer no suena"},
+    "AUD-002":{"en":"Tweeter no sound","zh":"高音单元无声","es":"El tweeter no suena"},
+    "AUD-003":{"en":"Distortion","zh":"失真","es":"Distorsión"},
+    "AUD-004":{"en":"Abnormal speaker vibration","zh":"箱体异常振动","es":"Vibración anormal del gabinete"},
+    "AUD-005":{"en":"Abnormal noise","zh":"异响","es":"Ruido anormal"},
+    "AUD-006":{"en":"Volume or its indicator does not work","zh":"音量或音量显示无效","es":"El volumen o su indicador no funciona"},
+    "AUD-007":{"en":"Treble control does not work","zh":"高音调节无效","es":"El control de agudos no funciona"},
+    "AUD-008":{"en":"Bass control does not work","zh":"低音调节无效","es":"El control de graves no funciona"},
+    "AUD-009":{"en":"Guitar volume does not work","zh":"吉他音量无效","es":"El volumen de guitarra no funciona"},
+    "AUD-010":{"en":"X-BASS does not work or distorts","zh":"X-BASS 无效或失真","es":"X-BASS no funciona o distorsiona"},
+    "DSP-001":{"en":"Missing segment","zh":"显示缺笔段","es":"Segmento faltante en la pantalla"},
+    "DSP-002":{"en":"Display flickers","zh":"显示闪烁","es":"La pantalla parpadea"},
+    "DSP-004":{"en":"Wrong characters","zh":"显示字符错误","es":"Caracteres incorrectos en la pantalla"},
+    "DSP-005":{"en":"Mode change does not work","zh":"模式切换无效","es":"El cambio de modo no funciona"},
+    "LED-001":{"en":"Power LED abnormal","zh":"电源指示灯异常","es":"LED de encendido anormal"},
+    "LED-002":{"en":"Charging LED abnormal","zh":"充电指示灯异常","es":"LED de carga anormal"},
+    "LED-003":{"en":"Mode LED abnormal","zh":"模式指示灯异常","es":"LED de modo anormal"},
+    "LED-004":{"en":"Speaker LED abnormal","zh":"音箱灯异常","es":"Luces del parlante anormales"},
+    "LED-006":{"en":"Light does not switch on or off","zh":"灯光无法开关","es":"La luz no se enciende o no se apaga"},
+    "LED-007":{"en":"Light mode change does not work","zh":"灯光模式切换无效","es":"El cambio de modo de luz no funciona"},
+    "CHG-001":{"en":"Does not charge","zh":"无法充电","es":"No carga"},
+    "CHG-002":{"en":"Charging indicator incorrect","zh":"充电指示不正确","es":"Indicador de carga incorrecto"},
+    "CHG-003":{"en":"Unstable charging","zh":"充电不稳定","es":"Carga inestable"},
+    "RMT-001":{"en":"Power button does not respond","zh":"电源键无响应","es":"La tecla de encendido no responde"},
+    "RMT-002":{"en":"MUTE button does not respond","zh":"静音键无响应","es":"La tecla MUTE no responde"},
+    "RMT-003":{"en":"FM RADIO button does not respond","zh":"收音键无响应","es":"La tecla FM RADIO no responde"},
+    "RMT-004":{"en":"USB button does not respond","zh":"USB 键无响应","es":"La tecla USB no responde"},
+    "RMT-005":{"en":"BLUETOOTH button does not respond","zh":"蓝牙键无响应","es":"La tecla BLUETOOTH no responde"},
+    "RMT-006":{"en":"SD button does not respond","zh":"SD 键无响应","es":"La tecla SD no responde"},
+    "RMT-007":{"en":"AUX button does not respond","zh":"AUX 键无响应","es":"La tecla AUX no responde"},
+    "RMT-008":{"en":"Mic priority button does not respond","zh":"麦克风优先键无响应","es":"La tecla de prioridad de micrófono no responde"},
+    "RMT-009":{"en":"REC button does not respond","zh":"录音键无响应","es":"La tecla REC no responde"},
+    "RMT-010":{"en":"REC PLAY button does not respond","zh":"录音播放键无响应","es":"La tecla REC PLAY no responde"},
+    "RMT-011":{"en":"VOICE OUT button does not respond","zh":"VOICE OUT 键无响应","es":"La tecla VOICE OUT no responde"},
+    "RMT-012":{"en":"Mode button does not respond","zh":"模式键无响应","es":"La tecla de modo no responde"},
+    "RMT-013":{"en":"Next track button does not respond","zh":"下一曲键无响应","es":"La tecla de pista siguiente no responde"},
+    "RMT-014":{"en":"Previous track button does not respond","zh":"上一曲键无响应","es":"La tecla de pista anterior no responde"},
+    "RMT-015":{"en":"PLAY / PAUSE button does not respond","zh":"播放/暂停键无响应","es":"La tecla PLAY / PAUSE no responde"},
+    "RMT-016":{"en":"VOL + button does not respond","zh":"音量加键无响应","es":"La tecla VOL + no responde"},
+    "RMT-017":{"en":"VOL − button does not respond","zh":"音量减键无响应","es":"La tecla VOL − no responde"},
+    "RMT-018":{"en":"Fast forward button does not respond","zh":"快进键无响应","es":"La tecla de avance rápido no responde"},
+    "RMT-019":{"en":"Rewind button does not respond","zh":"快退键无响应","es":"La tecla de retroceso rápido no responde"},
+    "RMT-020":{"en":"Numeric keypad does not respond","zh":"数字键盘无响应","es":"El teclado numérico no responde"},
+    "RMT-021":{"en":"Folder forward button does not respond","zh":"下一文件夹键无响应","es":"La tecla de carpeta siguiente no responde"},
+    "RMT-022":{"en":"Folder back button does not respond","zh":"上一文件夹键无响应","es":"La tecla de carpeta anterior no responde"},
+    "RMT-023":{"en":"EQ button does not respond","zh":"EQ 键无响应","es":"La tecla EQ no responde"},
+    "RMT-024":{"en":"Repeat button does not respond","zh":"循环键无响应","es":"La tecla de repetición no responde"},
+    "RMT-025":{"en":"Remote does not respond at all","zh":"遥控器完全无响应","es":"El control remoto no responde en absoluto"}
   },
 
   "plans": {
@@ -455,139 +457,180 @@ const CONFIG = {
       "plan_version": 3,
       "tests": [
         {"id":"USB","optional":false,
-         "label":{"en":"USB","zh":"USB"},
+         "label":{"en":"USB","zh":"USB","es":"USB"},
          "steps":[
-           {"en":"Insert the HOKLAN test USB drive into the speaker","zh":"将 HOKLAN 测试 U 盘插入音箱"},
-           {"en":"Select USB mode on the speaker","zh":"在音箱上切换到 USB 模式"},
-           {"en":"Wait until it reads the USB drive and starts playing","zh":"等待识别 U 盘并开始播放"},
-           {"en":"Let the HOKLAN USB play, listening for dropouts","zh":"让测试音频播放，注意是否有中断"},
-           {"en":"With the USB drive playing, check each control on the list","zh":"在播放状态下，逐项检查下列功能"},
-           {"en":"Finally, switch the speaker off and on to see if it starts in USB","zh":"最后重新开机，确认是否自动进入 USB 模式"}],
+           {"en":"Insert the HOKLAN test USB drive into the speaker","zh":"将 HOKLAN 测试 U 盘插入音箱","es":"Inserte la memoria USB de prueba HOKLAN en el parlante"},
+           {"en":"Select USB mode on the speaker","zh":"在音箱上切换到 USB 模式","es":"Seleccione el modo USB en el parlante"},
+           {"en":"Wait until it reads the USB drive and starts playing","zh":"等待识别 U 盘并开始播放","es":"Espere hasta que lea la memoria y empiece a reproducir"},
+           {"en":"Let the HOKLAN USB play, listening for dropouts","zh":"让测试音频播放，注意是否有中断","es":"Deje reproducir la USB HOKLAN, atento a cortes"},
+           {"en":"With the USB drive playing, check each control on the list","zh":"在播放状态下，逐项检查下列功能","es":"Con la memoria reproduciendo, verifique cada control de la lista"},
+           {"en":"Finally, switch the speaker off and on to see if it starts in USB","zh":"最后重新开机，确认是否自动进入 USB 模式","es":"Por último, apague y encienda el parlante para ver si arranca en USB"}],
          "points":[
-           {"section":{"en":"Playback","zh":"播放"},
+           {"section":{"en":"Playback","zh":"播放","es":"Reproducción"},
             "help":{"en":"Insert the HOKLAN test USB and select USB mode. Wait until it reads the USB drive and plays. At the end, switch the speaker off and on to see whether it starts in USB by itself.",
-                    "zh":"插入 HOKLAN 测试 U 盘并切换到 USB 模式，等待识别并播放。最后重新开机，确认是否自动进入 USB 播放。"}},
-           {"id":"recognized","code":"USB-001","label":{"en":"Speaker reads the USB drive and shows USB mode","zh":"识别 U 盘并显示 USB 模式"},
+                    "zh":"插入 HOKLAN 测试 U 盘并切换到 USB 模式，等待识别并播放。最后重新开机，确认是否自动进入 USB 播放。",
+                    "es":"Inserte la USB de prueba HOKLAN y seleccione el modo USB. Espere hasta que lea la memoria y reproduzca. Al final, apague y encienda el parlante para ver si arranca en USB por sí solo."}},
+           {"id":"recognized","code":"USB-001","label":{"en":"Speaker reads the USB drive and shows USB mode","zh":"识别 U 盘并显示 USB 模式","es":"El parlante lee la memoria USB y muestra el modo USB"},
             "help":{"en":"Insert the USB drive. Within a few seconds the display must switch to USB and show a track number. If it stays blank or keeps searching, it is a fail.",
-                    "zh":"插入 U 盘后几秒内，显示屏应切换到 USB 并显示曲目编号。若一直空白或持续搜索，判定为不合格。"}},
-           {"id":"playback","code":"USB-002","label":{"en":"Plays the audio from the USB drive","zh":"播放 U 盘音频"},
+                    "zh":"插入 U 盘后几秒内，显示屏应切换到 USB 并显示曲目编号。若一直空白或持续搜索，判定为不合格。",
+                    "es":"Inserte la memoria. En pocos segundos la pantalla debe cambiar a USB y mostrar un número de pista. Si queda en blanco o sigue buscando, no conforme."}},
+           {"id":"playback","code":"USB-002","label":{"en":"Plays the audio from the USB drive","zh":"播放 U 盘音频","es":"Reproduce el audio de la memoria USB"},
             "help":{"en":"Sound must start on its own, or after pressing play. Confirm it really comes out of the speaker, not from another speaker nearby.",
-                    "zh":"应自动开始播放，或按播放键后出声。确认声音确实来自本机，而不是旁边的音箱。"}},
-           {"id":"continuous","code":"USB-003","label":{"en":"No dropouts during playback","zh":"播放过程无中断"},
+                    "zh":"应自动开始播放，或按播放键后出声。确认声音确实来自本机，而不是旁边的音箱。",
+                    "es":"El sonido debe iniciar solo, o al pulsar reproducir. Confirme que sale realmente de este parlante y no de otro que esté al lado."}},
+           {"id":"continuous","code":"USB-003","label":{"en":"No dropouts during playback","zh":"播放过程无中断","es":"Sin cortes durante la reproducción"},
             "help":{"en":"Let one full track play without touching anything. Listen for cuts, stutters or moments of silence.",
-                    "zh":"完整播放一首曲目，中途不做任何操作。注意是否有断音、卡顿或瞬间静音。"}},
-           {"id":"quality","code":"USB-007","label":{"en":"No hum or interference","zh":"无杂音或干扰"},
+                    "zh":"完整播放一首曲目，中途不做任何操作。注意是否有断音、卡顿或瞬间静音。",
+                    "es":"Deje sonar una pista completa sin tocar nada. Escuche si hay cortes, saltos o momentos de silencio."}},
+           {"id":"quality","code":"USB-007","label":{"en":"No hum or interference","zh":"无杂音或干扰","es":"Sin zumbido ni interferencia"},
             "help":{"en":"Listen close to the grille at medium volume. Behind the music there must be no hum, hiss or crackle.",
-                    "zh":"中等音量下靠近网罩细听，音乐背景不应有嗡嗡声、嘶声或爆音。"}},
-           {"id":"autostart","code":"USB-014","label":{"en":"Starts in USB automatically on power on","zh":"开机自动进入 USB 播放"},
+                    "zh":"中等音量下靠近网罩细听，音乐背景不应有嗡嗡声、嘶声或爆音。",
+                    "es":"Escuche cerca de la malla a volumen medio. Detrás de la música no debe haber zumbido, siseo ni crujidos."}},
+           {"id":"autostart","code":"USB-014","label":{"en":"Starts in USB automatically on power on","zh":"开机自动进入 USB 播放","es":"Arranca en USB automáticamente al encender"},
             "help":{"en":"With the USB drive still inserted, switch the speaker off and on. It must return to USB mode and start playing without pressing anything.",
-                    "zh":"U 盘保持插入，关机后再开机。应自动回到 USB 模式并开始播放，无需按任何键。"}},
-           {"section":{"en":"Sound quality","zh":"音质"},
+                    "zh":"U 盘保持插入，关机后再开机。应自动回到 USB 模式并开始播放，无需按任何键。",
+                    "es":"Con la memoria aún insertada, apague y encienda el parlante. Debe volver al modo USB y empezar a reproducir sin pulsar nada."}},
+           {"section":{"en":"Sound quality","zh":"音质","es":"Calidad de sonido"},
             "help":{"en":"Listen at medium and then high volume. Put your hand on the speaker to feel for abnormal vibration or rattles.",
-                    "zh":"先中等音量再大音量试听。用手触摸箱体，感受是否有异常振动或杂音。"}},
-           {"id":"woofer","code":"AUD-001","label":{"en":"Woofer sounds","zh":"低音单元出声"},
+                    "zh":"先中等音量再大音量试听。用手触摸箱体，感受是否有异常振动或杂音。",
+                    "es":"Escuche a volumen medio y luego alto. Ponga la mano sobre el gabinete para sentir vibraciones anormales o traqueteos."}},
+           {"id":"woofer","code":"AUD-001","label":{"en":"Woofer sounds","zh":"低音单元出声","es":"El woofer suena"},
             "help":{"en":"Play a track with bass. Hold your hand in front of the woofer and feel it move. The low end must be present and clean, not weak or muffled.",
-                    "zh":"播放有低音的曲目，手放在低音单元前感受振动。低频应饱满干净，不应无力或发闷。"}},
-           {"id":"tweeter","code":"AUD-002","label":{"en":"Tweeter sounds","zh":"高音单元出声"},
+                    "zh":"播放有低音的曲目，手放在低音单元前感受振动。低频应饱满干净，不应无力或发闷。",
+                    "es":"Reproduzca una pista con graves. Ponga la mano frente al woofer y sienta el movimiento. El bajo debe estar presente y limpio, no débil ni apagado."}},
+           {"id":"tweeter","code":"AUD-002","label":{"en":"Tweeter sounds","zh":"高音单元出声","es":"El tweeter suena"},
             "help":{"en":"Listen for cymbals and high detail. Cover the woofer with your hand: the treble must still be clearly audible.",
-                    "zh":"注意听镲片和高频细节。用手挡住低音单元，高音仍应清晰可闻。"}},
-           {"id":"distortion","code":"AUD-003","label":{"en":"No distortion at high volume","zh":"大音量无失真"},
+                    "zh":"注意听镲片和高频细节。用手挡住低音单元，高音仍应清晰可闻。",
+                    "es":"Escuche los platillos y el detalle agudo. Tape el woofer con la mano: los agudos deben seguir oyéndose con claridad."}},
+           {"id":"distortion","code":"AUD-003","label":{"en":"No distortion at high volume","zh":"大音量无失真","es":"Sin distorsión a volumen alto"},
             "help":{"en":"Raise the volume to maximum for a few seconds. The sound must stay clean, without breaking up, buzzing or going harsh.",
-                    "zh":"将音量调到最大持续几秒。声音应保持干净，不破音、不嗡响、不刺耳。"}},
-           {"id":"vibration","code":"AUD-004","label":{"en":"No abnormal speaker vibration","zh":"箱体无异常振动"},
+                    "zh":"将音量调到最大持续几秒。声音应保持干净，不破音、不嗡响、不刺耳。",
+                    "es":"Suba el volumen al máximo unos segundos. El sonido debe mantenerse limpio, sin quebrarse, zumbar ni volverse estridente."}},
+           {"id":"vibration","code":"AUD-004","label":{"en":"No abnormal speaker vibration","zh":"箱体无异常振动","es":"Sin vibración anormal del gabinete"},
             "help":{"en":"At high volume run your hand over the speaker, grille and back panel. Nothing must rattle, buzz or feel loose.",
-                    "zh":"大音量时用手抚过箱体、网罩和后盖。不应有松动、嗡响或异常抖动。"}},
-           {"id":"strange_noise","code":"AUD-005","label":{"en":"No abnormal noise","zh":"无异响"},
+                    "zh":"大音量时用手抚过箱体、网罩和后盖。不应有松动、嗡响或异常抖动。",
+                    "es":"A volumen alto pase la mano por el gabinete, la malla y la tapa trasera. Nada debe traquetear, zumbar ni sentirse flojo."}},
+           {"id":"strange_noise","code":"AUD-005","label":{"en":"No abnormal noise","zh":"无异响","es":"Sin ruidos anormales"},
             "help":{"en":"Pause the track with the speaker still on. The speakers must be silent: no hiss, hum or clicking.",
-                    "zh":"保持开机并暂停播放。喇叭应完全安静，无嘶声、嗡声或咔哒声。"}},
-           {"section":{"en":"Playback controls","zh":"播放控制"},
+                    "zh":"保持开机并暂停播放。喇叭应完全安静，无嘶声、嗡声或咔哒声。",
+                    "es":"Pause la pista con el parlante encendido. Los altavoces deben quedar en silencio: sin siseo, zumbido ni chasquidos."}},
+           {"section":{"en":"Playback controls","zh":"播放控制","es":"Controles de reproducción"},
             "help":{"en":"With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat, record and mode.",
-                    "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环、录音和模式。"}},
-           {"id":"song_next","code":"USB-006","label":{"en":"Next track button","zh":"下一曲按键"},
+                    "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环、录音和模式。",
+                    "es":"Con el audio sonando, pulse cada tecla del parlante y confirme que responde: pista, carpeta, reproducir/pausar, repetición, grabación y modo."}},
+           {"id":"song_next","code":"USB-006","label":{"en":"Next track button","zh":"下一曲按键","es":"Tecla de pista siguiente"},
             "help":{"en":"Press it three times. The track number must advance one at a time and the music must change with each press.",
-                    "zh":"连续按三次。曲目编号应逐一递增，每按一次音乐都要随之切换。"}},
-           {"id":"song_prev","code":"USB-006","label":{"en":"Previous track button","zh":"上一曲按键"},
+                    "zh":"连续按三次。曲目编号应逐一递增，每按一次音乐都要随之切换。",
+                    "es":"Púlsela tres veces. El número de pista debe avanzar de uno en uno y la música debe cambiar con cada pulsación."}},
+           {"id":"song_prev","code":"USB-006","label":{"en":"Previous track button","zh":"上一曲按键","es":"Tecla de pista anterior"},
             "help":{"en":"Press it three times. The track number must go back one at a time, not jump or restart from the beginning.",
-                    "zh":"连续按三次。曲目编号应逐一递减，不应跳号或跳回第一首。"}},
-           {"id":"folder_next","code":"USB-011","label":{"en":"Next folder button","zh":"下一文件夹按键"},
+                    "zh":"连续按三次。曲目编号应逐一递减，不应跳号或跳回第一首。",
+                    "es":"Púlsela tres veces. El número de pista debe retroceder de uno en uno, sin saltos ni volver a la primera."}},
+           {"id":"folder_next","code":"USB-011","label":{"en":"Next folder button","zh":"下一文件夹按键","es":"Tecla de carpeta siguiente"},
             "help":{"en":"Press it and confirm the folder number changes and playback jumps to a different folder on the USB drive.",
-                    "zh":"按下后确认文件夹编号变化，并跳到 U 盘上的另一个文件夹播放。"}},
-           {"id":"folder_prev","code":"USB-011","label":{"en":"Previous folder button","zh":"上一文件夹按键"},
+                    "zh":"按下后确认文件夹编号变化，并跳到 U 盘上的另一个文件夹播放。",
+                    "es":"Púlsela y confirme que el número de carpeta cambia y la reproducción salta a otra carpeta de la memoria."}},
+           {"id":"folder_prev","code":"USB-011","label":{"en":"Previous folder button","zh":"上一文件夹按键","es":"Tecla de carpeta anterior"},
             "help":{"en":"Press it and confirm it returns to the previous folder, not to the start of the USB drive.",
-                    "zh":"按下后确认返回上一个文件夹，而不是回到 U 盘开头。"}},
-           {"id":"play_pause","code":"USB-010","label":{"en":"PLAY / PAUSE button","zh":"播放/暂停按键"},
+                    "zh":"按下后确认返回上一个文件夹，而不是回到 U 盘开头。",
+                    "es":"Púlsela y confirme que vuelve a la carpeta anterior, no al inicio de la memoria."}},
+           {"id":"play_pause","code":"USB-010","label":{"en":"PLAY / PAUSE button","zh":"播放/暂停按键","es":"Tecla PLAY / PAUSE"},
             "help":{"en":"Press once: the sound must stop and the display must show pause. Press again: it must resume from the same point, not from the start.",
-                    "zh":"按一次，声音应停止且屏幕显示暂停；再按一次应从原位置继续，而不是从头播放。"}},
-           {"id":"repeat","code":"USB-012","label":{"en":"Repeat one / all button","zh":"单曲/全部循环按键"},
+                    "zh":"按一次，声音应停止且屏幕显示暂停；再按一次应从原位置继续，而不是从头播放。",
+                    "es":"Pulse una vez: el sonido debe detenerse y la pantalla mostrar pausa. Pulse otra vez: debe continuar desde el mismo punto, no desde el inicio."}},
+           {"id":"repeat","code":"USB-012","label":{"en":"Repeat one / all button","zh":"单曲/全部循环按键","es":"Tecla de repetición una / todas"},
             "help":{"en":"Set repeat-one and let the track end: the same track must play again. Then set repeat-all: at the end it must move to the next track.",
-                    "zh":"设为单曲循环，让曲目播完：应重复播放同一首。再设为全部循环：播完应自动进入下一首。"}},
-           {"id":"record","code":"USB-013","label":{"en":"REC button: records and saves to the USB drive","zh":"REC 录音按键：保存到 U 盘"},
+                    "zh":"设为单曲循环，让曲目播完：应重复播放同一首。再设为全部循环：播完应自动进入下一首。",
+                    "es":"Ponga repetir-una y deje terminar la pista: debe volver a sonar la misma. Luego ponga repetir-todas: al terminar debe pasar a la siguiente."}},
+           {"id":"record","code":"USB-013","label":{"en":"REC button: records and saves to the USB drive","zh":"REC 录音按键：保存到 U 盘","es":"Tecla REC: graba y guarda en la memoria USB"},
             "help":{"en":"Press REC, speak into the microphone for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.",
-                    "zh":"按 REC，对着麦克风说几秒后停止。在音箱上回放该录音，确认文件确实已保存。"}},
-           {"id":"modes","code":"DSP-005","label":{"en":"Mode button","zh":"模式按键"},
+                    "zh":"按 REC，对着麦克风说几秒后停止。在音箱上回放该录音，确认文件确实已保存。",
+                    "es":"Pulse REC, hable al micrófono unos segundos y detenga. Reproduzca la grabación en el parlante para confirmar que el archivo quedó guardado."}},
+           {"id":"modes","code":"DSP-005","label":{"en":"Mode button","zh":"模式按键","es":"Tecla de modo"},
             "help":{"en":"Press the mode button through the full cycle until it returns to USB. The display must follow every change.",
-                    "zh":"反复按模式键走完一轮回到 USB。显示屏应随每一次切换变化。"}},
-           {"section":{"en":"Audio controls","zh":"音频控制"},
+                    "zh":"反复按模式键走完一轮回到 USB。显示屏应随每一次切换变化。",
+                    "es":"Pulse la tecla de modo un ciclo completo hasta volver a USB. La pantalla debe seguir cada cambio."}},
+           {"section":{"en":"Audio controls","zh":"音频控制","es":"Controles de audio"},
             "help":{"en":"Move each control through its full range and check the on-screen indicator follows it.",
-                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。"}},
-           {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum and its on-screen indicator","zh":"音量调到最大及屏幕显示"},
+                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。",
+                    "es":"Mueva cada control en todo su recorrido y verifique que el indicador en pantalla lo siga."}},
+           {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum and its on-screen indicator","zh":"音量调到最大及屏幕显示","es":"Volumen al máximo y su indicador en pantalla"},
             "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
-                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。"}},
-           {"id":"treble","code":"AUD-007","label":{"en":"Treble level and its on-screen indicator","zh":"高音调节及屏幕显示"},
+                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。",
+                    "es":"Lleve el volumen del mínimo al máximo lentamente. El número en pantalla debe seguirlo en todo el recorrido, sin saltos, zonas muertas ni sonido rasposo."}},
+           {"id":"treble","code":"AUD-007","label":{"en":"Treble level and its on-screen indicator","zh":"高音调节及屏幕显示","es":"Nivel de agudos y su indicador en pantalla"},
             "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible and the indicator must follow it.",
-                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
-           {"id":"bass","code":"AUD-008","label":{"en":"Bass level and its on-screen indicator","zh":"低音调节及屏幕显示"},
+                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。",
+                    "es":"Con música sonando, lleve los agudos al mínimo y al máximo. El cambio debe oírse con claridad y el indicador debe seguirlo."}},
+           {"id":"bass","code":"AUD-008","label":{"en":"Bass level and its on-screen indicator","zh":"低音调节及屏幕显示","es":"Nivel de graves y su indicador en pantalla"},
             "help":{"en":"With music playing, take the bass fully down and fully up. The change must be clearly audible and the indicator must follow it.",
-                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。",
+                    "es":"Con música sonando, lleve los graves al mínimo y al máximo. El cambio debe oírse con claridad y el indicador debe seguirlo."}},
            {"id":"xbass","code":"AUD-010","only":["HK-BRA210B1"],
-            "label":{"en":"X-BASS function","zh":"X-BASS 功能"},
+            "label":{"en":"X-BASS function","zh":"X-BASS 功能","es":"Función X-BASS"},
             "help":{"en":"Playing from the USB drive, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.",
-                    "zh":"用 U 盘播放时，反复开关 X-BASS。开启时低音应明显增强，关闭时恢复原状，屏幕应显示状态变化。随后在开启 X-BASS 的状态下将音量调到最大：低音应保持干净，不失真，低音单元不应有异响。"}},
-           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
+                    "zh":"用 U 盘播放时，反复开关 X-BASS。开启时低音应明显增强，关闭时恢复原状，屏幕应显示状态变化。随后在开启 X-BASS 的状态下将音量调到最大：低音应保持干净，不失真，低音单元不应有异响。",
+                    "es":"Reproduciendo desde la memoria USB, active y desactive X-BASS varias veces. El bajo debe aumentar notoriamente al activarlo y volver a su estado al desactivarlo, y la pantalla debe mostrar el cambio. Luego suba el volumen al máximo con X-BASS activo: el bajo debe mantenerse limpio, sin distorsión y sin traqueteo del woofer."}},
+           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他","es":"Micrófonos y guitarra"},
             "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
-                    "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
-           {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
+                    "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。",
+                    "es":"Conecte un micrófono en MIC1 y hable mientras ajusta volumen, eco y prioridad. Repita con MIC2 y luego conecte la guitarra. Marque N/A lo que esta referencia no tenga."}},
+           {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键","es":"Tecla de prioridad de MIC1"},
             "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
-                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
-           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。",
+                    "es":"Con música sonando, pulse prioridad y hable por MIC1. La música debe bajar mientras habla y volver cuando pare."}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键","es":"Tecla de prioridad de MIC2"},
             "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
-           {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。",
+                    "es":"La misma prueba con MIC2. Marque N/A si esta referencia tiene una sola entrada de micrófono."}},
+           {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量","es":"Volumen de MIC1"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
-                    "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
-           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
+                    "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。",
+                    "es":"Hable de forma continua por MIC1 mientras gira su volumen del mínimo al máximo. El nivel debe subir de forma suave, sin cortes ni crujidos."}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量","es":"Volumen de MIC2"},
             "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
-           {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。",
+                    "es":"La misma prueba con MIC2. Marque N/A si esta referencia tiene una sola entrada de micrófono."}},
+           {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声","es":"Eco de MIC1"},
             "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
-                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
-           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
+                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。",
+                    "es":"Diga palabras cortas por MIC1 y suba el eco. La repetición debe oírse con claridad y desaparecer al bajarlo."}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声","es":"Eco de MIC2"},
             "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
-           {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。",
+                    "es":"La misma prueba con MIC2. Marque N/A si esta referencia tiene una sola entrada de micrófono."}},
+           {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响","es":"Reverberación de MIC1"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
-                    "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
-           {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
+                    "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。",
+                    "es":"Hable por MIC1 y suba la reverberación. La voz debe ganar cuerpo y profundidad, no repetirse como el eco. Los dos controles deben actuar de forma independiente."}},
+           {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响","es":"Reverberación de MIC2"},
             "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
-           {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
+                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。",
+                    "es":"La misma prueba con MIC2. Marque N/A si esta referencia tiene una sola entrada de micrófono."}},
+           {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量","es":"Volumen de guitarra"},
             "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
-                    "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
-           {"section":{"en":"Lights","zh":"灯光"},
+                    "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。",
+                    "es":"Conecte la guitarra en su entrada y toque mientras mueve su control de volumen del mínimo al máximo. Marque N/A si esta referencia no tiene entrada de guitarra."}},
+           {"section":{"en":"Lights","zh":"灯光","es":"Luces"},
             "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
-                    "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
-           {"id":"light","code":"LED-006","label":{"en":"Light on / off","zh":"灯光开关"},
+                    "zh":"开关灯光，如有多种灯光模式请逐一切换确认。",
+                    "es":"Encienda y apague la luz, y recorra los modos de luz si el parlante los tiene."}},
+           {"id":"light","code":"LED-006","label":{"en":"Light on / off","zh":"灯光开关","es":"Encendido / apagado de la luz"},
             "help":{"en":"Press the light button several times. It must switch on and off cleanly every time, with no flicker and no LED left lit.",
-                    "zh":"多次按下灯光键。每次都应干脆地开和关，不闪烁，也不应有个别灯珠残亮。"}},
-           {"id":"light_pattern","code":"LED-007","label":{"en":"Light pattern change","zh":"灯光模式切换"},
+                    "zh":"多次按下灯光键。每次都应干脆地开和关，不闪烁，也不应有个别灯珠残亮。",
+                    "es":"Pulse la tecla de luz varias veces. Debe encender y apagar de forma limpia cada vez, sin parpadeos y sin que quede ningún LED prendido."}},
+           {"id":"light_pattern","code":"LED-007","label":{"en":"Light pattern change","zh":"灯光模式切换","es":"Cambio de patrón de luz"},
             "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
-                    "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}},
-           {"section":{"en":"AC charging","zh":"AC 充电"},
+                    "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。",
+                    "es":"Recorra todos los patrones de luz y vuelva al primero. Cada uno debe ser visiblemente distinto, sin LED apagados en ningún patrón."}},
+           {"section":{"en":"AC charging","zh":"AC 充电","es":"Carga AC"},
             "help":{"en":"Connect the AC charging cable with the speaker switched on and watch the display.",
-                    "zh":"在开机状态下接上 AC 充电线，观察显示屏。"}},
-           {"id":"ac_charge","code":"CHG-002","label":{"en":"Charging indicator","zh":"充电指示"},
+                    "zh":"在开机状态下接上 AC 充电线，观察显示屏。",
+                    "es":"Conecte el cable de carga AC con el parlante encendido y observe la pantalla."}},
+           {"id":"ac_charge","code":"CHG-002","label":{"en":"Charging indicator","zh":"充电指示","es":"Indicador de carga"},
             "help":{"en":"Plug the AC cable in. The charging indicator must appear on the display within a few seconds, and stay on while the cable is connected.",
-                    "zh":"接上 AC 充电线。几秒内显示屏应出现充电指示，并在连接期间保持显示。"}}]},
+                    "zh":"接上 AC 充电线。几秒内显示屏应出现充电指示，并在连接期间保持显示。",
+                    "es":"Conecte el cable AC. El indicador de carga debe aparecer en la pantalla en pocos segundos y mantenerse mientras el cable esté conectado."}}]},
 
         {"id":"SD","optional":true,
          "label":{"en":"SD CARD","zh":"SD 卡"},
@@ -1260,6 +1303,411 @@ const CONFIG = {
 };
 /* ==== END GENERATED CONFIG ==== */
 
+/* ---------- Spanish for the plan -----------------------------------------
+   The config above is generated, so Spanish cannot live inside it: the next
+   regeneration would wipe it. It lives here instead, keyed by the English
+   string, and `L` falls back to this table whenever a {en, zh} pair has no
+   Spanish of its own.
+
+   Keyed by text rather than by point id on purpose. The plan repeats the same
+   sentences across tests — the microphone, lights and audio-control blocks are
+   identical in USB, SD, Bluetooth, FM and AUX — so one entry here translates
+   every occurrence, and a new test that reuses the wording is already
+   translated the day it is added.
+
+   Keys must match the English exactly, character for character. A key that
+   does not match is not an error: that string simply prints in English.
+------------------------------------------------------------------------- */
+const ES_PLAN = {
+  /* Test names */
+  "USB":"USB",
+  "SD CARD":"TARJETA SD",
+  "BLUETOOTH":"BLUETOOTH",
+  "FM RADIO":"RADIO FM",
+  "AUX LINE":"ENTRADA AUX",
+  "REMOTE CONTROL":"CONTROL REMOTO",
+  "EXTERNAL PARTS":"PARTES EXTERNAS",
+  "ACCESSORIES":"ACCESORIOS",
+  "PRINTED MATERIAL":"MATERIAL IMPRESO",
+  "EXTERNAL BATTERY":"BATERÍA EXTERNA",
+  "INTERNAL PARTS":"PARTES INTERNAS",
+
+  /* Section headings */
+  "Playback":"Reproducción",
+  "Sound quality":"Calidad de sonido",
+  "Playback controls":"Controles de reproducción",
+  "Audio controls":"Controles de audio",
+  "Microphones and guitar":"Micrófonos y guitarra",
+  "Lights":"Luces",
+  "AC charging":"Carga AC",
+  "Connection":"Conexión",
+  "TWS":"TWS",
+  "Tuning":"Sintonización",
+  "Modes":"Modos",
+  "AUX input":"Entrada AUX",
+  "Power and mute":"Encendido y silencio",
+  "Source selection":"Selección de fuente",
+  "Playback keys":"Teclas de reproducción",
+  "Volume and audio":"Volumen y audio",
+  "Microphone and recording":"Micrófono y grabación",
+
+  /* Steps — USB */
+  "Insert the HOKLAN test USB drive into the speaker":"Inserte la memoria USB de prueba HOKLAN en el parlante",
+  "Select USB mode on the speaker":"Seleccione el modo USB en el parlante",
+  "Wait until it reads the USB drive and starts playing":"Espere hasta que lea la memoria y empiece a reproducir",
+  "Let the HOKLAN USB play, listening for dropouts":"Deje reproducir la USB HOKLAN, atento a cortes",
+  "With the USB drive playing, check each control on the list":"Con la memoria reproduciendo, verifique cada control de la lista",
+  "Finally, switch the speaker off and on to see if it starts in USB":"Por último, apague y encienda el parlante para ver si arranca en USB",
+
+  /* Steps — SD */
+  "Insert the HOKLAN test SD card into the speaker":"Inserte la tarjeta SD de prueba HOKLAN en el parlante",
+  "Select SD mode on the speaker":"Seleccione el modo SD en el parlante",
+  "Wait until it reads the card and starts playing":"Espere hasta que lea la tarjeta y empiece a reproducir",
+  "Let the HOKLAN SD play, listening for dropouts":"Deje reproducir la SD HOKLAN, atento a cortes",
+  "With the SD playing, check each control on the list":"Con la SD reproduciendo, verifique cada control de la lista",
+  "Finally, switch the speaker off and on to see if it starts in SD":"Por último, apague y encienda el parlante para ver si arranca en SD",
+
+  /* Steps — Bluetooth */
+  "Put the speaker in Bluetooth mode and leave it discoverable":"Ponga el parlante en modo Bluetooth y déjelo visible",
+  "Pair an iPhone and play audio":"Empareje un iPhone y reproduzca audio",
+  "Disconnect, pair an Android phone and play audio":"Desconecte, empareje un teléfono Android y reproduzca audio",
+  "Switch the speaker off and on to see if it reconnects by itself":"Apague y encienda el parlante para ver si se reconecta solo",
+  "With the audio playing, check each control on the list":"Con el audio sonando, verifique cada control de la lista",
+  "Finally, enable TWS mode and link it to a second speaker":"Por último, active el modo TWS y enlácelo con un segundo parlante",
+
+  /* Steps — FM */
+  "Select radio mode on the speaker":"Seleccione el modo radio en el parlante",
+  "Run the auto search and store the stations":"Ejecute la búsqueda automática y guarde las emisoras",
+  "Step through the stations with the next and back buttons":"Recorra las emisoras con las teclas siguiente y anterior",
+  "Switch off and on to see if it keeps the last station":"Apague y encienda para ver si conserva la última emisora",
+  "With the radio playing, check each control on the list":"Con la radio sonando, verifique cada control de la lista",
+  "Check that the lights stay off in radio mode":"Verifique que las luces permanezcan apagadas en modo radio",
+
+  /* Steps — AUX */
+  "Select AUX mode on the speaker first":"Primero seleccione el modo AUX en el parlante",
+  "Connect the AUX cable between the test source and the speaker":"Conecte el cable AUX entre la fuente de prueba y el parlante",
+  "Play audio from the source and confirm it comes out of the speaker":"Reproduzca audio desde la fuente y confirme que sale por el parlante",
+
+  /* Steps — Remote */
+  "Check the remote has a battery; remove the insulator if new":"Verifique que el control tenga batería; si es nuevo, retire el aislante",
+  "Point at the speaker from about 3 metres":"Apunte al parlante desde unos 3 metros",
+  "Press each button on the list and confirm on the speaker":"Pulse cada tecla de la lista y confirme la reacción en el parlante",
+  "Repeat some buttons at an angle, not only straight on":"Repita algunas teclas en ángulo, no solo de frente",
+
+  /* Steps — photo sections */
+  "Place the speaker in good light, avoiding direct reflections":"Ponga el parlante con buena luz, evitando reflejos directos",
+  "Photograph each area on the list, looking for scratches, dents, stains or paint defects":"Fotografíe cada zona de la lista, buscando rayones, golpes, manchas o defectos de pintura",
+  "Check the alignment of parts, joints and visible screws":"Verifique la alineación de las piezas, las uniones y los tornillos visibles",
+  "Confirm logos and labels are straight, complete and legible":"Confirme que los logos y las etiquetas estén derechos, completos y legibles",
+  "If you find a defect, take a close-up as well as the general photo":"Si encuentra un defecto, tome un primer plano además de la foto general",
+  "Mark N/A anything this reference does not include":"Marque N/A todo lo que esta referencia no incluya",
+  "Take the accessories out of the box onto a clear surface":"Saque los accesorios de la caja sobre una superficie despejada",
+  "Each accessory has a front and a back slot: fill both":"Cada accesorio tiene un espacio para el frente y otro para el reverso: llene los dos",
+  "Include a photo of the connector or tip of each cable":"Incluya una foto del conector o la punta de cada cable",
+  "Check that brand, model and condition are visible":"Verifique que la marca, el modelo y el estado sean visibles",
+  "Take a photo of each item on the list":"Tome una foto de cada elemento de la lista",
+  "The box has one slot per face: front, back, both sides, top and bottom":"La caja tiene un espacio por cara: frente, reverso, ambos costados, superior e inferior",
+  "Make sure the text and codes are clearly legible":"Asegúrese de que el texto y los códigos sean claramente legibles",
+  "Avoid shadows and reflections on the labels":"Evite sombras y reflejos sobre las etiquetas",
+  "Remove the screws and open the speaker carefully":"Retire los tornillos y abra el parlante con cuidado",
+  "Photograph each component from several angles":"Fotografíe cada componente desde varios ángulos",
+  "Take a close-up of each component's label: brand, model and part number":"Tome un primer plano de la etiqueta de cada componente: marca, modelo y número de parte",
+  "For the FM antenna, show its full routing and fixing point":"En la antena FM, muestre todo su recorrido y su punto de fijación",
+
+  /* Steps — external battery */
+  "Switch the speaker off and disconnect it from the mains":"Apague el parlante y desconéctelo de la red eléctrica",
+  "Open the speaker and disconnect the internal battery":"Abra el parlante y desconecte la batería interna",
+  "Connect the external battery":"Conecte la batería externa",
+  "Set the switch to external battery":"Ponga el selector en batería externa",
+  "Switch the speaker on, insert the USB drive and play at maximum volume":"Encienda el parlante, inserte la memoria USB y reproduzca a volumen máximo",
+  "Then plug in the AC cable, still on the external battery, and play at maximum volume":"Luego conecte el cable AC, aún con la batería externa, y reproduzca a volumen máximo"
+};
+
+/* Point labels. Short, and printed in the summary table of the report. */
+Object.assign(ES_PLAN, {
+  "Speaker reads the USB drive and shows USB mode":"El parlante lee la memoria USB y muestra el modo USB",
+  "Plays the audio from the USB drive":"Reproduce el audio de la memoria USB",
+  "Speaker reads the card and shows SD mode":"El parlante lee la tarjeta y muestra el modo SD",
+  "Plays the audio from the card":"Reproduce el audio de la tarjeta",
+  "No dropouts during playback":"Sin cortes durante la reproducción",
+  "No hum or interference":"Sin zumbido ni interferencia",
+  "Starts in USB automatically on power on":"Arranca en USB automáticamente al encender",
+  "Starts in SD automatically on power on":"Arranca en SD automáticamente al encender",
+  "Woofer sounds":"El woofer suena",
+  "Tweeter sounds":"El tweeter suena",
+  "No distortion at high volume":"Sin distorsión a volumen alto",
+  "No abnormal speaker vibration":"Sin vibración anormal del gabinete",
+  "No abnormal noise":"Sin ruidos anormales",
+  "Next track button":"Tecla de pista siguiente",
+  "Previous track button":"Tecla de pista anterior",
+  "Next folder button":"Tecla de carpeta siguiente",
+  "Previous folder button":"Tecla de carpeta anterior",
+  "PLAY / PAUSE button":"Tecla PLAY / PAUSE",
+  "Repeat one / all button":"Tecla de repetición una / todas",
+  "REC button: records and saves to the USB drive":"Tecla REC: graba y guarda en la memoria USB",
+  "REC button: records and saves to the SD":"Tecla REC: graba y guarda en la SD",
+  "Delete recordings button":"Tecla de borrado de grabaciones",
+  "Mode button":"Tecla de modo",
+  "Volume to maximum and its on-screen indicator":"Volumen al máximo y su indicador en pantalla",
+  "Treble level and its on-screen indicator":"Nivel de agudos y su indicador en pantalla",
+  "Bass level and its on-screen indicator":"Nivel de graves y su indicador en pantalla",
+  "X-BASS function":"Función X-BASS",
+  "MIC1 priority button":"Tecla de prioridad de MIC1",
+  "MIC2 priority button":"Tecla de prioridad de MIC2",
+  "MIC1 volume":"Volumen de MIC1",
+  "MIC2 volume":"Volumen de MIC2",
+  "MIC1 echo":"Eco de MIC1",
+  "MIC2 echo":"Eco de MIC2",
+  "MIC1 reverb":"Reverberación de MIC1",
+  "MIC2 reverb":"Reverberación de MIC2",
+  "Guitar volume":"Volumen de guitarra",
+  "Light on / off":"Encendido / apagado de la luz",
+  "Light pattern change":"Cambio de patrón de luz",
+  "Charging indicator":"Indicador de carga",
+  "Connection with iPhone":"Conexión con iPhone",
+  "Connection with Android":"Conexión con Android",
+  "Reconnects automatically on power on":"Se reconecta automáticamente al encender",
+  "Does not disconnect during playback":"No se desconecta durante la reproducción",
+  "Audio comes out of the speaker":"El audio sale por el parlante",
+  "TWS mode: link with a second speaker":"Modo TWS: enlace con un segundo parlante",
+  "Searches and stores stations":"Busca y guarda emisoras",
+  "Next station button":"Tecla de emisora siguiente",
+  "Previous station button":"Tecla de emisora anterior",
+  "Keeps the last station after power off":"Conserva la última emisora tras apagar",
+  "Stable reception":"Recepción estable",
+  "Clean audio, no noise":"Audio limpio, sin ruido",
+  "Lights stay off in radio mode":"Las luces permanecen apagadas en modo radio",
+  "Speaker detects the AUX input":"El parlante detecta la entrada AUX",
+  "Power on / off":"Encendido / apagado",
+  "MUTE":"SILENCIO",
+  "FM RADIO":"RADIO FM",
+  "SD":"SD",
+  "AUX":"AUX",
+  "PLAY / PAUSE":"PLAY / PAUSE",
+  "Next track":"Pista siguiente",
+  "Previous track":"Pista anterior",
+  "Fast forward":"Avance rápido",
+  "Rewind":"Retroceso rápido",
+  "Repeat track":"Repetir pista",
+  "Folder forward":"Carpeta siguiente",
+  "Folder back":"Carpeta anterior",
+  "Numeric keypad":"Teclado numérico",
+  "VOL +":"VOL +",
+  "VOL −":"VOL −",
+  "EQ button":"Tecla EQ",
+  "Microphone priority":"Prioridad de micrófono",
+  "REC — record":"REC — grabar",
+  "REC PLAY — play the recording":"REC PLAY — reproducir la grabación",
+  "VOICE OUT":"VOICE OUT",
+  "Internal battery disconnected":"Batería interna desconectada",
+  "External battery connected and detected":"Batería externa conectada y detectada",
+  "Battery switch works":"El selector de batería funciona",
+  "Speaker powers on with the external battery":"El parlante enciende con la batería externa",
+  "Plays from USB on the external battery at maximum volume":"Reproduce desde USB con la batería externa a volumen máximo",
+  "AC cable connected with the external battery, at maximum volume":"Cable AC conectado con la batería externa, a volumen máximo",
+  "Internal battery reconnected and speaker closed":"Batería interna reconectada y parlante cerrado",
+  "Front":"Frente",
+  "Back":"Parte trasera",
+  "Right side":"Costado derecho",
+  "Left side":"Costado izquierdo",
+  "Top":"Parte superior",
+  "Bottom":"Parte inferior",
+  "Display":"Pantalla",
+  "Panel":"Panel",
+  "Knobs":"Perillas",
+  "Grille":"Malla",
+  "Logo on the grille":"Logo en la malla",
+  "Logo on the panel":"Logo en el panel",
+  "Wheels":"Ruedas",
+  "Lot number":"Número de lote",
+  "Remote control — front":"Control remoto — frente",
+  "Remote control — back":"Control remoto — reverso",
+  "Power cable":"Cable de poder",
+  "Microphones — front":"Micrófonos — frente",
+  "Microphones — back":"Micrófonos — reverso",
+  "Tripod — front":"Trípode — frente",
+  "Tripod — back":"Trípode — reverso",
+  "Manual — front cover":"Manual — portada",
+  "Manual — back cover":"Manual — contraportada",
+  "Tag — front":"Etiqueta colgante — frente",
+  "Tag — back":"Etiqueta colgante — reverso",
+  "Loyalty card":"Tarjeta de fidelización",
+  "Bag":"Bolsa",
+  "Warranty seal":"Sello de garantía",
+  "Quality control seal":"Sello de control de calidad",
+  "Technical specification label":"Etiqueta de especificaciones técnicas",
+  "Box — front":"Caja — frente",
+  "Box — back":"Caja — reverso",
+  "Box — right side":"Caja — costado derecho",
+  "Box — left side":"Caja — costado izquierdo",
+  "Box — top":"Caja — parte superior",
+  "Box — bottom":"Caja — parte inferior",
+  "Woofer — front":"Woofer — frente",
+  "Woofer — back":"Woofer — reverso",
+  "Tweeter — front":"Tweeter — frente",
+  "Tweeter — back":"Tweeter — reverso",
+  "Power supply":"Fuente de poder",
+  "Amplifier — component side":"Amplificador — cara de componentes",
+  "Amplifier — solder side":"Amplificador — cara de soldadura",
+  "Battery":"Batería",
+  "FM antenna position":"Posición de la antena FM"
+});
+
+/* Help texts — the "how to check this" paragraphs. Not printed in the report,
+   but they are what the inspector actually reads before answering, so a
+   half-translated one is worse than none. */
+Object.assign(ES_PLAN, {
+  "Insert the HOKLAN test USB and select USB mode. Wait until it reads the USB drive and plays. At the end, switch the speaker off and on to see whether it starts in USB by itself.":"Inserte la USB de prueba HOKLAN y seleccione el modo USB. Espere hasta que lea la memoria y reproduzca. Al final, apague y encienda el parlante para ver si arranca en USB por sí solo.",
+  "Insert the HOKLAN test SD card and select SD mode. Wait until it reads the card and plays. At the end, switch the speaker off and on to see whether it starts in SD by itself.":"Inserte la tarjeta SD de prueba HOKLAN y seleccione el modo SD. Espere hasta que lea la tarjeta y reproduzca. Al final, apague y encienda el parlante para ver si arranca en SD por sí solo.",
+  "Insert the USB drive. Within a few seconds the display must switch to USB and show a track number. If it stays blank or keeps searching, it is a fail.":"Inserte la memoria. En pocos segundos la pantalla debe cambiar a USB y mostrar un número de pista. Si queda en blanco o sigue buscando, no conforme.",
+  "Insert the card fully until it clicks. Within a few seconds the display must switch to SD and show a track number.":"Inserte la tarjeta a fondo hasta que haga clic. En pocos segundos la pantalla debe cambiar a SD y mostrar un número de pista.",
+  "Sound must start on its own, or after pressing play. Confirm it really comes out of the speaker, not from another speaker nearby.":"El sonido debe iniciar solo, o al pulsar reproducir. Confirme que sale realmente de este parlante y no de otro que esté al lado.",
+  "Sound must start on its own, or after pressing play. Confirm it really comes out of the speaker.":"El sonido debe iniciar solo, o al pulsar reproducir. Confirme que sale realmente de este parlante.",
+  "Let one full track play without touching anything. Listen for cuts, stutters or moments of silence.":"Deje sonar una pista completa sin tocar nada. Escuche si hay cortes, saltos o momentos de silencio.",
+  "Let one full track play without touching anything. Listen for cuts, stutters or channels dropping out.":"Deje sonar una pista completa sin tocar nada. Escuche si hay cortes, saltos o si se cae algún canal.",
+  "Listen close to the grille at medium volume. Behind the music there must be no hum, hiss or crackle.":"Escuche cerca de la malla a volumen medio. Detrás de la música no debe haber zumbido, siseo ni crujidos.",
+  "Listen close to the grille at medium volume. Behind the music there must be no hum, hiss or digital crackle.":"Escuche cerca de la malla a volumen medio. Detrás de la música no debe haber zumbido, siseo ni crujidos digitales.",
+  "With the USB drive still inserted, switch the speaker off and on. It must return to USB mode and start playing without pressing anything.":"Con la memoria aún insertada, apague y encienda el parlante. Debe volver al modo USB y empezar a reproducir sin pulsar nada.",
+  "With the card still inserted, switch the speaker off and on. It must return to SD mode and start playing without pressing anything.":"Con la tarjeta aún insertada, apague y encienda el parlante. Debe volver al modo SD y empezar a reproducir sin pulsar nada.",
+  "Listen at medium and then high volume. Put your hand on the speaker to feel for abnormal vibration or rattles.":"Escuche a volumen medio y luego alto. Ponga la mano sobre el gabinete para sentir vibraciones anormales o traqueteos.",
+  "Play a track with bass. Hold your hand in front of the woofer and feel it move. The low end must be present and clean, not weak or muffled.":"Reproduzca una pista con graves. Ponga la mano frente al woofer y sienta el movimiento. El bajo debe estar presente y limpio, no débil ni apagado.",
+  "Listen for cymbals and high detail. Cover the woofer with your hand: the treble must still be clearly audible.":"Escuche los platillos y el detalle agudo. Tape el woofer con la mano: los agudos deben seguir oyéndose con claridad.",
+  "Raise the volume to maximum for a few seconds. The sound must stay clean, without breaking up, buzzing or going harsh.":"Suba el volumen al máximo unos segundos. El sonido debe mantenerse limpio, sin quebrarse, zumbar ni volverse estridente.",
+  "At high volume run your hand over the speaker, grille and back panel. Nothing must rattle, buzz or feel loose.":"A volumen alto pase la mano por el gabinete, la malla y la tapa trasera. Nada debe traquetear, zumbar ni sentirse flojo.",
+  "Pause the track with the speaker still on. The speakers must be silent: no hiss, hum or clicking.":"Pause la pista con el parlante encendido. Los altavoces deben quedar en silencio: sin siseo, zumbido ni chasquidos.",
+  "With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat, record and mode.":"Con el audio sonando, pulse cada tecla del parlante y confirme que responde: pista, carpeta, reproducir/pausar, repetición, grabación y modo.",
+  "Press it three times. The track number must advance one at a time and the music must change with each press.":"Púlsela tres veces. El número de pista debe avanzar de uno en uno y la música debe cambiar con cada pulsación.",
+  "Press it three times. The track number must go back one at a time, not jump or restart from the beginning.":"Púlsela tres veces. El número de pista debe retroceder de uno en uno, sin saltos ni volver a la primera.",
+  "Press it and confirm the folder number changes and playback jumps to a different folder on the USB drive.":"Púlsela y confirme que el número de carpeta cambia y la reproducción salta a otra carpeta de la memoria.",
+  "Press it and confirm the folder number changes and playback jumps to a different folder on the card.":"Púlsela y confirme que el número de carpeta cambia y la reproducción salta a otra carpeta de la tarjeta.",
+  "Press it and confirm it returns to the previous folder, not to the start of the USB drive.":"Púlsela y confirme que vuelve a la carpeta anterior, no al inicio de la memoria.",
+  "Press it and confirm it returns to the previous folder, not to the start of the card.":"Púlsela y confirme que vuelve a la carpeta anterior, no al inicio de la tarjeta.",
+  "Press once: the sound must stop and the display must show pause. Press again: it must resume from the same point, not from the start.":"Pulse una vez: el sonido debe detenerse y la pantalla mostrar pausa. Pulse otra vez: debe continuar desde el mismo punto, no desde el inicio.",
+  "Press once: the sound must stop and the display must show pause. Press again: it must resume from the same point.":"Pulse una vez: el sonido debe detenerse y la pantalla mostrar pausa. Pulse otra vez: debe continuar desde el mismo punto.",
+  "Set repeat-one and let the track end: the same track must play again. Then set repeat-all: at the end it must move to the next track.":"Ponga repetir-una y deje terminar la pista: debe volver a sonar la misma. Luego ponga repetir-todas: al terminar debe pasar a la siguiente.",
+  "Press REC, speak into the microphone for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.":"Pulse REC, hable al micrófono unos segundos y detenga. Reproduzca la grabación en el parlante para confirmar que el archivo quedó guardado.",
+  "Delete the recording you just made and confirm it no longer plays back. The music tracks must remain untouched.":"Borre la grabación que acaba de hacer y confirme que ya no se reproduce. Las pistas de música deben quedar intactas.",
+  "Press the mode button through the full cycle until it returns to USB. The display must follow every change.":"Pulse la tecla de modo un ciclo completo hasta volver a USB. La pantalla debe seguir cada cambio.",
+  "Press the mode button through the full cycle until it returns to SD. The display must follow every change.":"Pulse la tecla de modo un ciclo completo hasta volver a SD. La pantalla debe seguir cada cambio.",
+  "Press the mode button through the full cycle until it returns to Bluetooth. The connection must survive the round trip.":"Pulse la tecla de modo un ciclo completo hasta volver a Bluetooth. La conexión debe sobrevivir el recorrido.",
+  "Press the mode button through the full cycle until it returns to AUX. The display must follow every change.":"Pulse la tecla de modo un ciclo completo hasta volver a AUX. La pantalla debe seguir cada cambio.",
+  "Move each control through its full range and check the on-screen indicator follows it.":"Mueva cada control en todo su recorrido y verifique que el indicador en pantalla lo siga.",
+  "Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.":"Lleve el volumen del mínimo al máximo lentamente. El número en pantalla debe seguirlo en todo el recorrido, sin saltos, zonas muertas ni sonido rasposo.",
+  "With music playing, take the treble fully down and fully up. The change must be clearly audible and the indicator must follow it.":"Con música sonando, lleve los agudos al mínimo y al máximo. El cambio debe oírse con claridad y el indicador debe seguirlo.",
+  "With music playing, take the bass fully down and fully up. The change must be clearly audible and the indicator must follow it.":"Con música sonando, lleve los graves al mínimo y al máximo. El cambio debe oírse con claridad y el indicador debe seguirlo.",
+  "Playing from the USB drive, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.":"Reproduciendo desde la memoria USB, active y desactive X-BASS varias veces. El bajo debe aumentar notoriamente al activarlo y volver a su estado al desactivarlo, y la pantalla debe mostrar el cambio. Luego suba el volumen al máximo con X-BASS activo: el bajo debe mantenerse limpio, sin distorsión y sin traqueteo del woofer.",
+  "Playing from the SD card, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.":"Reproduciendo desde la tarjeta SD, active y desactive X-BASS varias veces. El bajo debe aumentar notoriamente al activarlo y volver a su estado al desactivarlo, y la pantalla debe mostrar el cambio. Luego suba el volumen al máximo con X-BASS activo: el bajo debe mantenerse limpio, sin distorsión y sin traqueteo del woofer.",
+  "Playing over Bluetooth, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.":"Reproduciendo por Bluetooth, active y desactive X-BASS varias veces. El bajo debe aumentar notoriamente al activarlo y volver a su estado al desactivarlo, y la pantalla debe mostrar el cambio. Luego suba el volumen al máximo con X-BASS activo: el bajo debe mantenerse limpio, sin distorsión y sin traqueteo del woofer.",
+  "Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.":"Conecte un micrófono en MIC1 y hable mientras ajusta volumen, eco y prioridad. Repita con MIC2 y luego conecte la guitarra. Marque N/A lo que esta referencia no tenga.",
+  "With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.":"Con música sonando, pulse prioridad y hable por MIC1. La música debe bajar mientras habla y volver cuando pare.",
+  "Same test with MIC2. Mark N/A if this reference has only one microphone input.":"La misma prueba con MIC2. Marque N/A si esta referencia tiene una sola entrada de micrófono.",
+  "Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.":"Hable de forma continua por MIC1 mientras gira su volumen del mínimo al máximo. El nivel debe subir de forma suave, sin cortes ni crujidos.",
+  "Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.":"Diga palabras cortas por MIC1 y suba el eco. La repetición debe oírse con claridad y desaparecer al bajarlo.",
+  "Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.":"Hable por MIC1 y suba la reverberación. La voz debe ganar cuerpo y profundidad, no repetirse como el eco. Los dos controles deben actuar de forma independiente.",
+  "Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.":"Conecte la guitarra en su entrada y toque mientras mueve su control de volumen del mínimo al máximo. Marque N/A si esta referencia no tiene entrada de guitarra.",
+  "Switch the light on and off, and step through the light modes if the speaker has them.":"Encienda y apague la luz, y recorra los modos de luz si el parlante los tiene.",
+  "Press the light button several times. It must switch on and off cleanly every time, with no flicker and no LED left lit.":"Pulse la tecla de luz varias veces. Debe encender y apagar de forma limpia cada vez, sin parpadeos y sin que quede ningún LED prendido.",
+  "Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.":"Recorra todos los patrones de luz y vuelva al primero. Cada uno debe ser visiblemente distinto, sin LED apagados en ningún patrón.",
+  "Connect the AC charging cable with the speaker switched on and watch the display.":"Conecte el cable de carga AC con el parlante encendido y observe la pantalla.",
+  "Plug the AC cable in. The charging indicator must appear on the display within a few seconds, and stay on while the cable is connected.":"Conecte el cable AC. El indicador de carga debe aparecer en la pantalla en pocos segundos y mantenerse mientras el cable esté conectado."
+});
+
+/* Help texts, continued: Bluetooth, radio, AUX, remote, battery and the photo
+   sections. */
+Object.assign(ES_PLAN, {
+  "Put the speaker in Bluetooth mode. Pair an iPhone and play; then disconnect and pair an Android. Finally switch the speaker off and on to see whether it reconnects by itself.":"Ponga el parlante en modo Bluetooth. Empareje un iPhone y reproduzca; luego desconecte y empareje un Android. Al final apague y encienda el parlante para ver si se reconecta solo.",
+  "Search from the iPhone. The speaker must appear in the list, pair without a PIN and connect within a few seconds.":"Busque desde el iPhone. El parlante debe aparecer en la lista, emparejarse sin PIN y conectar en pocos segundos.",
+  "Disconnect the iPhone first, then pair an Android. Both must work: it is common for a speaker to connect with one and fail with the other.":"Primero desconecte el iPhone y luego empareje un Android. Los dos deben funcionar: es común que un parlante conecte con uno y falle con el otro.",
+  "With the phone paired and nearby, switch the speaker off and on. It must reconnect by itself, without pairing again.":"Con el teléfono emparejado y cerca, apague y encienda el parlante. Debe reconectarse solo, sin volver a emparejar.",
+  "Play for at least 30 seconds with the phone about 3 metres away. There must be no dropouts or disconnections.":"Reproduzca al menos 30 segundos con el teléfono a unos 3 metros. No debe haber cortes ni desconexiones.",
+  "Play the test track from the phone and listen for at least 30 seconds, checking for dropouts and hum.":"Reproduzca la pista de prueba desde el teléfono y escuche al menos 30 segundos, atento a cortes y zumbidos.",
+  "A connected phone does not prove sound. Play music and confirm it really comes out of this speaker, not the phone or a nearby speaker.":"Que el teléfono esté conectado no prueba que haya sonido. Reproduzca música y confirme que sale realmente de este parlante, no del teléfono ni de otro parlante cercano.",
+  "Press it on the speaker, not on the phone. The music must pause and the phone must show it paused too.":"Púlsela en el parlante, no en el teléfono. La música debe pausarse y el teléfono también debe mostrarla en pausa.",
+  "Enable TWS mode and link the speaker to a second speaker. Confirm both play together. Mark N/A if this reference has no TWS.":"Active el modo TWS y enlace el parlante con un segundo parlante. Confirme que ambos suenan juntos. Marque N/A si esta referencia no tiene TWS.",
+  "Enable TWS on both speakers and wait for them to pair with each other. Play music: both must sound together and in sync. Mark N/A if this reference has no TWS.":"Active TWS en los dos parlantes y espere a que se emparejen entre sí. Reproduzca música: ambos deben sonar juntos y sincronizados. Marque N/A si esta referencia no tiene TWS.",
+  "Select radio mode and run the auto search to store stations. Step through them with next and back. Then switch the speaker off and on to check it keeps the last station.":"Seleccione el modo radio y ejecute la búsqueda automática para guardar emisoras. Recórralas con siguiente y anterior. Luego apague y encienda el parlante para comprobar que conserva la última emisora.",
+  "Run the auto search and let it finish. It must find several stations and store them; a speaker that finds one or none has an antenna problem.":"Ejecute la búsqueda automática y déjela terminar. Debe encontrar varias emisoras y guardarlas; un parlante que encuentra una o ninguna tiene problema de antena.",
+  "Press it several times. The frequency must move to the next stored station each time, not scan endlessly.":"Púlsela varias veces. La frecuencia debe pasar a la siguiente emisora guardada cada vez, sin quedarse buscando sin fin.",
+  "Press it several times. It must go back through the stored stations one at a time.":"Púlsela varias veces. Debe retroceder por las emisoras guardadas de una en una.",
+  "Select the station stored in preset 2 and write down its frequency. Switch the speaker off, wait a few seconds and switch it on again. It must come back on preset 2, on the same frequency — not on preset 1 and not scanning.":"Seleccione la emisora guardada en la memoria 2 y anote su frecuencia. Apague el parlante, espere unos segundos y vuelva a encenderlo. Debe volver en la memoria 2, en la misma frecuencia — no en la memoria 1 ni buscando.",
+  "Listen to one station for 30 seconds without touching the speaker. The signal must not drift, fade or fill with static.":"Escuche una emisora durante 30 segundos sin tocar el parlante. La señal no debe desviarse, desvanecerse ni llenarse de estática.",
+  "On a strong station the voice must be clear. Constant hiss on every station points to the tuner or the antenna, not the broadcast.":"En una emisora de señal fuerte la voz debe ser clara. Un siseo constante en todas las emisoras apunta al sintonizador o a la antena, no a la transmisión.",
+  "Press the mode button and confirm the speaker changes source and the display follows.":"Pulse la tecla de modo y confirme que el parlante cambia de fuente y la pantalla lo sigue.",
+  "In radio mode the lights must stay off by design: the LED drivers interfere with FM reception. If they come on, it is a firmware fault.":"En modo radio las luces deben permanecer apagadas por diseño: los controladores de LED interfieren con la recepción FM. Si se encienden, es una falla de firmware.",
+  "Connect the AUX cable between the test source and the speaker, select AUX mode and play audio.":"Conecte el cable AUX entre la fuente de prueba y el parlante, seleccione el modo AUX y reproduzca audio.",
+  "First select AUX mode on the speaker and confirm the display shows it. Only then connect the cable and play from the source: the sound must come through.":"Primero seleccione el modo AUX en el parlante y confirme que la pantalla lo muestra. Solo entonces conecte el cable y reproduzca desde la fuente: el sonido debe pasar.",
+  "Play from the source and confirm sound in both channels. Wiggle the plug gently: the sound must not cut out.":"Reproduzca desde la fuente y confirme sonido en ambos canales. Mueva el conector con suavidad: el sonido no debe cortarse.",
+  "With the cable connected but the source paused, listen close to the grille. There must be no hum or buzz from the cable or the mains.":"Con el cable conectado pero la fuente en pausa, escuche cerca de la malla. No debe haber zumbido proveniente del cable ni de la red eléctrica.",
+  "Press it on the speaker. The sound must stop and resume. Mark N/A if this reference does not control the AUX source.":"Púlsela en el parlante. El sonido debe detenerse y reanudarse. Marque N/A si esta referencia no controla la fuente AUX.",
+  "Check the remote has a battery and remove the insulator if new. Point at the speaker from about 3 metres.":"Verifique que el control tenga batería y retire el aislante si es nuevo. Apunte al parlante desde unos 3 metros.",
+  "Press it to switch the speaker off, then again to switch it on. Both directions must work from 3 metres.":"Púlsela para apagar el parlante y otra vez para encenderlo. Ambos sentidos deben funcionar a 3 metros.",
+  "With music playing, press MUTE: the sound must stop instantly. Press again: it must come back at the same volume.":"Con música sonando, pulse MUTE: el sonido debe cortarse al instante. Pulse otra vez: debe volver al mismo volumen.",
+  "Press each source key and confirm the speaker switches to it. Mark N/A for sources this reference does not have.":"Pulse cada tecla de fuente y confirme que el parlante cambia a ella. Marque N/A las fuentes que esta referencia no tenga.",
+  "Press it from another source. The speaker must switch straight to radio and the display must show it.":"Púlsela desde otra fuente. El parlante debe pasar directo a radio y la pantalla debe mostrarlo.",
+  "With the USB drive inserted, press it from another source. The speaker must switch to USB and start playing.":"Con la memoria USB insertada, púlsela desde otra fuente. El parlante debe cambiar a USB y empezar a reproducir.",
+  "Press it from another source. The speaker must switch to Bluetooth and become discoverable or reconnect to the phone.":"Púlsela desde otra fuente. El parlante debe cambiar a Bluetooth y quedar visible o reconectarse al teléfono.",
+  "With the card inserted, press it from another source. Mark N/A if this reference has no SD slot.":"Con la tarjeta insertada, púlsela desde otra fuente. Marque N/A si esta referencia no tiene ranura SD.",
+  "With the AUX cable connected, press it from another source. The speaker must switch to AUX.":"Con el cable AUX conectado, púlsela desde otra fuente. El parlante debe cambiar a AUX.",
+  "Press it repeatedly. The speaker must step through every source in order and return to the first.":"Púlsela repetidamente. El parlante debe recorrer todas las fuentes en orden y volver a la primera.",
+  "With a source playing, press each key and confirm the speaker reacts.":"Con una fuente reproduciendo, pulse cada tecla y confirme que el parlante responde.",
+  "Press once: the sound must stop. Press again: it must resume from the same point, not from the start.":"Pulse una vez: el sonido debe detenerse. Pulse otra vez: debe continuar desde el mismo punto, no desde el inicio.",
+  "Press it three times. The track number must advance one at a time from the remote, just as it does from the panel.":"Púlsela tres veces. El número de pista debe avanzar de uno en uno desde el control, igual que desde el panel.",
+  "Press it three times. The track number must go back one at a time, without jumping or restarting.":"Púlsela tres veces. El número de pista debe retroceder de uno en uno, sin saltos ni reinicios.",
+  "Hold it down during a track. The music must move forward while held and carry on normally when released.":"Manténgala pulsada durante una pista. La música debe avanzar mientras la sostiene y continuar normal al soltarla.",
+  "Hold it down during a track. The music must move backward while held and carry on normally when released.":"Manténgala pulsada durante una pista. La música debe retroceder mientras la sostiene y continuar normal al soltarla.",
+  "Press it and check the repeat icon changes on the display, then let a track end to confirm the mode really applies.":"Púlsela y verifique que el ícono de repetición cambia en la pantalla; luego deje terminar una pista para confirmar que el modo realmente se aplica.",
+  "Press it and confirm the folder number changes and playback jumps to another folder.":"Púlsela y confirme que el número de carpeta cambia y la reproducción salta a otra carpeta.",
+  "Press it and confirm it returns to the previous folder.":"Púlsela y confirme que vuelve a la carpeta anterior.",
+  "Type a track number, for example 005. The speaker must jump straight to that track. Test every digit from 0 to 9, not just one.":"Escriba un número de pista, por ejemplo 005. El parlante debe saltar directo a esa pista. Pruebe todos los dígitos del 0 al 9, no solo uno.",
+  "Hold VOL + and VOL − and confirm the level moves on the display. Press EQ and check the preset changes.":"Mantenga VOL + y VOL − y confirme que el nivel se mueve en la pantalla. Pulse EQ y verifique que el preajuste cambia.",
+  "Press it several times and hold it once. The level must rise step by step on the display and the sound must follow.":"Púlsela varias veces y manténgala una vez. El nivel debe subir paso a paso en la pantalla y el sonido debe seguirlo.",
+  "Press it several times and hold it once. The level must fall step by step, all the way down to zero.":"Púlsela varias veces y manténgala una vez. El nivel debe bajar paso a paso, hasta llegar a cero.",
+  "Press it through every preset. The display must show the name change and the sound must be audibly different between presets.":"Recórrala por todos los preajustes. La pantalla debe mostrar el cambio de nombre y el sonido debe ser audiblemente distinto entre preajustes.",
+  "Record a few seconds with REC, play it back with REC PLAY. Retest some keys at an angle, not only straight on.":"Grabe unos segundos con REC y reprodúzcalo con REC PLAY. Vuelva a probar algunas teclas en ángulo, no solo de frente.",
+  "With music playing, press it and speak into the microphone. The music must drop while you speak and return afterwards.":"Con música sonando, púlsela y hable al micrófono. La música debe bajar mientras habla y volver después.",
+  "Press REC and speak for a few seconds. The display must show it is recording, and pressing it again must stop the recording.":"Pulse REC y hable unos segundos. La pantalla debe indicar que está grabando, y al pulsarla otra vez la grabación debe detenerse.",
+  "Press it and confirm the recording you just made plays back clearly through the speaker.":"Púlsela y confirme que la grabación que acaba de hacer se reproduce con claridad por el parlante.",
+  "Press it while speaking into the microphone and listen for the change in the voice effect. Mark N/A if this reference has no VOICE OUT.":"Púlsela mientras habla al micrófono y escuche el cambio en el efecto de voz. Marque N/A si esta referencia no tiene VOICE OUT.",
+  "With the speaker off and unplugged from the mains, open it and unplug the internal battery connector. Leave it disconnected for the whole test.":"Con el parlante apagado y desconectado de la red, ábralo y desconecte el conector de la batería interna. Déjela desconectada durante toda la prueba.",
+  "Connect the external battery and set the switch to the external position. The speaker must recognise it as its power source.":"Conecte la batería externa y ponga el selector en la posición externa. El parlante debe reconocerla como su fuente de alimentación.",
+  "Move the switch between internal and external. The speaker must respond to the change, not stay dead in one of the positions.":"Mueva el selector entre interna y externa. El parlante debe responder al cambio, no quedar muerto en una de las posiciones.",
+  "Switch the speaker on with the mains cable unplugged. It must start up fully on the external battery alone.":"Encienda el parlante con el cable de red desconectado. Debe arrancar por completo solo con la batería externa.",
+  "Insert the USB drive and take the volume to maximum. Hold it there for at least a minute. The sound must not cut out or distort, the speaker must not switch off or restart, and the external battery must not shut down under the load.":"Inserte la memoria USB y suba el volumen al máximo. Manténgalo así al menos un minuto. El sonido no debe cortarse ni distorsionar, el parlante no debe apagarse ni reiniciarse, y la batería externa no debe protegerse por la carga.",
+  "With the external battery still powering the speaker and music playing, plug in the AC power cable and take the volume to maximum. The speaker must keep playing without cutting out, resetting or losing the source; the charging indicator must appear; and neither the battery nor the AC input must trip. Check the connector and the battery for heat after a minute.":"Con la batería externa alimentando el parlante y música sonando, conecte el cable AC y suba el volumen al máximo. El parlante debe seguir reproduciendo sin cortes, sin reiniciarse y sin perder la fuente; el indicador de carga debe aparecer; y ni la batería ni la entrada AC deben protegerse. Al minuto, revise si el conector y la batería se calientan.",
+  "Reconnect the internal battery, set the switch back to internal and close the speaker. Confirm it still works before finishing.":"Reconecte la batería interna, vuelva a poner el selector en interna y cierre el parlante. Confirme que sigue funcionando antes de terminar.",
+  "Stand at the right of the speaker, looking at it from the front. Photograph the whole side, including the handle and the joint with the front and back panels.":"Párese al lado derecho del parlante, mirándolo de frente. Fotografíe todo el costado, incluyendo el asa y la unión con los paneles frontal y trasero.",
+  "Same photo on the opposite side. Both sides are asked for separately because a scratch on only one of them is easy to miss in a single picture.":"La misma foto del lado opuesto. Se piden los dos costados por separado porque un rayón que está en uno solo se pasa por alto fácilmente en una sola foto.",
+  "Close-up of the logo on the grille. It must be straight, complete, well fixed and with no scratched or faded lettering.":"Primer plano del logo en la malla. Debe estar derecho, completo, bien fijado y sin letras rayadas ni desvanecidas.",
+  "Close-up of the logo printed or fixed on the panel. Check it matches the one on the grille in size, colour and finish.":"Primer plano del logo impreso o fijado en el panel. Verifique que coincida con el de la malla en tamaño, color y acabado.",
+  "Close-up of the lot or batch number of the speaker: the code printed or labelled on the product itself, usually next to the specification label. Every digit must be sharp and legible in the photo, and it must match the lot recorded on the inspection paperwork. If this reference carries no lot number, photograph the serial number instead and say so in the notes.":"Primer plano del número de lote del parlante: el código impreso o en etiqueta sobre el producto, normalmente junto a la etiqueta de especificaciones. Cada dígito debe verse nítido y legible en la foto, y debe coincidir con el lote registrado en el documento de inspección. Si esta referencia no tiene número de lote, fotografíe el número de serie y anótelo en las observaciones.",
+  "The face with the buttons, with the printing legible and the battery cover in place.":"La cara de las teclas, con la impresión legible y la tapa de la batería puesta.",
+  "The back, showing the battery cover and any label. Front and back are asked for separately because a cracked cover only shows from behind.":"El reverso, mostrando la tapa de la batería y cualquier etiqueta. Se piden frente y reverso por separado porque una tapa agrietada solo se ve por detrás.",
+  "One photo of the whole cable with both plugs visible. There is no second side to check on a cable.":"Una foto de todo el cable con los dos conectores visibles. En un cable no hay un segundo lado que revisar.",
+  "The head and body of each microphone, with the grille and the brand visible.":"La cabeza y el cuerpo de cada micrófono, con la rejilla y la marca visibles.",
+  "The opposite side, showing the switch, the battery compartment and the connector.":"El lado opuesto, mostrando el interruptor, el compartimiento de la batería y el conector.",
+  "The tripod assembled, seen from the front: legs, column and mounting plate.":"El trípode armado, visto de frente: patas, columna y plato de montaje.",
+  "The back, showing the locking knobs and the welds.":"El reverso, mostrando las perillas de fijación y las soldaduras.",
+  "The front cover, readable and with no glare over the text.":"La portada, legible y sin brillos sobre el texto.",
+  "The back cover, readable and with no glare over the text.":"La contraportada, legible y sin brillos sobre el texto.",
+  "The printed face of the tag, complete and legible.":"La cara impresa de la etiqueta colgante, completa y legible.",
+  "The other face. Both are asked for separately because the barcode and the country of origin are usually printed only on the back.":"La otra cara. Se piden las dos por separado porque el código de barras y el país de origen normalmente solo se imprimen en el reverso.",
+  "The card inviting the customer to register the product. Photograph both faces if it is printed on both, and check the QR code or web address is legible.":"La tarjeta que invita al cliente a registrar el producto. Fotografíe ambas caras si está impresa por los dos lados, y verifique que el código QR o la dirección web sean legibles.",
+  "Close-up of the label. Voltage, power, model and serial must all be legible in the photo.":"Primer plano de la etiqueta. Voltaje, potencia, modelo y serie deben quedar legibles en la foto.",
+  "The main printed face of the box, the one facing the buyer on the shelf.":"La cara impresa principal de la caja, la que mira al comprador en el estante.",
+  "The opposite face, usually carrying the specifications and the barcode.":"La cara opuesta, que normalmente lleva las especificaciones y el código de barras.",
+  "The narrow side on the right, looking at the front of the box.":"El costado angosto derecho, mirando el frente de la caja.",
+  "The narrow side on the left. Each face is asked for on its own so a crushed corner or a missing label can be traced to one side of the box.":"El costado angosto izquierdo. Cada cara se pide por separado para poder ubicar en qué lado de la caja está una esquina golpeada o una etiqueta faltante.",
+  "The top, including the closing flaps and the tape.":"La parte superior, incluyendo las aletas de cierre y la cinta.",
+  "The bottom, including the seal and any shipping label.":"La parte inferior, incluyendo el sello y cualquier etiqueta de envío.",
+  "The cone and surround, seen from the front. Look for tears, glue marks or a misaligned dust cap.":"El cono y la suspensión, vistos de frente. Busque roturas, marcas de pegante o guardapolvo descentrado.",
+  "The magnet, with its label readable: brand, size and impedance. This is what proves the specified woofer was used.":"El imán, con su etiqueta legible: marca, tamaño e impedancia. Es lo que prueba que se usó el woofer especificado.",
+  "The diaphragm and horn seen from the front. Look for a dented dome, glue marks, or a horn that is not properly seated.":"El diafragma y la corneta vistos de frente. Busque cúpula abollada, marcas de pegante o corneta mal asentada.",
+  "The magnet and the terminals, with the label readable: brand, model and impedance. Front and back are asked for separately because the label that proves which tweeter was fitted is only visible from behind.":"El imán y los terminales, con la etiqueta legible: marca, modelo e impedancia. Se piden frente y reverso por separado porque la etiqueta que prueba qué tweeter se montó solo se ve por detrás.",
+  "The side carrying the chips. The board reference and the main IC markings must be readable.":"La cara donde están los chips. La referencia de la placa y las marcas del circuito integrado principal deben ser legibles.",
+  "The solder side. Look for cold joints, flux residue, bridges or reworked areas.":"La cara de soldadura. Busque soldaduras frías, residuos de fundente, puentes o zonas retrabajadas.",
+  "Photograph the face that carries the specifications: voltage, capacity in mAh, chemistry and manufacturer. A photo of the wrapped battery without the label proves nothing.":"Fotografíe la cara con las especificaciones: voltaje, capacidad en mAh, tipo de celda y fabricante. Una foto de la batería envuelta sin la etiqueta no prueba nada."
+});
+
 /* ---------- interface strings --------------------------------------------- */
 const T = {
  en:{
@@ -1377,7 +1825,128 @@ const T = {
   scope_part_note:"This is a partial inspection: only the tests listed in section II were performed. It does not certify the tests that were not.",
   wipe:"Clear stored data",
   a_wipe:"Clear all stored data?\n\nAnswers, photos and any unfinished draft will be deleted, so the next report starts clean. Reports you already downloaded are not affected.",
-  a_wiped:"Data cleared. Ready for a new inspection."
+  a_wiped:"Data cleared. Ready for a new inspection.",
+  notes_es:"Español",
+  rm_report_es:"— the same report in Spanish."
+ },
+ es:{
+  subtitle:"CONTROL DE CALIDAD", test_id:"Código de prueba", bad_id:"Código inválido",
+  reference:"Referencia",
+  inspection:"Fecha de inspección", po:"Orden de compra (OC)", operator:"Inspector",
+  select:"— seleccione —", pick_factory:"— primero ingrese el código de prueba —",
+  start:"INICIAR INSPECCIÓN", plan_info:"%n pruebas · plan v%v",
+  units:"Parlantes a inspeccionar simultáneamente",
+  units_report:"Parlantes inspeccionados",
+  plan_info_n:"%n pruebas × %u parlantes = %tot verificaciones · plan v%v",
+  speaker:"Parlante", speaker_n:"PARLANTE %n", units_tag:"%n parlantes",
+  need_photo_n:"Se requiere al menos una foto de los parlantes, aprueben o no. Las fotos de un defecto van en el recuadro rojo del punto que falló.",
+  by_unit:"Resultado por parlante",
+  report_note:"Al final se genera un informe con las fotos.",
+  how_test:"Cómo ejecutar la prueba", how_photos:"Cómo tomar las fotos",
+  remaining:"Quedan <b>%n</b> punto(s). Toque una sección para abrirla.",
+  all_done:"Todos los puntos respondidos.", checks:"Verificaciones",
+  evidence:"Evidencia", required:"— obligatorio", optional:"(opcional)",
+  photo:"Foto", video:"Video",
+  ask_video:"un clip de un minuto o más que muestre la prueba en ejecución.",
+  ask_photo:"el proceso y las herramientas usadas: memoria USB, tarjeta SD, batería, cables, teléfono.",
+  need_photo:"Se requiere al menos una foto, apruebe o falle la prueba.",
+  need_video:"Se requiere un video de la prueba en ejecución, apruebe o falle.",
+  need_both:"Se requieren ambos, apruebe o falle la prueba: al menos una foto y un video de la prueba en ejecución.",
+  notes:"Observaciones", notes_fail_ph:"¿Qué pasó exactamente? Ej.: el sonido se corta a los 20 segundos",
+  notes_ph:"Observaciones sobre esta prueba",
+  notes_en:"Inglés", translating:"traduciendo…",
+  tr_fail:"Traducción automática no disponible — revise la conexión. La observación se conserva tal como se escribió.",
+  video_att:"Video adjunto — %n archivo(s) en la carpeta videos/ del paquete:",
+  next:"SIGUIENTE", finish:"FINALIZAR", na:"N/A",
+  go_other:"☰ Ir a otra prueba", tests_title:"Pruebas",
+  index_hint:"Toque cualquier prueba para ir directo. Lo que ya marcó se conserva.",
+  back_to_test:"VOLVER A LA PRUEBA", here:"AQUÍ", photos_tag:"FOTOS",
+  points_n:"%n punto(s)", files_n:"%n archivo(s)", is_optional:"opcional",
+  final:"RESULTADO FINAL", failures:"Fallas:",
+  evidence_total:"%n archivo(s) de evidencia · %s",
+  too_big:"El informe es muy grande. Si el teléfono se atasca al generarlo, elimine fotos duplicadas desde el menú ☰.",
+  download:"⬇ DESCARGAR",
+  save_pdf_dl:"⬇ GUARDAR COMO PDF",
+  pdf_wait:"Preparando el informe…",
+  view_report:"VER INFORME", save_pdf:"GUARDAR COMO PDF", back:"ATRÁS",
+  review:"☰ Revisar o corregir una prueba",
+  packet:"Qué se envía",
+  rm_report_en:"— el informe completo en inglés, con las fotos.",
+  rm_report_zh:"— el mismo informe en chino.",
+  rm_report_es:"— el mismo informe en español. Los tres van siempre incluidos.",
+  rm_csv:"— una fila por punto verificado, se abre en Excel.",
+  rm_photos:"— %n foto(s), nombradas por prueba.",
+  rm_naming:"Nombres de archivo: la evidencia de un defecto se lee PRUEBA_punto_FAIL_parlanteN; la evidencia general de una prueba lleva solo PRUEBA.",
+  wm_line:"HOKLAN · Documento oficial de calidad", incomplete:"INCOMPLETA",
+  rm_videos:"— %n video(s) grabados durante la inspección.",
+  rm_lost:"%n video(s) no pudieron incluirse: la página se recargó después de grabarlos.",
+  rm_pdf:"Para obtener el PDF: abra REPORT_ES.html, REPORT_EN.html o REPORT_ZH.html en cualquier navegador y elija Imprimir → Guardar como PDF.",
+  packet_note:"Todo viaja en un solo archivo ZIP. Enviar tres adjuntos por separado es la forma segura de perder uno.",
+  packing:"Preparando el archivo… toma un momento cuando hay videos.",
+  packet_done:"<b>%f</b> · %s · %n foto(s), %v video(s)",
+  saved_as:"<b>Guardado:</b> %f<br>Está en la carpeta <b>Descargas</b> del teléfono.",
+  saved_hint:"<br><br>Adjúntelo desde Descargas para enviarlo por WeChat o correo.",
+  a_no_download:"Este navegador no puede descargar archivos.\n\nAbra esta página en Safari o Chrome — en WeChat, toque el menú ⋯ y elija \"Abrir en el navegador\" — y vuelva a intentarlo.",
+  a_pack_fail:"No se pudo generar el paquete:",
+  dl_no:"Este navegador no puede descargar archivos%w. Abra la página en <b>Safari</b> o <b>Chrome</b> — toque el menú ⋯ y elija \"Abrir en el navegador\" — y descargue el paquete allí.",
+  in_wechat:" (navegador interno de WeChat)", in_ios:" (Safari en iPhone)",
+  pdf_how:"Toque el botón de abajo y elija <b>Guardar como PDF</b> como destino, en lugar de una impresora. El PDF se guarda en el teléfono y se abre con cualquier aplicación de PDF — Acrobat, WPS, Archivos — no solo en el navegador.",
+  save_pdf_btn:"ABRIR EL DIÁLOGO DE IMPRESIÓN",
+  report_title:"Informe de Inspección de Control de Calidad",
+  overall:"Conclusión general", general_info:"INFORMACIÓN GENERAL",
+  inspection_summary:"RESUMEN DE LA INSPECCIÓN", remarks:"OBSERVACIONES",
+  evidence_sec:"EVIDENCIA FOTOGRÁFICA", conclusion:"CONCLUSIÓN",
+  th_remark:"Obs.", plan:"Plan de pruebas",
+  remarks_note:"Puntos registrados como fallidos durante la inspección, en el orden en que se encontraron.",
+  videos_n:"%n video(s) grabados, guardados en el teléfono y no incrustados en este informe.",
+  concl_fail:"%n punto(s) fallaron. Véase la sección III.",
+  concl_pass:"Todos los puntos aplicables aprobaron.",
+  footer_note:"Generado por HOKLAN QC. Las marcas de tiempo de las fotos provienen del teléfono en el momento de la captura.",
+  th_test:"Prueba", th_point:"Punto verificado", th_result:"Resultado", th_code:"Código",
+  ok:"CONFORME", fail:"NO CONFORME", documented:"DOCUMENTADO", pending:"PENDIENTE",
+  photographed:"%a de %b elementos fotografiados",
+  a_select_factory:"Ingrese un código de prueba válido.", a_select_model:"Seleccione la referencia.",
+  a_operator:"El inspector es obligatorio.",
+  a_pending:"Faltan %n punto(s) por responder.",
+  a_photo:"Falta la foto.\n\nToda prueba debe quedar con evidencia, apruebe o falle.",
+  a_video:"Falta el video.\n\nToda prueba debe quedar con un clip de su ejecución, apruebe o falle.",
+  a_both:"Faltan la foto y el video.\n\nToda prueba debe quedar con al menos una foto y un video, apruebe o falle.",
+  a_describe:"Describa qué pasó.\n\nUn código sin descripción no sirve para analizar después.",
+  a_missing_photos:"Falta la foto de:", a_and_more:"… y %n más",
+  a_mark_na:"Marque N/A todo lo que esta referencia no incluya.",
+  a_resume:"Hay una inspección sin terminar.\n\n¿Continuar donde la dejó?",
+  a_lost:"\n\nNOTA: las fotos no cupieron en el almacenamiento del navegador y NO se conservaron. Sus respuestas sí. Vuelva a tomar las fotos desde el menú ☰ antes de generar el informe.",
+  na_title:"No aplica a esta referencia",
+  excel:"EXCEL", open_report:"VER INFORME / GUARDAR PDF",
+  excel_note:"<b>EXCEL</b> exporta una fila por punto verificado, listo para filtrar y hacer tablas dinámicas. Las fotos están solo en el informe.",
+  a_no_csv:"Este navegador no puede descargar archivos. Use VER INFORME y guárdelo como PDF.",
+  home:"INICIO",
+  a_home:"¿Volver a la pantalla inicial?\n\nLa inspección actual se descartará. Descargue el informe primero si aún no lo ha hecho.",
+  how_to:"Cómo verificar esto",
+  open_fails:"%n punto(s) fallidos aún necesitan foto y observación.",
+  fail_evidence:"EVIDENCIA OBLIGATORIA PARA ESTE DEFECTO",
+  fail_required:"Adjunte al menos una foto o un video y describa qué pasó. No puede continuar sin ambos.",
+  fail_ready:"✓ Evidencia completa. Continúe con los puntos restantes.",
+  n_photos:"%n foto(s)", n_videos:"%n video(s)",
+  a_fail_evidence:"Estos puntos fallidos aún necesitan foto y descripción:",
+  tab_factory:"PRUEBAS FÁBRICA", tab_admin:"ADMIN",
+  to_start:"← PANTALLA INICIAL",
+  admin_refs:"Referencias", search:"Filtrar referencias",
+  admin_refs_hint:"%n referencias. Toque una para elegir qué pruebas ejecutar.",
+  no_match:"Ninguna referencia coincide con ese texto.",
+  tests_pick:"Pruebas a ejecutar", all_on:"Seleccionar todas", all_off:"Quitar todas",
+  n_selected:"<b>%n</b> de %tot pruebas seleccionadas.",
+  admin_start:"INICIAR PRUEBAS SELECCIONADAS",
+  abort:"✕ ABORTAR INSPECCIÓN",
+  a_abort:"¿Abortar esta inspección?\n\nTodo lo respondido y todas las fotos tomadas se descartarán, y no se reportará nada.",
+  a_pick_tests:"Seleccione al menos una prueba.",
+  scope:"Alcance", scope_full:"Plan completo",
+  scope_part:"PARCIAL — solo se ejecutaron %n de las %tot pruebas del plan",
+  scope_part_note:"Esta es una inspección parcial: solo se ejecutaron las pruebas listadas en la sección II. No certifica las pruebas que no se ejecutaron.",
+  wipe:"Borrar datos almacenados",
+  a_wipe:"¿Borrar todos los datos almacenados?\n\nSe eliminarán las respuestas, las fotos y cualquier borrador sin terminar, para que el próximo informe empiece limpio. Los informes ya descargados no se afectan.",
+  a_wiped:"Datos borrados. Listo para una nueva inspección.",
+  notes_es:"Español"
  },
  zh:{
   subtitle:"质量控制", test_id:"测试编号", bad_id:"编号无效",
@@ -1494,16 +2063,39 @@ const T = {
   scope_part_note:"本次为部分检验：仅执行了第 II 节所列的测试项目，未执行的项目不在本报告的判定范围内。",
   wipe:"清除已保存的数据",
   a_wipe:"清除所有已保存的数据？\n\n所有回答、照片和未完成的记录都会被删除，下一份报告将从空白开始。已经下载的报告不受影响。",
-  a_wiped:"数据已清除，可以开始新的检验。"
+  a_wiped:"数据已清除，可以开始新的检验。",
+  notes_es:"西班牙文",
+  rm_report_es:"— 同一份报告的西班牙文版。三个版本始终同时提供。"
  }
 };
 
-let LANG = "en";
-try{ LANG = localStorage.getItem("hoklan_qc_lang") || "en"; }catch(e){}
+/* Language: what the operator chose last, and failing that what the phone is
+   set to. Guessing from the device is right here because the three audiences are
+   in different countries — the factory in China, the office in Colombia — and
+   each one picks up the app already in its own language. The choice, once made,
+   always wins over the guess. */
+let LANG = "";
+try{ LANG = localStorage.getItem("hoklan_qc_lang") || ""; }catch(e){}
+if(!LANG){
+  const nav = String(navigator.language || navigator.userLanguage || "").toLowerCase();
+  LANG = nav.indexOf("es") === 0 ? "es"
+       : nav.indexOf("zh") === 0 ? "zh" : "en";
+}
+if(!T[LANG]) LANG = "en";
 
 const tr = k => (T[LANG] && T[LANG][k]) || T.en[k] || k;
-// Localised value of a {en, zh} pair. Plain strings pass through unchanged.
-const L = v => !v ? "" : (typeof v === "string" ? v : (v[LANG] || v.en || ""));
+/* Localised value of a {en, zh, es} pair. Plain strings pass through unchanged.
+   When the pair carries nothing for the current language, the Spanish table of
+   plan strings is consulted before falling back to English — that is where the
+   Spanish for the generated config lives. */
+const L = v => {
+  if(!v) return "";
+  if(typeof v === "string") return v;
+  if(v[LANG]) return v[LANG];
+  const en = v.en || "";
+  if(LANG === "es" && ES_PLAN[en]) return ES_PLAN[en];
+  return en;
+};
 const fmt = (k, map) => {
   let s = tr(k);
   // Longest placeholder first, or %t would eat the start of %tot.
@@ -1515,7 +2107,7 @@ const fmt = (k, map) => {
 function setLang(code){
   LANG = code;
   try{ localStorage.setItem("hoklan_qc_lang", code); }catch(e){}
-  document.documentElement.lang = code === "zh" ? "zh-CN" : "en";
+  document.documentElement.lang = code === "zh" ? "zh-CN" : code;
   render();
 }
 
@@ -1722,8 +2314,8 @@ function restore(){
       // the storage quota. Filling the gaps here keeps every later `r.media`
       // and `r.points` from having to guard itself.
       S.data = allUnits().map(u => (S.data[u] || []).map(r => r && Object.assign(
-        {media:[], points:{}, notes:{}, notesEn:{}, notesEnFor:{},
-         comment:"", commentEn:"", commentEnFor:null}, r)));
+        {media:[], points:{}, notes:{}, notesTr:{}, notesTrFor:{},
+         comment:"", commentTr:{}, commentTrFor:{}}, r)));
 
       // A draft written before Admin existed has neither field. An empty pick
       // list must read as "the whole plan", never as "no tests at all".
@@ -1821,15 +2413,21 @@ function dropMedia(uid){
    was unavailable rather than leaving a blank where the note should be. */
 const TR_CACHE = {};
 const hasCJK = s => /[㐀-䶿一-鿿぀-ヿ]/.test(s);
+/* The report is issued in three languages and each version has to carry the
+   note in its own, so every note is translated into both of the ones it was not
+   written in. Chinese is not a target: nobody reading the Chinese report needs a
+   note translated out of the language they are already reading. */
+const TR_TARGETS = ["en", "es"];
 
-async function translateToEn(text){
+async function translateTo(text, target){
   const t = String(text || "").trim();
   if(!t) return "";
-  if(TR_CACHE[t] !== undefined) return TR_CACHE[t];
+  const key = target + "|" + t;
+  if(TR_CACHE[key] !== undefined) return TR_CACHE[key];
   let out = "";
   try{
     const res = await fetch("https://translate.googleapis.com/translate_a/single" +
-      "?client=gtx&sl=auto&tl=en&dt=t&q=" + encodeURIComponent(t));
+      "?client=gtx&sl=auto&tl=" + target + "&dt=t&q=" + encodeURIComponent(t));
     if(res.ok){
       const j = await res.json();
       // The payload is an array of sentence fragments; joining them back is
@@ -1840,9 +2438,11 @@ async function translateToEn(text){
   }catch(e){}
   if(!out){
     try{
-      const pair = (hasCJK(t) ? "zh-CN" : "es") + "|en";
+      // This service cannot auto-detect, so the source is guessed: Chinese if
+      // there are Han characters, otherwise the other of the two Latin ones.
+      const src = hasCJK(t) ? "zh-CN" : (target === "en" ? "es" : "en");
       const res = await fetch("https://api.mymemory.translated.net/get?langpair=" +
-        pair + "&q=" + encodeURIComponent(t.slice(0,480)));
+        src + "|" + target + "&q=" + encodeURIComponent(t.slice(0,480)));
       if(res.ok){
         const j = await res.json();
         const c = j && j.responseData && j.responseData.translatedText;
@@ -1852,26 +2452,56 @@ async function translateToEn(text){
     }catch(e){}
   }
   out = String(out || "").trim();
-  if(out) TR_CACHE[t] = out;
+  if(out) TR_CACHE[key] = out;
   return out;
 }
 
-/* What was translated is stored next to the translation. Without it, editing a
-   note would leave the previous English line attached to the new text — the
-   worst possible failure for a document somebody signs. */
-function storeEn(r, kind, pointId, value, src){
+/* Each translation is stored under its language, next to the source text it came
+   from. Keeping the source is what stops an edited note from keeping the old
+   translation attached — the worst possible failure for a document somebody
+   signs. */
+function trStore(r, kind, pointId, target, value, src){
   if(kind === "note"){
-    r.notesEn = r.notesEn || {}; r.notesEnFor = r.notesEnFor || {};
-    r.notesEn[pointId] = value; r.notesEnFor[pointId] = src;
+    r.notesTr = r.notesTr || {}; r.notesTrFor = r.notesTrFor || {};
+    r.notesTr[pointId] = r.notesTr[pointId] || {};
+    r.notesTrFor[pointId] = r.notesTrFor[pointId] || {};
+    r.notesTr[pointId][target] = value;
+    r.notesTrFor[pointId][target] = src;
   } else {
-    r.commentEn = value; r.commentEnFor = src;
+    r.commentTr = r.commentTr || {}; r.commentTrFor = r.commentTrFor || {};
+    r.commentTr[target] = value; r.commentTrFor[target] = src;
   }
 }
-const enOf = (r, kind, pointId) => kind === "note"
-  ? (((r.notesEn || {})[pointId] || "") &&
-     ((r.notesEnFor || {})[pointId] === (r.notes || {})[pointId]
-        ? r.notesEn[pointId] : ""))
-  : ((r.commentEn || "") && (r.commentEnFor === r.comment ? r.commentEn : ""));
+const trSrc = (r, kind, pointId) => String((kind === "note"
+  ? ((r.notes || {})[pointId]) : r.comment) || "");
+
+/* The translation into `target`, but only if it still belongs to the text that
+   is there now. Defaults to the language the report is being issued in. */
+function trOf(r, kind, pointId, target){
+  const lang = target || (LANG === "es" ? "es" : "en");
+  const src = trSrc(r, kind, pointId);
+  const got = kind === "note"
+    ? ((r.notesTr || {})[pointId] || {})[lang]
+    : (r.commentTr || {})[lang];
+  const was = kind === "note"
+    ? ((r.notesTrFor || {})[pointId] || {})[lang]
+    : (r.commentTrFor || {})[lang];
+  return (got && was === src) ? got : "";
+}
+/* The label the translated line carries, in the language of the document it is
+   printed in. */
+const trLabel = () => LANG === "es" ? tr("notes_es") : tr("notes_en");
+/* On screen, show the note in the language the operator is *not* writing in —
+   that is the one worth checking. */
+const appTrTarget = () => LANG === "en" ? "es" : "en";
+/* The line printed under a note box on screen, already labelled. Empty when
+   there is nothing translated yet. */
+function appTrLine(r, kind, pointId){
+  const lg = appTrTarget();
+  const out = trOf(r, kind, pointId, lg);
+  if(!out) return "";
+  return (lg === "es" ? tr("notes_es") : tr("notes_en")) + ": " + out;
+}
 
 const TR_TIMER = {};
 
@@ -1887,36 +2517,42 @@ function enBox(id, text){
    service. Never triggers a render: that would close the phone keyboard. */
 function noteTyped(u, pointId, text){
   setNote(u, pointId, text);
-  queueEn("note", u, pointId);
+  queueTr("note", u, pointId);
 }
 function commentTyped(text){
   const r = row(0);
   r.comment = text;
   save();
-  queueEn("comment", 0, null);
+  queueTr("comment", 0, null);
 }
-function queueEn(kind, u, pointId){
+function queueTr(kind, u, pointId){
   const k = kind + "|" + u + "|" + (pointId || "") + "|" + S.index;
   clearTimeout(TR_TIMER[k]);
-  TR_TIMER[k] = setTimeout(() => runEn(kind, u, pointId), 1400);
+  TR_TIMER[k] = setTimeout(() => runTr(kind, u, pointId), 1400);
 }
-async function runEn(kind, u, pointId){
+async function runTr(kind, u, pointId){
   const r = row(u);
   const boxId = kind === "note" ? "en_" + u + "_" + pointId : "en_comment";
-  const src = String((kind === "note"
-    ? (r.notes && r.notes[pointId]) : r.comment) || "");
+  const src = trSrc(r, kind, pointId);
   const t = src.trim();
-  if(!t){ storeEn(r, kind, pointId, "", src); save(); enBox(boxId, ""); return; }
+  if(!t){
+    TR_TARGETS.forEach(lg => trStore(r, kind, pointId, lg, "", src));
+    save(); enBox(boxId, ""); return;
+  }
   enBox(boxId, tr("translating"));
-  const out = await translateToEn(t);
-  storeEn(r, kind, pointId, out, src);
+  const shown = appTrTarget();
+  const label = shown === "es" ? tr("notes_es") : tr("notes_en");
+  const outs = {};
+  // Both at once would double the requests to a free service for no gain: the
+  // second language is only needed when the report is built.
+  for(let i = 0; i < TR_TARGETS.length; i++)
+    outs[TR_TARGETS[i]] = await translateTo(t, TR_TARGETS[i]);
+  TR_TARGETS.forEach(lg => trStore(r, kind, pointId, lg, outs[lg], src));
   save();
   // The operator may have kept typing while the request was in flight; in that
   // case the box belongs to the newer text and a later run will fill it.
-  const now = String((kind === "note"
-    ? (r.notes && r.notes[pointId]) : r.comment) || "");
-  if(now !== src) return;
-  enBox(boxId, out ? tr("notes_en") + ": " + out : tr("tr_fail"));
+  if(trSrc(r, kind, pointId) !== src) return;
+  enBox(boxId, outs[shown] ? label + ": " + outs[shown] : tr("tr_fail"));
 }
 
 /* Nothing reaches the report untranslated. Whatever the debounce missed — a
@@ -1924,19 +2560,22 @@ async function runEn(kind, u, pointId){
    report or the packet is built. */
 async function ensureTranslations(){
   const jobs = [];
+  const want = (r, kind, pid) => {
+    const src = trSrc(r, kind, pid);
+    if(!src.trim()) return;
+    TR_TARGETS.forEach(lg => {
+      const was = kind === "note"
+        ? ((r.notesTrFor || {})[pid] || {})[lg]
+        : (r.commentTrFor || {})[lg];
+      if(was === src) return;
+      jobs.push(translateTo(src, lg)
+        .then(x => trStore(r, kind, pid, lg, x, src)));
+    });
+  };
   allUnits().forEach(u => unitRows(u).forEach(r => {
     if(!r) return;
-    const c = String(r.comment || "").trim();
-    if(c && r.commentEnFor !== r.comment)
-      jobs.push(translateToEn(c).then(x => {
-        r.commentEn = x; r.commentEnFor = r.comment; }));
-    Object.keys(r.notes || {}).forEach(pid => {
-      const n = String(r.notes[pid] || "").trim();
-      if(n && (r.notesEnFor || {})[pid] !== r.notes[pid])
-        jobs.push(translateToEn(n).then(x => {
-          r.notesEn = r.notesEn || {}; r.notesEnFor = r.notesEnFor || {};
-          r.notesEn[pid] = x; r.notesEnFor[pid] = r.notes[pid]; }));
-    });
+    want(r, "comment", null);
+    Object.keys(r.notes || {}).forEach(pid => want(r, "note", pid));
   }));
   if(!jobs.length) return;
   try{ await Promise.all(jobs); }catch(e){}
@@ -1950,8 +2589,8 @@ async function ensureTranslations(){
 function blank(i){
   const t = tests()[i === undefined ? S.index : i];
   return {id:t.id, label:L(t.label), verdict:null, code:null, comment:"",
-          commentEn:"", commentEnFor:null,
-          media:[], points:{}, notes:{}, notesEn:{}, notesEnFor:{},
+          commentTr:{}, commentTrFor:{},
+          media:[], points:{}, notes:{}, notesTr:{}, notesTrFor:{},
           startedAt:Date.now()};
 }
 
@@ -2028,11 +2667,11 @@ function nextTest(){
         "\n\n" + tr("a_mark_na"));
       return;
     }
-    const cEn = row(0).commentEn, cFor = row(0).commentEnFor;
+    const cTr = row(0).commentTr, cFor = row(0).commentTrFor;
     allUnits().forEach(u => {
       const ru = row(u);
       ru.comment = comment;
-      ru.commentEn = cEn; ru.commentEnFor = cFor;
+      ru.commentTr = cTr; ru.commentTrFor = cFor;
       ru.seconds = Math.round((Date.now()-ru.startedAt)/1000);
       ru.verdict = "DOC"; ru.code = null; ru.failedPoints = [];
     });
@@ -2063,11 +2702,11 @@ function nextTest(){
     return;
   }
 
-  const cEn = row(0).commentEn, cFor = row(0).commentEnFor;
+  const cTr = row(0).commentTr, cFor = row(0).commentTrFor;
   allUnits().forEach(u => {
     const r = row(u);
     r.comment = comment;
-    r.commentEn = cEn; r.commentEnFor = cFor;
+    r.commentTr = cTr; r.commentTrFor = cFor;
     r.seconds = Math.round((Date.now()-r.startedAt)/1000);
     const failed = realPoints(t).filter(p => r.points[p.id] === "FAIL");
     const applicable = realPoints(t).filter(p => r.points[p.id] !== "NA");
@@ -2206,7 +2845,7 @@ function buildFindings(){
       const note = ((r.notes && r.notes[p.id]) || "").trim();
       // The English line follows whichever note is printed: the point's own if
       // it has one, the test-level comment otherwise.
-      const noteEn = (note ? enOf(r, "note", p.id) : enOf(r, "comment")).trim();
+      const noteEn = (note ? trOf(r, "note", p.id) : trOf(r, "comment")).trim();
       out.push({
         // The plan's label, not the one stored when the operator answered:
         // the report is issued in both languages, and a stored label would
@@ -2434,7 +3073,7 @@ ${scope?`<p class="att">${tr("scope_part_note")}</p>`:""}
           <div>${esc(f.desc)}</div>
           ${f.note?`<div class="note"><b>${tr("notes")}:</b> ${esc(f.note)}${
             f.noteEn && f.noteEn !== f.note
-              ? `<span class="en"><b>${tr("notes_en")}:</b> ${esc(f.noteEn)}</span>`
+              ? `<span class="en"><b>${trLabel()}:</b> ${esc(f.noteEn)}</span>`
               : ""}</div>`:""}
           ${f.videos && f.videos.length?`<div class="att">🎥 <b>${
             fmt("video_att",{n:f.videos.length})}</b><br>${
@@ -2479,7 +3118,7 @@ ${scope?`<p class="att">${tr("scope_part_note")}</p>`:""}
       });
     });
     const note = ((r0 && r0.comment) || "").trim();
-    const noteEn = r0 ? String(enOf(r0, "comment") || "").trim() : "";
+    const noteEn = r0 ? String(trOf(r0, "comment") || "").trim() : "";
     return {t, r0, isDoc, photos, videos, note, noteEn};
   }).filter(b => b.photos.length || b.videos.length || b.note);
 
@@ -2492,7 +3131,7 @@ ${scope?`<p class="att">${tr("scope_part_note")}</p>`:""}
       if(b.note)
         h += `<p class="note"><b>${tr("notes")}:</b> ${esc(b.note)}${
           b.noteEn && b.noteEn !== b.note
-            ? `<span class="en"><b>${tr("notes_en")}:</b> ${esc(b.noteEn)}</span>`
+            ? `<span class="en"><b>${trLabel()}:</b> ${esc(b.noteEn)}</span>`
             : ""}</p>`;
 
       if(b.videos.length)
@@ -2653,12 +3292,18 @@ function reportCsv(){
     ? ["测试编号","型号","订单号","检验员","检验日期","最终结果","检验范围",
        "音箱","音箱数量","音箱结果",
        "test_key","point_key","result_key",
-       "测试","分组","检查项","结果","代码","代码说明","备注","备注（英文）","照片数"]
+       "测试","分组","检查项","结果","代码","代码说明","备注","备注（翻译）","照片数"]
+    : LANG === "es"
+    ? ["Código de prueba","Referencia","OC","Inspector","Fecha","Resultado final",
+       "Alcance","Parlante","Parlantes","Resultado del parlante",
+       "test_key","point_key","result_key",
+       "Prueba","Sección","Punto","Resultado","Código","Descripción del código",
+       "Observaciones","Observaciones (traducción)","Fotos"]
     : ["Test ID","Reference","PO","Operator","Inspection","Final result","Scope",
        "Speaker","Speakers","Speaker result",
        "test_key","point_key","result_key",
        "Test","Section","Point","Result","Code","Code description",
-       "Notes","Notes (EN)","Photos"];
+       "Notes","Notes (translated)","Photos"];
 
   // The scope travels on every row: a dashboard that groups by test_key has to
   // be able to exclude partial inspections, and it can only do that if the
@@ -2704,7 +3349,7 @@ function reportCsv(){
       // wrote it, and its English line. Whichever note is printed, its own
       // translation goes next to it — never the other one's.
       const shownNote = note || r.comment || "";
-      const shownEn = note ? enOf(r, "note", p.id) : enOf(r, "comment");
+      const shownEn = note ? trOf(r, "note", p.id) : trOf(r, "comment");
 
       rows.push(lead.concat([
         t.id, p.id, key,
@@ -2920,6 +3565,8 @@ async function buildPacket(){
   // office in Colombia reads English; issuing only the operator's language
   // means somebody has to translate a quality record by hand.
   const entries = [
+    {name: base + "/REPORT_ES.html",
+     data: new Blob([inLang("es", reportHtml)], {type:"text/html;charset=utf-8"})},
     {name: base + "/REPORT_EN.html",
      data: new Blob([inLang("en", reportHtml)], {type:"text/html;charset=utf-8"})},
     {name: base + "/REPORT_ZH.html",
@@ -2943,6 +3590,7 @@ function packetReadme(photos, videos, lost){
   const sc = partialScope();
   if(sc) out.push("!! " + fmt("scope_part",{n:sc.n, tot:sc.tot}));
   out.push("");
+  out.push("REPORT_ES.html  " + tr("rm_report_es"));
   out.push("REPORT_EN.html  " + tr("rm_report_en"));
   out.push("REPORT_ZH.html  " + tr("rm_report_zh"));
   out.push("DATA.csv        " + tr("rm_csv"));
@@ -3260,6 +3908,7 @@ function abortTest(){
 
 function langBar(mini){
   return `<div class="lang${mini?" mini noprint":""}">
+    <button class="${LANG==="es"?"on":""}" onclick="setLang('es')">Español</button>
     <button class="${LANG==="en"?"on":""}" onclick="setLang('en')">English</button>
     <button class="${LANG==="zh"?"on":""}" onclick="setLang('zh')">中文</button>
   </div>`;
@@ -3471,7 +4120,7 @@ function pointRow(p, u, showTag){
   const v = r.points[p.id];
   const shots = shotsFor(r, p.id);
   const note = (r.notes && r.notes[p.id]) || "";
-  const noteEn = enOf(r, "note", p.id);
+  const noteEn = appTrLine(r, "note", p.id);
   const evOk = shots.length > 0 && note.trim() !== "";
   const id = u + "_" + p.id;
 
@@ -3506,7 +4155,7 @@ function pointRow(p, u, showTag){
         oninput="noteTyped(${u},'${p.id}', this.value)"
         onblur="setTimeout(function(){closeFail(${u},'${p.id}')},180)">${esc(note)}</textarea>
       <div id="en_${id}" class="en-line${noteEn?"":" hidden"}">${
-        noteEn?esc(tr("notes_en") + ": " + noteEn):""}</div>
+        noteEn?esc(noteEn):""}</div>
       <div id="pfw_${id}" class="${evOk?"pf-ok":"pf-w"}">${
         evOk?tr("fail_ready"):tr("fail_required")}</div>
     </div>` : "";
@@ -3528,7 +4177,7 @@ function renderTest(){
   if(t.type === "photos") return renderPhotoTest(t, row(0), done, total);
 
   const shared = row(0);      // test-level evidence and notes live on speaker 1
-  const sharedEn = enOf(shared, "comment");
+  const sharedEn = appTrLine(shared, "comment");
   const pending = pendingCount();
   const needsPhoto = missingEvidence(0).photo;
   const needsVideo = missingEvidence(0).video;
@@ -3611,7 +4260,7 @@ function renderTest(){
       <textarea id="comment" placeholder="${tr("notes_ph")}"
         oninput="commentTyped(this.value)">${esc(shared.comment)}</textarea>
       <div id="en_comment" class="en-line${sharedEn?"":" hidden"}">${
-        sharedEn?esc(tr("notes_en") + ": " + sharedEn):""}</div>
+        sharedEn?esc(sharedEn):""}</div>
     </div>
     ${abortBlock()}`;
 
@@ -3683,7 +4332,7 @@ function syncFail(u, pointId){
 }
 
 function renderPhotoTest(t, r, done, total){
-  const rEn = enOf(r, "comment");
+  const rEn = appTrLine(r, "comment");
   const items = realPoints(t);
   const missing = items.filter(p =>
     shotsFor(r,p.id).length === 0 && (t.no_na || r.points[p.id] !== "NA")).length;
@@ -3731,7 +4380,7 @@ function renderPhotoTest(t, r, done, total){
       <textarea id="comment" placeholder="${tr("notes_ph")}"
         oninput="commentTyped(this.value)">${esc(r.comment)}</textarea>
       <div id="en_comment" class="en-line${rEn?"":" hidden"}">${
-        rEn?esc(tr("notes_en") + ": " + rEn):""}</div>
+        rEn?esc(rEn):""}</div>
     </div>
     ${abortBlock()}`;
 
@@ -3868,6 +4517,7 @@ function renderDone(){
     <div class="card">
       <label style="margin-top:0">${tr("packet")}</label>
       <ul class="packet">
+        <li><b>REPORT_ES.html</b> ${tr("rm_report_es")}</li>
         <li><b>REPORT_EN.html</b> ${tr("rm_report_en")}</li>
         <li><b>REPORT_ZH.html</b> ${tr("rm_report_zh")}</li>
         <li><b>DATA.csv</b> ${tr("rm_csv")}</li>
@@ -3935,7 +4585,7 @@ function updateTopBtn(){
 }
 
 /* ---------- boot ---------------------------------------------------------- */
-document.documentElement.lang = LANG === "zh" ? "zh-CN" : "en";
+document.documentElement.lang = LANG === "zh" ? "zh-CN" : LANG;
 
 if(restore()){
   const lost = S.mediaDropped ? tr("a_lost") : "";
