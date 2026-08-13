@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="1.7">
+<meta name="app-version" content="1.8">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -306,7 +306,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "1.7";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "1.8";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -3571,7 +3571,10 @@ async function buildPacket(){
      data: new Blob([inLang("en", reportHtml)], {type:"text/html;charset=utf-8"})},
     {name: base + "/REPORT_ZH.html",
      data: new Blob([inLang("zh", reportHtml)], {type:"text/html;charset=utf-8"})},
-    {name: base + "/DATA.csv",
+    // The spreadsheet carries the full packet name, not "DATA": it is the file
+    // that gets pulled out of the folder and opened on its own, and a Downloads
+    // folder with four files called DATA.csv identifies nothing.
+    {name: base + "/" + base + ".csv",
      data: new Blob([reportCsv()], {type:"text/csv;charset=utf-8"})},
     {name: base + "/READ_ME.txt",
      data: new Blob([packetReadme(photos, videos, lost)],
@@ -3593,7 +3596,8 @@ function packetReadme(photos, videos, lost){
   out.push("REPORT_ES.html  " + tr("rm_report_es"));
   out.push("REPORT_EN.html  " + tr("rm_report_en"));
   out.push("REPORT_ZH.html  " + tr("rm_report_zh"));
-  out.push("DATA.csv        " + tr("rm_csv"));
+  out.push(packetName() + ".csv");
+  out.push("                " + tr("rm_csv"));
   if(photos) out.push("photos/         " + fmt("rm_photos",{n:photos}));
   if(videos) out.push("videos/         " + fmt("rm_videos",{n:videos}));
   out.push("");
@@ -4520,7 +4524,8 @@ function renderDone(){
         <li><b>REPORT_ES.html</b> ${tr("rm_report_es")}</li>
         <li><b>REPORT_EN.html</b> ${tr("rm_report_en")}</li>
         <li><b>REPORT_ZH.html</b> ${tr("rm_report_zh")}</li>
-        <li><b>DATA.csv</b> ${tr("rm_csv")}</li>
+        <li><b style="word-break:break-all">${esc(packetName())}.csv</b>
+          ${tr("rm_csv")}</li>
         ${pics?`<li><b>photos/</b> ${fmt("rm_photos",{n:pics})}</li>`:""}
         ${vids?`<li><b>videos/</b> ${fmt("rm_videos",{n:vids})}</li>`:""}
       </ul>
