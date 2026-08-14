@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="3.1">
+<meta name="app-version" content="3.6">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -224,6 +224,13 @@ td:last-child{text-align:right;font-weight:700}
 .hidden{display:none}
 /* The English line under a note. Deliberately quiet: it is a reading aid for
    the office, not something the operator has to check. */
+/* Where the app just took you. Two slow pulses: long enough to find with the
+   eye, short enough that it is gone by the time you start typing. */
+@keyframes flash{
+  0%,100%{box-shadow:0 0 0 0 rgba(46,163,242,0)}
+  25%,75%{box-shadow:0 0 0 3px rgba(46,163,242,.55)}
+}
+.flash{animation:flash 1.1s ease-in-out 2;border-radius:12px}
 .en-line{font-size:12px;line-height:1.45;color:#8fa6bd;margin-top:6px;
   padding-left:8px;border-left:2px solid rgba(143,166,189,.35);
   white-space:pre-wrap}
@@ -374,7 +381,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "3.1";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "3.6";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -526,7 +533,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 5,
+      "plan_version": 6,
       "tests": [
         {"id":"USB","optional":false,
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -651,34 +658,34 @@ const CONFIG = {
             "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
                     "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。",
                     "es":"Con música sonando, pulse prioridad y hable por MIC1. La música debe bajar mientras habla y volver cuando pare."}},
-           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键","es":"Tecla de prioridad de MIC2"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。",
-                    "es":"La misma prueba con MIC2. Marque N/A si esta referencia tiene una sola entrada de micrófono."}},
            {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量","es":"Volumen de MIC1"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
                     "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。",
                     "es":"Hable de forma continua por MIC1 mientras gira su volumen del mínimo al máximo. El nivel debe subir de forma suave, sin cortes ni crujidos."}},
-           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量","es":"Volumen de MIC2"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。",
-                    "es":"La misma prueba con MIC2. Marque N/A si esta referencia tiene una sola entrada de micrófono."}},
            {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声","es":"Eco de MIC1"},
             "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
                     "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。",
                     "es":"Diga palabras cortas por MIC1 y suba el eco. La repetición debe oírse con claridad y desaparecer al bajarlo."}},
-           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声","es":"Eco de MIC2"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。",
-                    "es":"La misma prueba con MIC2. Marque N/A si esta referencia tiene una sola entrada de micrófono."}},
            {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响","es":"Reverberación de MIC1"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
                     "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。",
                     "es":"Hable por MIC1 y suba la reverberación. La voz debe ganar cuerpo y profundidad, no repetirse como el eco. Los dos controles deben actuar de forma independiente."}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键","es":"Tecla de prioridad de MIC2"},
+            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
+                    "zh":"拔下 MIC1，将麦克风插入 MIC2。同样的测试：播放音乐时按下优先键并说话。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。",
+                    "es":"Desconecte MIC1 y conecte el micrófono en MIC2. La misma prueba: con música sonando, pulse prioridad y hable. Marque N/A, aquí y en los tres puntos siguientes, si esta referencia tiene una sola entrada de micrófono."}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量","es":"Volumen de MIC2"},
+            "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
+                    "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。",
+                    "es":"Hable de forma continua por MIC2 mientras gira su volumen del mínimo al máximo."}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声","es":"Eco de MIC2"},
+            "help":{"en":"Say short words into MIC2 and turn the echo up.",
+                    "zh":"对麦克风 2 说短词并加大回声。",
+                    "es":"Diga palabras cortas por MIC2 y suba el eco."}},
            {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响","es":"Reverberación de MIC2"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。",
-                    "es":"La misma prueba con MIC2. Marque N/A si esta referencia tiene una sola entrada de micrófono."}},
+            "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
+                    "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。",
+                    "es":"Hable por MIC2 y suba la reverberación. En esta entrada el eco y la reverberación también deben actuar de forma independiente."}},
            {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量","es":"Volumen de guitarra"},
             "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
                     "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。",
@@ -784,27 +791,27 @@ const CONFIG = {
            {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
             "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
                     "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
-           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
                     "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
-           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
             "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
                     "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
-           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
                     "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
+            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
+                    "zh":"拔下 MIC1，将麦克风插入 MIC2。同样的测试：播放音乐时按下优先键并说话。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
+            "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
+                    "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
+            "help":{"en":"Say short words into MIC2 and turn the echo up.",
+                    "zh":"对麦克风 2 说短词并加大回声。"}},
            {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+            "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
+                    "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
            {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
             "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
                     "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
@@ -884,27 +891,27 @@ const CONFIG = {
            {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
             "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
                     "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
-           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
                     "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
-           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
             "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
                     "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
-           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
                     "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
+            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
+                    "zh":"拔下 MIC1，将麦克风插入 MIC2。同样的测试：播放音乐时按下优先键并说话。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
+            "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
+                    "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
+            "help":{"en":"Say short words into MIC2 and turn the echo up.",
+                    "zh":"对麦克风 2 说短词并加大回声。"}},
            {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+            "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
+                    "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
            {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
             "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
                     "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
@@ -1004,27 +1011,27 @@ const CONFIG = {
            {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
             "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
                     "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
-           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
                     "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
-           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
             "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
                     "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
-           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
                     "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
+            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
+                    "zh":"拔下 MIC1，将麦克风插入 MIC2。同样的测试：播放音乐时按下优先键并说话。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
+            "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
+                    "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
+            "help":{"en":"Say short words into MIC2 and turn the echo up.",
+                    "zh":"对麦克风 2 说短词并加大回声。"}},
            {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+            "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
+                    "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
            {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
             "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
                     "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
@@ -1085,27 +1092,27 @@ const CONFIG = {
            {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
             "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
                     "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
-           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
                     "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
-           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
             "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
                     "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
-           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
            {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
                     "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
+           {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
+            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
+                    "zh":"拔下 MIC1，将麦克风插入 MIC2。同样的测试：播放音乐时按下优先键并说话。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
+           {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
+            "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
+                    "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
+           {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
+            "help":{"en":"Say short words into MIC2 and turn the echo up.",
+                    "zh":"对麦克风 2 说短词并加大回声。"}},
            {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
-            "help":{"en":"Same test with MIC2. Mark N/A if this reference has only one microphone input.",
-                    "zh":"用麦克风 2 做同样测试。本型号只有一个麦克风接口时标记为“不适用”。"}},
+            "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
+                    "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
            {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
             "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
                     "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
@@ -1841,6 +1848,10 @@ Object.assign(ES_PLAN, {
   "Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.":"Conecte un micrófono en MIC1 y hable mientras ajusta volumen, eco y prioridad. Repita con MIC2 y luego conecte la guitarra. Marque N/A lo que esta referencia no tenga.",
   "With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.":"Con música sonando, pulse prioridad y hable por MIC1. La música debe bajar mientras habla y volver cuando pare.",
   "Same test with MIC2. Mark N/A if this reference has only one microphone input.":"La misma prueba con MIC2. Marque N/A si esta referencia tiene una sola entrada de micrófono.",
+  "Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.":"Desconecte MIC1 y conecte el micrófono en MIC2. La misma prueba: con música sonando, pulse prioridad y hable. Marque N/A, aquí y en los tres puntos siguientes, si esta referencia tiene una sola entrada de micrófono.",
+  "Speak continuously into MIC2 while turning its volume from minimum to maximum.":"Hable de forma continua por MIC2 mientras gira su volumen del mínimo al máximo.",
+  "Say short words into MIC2 and turn the echo up.":"Diga palabras cortas por MIC2 y suba el eco.",
+  "Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.":"Hable por MIC2 y suba la reverberación. En esta entrada el eco y la reverberación también deben actuar de forma independiente.",
   "Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.":"Hable de forma continua por MIC1 mientras gira su volumen del mínimo al máximo. El nivel debe subir de forma suave, sin cortes ni crujidos.",
   "Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.":"Diga palabras cortas por MIC1 y suba el eco. La repetición debe oírse con claridad y desaparecer al bajarlo.",
   "Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.":"Hable por MIC1 y suba la reverberación. La voz debe ganar cuerpo y profundidad, no repetirse como el eco. Los dos controles deben actuar de forma independiente.",
@@ -1990,6 +2001,7 @@ const T = {
   photo:"Photo", video:"Video",
   ask_video:"one clip of a minute or more showing the test being run.",
   ask_photo:"the process and the tools used: USB drive, SD card, battery, cables, phone.",
+  ev_na:"Every point of this test is marked N/A: the reference does not have this function, so no photo or video is required. You can still attach one if it helps explain why.",
   need_photo:"At least one photo is required, whether the test passes or fails.",
   need_point_photo:"This point needs its own photo, whether it passes or fails.",
   a_point_photos:"%n point(s) are still missing their photo.\n\nThese points are documented whether they pass or fail: the picture is the proof of what was on the display.",
@@ -2126,6 +2138,7 @@ const T = {
   photo:"Foto", video:"Video",
   ask_video:"un clip de un minuto o más que muestre la prueba en ejecución.",
   ask_photo:"el proceso y las herramientas usadas: memoria USB, tarjeta SD, batería, cables, teléfono.",
+  ev_na:"Todos los puntos de esta prueba están en N/A: la referencia no tiene esta función, así que no se requiere foto ni video. Puede adjuntar uno de todos modos si ayuda a explicar por qué.",
   need_photo:"Se requiere al menos una foto, apruebe o falle la prueba.",
   need_point_photo:"Este punto necesita su propia foto, apruebe o falle.",
   a_point_photos:"Faltan %n punto(s) por fotografiar.\n\nEstos puntos se documentan aprueben o fallen: la foto es la prueba de lo que mostraba la pantalla.",
@@ -2262,6 +2275,7 @@ const T = {
   photo:"拍照", video:"录像",
   ask_video:"一段一分钟以上的视频，拍摄测试的实际操作过程。",
   ask_photo:"拍摄操作过程和所用工具：U 盘、SD 卡、电池、线材、手机。",
+  ev_na:"本测试所有检查项均为不适用：本型号没有该功能，因此无需照片或录像。如有助于说明原因，仍可自行上传。",
   need_photo:"无论合格与否，本项至少需要一张照片。",
   need_point_photo:"无论合格与否，本检查项都需要单独拍照。",
   a_point_photos:"还有 %n 个检查项未拍照。\n\n这些项目无论合格与否都要留存照片：照片就是显示屏内容的证据。",
@@ -2558,8 +2572,9 @@ function closeFail(u, id){
   if(!p || failOpen(row(u), p)) return;
   if(!document.getElementById("pfw_" + u + "_" + id)) return;   // already folded
   delete S.open[failKey(u, id)];
-  collapseIfDone(id);
+  const folded = collapseIfDone(id);
   render();
+  if(folded >= 0) focusNextGroup(folded);
 }
 function evSummary(shots, note){
   const ph = shots.filter(m => m.kind === "photo").length;
@@ -2992,9 +3007,10 @@ function setPoint(u, pointId, value){
   if(next && allUnits().every(x => ANSWERED.indexOf(row(x).points[pointId]) >= 0))
     S.open["p|" + S.index + "|" + pointId] = false;
 
-  if(next) collapseIfDone(pointId);
+  const folded = next ? collapseIfDone(pointId) : -1;
 
   render(); save();
+  if(folded >= 0) focusNextGroup(folded);
 }
 
 /* Once every point of a section is answered for every speaker, the section
@@ -3004,13 +3020,42 @@ function setPoint(u, pointId, value){
    hand would stay frozen open forever. A section holding a failure with no
    evidence yet stays open: folding it would hide the box we are demanding. */
 function collapseIfDone(pointId){
-  const sec = sectionsOf(current()).find(s => s.points.some(p => p.id === pointId));
-  if(!sec) return;
+  const list = sectionsOf(current());
+  const at = list.findIndex(s => s.points.some(p => p.id === pointId));
+  if(at < 0) return -1;
+  const sec = list[at];
   const done = allUnits().every(u =>
     sec.points.every(p => ANSWERED.indexOf(row(u).points[p.id]) >= 0));
   const pending = allUnits().some(u =>
     sec.points.some(p => failOpen(row(u), p)));
-  if(done && !pending) delete S.open[secKey(sec.name)];
+  if(!(done && !pending)) return -1;
+  delete S.open[secKey(sec.name)];
+  return at;               // which one folded, so the view can follow it
+}
+
+/* A section that folds takes its height with it, and everything below slides up
+   into the space. The page keeps the scroll position it had, so what the
+   operator is now looking at is whatever happened to land there — usually the
+   middle of the group after next. It reads as if the app had skipped a group.
+
+   So the next group that is still open is brought to the top instead. Searching
+   forwards first and only then wrapping around means the normal top-to-bottom
+   pass never jumps backwards, and a group left unanswered higher up is still
+   reached rather than quietly abandoned. When nothing is left open, the photo
+   and video card is what comes next, and that is where it goes. */
+function focusNextGroup(from){
+  const grps = Array.prototype.slice.call(document.querySelectorAll(".grp"));
+  if(!grps.length) return;
+  const isOpen = g => !!g.querySelector(".grp-b");
+  let el = null;
+  for(let i = from + 1; i < grps.length && !el; i++) if(isOpen(grps[i])) el = grps[i];
+  for(let i = 0; i <= from && !el; i++) if(isOpen(grps[i])) el = grps[i];
+  if(!el) el = document.querySelector(".grp ~ .card") || document.querySelector(".card");
+  if(!el) return;
+  const y = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - 10);
+  // Smooth so the movement is legible as movement: a jump to another offset is
+  // exactly what the operator was reading as a skipped group.
+  try{ window.scrollTo({top:y, behavior:"smooth"}); }catch(e){ window.scrollTo(0, y); }
 }
 
 function setNote(u, pointId, text){
@@ -3030,6 +3075,51 @@ function pendingCount(){
   return n;
 }
 
+/* ---------- taking the operator to what is missing -------------------------
+   The alert used to name the gap and leave; on a checklist of two hundred
+   points across five speakers, finding it again by hand is a minute of
+   scrolling and the reason a test gets closed with the note left blank.
+
+   So the alert is followed by the trip. Whatever holds the gap is opened —
+   the section it lives in, the red box that was folded away — and the page
+   goes to it and flashes it once, because scrolling alone leaves the operator
+   to work out which of the four points on screen is the one being complained
+   about. */
+function flash(el){
+  if(!el) return;
+  el.classList.remove("flash");
+  void el.offsetWidth;              // restart the animation if it is still on
+  el.classList.add("flash");
+  setTimeout(() => el.classList.remove("flash"), 2200);
+}
+function scrollToEl(el){
+  if(!el) return;
+  const y = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - 64);
+  try{ window.scrollTo({top:y, behavior:"smooth"}); }catch(e){ window.scrollTo(0, y); }
+}
+/* `want` is what has to be visible once we arrive: the red evidence box, the
+   photo slot of a point, or the point row itself. */
+function goToGap(u, pointId, want){
+  const sec = sectionsOf(current())
+    .find(s => s.points.some(p => p.id === pointId));
+  // Opened explicitly, overriding the automatic fold: an answered section that
+  // is still missing its photo has to be reopened to be filled in.
+  if(sec) S.open[secKey(sec.name)] = true;
+  if(want === "fail") S.open[failKey(u, pointId)] = true;
+  render();
+  const id = u + "_" + pointId;
+  const el = document.getElementById(
+      want === "fail"  ? "pf_"  + id
+    : want === "shot"  ? "psb_" + id
+    : want === "photos"? "sb_"  + pointId
+    : "pt_" + id) || document.getElementById("pt_" + id);
+  scrollToEl(el); flash(el);
+}
+function goToEvidence(){
+  const el = document.getElementById("evcard");
+  scrollToEl(el); flash(el);
+}
+
 function nextTest(){
   const t = current();
   const comment = (document.getElementById("comment")||{}).value || "";
@@ -3045,6 +3135,7 @@ function nextTest(){
         missing.slice(0,6).map(p => "· " + L(p.label)).join("\n") +
         (missing.length>6 ? "\n"+fmt("a_and_more",{n:missing.length-6}) : "") +
         "\n\n" + tr("a_mark_na"));
+      goToGap(0, missing[0].id, "photos");
       return;
     }
     const cTr = row(0).commentTr, cFor = row(0).commentTrFor;
@@ -3059,29 +3150,57 @@ function nextTest(){
   }
 
   const pending = pendingCount();
-  if(pending){ alert(fmt("a_pending",{n:pending})); return; }
+  if(pending){
+    alert(fmt("a_pending",{n:pending}));
+    // The first one in reading order, so answering it and pressing NEXT again
+    // walks the gaps from the top instead of bouncing around the checklist.
+    let first = null;
+    realPoints(t).forEach(p => allUnits().forEach(u => {
+      if(!first && ANSWERED.indexOf(row(u).points[p.id]) < 0) first = {u, id:p.id};
+    }));
+    if(first) goToGap(first.u, first.id, "point");
+    return;
+  }
 
   // Every failed point must carry its own evidence and its own description.
   // A defect recorded with neither is a code nobody can act on months later.
   const gaps = [];
-  allUnits().forEach(u => realPoints(t).forEach(p => {
-    if(failOpen(row(u), p))
-      gaps.push((S.units>1 ? fmt("speaker_n",{n:u+1}) + " · " : "") + L(p.label));
+  let firstGap = null;
+  realPoints(t).forEach(p => allUnits().forEach(u => {
+    if(!failOpen(row(u), p)) return;
+    gaps.push((S.units>1 ? fmt("speaker_n",{n:u+1}) + " · " : "") + L(p.label));
+    if(!firstGap) firstGap = {u, id:p.id};
   }));
   if(gaps.length){
     alert(tr("a_fail_evidence") + "\n\n" +
       gaps.slice(0,6).map(s => "· " + s).join("\n") +
       (gaps.length > 6 ? "\n" + fmt("a_and_more",{n:gaps.length-6}) : ""));
+    goToGap(firstGap.u, firstGap.id, "fail");
     return;
   }
 
   const missShots = pointShotsMissing(t);
-  if(missShots){ alert(fmt("a_point_photos",{n:missShots})); return; }
+  if(missShots){
+    alert(fmt("a_point_photos",{n:missShots}));
+    let first = null;
+    realPoints(t).forEach(p => {
+      if(!p.photo) return;
+      allUnits().forEach(u => {
+        const r = row(u);
+        if(first || r.points[p.id] === "NA") return;
+        if(shotsFor(r, p.id).filter(m => m.kind === "photo").length === 0)
+          first = {u, id:p.id};
+      });
+    });
+    if(first) goToGap(first.u, first.id, "shot");
+    return;
+  }
 
   const miss = missingEvidence(0);
   if(miss.photo || miss.video){
     alert(miss.photo && miss.video ? tr("a_both")
         : miss.video ? tr("a_video") : tr("a_photo"));
+    goToEvidence();
     return;
   }
 
@@ -3336,6 +3455,15 @@ td.v{font-weight:400}
    it: a test code broken across two lines is harder to read than a shorter
    field name. */
 .idbox td.k{width:126px}
+/* The test code and the reference are single tokens with a hyphen in them, and
+   a hyphen is where a browser breaks a line. Narrowed by the photo, the column
+   split "741-Y9I4S2I6N" in two — the one field in the document that has to be
+   readable at a glance. */
+.idbox td.nw{white-space:nowrap}
+/* The app shows this same report on screen, and its own sheet aligns the last
+   cell of a row to the right. That pushed the values against the border in the
+   preview while the printed file stayed left. */
+.idbox td:last-child{text-align:left}
 .idbox>.ri{flex:none;width:112px;border:1px solid #c9d6e2;background:#f7f9fb;
   padding:4px}
 .idbox>.ri img{display:block;width:100%}
@@ -3407,9 +3535,9 @@ ${banner}
 <div class="sec"><i>I</i><b>${tr("general_info")}</b></div>
 <div class="idbox">
 <table>
-  <tr><td class="k">${tr("test_id")}</td><td class="v">${esc(S.testId)}</td>
+  <tr><td class="k">${tr("test_id")}</td><td class="v nw">${esc(S.testId)}</td>
       <td class="k">${tr("inspection")}</td><td class="v">${esc(inspectionDate(S.startedAt))}</td></tr>
-  <tr><td class="k">${tr("reference")}</td><td class="v">${esc(S.model)}</td>
+  <tr><td class="k">${tr("reference")}</td><td class="v nw">${esc(S.model)}</td>
       <td class="k">${tr("po")}</td><td class="v">${esc(poPrinted()||"—")}</td></tr>
   <tr><td class="k">${tr("operator")}</td><td class="v">${esc(S.operator)}</td>
       <td class="k">${tr("plan")}</td><td class="v">KŌHIN v${
@@ -4862,8 +4990,13 @@ function pointRow(p, u, showTag){
   const wantShot = p.photo && v !== "FAIL";
   const shotMissing = p.photo && v !== "NA" &&
     shots.filter(m => m.kind === "photo").length === 0;
+  // Declared before the boxes below, all of which build element ids from it.
+  // It used to sit further down: `const` is not hoisted the way `var` is, so
+  // the first point that asked for its own photo threw on render and took the
+  // whole test screen with it.
+  const id = u + "_" + p.id;
   const shotBox = wantShot ? `
-    <div class="pshot${shotMissing?" miss":""}">
+    <div class="pshot${shotMissing?" miss":""}" id="psb_${id}">
       <button onclick="document.getElementById('ps_${id}').click()">📷 ${
         tr("photo")}</button>
       <input id="ps_${id}" class="hidden" type="file" accept="image/*"
@@ -4873,7 +5006,6 @@ function pointRow(p, u, showTag){
           <span onclick="dropMedia('${m.uid}')">×</span></div>`).join("")}</div>
       ${shotMissing?`<em>${tr("need_point_photo")}</em>`:""}
     </div>` : "";
-  const id = u + "_" + p.id;
 
   // Once the evidence is complete the box folds into one green line, so a test
   // with four failures does not become four screens of thumbnails. It reopens
@@ -4885,7 +5017,7 @@ function pointRow(p, u, showTag){
     </div>` : "";
 
   const fail = v === "FAIL" && !fold ? `
-    <div class="pf">
+    <div class="pf" id="pf_${id}">
       <div class="pf-h">${tr("fail_evidence")}${showTag?
         " · " + fmt("speaker_n",{n:u+1}):""}</div>
       <div class="row">
@@ -4911,7 +5043,7 @@ function pointRow(p, u, showTag){
         evOk?tr("fail_ready"):tr("fail_required")}</div>
     </div>` : "";
 
-  return `<div class="pt">
+  return `<div class="pt" id="pt_${id}">
       ${showTag?`<u>${fmt("speaker_n",{n:u+1})}</u>`:""}
       <span>${esc(L(p.label))}</span>
       <button class="${v==="PASS"?"on-p":""}" onclick="setPoint(${u},'${p.id}','PASS')">✓</button>
@@ -4930,6 +5062,7 @@ function renderTest(){
   const shared = row(0);      // test-level evidence and notes live on speaker 1
   const sharedEn = appTrLine(shared, "comment");
   const pending = pendingCount();
+  const naTest = allNA(t);
   const needsPhoto = missingEvidence(0).photo;
   const needsVideo = missingEvidence(0).video;
   // A failure without its photo and its note is as blocking as an unanswered
@@ -4986,16 +5119,17 @@ function renderTest(){
     ${header(t, done, total)}
     <p class="hint" id="hint" style="margin:0 0 10px">${hintHtml(t)}</p>
     ${groups}
-    <div class="card">
+    <div class="card" id="evcard">
       <label style="margin-top:0">${tr("evidence")}${needsPhoto||needsVideo?
         ` <span style="color:var(--amber)">${tr("required")}</span>`:""}</label>
+      ${naTest?`<p class="hint" style="margin:0 0 8px">${tr("ev_na")}</p>`:""}
       <ul class="ask">
         <li><b>${tr("video")}</b> ${tr("ask_video")}${needsVideo
           ? ` <b style="color:var(--amber)">${tr("required")}</b>`
-          : ` <b style="color:var(--green)">✓</b>`}</li>
+          : naTest ? "" : ` <b style="color:var(--green)">✓</b>`}</li>
         <li><b>${tr("photo")}</b> ${tr("ask_photo")}${needsPhoto
           ? ` <b style="color:var(--amber)">${tr("required")}</b>`
-          : ` <b style="color:var(--green)">✓</b>`}</li>
+          : naTest ? "" : ` <b style="color:var(--green)">✓</b>`}</li>
       </ul>
       <div class="row">
         <button onclick="document.getElementById('cam').click()">📷 ${tr("photo")}</button>
@@ -5045,6 +5179,8 @@ function naSection(safe){
   // Hand the section back to the automatic fold rule now that it is answered.
   delete S.open[secKey(sec.name)];
   render(); save();
+  focusNextGroup(sectionsOf(current())
+    .findIndex(s => String(s.name).replace(/['"\\]/g,"") === safe));
 }
 
 /* Typing a note cannot trigger a full render — the textarea would be rebuilt
@@ -5058,7 +5194,20 @@ const failOpen = (r,p) => r.points[p.id] === "FAIL" &&
    photo shows the setup and the tools used, the video shows the speaker
    actually working. Evidence of a specific defect carries a slot and is
    accounted for on its own point, so it does not count here. */
+/* Every point of the test answered N/A, on every speaker: the reference simply
+   does not have this input. N/A is an answer, not a way of skipping — the
+   operator still had to go point by point to give it. */
+function allNA(t){
+  const pts = realPoints(t || current());
+  if(!pts.length) return false;
+  return allUnits().every(u => pts.every(p => row(u).points[p.id] === "NA"));
+}
+
 function missingEvidence(u){
+  // Nothing to photograph and nothing to film when the function does not exist
+  // on this speaker. Demanding evidence anyway is what produces a picture of an
+  // unrelated panel filed as proof that a test was run.
+  if(allNA(current())) return {photo:false, video:false};
   const gen = row(u || 0).media.filter(m => !m.slot);
   return {photo: !gen.some(m => m.kind === "photo"),
           video: !gen.some(m => m.kind === "video")};
@@ -5133,7 +5282,7 @@ function renderPhotoTest(t, r, done, total){
     const na = allowNA && r.points[p.id] === "NA";
     const ph = L(p.help);
     const pOpen = pointHelpOpen(p.id);
-    return `<div class="shot ${shots.length||na?"ok":""}">
+    return `<div class="shot ${shots.length||na?"ok":""}" id="sb_${p.id}">
       <div class="shot-head"><b>${esc(L(p.label))}</b>
         ${shots.length?`<em>${shots.length}</em>`:
           na?`<em class="na">N/A</em>`:`<em class="miss">${tr("required").replace("— ","")}</em>`}
