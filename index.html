@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="4.7">
+<meta name="app-version" content="4.8">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -395,7 +395,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "4.7";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "4.8";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -5144,6 +5144,7 @@ function mediaBlock(r){
    its own evidence box. Rendered once per speaker under the same question, so
    the operator answers the question for each unit on the bench without losing
    sight of what the question is. */
+
 /* The box where the number goes, right under the photo of the instrument that
    produced it. Amber while it is empty, like every other thing the test will
    not close without. `oninput` never renders: it would rebuild the field and
@@ -5463,12 +5464,19 @@ function syncFail(u, pointId){
    be rebuilt and the phone keyboard would close on every digit. */
 function syncReady(){
   const t = current();
-  if(!t || t.type === "photos") return;
   const btn = document.getElementById("btn-next");
-  if(!btn) return;
-  const ready = pendingCount() === 0 && evidenceComplete() &&
-    openFailCount(t) === 0 && pointShotsMissing(t) === 0 &&
-    pointValuesMissing(t) === 0;
+  if(!t || !btn) return;
+  let ready;
+  if(t.type === "photos"){
+    const r = row(0);
+    ready = realPoints(t).every(p =>
+      (shotsFor(r, p.id).length > 0 || (!t.no_na && r.points[p.id] === "NA"))
+      && !valueMissing(r, p));
+  } else {
+    ready = pendingCount() === 0 && evidenceComplete() &&
+      openFailCount(t) === 0 && pointShotsMissing(t) === 0 &&
+      pointValuesMissing(t) === 0;
+  }
   btn.style.opacity = ready ? "" : ".5";
 }
 
@@ -5529,7 +5537,8 @@ function renderPhotoTest(t, r, done, total){
 
   actions.innerHTML = `
     ${done>0?`<button class="skip" style="flex:0 0 52px" onclick="prevTest()">‹</button>`:""}
-    <button class="primary" style="flex:4${missing?";opacity:.5":""}" onclick="nextTest()">
+    <button class="primary" id="btn-next" style="flex:4${
+      missing?";opacity:.5":""}" onclick="nextTest()">
       ${done+1===total?tr("finish"):tr("next")}</button>
     ${t.optional?`<button class="skip" style="flex:0 0 66px" onclick="skipTest()">${tr("na")}</button>`:""}`;
 }
