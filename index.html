@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="4.8">
+<meta name="app-version" content="4.9">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -395,7 +395,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "4.8";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "4.9";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -529,7 +529,7 @@ const CONFIG = {
     "RMT-008":{"en":"Mic priority button does not respond","zh":"麦克风优先键无响应","es":"La tecla de prioridad de micrófono no responde"},
     "RMT-009":{"en":"REC button does not respond","zh":"录音键无响应","es":"La tecla REC no responde"},
     "RMT-010":{"en":"REC PLAY button does not respond","zh":"录音播放键无响应","es":"La tecla REC PLAY no responde"},
-    "RMT-011":{"en":"VOICE OUT button does not respond","zh":"VOICE OUT 键无响应","es":"La tecla VOICE OUT no responde"},
+    "RMT-011":{"en":"VOICE OUT button does not respond","zh":"VOICE OUT（消原音）键无响应","es":"La tecla VOICE OUT no responde"},
     "RMT-012":{"en":"Mode button does not respond","zh":"模式键无响应","es":"La tecla de modo no responde"},
     "RMT-013":{"en":"Next track button does not respond","zh":"下一曲键无响应","es":"La tecla de pista siguiente no responde"},
     "RMT-014":{"en":"Previous track button does not respond","zh":"上一曲键无响应","es":"La tecla de pista anterior no responde"},
@@ -548,7 +548,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 12,
+      "plan_version": 13,
       "tests": [
         {"id":"USB","optional":false,
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -670,33 +670,33 @@ const CONFIG = {
                     "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。",
                     "es":"Conecte un micrófono en MIC1 y hable mientras ajusta volumen, eco y prioridad. Repita con MIC2 y luego conecte la guitarra. Marque N/A lo que esta referencia no tenga."}},
            {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键","es":"Tecla de prioridad de MIC1"},
-            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
-                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。",
-                    "es":"Con música sonando, pulse prioridad y hable por MIC1. La música debe bajar mientras habla y volver cuando pare."}},
+            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop to about 10% of its level — a drop of roughly 90%, so the voice is heard over a background that is almost silent — and come back to full level when you stop. A drop you have to strain to notice is a fail: on a live speaker the priority is there so the voice can be understood without turning the music down by hand.",
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。音乐应降到原音量的约 10%——即衰减约 90%，人声在几乎无声的背景上清晰可闻——停止说话后恢复原音量。若需要仔细分辨才能察觉衰减，即判定为异常：优先功能的意义在于无需手动调低音乐即可听清人声。",
+                    "es":"Con música sonando, pulse prioridad y hable por MIC1. La música debe bajar a un 10% de su nivel —una caída de cerca del 90%, de modo que la voz se oiga sobre un fondo casi en silencio— y volver a su nivel completo al dejar de hablar. Una caída que haya que esforzarse en notar es un fallo: en un parlante en uso, la prioridad existe para que la voz se entienda sin bajar la música a mano."}},
            {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量","es":"Volumen de MIC1"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
                     "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。",
                     "es":"Hable de forma continua por MIC1 mientras gira su volumen del mínimo al máximo. El nivel debe subir de forma suave, sin cortes ni crujidos."}},
            {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声","es":"Eco de MIC1"},
-            "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
-                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。",
-                    "es":"Diga palabras cortas por MIC1 y suba el eco. La repetición debe oírse con claridad y desaparecer al bajarlo."}},
+            "help":{"en":"Say short words into MIC1 and turn the echo from minimum to maximum. The repetition must go from none to clearly audible, and the delay must stay within 0 to 280 ms: at maximum the echo must still follow the voice closely, not lag like a separate second voice. Anything longer than that stops sounding like reverberation and starts sounding like a fault.",
+                    "zh":"对麦克风 1 说短词，并将回声从最小调到最大。重复声应从无到明显可闻，延时须在 0～280 毫秒范围内：即使调到最大，回声也应紧跟人声，而不应拖成第二个人声。超过该范围就不再像混响，而像故障。",
+                    "es":"Diga palabras cortas por MIC1 y lleve el eco del mínimo al máximo. La repetición debe pasar de nula a claramente audible, y el retardo debe mantenerse entre 0 y 280 ms: incluso al máximo, el eco debe seguir de cerca a la voz, no arrastrarse como una segunda voz aparte. Más allá de ese rango deja de sonar a reverberación y empieza a sonar a defecto."}},
            {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响","es":"Reverberación de MIC1"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
                     "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。",
                     "es":"Hable por MIC1 y suba la reverberación. La voz debe ganar cuerpo y profundidad, no repetirse como el eco. Los dos controles deben actuar de forma independiente."}},
            {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键","es":"Tecla de prioridad de MIC2"},
-            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
-                    "zh":"拔下 MIC1，将麦克风插入 MIC2。同样的测试：播放音乐时按下优先键并说话。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。",
-                    "es":"Desconecte MIC1 y conecte el micrófono en MIC2. La misma prueba: con música sonando, pulse prioridad y hable. Marque N/A, aquí y en los tres puntos siguientes, si esta referencia tiene una sola entrada de micrófono."}},
+            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test, and the same criterion: the music must drop to about 10% of its level while you speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
+                    "zh":"拔下 MIC1，将麦克风插入 MIC2。测试方法和判定标准相同：说话时音乐应降到原音量的约 10%。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。",
+                    "es":"Desconecte MIC1 y conecte el micrófono en MIC2. La misma prueba y el mismo criterio: la música debe bajar a un 10% de su nivel mientras habla. Marque N/A, aquí y en los tres puntos siguientes, si esta referencia tiene una sola entrada de micrófono."}},
            {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量","es":"Volumen de MIC2"},
             "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
                     "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。",
                     "es":"Hable de forma continua por MIC2 mientras gira su volumen del mínimo al máximo."}},
            {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声","es":"Eco de MIC2"},
-            "help":{"en":"Say short words into MIC2 and turn the echo up.",
-                    "zh":"对麦克风 2 说短词并加大回声。",
-                    "es":"Diga palabras cortas por MIC2 y suba el eco."}},
+            "help":{"en":"Say short words into MIC2 and turn the echo up. Same range: 0 to 280 ms.",
+                    "zh":"对麦克风 2 说短词并加大回声。范围相同：0～280 毫秒。",
+                    "es":"Diga palabras cortas por MIC2 y suba el eco. El mismo rango: 0 a 280 ms."}},
            {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响","es":"Reverberación de MIC2"},
             "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
                     "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。",
@@ -804,26 +804,26 @@ const CONFIG = {
             "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
                     "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
            {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
-            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
-                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
+            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop to about 10% of its level — a drop of roughly 90%, so the voice is heard over a background that is almost silent — and come back to full level when you stop. A drop you have to strain to notice is a fail: on a live speaker the priority is there so the voice can be understood without turning the music down by hand.",
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。音乐应降到原音量的约 10%——即衰减约 90%，人声在几乎无声的背景上清晰可闻——停止说话后恢复原音量。若需要仔细分辨才能察觉衰减，即判定为异常：优先功能的意义在于无需手动调低音乐即可听清人声。"}},
            {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
                     "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
            {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
-            "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
-                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
+            "help":{"en":"Say short words into MIC1 and turn the echo from minimum to maximum. The repetition must go from none to clearly audible, and the delay must stay within 0 to 280 ms: at maximum the echo must still follow the voice closely, not lag like a separate second voice. Anything longer than that stops sounding like reverberation and starts sounding like a fault.",
+                    "zh":"对麦克风 1 说短词，并将回声从最小调到最大。重复声应从无到明显可闻，延时须在 0～280 毫秒范围内：即使调到最大，回声也应紧跟人声，而不应拖成第二个人声。超过该范围就不再像混响，而像故障。"}},
            {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
                     "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
            {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
-                    "zh":"拔下 MIC1，将麦克风插入 MIC2。同样的测试：播放音乐时按下优先键并说话。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
+            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test, and the same criterion: the music must drop to about 10% of its level while you speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
+                    "zh":"拔下 MIC1，将麦克风插入 MIC2。测试方法和判定标准相同：说话时音乐应降到原音量的约 10%。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
            {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
             "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
                     "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
            {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Say short words into MIC2 and turn the echo up.",
-                    "zh":"对麦克风 2 说短词并加大回声。"}},
+            "help":{"en":"Say short words into MIC2 and turn the echo up. Same range: 0 to 280 ms.",
+                    "zh":"对麦克风 2 说短词并加大回声。范围相同：0～280 毫秒。"}},
            {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
             "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
                     "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
@@ -904,26 +904,26 @@ const CONFIG = {
             "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
                     "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
            {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
-            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
-                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
+            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop to about 10% of its level — a drop of roughly 90%, so the voice is heard over a background that is almost silent — and come back to full level when you stop. A drop you have to strain to notice is a fail: on a live speaker the priority is there so the voice can be understood without turning the music down by hand.",
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。音乐应降到原音量的约 10%——即衰减约 90%，人声在几乎无声的背景上清晰可闻——停止说话后恢复原音量。若需要仔细分辨才能察觉衰减，即判定为异常：优先功能的意义在于无需手动调低音乐即可听清人声。"}},
            {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
                     "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
            {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
-            "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
-                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
+            "help":{"en":"Say short words into MIC1 and turn the echo from minimum to maximum. The repetition must go from none to clearly audible, and the delay must stay within 0 to 280 ms: at maximum the echo must still follow the voice closely, not lag like a separate second voice. Anything longer than that stops sounding like reverberation and starts sounding like a fault.",
+                    "zh":"对麦克风 1 说短词，并将回声从最小调到最大。重复声应从无到明显可闻，延时须在 0～280 毫秒范围内：即使调到最大，回声也应紧跟人声，而不应拖成第二个人声。超过该范围就不再像混响，而像故障。"}},
            {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
                     "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
            {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
-                    "zh":"拔下 MIC1，将麦克风插入 MIC2。同样的测试：播放音乐时按下优先键并说话。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
+            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test, and the same criterion: the music must drop to about 10% of its level while you speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
+                    "zh":"拔下 MIC1，将麦克风插入 MIC2。测试方法和判定标准相同：说话时音乐应降到原音量的约 10%。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
            {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
             "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
                     "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
            {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Say short words into MIC2 and turn the echo up.",
-                    "zh":"对麦克风 2 说短词并加大回声。"}},
+            "help":{"en":"Say short words into MIC2 and turn the echo up. Same range: 0 to 280 ms.",
+                    "zh":"对麦克风 2 说短词并加大回声。范围相同：0～280 毫秒。"}},
            {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
             "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
                     "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
@@ -1032,26 +1032,26 @@ const CONFIG = {
             "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
                     "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
            {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
-            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
-                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
+            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop to about 10% of its level — a drop of roughly 90%, so the voice is heard over a background that is almost silent — and come back to full level when you stop. A drop you have to strain to notice is a fail: on a live speaker the priority is there so the voice can be understood without turning the music down by hand.",
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。音乐应降到原音量的约 10%——即衰减约 90%，人声在几乎无声的背景上清晰可闻——停止说话后恢复原音量。若需要仔细分辨才能察觉衰减，即判定为异常：优先功能的意义在于无需手动调低音乐即可听清人声。"}},
            {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
                     "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
            {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
-            "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
-                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
+            "help":{"en":"Say short words into MIC1 and turn the echo from minimum to maximum. The repetition must go from none to clearly audible, and the delay must stay within 0 to 280 ms: at maximum the echo must still follow the voice closely, not lag like a separate second voice. Anything longer than that stops sounding like reverberation and starts sounding like a fault.",
+                    "zh":"对麦克风 1 说短词，并将回声从最小调到最大。重复声应从无到明显可闻，延时须在 0～280 毫秒范围内：即使调到最大，回声也应紧跟人声，而不应拖成第二个人声。超过该范围就不再像混响，而像故障。"}},
            {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
                     "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
            {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
-                    "zh":"拔下 MIC1，将麦克风插入 MIC2。同样的测试：播放音乐时按下优先键并说话。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
+            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test, and the same criterion: the music must drop to about 10% of its level while you speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
+                    "zh":"拔下 MIC1，将麦克风插入 MIC2。测试方法和判定标准相同：说话时音乐应降到原音量的约 10%。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
            {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
             "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
                     "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
            {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Say short words into MIC2 and turn the echo up.",
-                    "zh":"对麦克风 2 说短词并加大回声。"}},
+            "help":{"en":"Say short words into MIC2 and turn the echo up. Same range: 0 to 280 ms.",
+                    "zh":"对麦克风 2 说短词并加大回声。范围相同：0～280 毫秒。"}},
            {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
             "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
                     "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
@@ -1113,26 +1113,26 @@ const CONFIG = {
             "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
                     "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
            {"id":"mic1_priority","code":"MIC-005","label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
-            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop while you speak and come back when you stop.",
-                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。说话时音乐应自动减小，停止后恢复。"}},
+            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop to about 10% of its level — a drop of roughly 90%, so the voice is heard over a background that is almost silent — and come back to full level when you stop. A drop you have to strain to notice is a fail: on a live speaker the priority is there so the voice can be understood without turning the music down by hand.",
+                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。音乐应降到原音量的约 10%——即衰减约 90%，人声在几乎无声的背景上清晰可闻——停止说话后恢复原音量。若需要仔细分辨才能察觉衰减，即判定为异常：优先功能的意义在于无需手动调低音乐即可听清人声。"}},
            {"id":"mic1_volume","code":"MIC-006","label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
             "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
                     "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
            {"id":"mic1_echo","code":"MIC-007","label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
-            "help":{"en":"Say short words into MIC1 and turn the echo up. The repetition must become clearly audible, and disappear when turned down.",
-                    "zh":"对麦克风 1 说短词并加大回声。重复声应明显可闻，调回最小时应消失。"}},
+            "help":{"en":"Say short words into MIC1 and turn the echo from minimum to maximum. The repetition must go from none to clearly audible, and the delay must stay within 0 to 280 ms: at maximum the echo must still follow the voice closely, not lag like a separate second voice. Anything longer than that stops sounding like reverberation and starts sounding like a fault.",
+                    "zh":"对麦克风 1 说短词，并将回声从最小调到最大。重复声应从无到明显可闻，延时须在 0～280 毫秒范围内：即使调到最大，回声也应紧跟人声，而不应拖成第二个人声。超过该范围就不再像混响，而像故障。"}},
            {"id":"mic1_reverb","code":"MIC-008","label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
             "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
                     "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
            {"id":"mic2_priority","code":"MIC-005","label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test: with music playing, press priority and speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
-                    "zh":"拔下 MIC1，将麦克风插入 MIC2。同样的测试：播放音乐时按下优先键并说话。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
+            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test, and the same criterion: the music must drop to about 10% of its level while you speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
+                    "zh":"拔下 MIC1，将麦克风插入 MIC2。测试方法和判定标准相同：说话时音乐应降到原音量的约 10%。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
            {"id":"mic2_volume","code":"MIC-006","label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
             "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
                     "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
            {"id":"mic2_echo","code":"MIC-007","label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Say short words into MIC2 and turn the echo up.",
-                    "zh":"对麦克风 2 说短词并加大回声。"}},
+            "help":{"en":"Say short words into MIC2 and turn the echo up. Same range: 0 to 280 ms.",
+                    "zh":"对麦克风 2 说短词并加大回声。范围相同：0～280 毫秒。"}},
            {"id":"mic2_reverb","code":"MIC-008","label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
             "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
                     "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
@@ -1265,17 +1265,18 @@ const CONFIG = {
             "help":{"en":"Record a few seconds with REC, play it back with REC PLAY. Retest some keys at an angle, not only straight on.",
                     "zh":"用 REC 键录几秒，再用 REC PLAY 播放。部分按键需侧向角度再测一次，不只正对。"}},
            {"id":"mic_priority","code":"RMT-008","label":{"en":"Microphone priority","zh":"麦克风优先"},
-            "help":{"en":"With music playing, press it and speak into the microphone. The music must drop while you speak and return afterwards.",
-                    "zh":"播放音乐时按下此键并对麦克风说话。说话时音乐应减小，停止后恢复。"}},
+            "help":{"en":"With music playing, press it and speak into the microphone. The music must drop to about 10% of its level while you speak — the same 90% drop the front panel key has to give — and return afterwards.",
+                    "zh":"播放音乐时按下此键并对麦克风说话。说话时音乐应降到原音量的约 10%（与面板优先键相同的约 90% 衰减），停止后恢复。"}},
            {"id":"rec","code":"RMT-009","label":{"en":"REC — record","zh":"REC — 录音"},
             "help":{"en":"Press REC and speak for a few seconds. The display must show it is recording, and pressing it again must stop the recording.",
                     "zh":"按 REC 并说话几秒。屏幕应显示正在录音，再按一次应停止录音。"}},
            {"id":"rec_play","code":"RMT-010","label":{"en":"REC PLAY — play the recording","zh":"REC PLAY — 播放录音"},
             "help":{"en":"Press it and confirm the recording you just made plays back clearly through the speaker.",
                     "zh":"按下后确认刚才的录音能通过音箱清晰回放。"}},
-           {"id":"voice_out","code":"RMT-011","label":{"en":"VOICE OUT","zh":"VOICE OUT"},
+           {"id":"voice_out","code":"RMT-011",
+            "label":{"en":"VOICE OUT","zh":"VOICE OUT（消原音）"},
             "help":{"en":"Press it while speaking into the microphone and listen for the change in the voice effect. Mark N/A if this reference has no VOICE OUT.",
-                    "zh":"对麦克风说话时按下此键，注意人声效果的变化。本型号没有 VOICE OUT 时标记为“不适用”。"}}]},
+                    "zh":"对麦克风说话时按下此键，注意人声效果的变化（该键用于消去原唱人声）。遥控器上仍印英文 VOICE OUT。本型号没有此键时标记为“不适用”。"}}]},
 
         {"id":"EXTERNAL","optional":false,"type":"photos","no_na":true,
          "label":{"en":"EXTERNAL PARTS","zh":"外观部件"},
@@ -1812,6 +1813,11 @@ Object.assign(ES_PLAN, {
   "Tag — front":"Etiqueta colgante — frente",
   "Tag — back":"Etiqueta colgante — reverso",
   "Loyalty card":"Tarjeta de fidelización",
+  "With music playing, press priority and speak into MIC1. The music must drop to about 10% of its level — a drop of roughly 90%, so the voice is heard over a background that is almost silent — and come back to full level when you stop. A drop you have to strain to notice is a fail: on a live speaker the priority is there so the voice can be understood without turning the music down by hand.":"Con música sonando, pulse prioridad y hable por MIC1. La música debe bajar a un 10% de su nivel —una caída de cerca del 90%, de modo que la voz se oiga sobre un fondo casi en silencio— y volver a su nivel completo al dejar de hablar. Una caída que haya que esforzarse en notar es un fallo: en un parlante en uso, la prioridad existe para que la voz se entienda sin bajar la música a mano.",
+  "Unplug MIC1 and plug the microphone into MIC2. Same test, and the same criterion: the music must drop to about 10% of its level while you speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.":"Desconecte MIC1 y conecte el micrófono en MIC2. La misma prueba y el mismo criterio: la música debe bajar a un 10% de su nivel mientras habla. Marque N/A, aquí y en los tres puntos siguientes, si esta referencia tiene una sola entrada de micrófono.",
+  "With music playing, press it and speak into the microphone. The music must drop to about 10% of its level while you speak — the same 90% drop the front panel key has to give — and return afterwards.":"Con música sonando, púlsela y hable al micrófono. La música debe bajar a un 10% de su nivel mientras habla —la misma caída del 90% que debe dar la tecla del panel— y volver después.",
+  "Say short words into MIC1 and turn the echo from minimum to maximum. The repetition must go from none to clearly audible, and the delay must stay within 0 to 280 ms: at maximum the echo must still follow the voice closely, not lag like a separate second voice. Anything longer than that stops sounding like reverberation and starts sounding like a fault.":"Diga palabras cortas por MIC1 y lleve el eco del mínimo al máximo. La repetición debe pasar de nula a claramente audible, y el retardo debe mantenerse entre 0 y 280 ms: incluso al máximo, el eco debe seguir de cerca a la voz, no arrastrarse como una segunda voz aparte. Más allá de ese rango deja de sonar a reverberación y empieza a sonar a defecto.",
+  "Say short words into MIC2 and turn the echo up. Same range: 0 to 280 ms.":"Diga palabras cortas por MIC2 y suba el eco. El mismo rango: 0 a 280 ms.",
   "Sound pressure level at 1 kHz":"Medición de SPL a 1 kHz",
   "Measured over Bluetooth because that is how the customer uses the speaker, and because the phone is both the source and the meter. Volume at maximum on the speaker and on the phone: what is being measured is what this unit can deliver, not what it was left at.":"Se mide por Bluetooth porque así es como el cliente usa el parlante, y porque el mismo teléfono es la fuente y el medidor. Volumen al máximo en el parlante y en el teléfono: lo que se mide es lo que esta unidad puede entregar, no dónde quedó el control.",
   "SPL at 1 kHz, one metre":"SPL a 1 kHz, a un metro",
@@ -2041,7 +2047,7 @@ const T = {
   all_done:"All points answered.", checks:"Checks",
   evidence:"Evidence", required:"— required", optional:"(optional)",
   photo:"Photo", video:"Video",
-  ask_video:"one clip of a minute or more showing the test being run.",
+  ask_video:"one continuous take, a minute or more, going through the points of this test in the order they appear above. Do not stop the recording between one point and the next: a single take is what proves they were all run on the same speaker, one after another. Frame the speaker and your hands, keep the display in shot when the point depends on it, and let each result be heard or seen before moving on.",
   ask_photo:"the process and the tools used: USB drive, SD card, battery, cables, phone.",
   po_ph:"Order number this shipment belongs to",
   operator_ph:"Who is running the inspection", next_po:"Order no. %p · %o",
@@ -2050,7 +2056,7 @@ const T = {
   need_photo:"At least one photo is required, whether the test passes or fails.",
   need_point_photo:"This point needs its own photo, whether it passes or fails.",
   a_point_photos:"%n point(s) are still missing their photo.\n\nThese points are documented whether they pass or fail: the picture is the proof of what was on the display.",
-  need_video:"A video of the test being run is required, whether it passes or fails.",
+  need_video:"A video of the test being run is required, whether it passes or fails: one take covering the points above, not a fragment.",
   need_both:"Both are required, whether the test passes or fails: at least one photo and one video of the test being run.",
   notes:"Notes", notes_fail_ph:"What exactly happened? e.g. sound cuts out after 20 seconds",
   notes_ph:"Observations on this test",
@@ -2129,6 +2135,7 @@ const T = {
   admin_refs_hint:"%n references. Tap one to choose which tests to run.",
   no_match:"No reference matches that text.",
   po_auto:"Assigned automatically when the inspection starts.",
+  po_factory:"Write the order number this shipment belongs to. Left empty, the inspection goes out as %p.",
   a_na_section:"Mark the whole section \"%s\" as N/A?\n\nEvery point in it, on every speaker, including any already answered.",
   tests_pick:"Tests to run", all_on:"Select all", all_off:"Clear all",
   n_selected:"<b>%n</b> of %tot tests selected.",
@@ -2181,7 +2188,7 @@ const T = {
   all_done:"Todos los puntos respondidos.", checks:"Verificaciones",
   evidence:"Evidencia", required:"— obligatorio", optional:"(opcional)",
   photo:"Foto", video:"Video",
-  ask_video:"un clip de un minuto o más que muestre la prueba en ejecución.",
+  ask_video:"una sola toma continua, de un minuto o más, recorriendo los puntos de esta prueba en el orden en que aparecen arriba. No detenga la grabación entre un punto y el siguiente: la toma única es lo que demuestra que todos se ejecutaron sobre el mismo parlante, uno tras otro. Encuadre el parlante y sus manos, mantenga la pantalla a la vista cuando el punto dependa de ella, y deje que cada resultado se oiga o se vea antes de pasar al siguiente.",
   ask_photo:"el proceso y las herramientas usadas: memoria USB, tarjeta SD, batería, cables, teléfono.",
   po_ph:"Número de orden al que pertenece el despacho",
   operator_ph:"Quién ejecuta la inspección", next_po:"OC %p · %o",
@@ -2190,7 +2197,7 @@ const T = {
   need_photo:"Se requiere al menos una foto, apruebe o falle la prueba.",
   need_point_photo:"Este punto necesita su propia foto, apruebe o falle.",
   a_point_photos:"Faltan %n punto(s) por fotografiar.\n\nEstos puntos se documentan aprueben o fallen: la foto es la prueba de lo que mostraba la pantalla.",
-  need_video:"Se requiere un video de la prueba en ejecución, apruebe o falle.",
+  need_video:"Se requiere un video de la prueba en ejecución, apruebe o falle: una toma que recorra los puntos de arriba, no un fragmento.",
   need_both:"Se requieren ambos, apruebe o falle la prueba: al menos una foto y un video de la prueba en ejecución.",
   notes:"Observaciones", notes_fail_ph:"¿Qué pasó exactamente? Ej.: el sonido se corta a los 20 segundos",
   notes_ph:"Observaciones sobre esta prueba",
@@ -2270,6 +2277,7 @@ const T = {
   admin_refs_hint:"%n referencias. Toque una para elegir qué pruebas ejecutar.",
   no_match:"Ninguna referencia coincide con ese texto.",
   po_auto:"Se asigna automáticamente al iniciar la inspección.",
+  po_factory:"Escriba el número de orden al que pertenece el despacho. Si lo deja vacío, la inspección sale como %p.",
   a_na_section:"¿Marcar toda la sección \"%s\" como N/A?\n\nTodos sus puntos, en todos los parlantes, incluidos los que ya haya respondido.",
   tests_pick:"Pruebas a ejecutar", all_on:"Seleccionar todas", all_off:"Quitar todas",
   n_selected:"<b>%n</b> de %tot pruebas seleccionadas.",
@@ -2321,7 +2329,7 @@ const T = {
   all_done:"所有项目已完成。", checks:"检查项",
   evidence:"证据照片", required:"— 必填", optional:"（选填）",
   photo:"拍照", video:"录像",
-  ask_video:"一段一分钟以上的视频，拍摄测试的实际操作过程。",
+  ask_video:"一段一分钟以上的连续视频，按上方顺序逐项演示本测试的各个检查项。中途不要停止录制：一镜到底才能证明所有项目是在同一台音箱上连续完成的。画面需拍到音箱和您的双手；检查项与屏幕显示有关时，屏幕要保持在画面内；每一项的结果听到或看到之后再进行下一项。",
   ask_photo:"拍摄操作过程和所用工具：U 盘、SD 卡、电池、线材、手机。",
   po_ph:"本批货所属的订单号",
   operator_ph:"由谁执行本次检验", next_po:"订单号 %p · %o",
@@ -2330,7 +2338,7 @@ const T = {
   need_photo:"无论合格与否，本项至少需要一张照片。",
   need_point_photo:"无论合格与否，本检查项都需要单独拍照。",
   a_point_photos:"还有 %n 个检查项未拍照。\n\n这些项目无论合格与否都要留存照片：照片就是显示屏内容的证据。",
-  need_video:"无论合格与否，本项均需一段测试过程的视频。",
+  need_video:"无论合格与否，本项均需一段测试过程的视频：需为涵盖上方各检查项的连续录制，而非片段。",
   need_both:"无论合格与否，本项均需至少一张照片和一段测试过程的视频。",
   notes:"备注", notes_fail_ph:"具体发生了什么？例如：播放 20 秒后声音中断",
   notes_ph:"关于本项测试的说明",
@@ -2409,6 +2417,7 @@ const T = {
   admin_refs_hint:"共 %n 个型号。点击其中一个以选择要执行的测试。",
   no_match:"没有匹配的型号。",
   po_auto:"开始检验时自动分配。",
+  po_factory:"请填写本批货所属的订单号。留空时，本次检验将以 %p 出具。",
   a_na_section:"将整个“%s”分组标记为不适用？\n\n该分组的所有检查项、所有音箱都会被标记，包括已经作答的项目。",
   tests_pick:"要执行的测试", all_on:"全选", all_off:"全部取消",
   n_selected:"已选择 <b>%n</b> / %tot 项测试。",
@@ -4687,11 +4696,18 @@ function renderAdminPick(){
     </div>
     <div class="card">
       <label style="margin-top:0">${tr("po")}</label>
-      <input value="${esc(isFactoryUser()
-        ? ADMIN_FACTORY.charAt(0) + poDigits(peekPo())
-        : "HK" + poDigits(peekPo()))}" readonly
+      ${/* The factory works against the customer's order number, which it has on
+            the papers in front of it; HOKLAN numbers its own inspections and has
+            nothing to type. So one account gets a field and the other a label —
+            the same box, two different jobs. */""}
+      ${isFactoryUser() ? `
+      <input id="adminPo" value="${esc(S.po)}" maxlength="12" autocomplete="off"
+        placeholder="${tr("po_ph")}" oninput="setAdminPo(this.value)">
+      <p class="hint" style="margin-top:6px">${fmt("po_factory",{
+        p: ADMIN_FACTORY.charAt(0) + poDigits(peekPo())})}</p>` : `
+      <input value="HK${poDigits(peekPo())}" readonly
         style="color:var(--muted);background:#0a1523">
-      <p class="hint" style="margin-top:6px">${tr("po_auto")}</p>
+      <p class="hint" style="margin-top:6px">${tr("po_auto")}</p>`}
       <label>${tr("units")}</label>
       <div class="units">${Array.from({length:MAX_UNITS},(_,i)=>
         `<button class="${S.units===i+1?"on":""}"
@@ -4704,8 +4720,14 @@ function renderAdminPick(){
       onclick="adminStart()">${tr("admin_start")}</button>`;
 }
 
+/* Never renders: the field would be rebuilt under the operator's fingers. */
+function setAdminPo(v){ S.po = String(v || ""); }
+
 function setUnitsAdmin(n){
   S.units = Math.min(MAX_UNITS, Math.max(1, parseInt(n,10) || 1));
+  // Read back before the screen is rebuilt, or the order number typed just
+  // above these buttons is silently cleared by pressing one of them.
+  S.po = (document.getElementById("adminPo")||{}).value || S.po;
   render();
 }
 
@@ -4713,11 +4735,13 @@ function adminStart(){
   if(!S.model || !S.testId){ alert(tr("a_select_model")); return; }
   if(!S.pick || !S.pick.length){ alert(tr("a_pick_tests")); return; }
 
-  /* Nobody is asked for an order number or a name here. The number is assigned
-     now — consuming it only at this point, so abandoning the screen leaves no
-     gap — and the operator records which account ran it. Not a person's name,
-     but the truth about who did it, which is what the field is for. */
-  S.po = takePo();
+  /* HOKLAN's own number is assigned now — consumed only at this point, so
+     abandoning the screen leaves no gap in the series. A factory writes the
+     customer's order number instead, and only falls back to the series when it
+     leaves the field empty; taking the number in that case too keeps the series
+     honest, since a report did go out under it. */
+  const typed = isFactoryUser() ? String(S.po || "").trim() : "";
+  S.po = typed || takePo();
   S.poLetter = isFactoryUser() ? ADMIN_FACTORY.charAt(0) : "";
   S.operator = isFactoryUser() ? "FÁBRICA " + ADMIN_FACTORY.charAt(0)
                                : "ADMIN HOKLAN";
