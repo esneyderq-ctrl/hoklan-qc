@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="3.6">
+<meta name="app-version" content="3.8">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -381,7 +381,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "3.6";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "3.8";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -533,7 +533,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 6,
+      "plan_version": 8,
       "tests": [
         {"id":"USB","optional":false,
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -1153,10 +1153,10 @@ const CONFIG = {
             "label":{"en":"The word SD is spelled correctly","zh":"SD 一词拼写正确"},
             "help":{"en":"With the card inserted, select SD mode, read the display and photograph it. Mark N/A if this reference has no SD slot.",
                     "zh":"插入 SD 卡后切换到 SD 模式，阅读显示内容并拍照。本型号没有 SD 卡槽时标记为“不适用”。"}},
-           {"id":"word_radio","code":"DSP-007","photo":true,
-            "label":{"en":"The radio word is spelled correctly","zh":"收音模式名称拼写正确"},
-            "help":{"en":"Select radio mode, read the display and photograph it. Mark N/A if this reference has no radio.",
-                    "zh":"切换到收音模式，阅读显示内容并拍照。本型号没有收音功能时标记为“不适用”。"}}]},
+           {"id":"word_aux","code":"DSP-007","photo":true,
+            "label":{"en":"The AUX / LINE word is spelled correctly","zh":"AUX / LINE 模式名称拼写正确"},
+            "help":{"en":"With the cable connected, select the auxiliary input, read the display and photograph it. Some references write AUX and others LINE: either is correct as long as it matches the specification for this model and is spelled properly. Mark N/A if this reference has no auxiliary input.",
+                    "zh":"接上音频线后切换到辅助输入，阅读显示内容并拍照。部分型号显示 AUX，部分显示 LINE：只要与本型号规格一致且拼写无误，两者均可。本型号没有辅助输入时标记为“不适用”。"}}]},
 
         {"id":"REMOTE","optional":true,
          "label":{"en":"REMOTE CONTROL","zh":"遥控器"},
@@ -1659,7 +1659,7 @@ const ES_PLAN = {
   "The word USB is spelled correctly":"La palabra USB está bien escrita",
   "The Bluetooth word is spelled correctly":"La palabra del modo Bluetooth está bien escrita",
   "The word SD is spelled correctly":"La palabra SD está bien escrita",
-  "The radio word is spelled correctly":"La palabra del modo radio está bien escrita",
+  "The AUX / LINE word is spelled correctly":"La palabra del modo AUX / LINE está bien escrita",
   "Bluetooth name matches the product":"El nombre Bluetooth coincide con el producto",
   "Set every level, switch the speaker off and on, and check they were kept":"Ajuste todos los niveles, apague y encienda el parlante, y verifique que se conservaron",
   "Bass level is kept after power off":"Conserva el nivel de graves al apagar",
@@ -1875,7 +1875,7 @@ Object.assign(ES_PLAN, {
   "Select USB mode and read what the display shows, letter by letter. Photograph it. Compare against the specification: USB, not U5B or U58.":"Cambie a modo USB y lea lo que muestra la pantalla, letra por letra. Fotografíelo. Compare contra la especificación: USB, no U5B ni U58.",
   "Select Bluetooth mode and read what the display shows, letter by letter. Photograph it. Whether it says BLUETOOTH, BT or BLUE, it must be spelled the way the specification requires.":"Cambie a modo Bluetooth y lea lo que muestra la pantalla, letra por letra. Fotografíelo. Diga BLUETOOTH, BT o BLUE, debe estar escrito como lo exige la especificación.",
   "With the card inserted, select SD mode, read the display and photograph it. Mark N/A if this reference has no SD slot.":"Con la tarjeta insertada, cambie a modo SD, lea la pantalla y fotografíela. Marque N/A si esta referencia no tiene ranura SD.",
-  "Select radio mode, read the display and photograph it. Mark N/A if this reference has no radio.":"Cambie a modo radio, lea la pantalla y fotografíela. Marque N/A si esta referencia no tiene radio.",
+  "With the cable connected, select the auxiliary input, read the display and photograph it. Some references write AUX and others LINE: either is correct as long as it matches the specification for this model and is spelled properly. Mark N/A if this reference has no auxiliary input.":"Con el cable conectado, seleccione la entrada auxiliar, lea la pantalla y fotografíela. Unas referencias escriben AUX y otras LINE: cualquiera de las dos es correcta mientras coincida con la especificación de ese modelo y esté bien escrita. Marque N/A si esta referencia no tiene entrada auxiliar.",
   "Read the name exactly as the phone lists it and compare it with the logo on the grille, the logo on the panel and the model printed in the manual. All of them must say the same thing: a speaker sold as one model that announces itself as another is a defect the customer sees before switching it on. Photograph the phone's list if it does not match.":"Lea el nombre exactamente como lo lista el teléfono y compárelo con el logo de la malla, el logo del panel y el modelo impreso en el manual. Los tres deben decir lo mismo: un parlante que se vende como un modelo y se anuncia como otro es un defecto que el cliente ve antes de encenderlo. Si no coincide, fotografíe la lista del teléfono."
 });
 
