@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="3.8">
+<meta name="app-version" content="3.9">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -381,7 +381,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "3.8";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "3.9";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -533,7 +533,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 8,
+      "plan_version": 9,
       "tests": [
         {"id":"USB","optional":false,
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -1142,19 +1142,19 @@ const CONFIG = {
             "help":{"en":"Look at the display straight on, in shade. Every character must be white, all of them the same white. A segment that reads bluish or yellowish next to the others is a fault even when the word is legible.",
                     "zh":"在阴影处正对显示屏观察。所有字符都应为白色，且白度一致。若某一段相比其他偏蓝或偏黄，即使文字仍可辨认也判定为异常。"}},
            {"id":"word_usb","code":"DSP-007","photo":true,
-            "label":{"en":"The word USB is spelled correctly","zh":"USB 一词拼写正确"},
+            "label":{"en":"USB — text correct on the display","zh":"USB — 屏显文字正确"},
             "help":{"en":"Select USB mode and read what the display shows, letter by letter. Photograph it. Compare against the specification: USB, not U5B or U58.",
                     "zh":"切换到 USB 模式，逐字母阅读显示内容并拍照。与规格对照：应为 USB，而非 U5B 或 U58。"}},
            {"id":"word_bt","code":"DSP-007","photo":true,
-            "label":{"en":"The Bluetooth word is spelled correctly","zh":"蓝牙模式名称拼写正确"},
+            "label":{"en":"Bluetooth — text correct on the display","zh":"蓝牙 — 屏显文字正确"},
             "help":{"en":"Select Bluetooth mode and read what the display shows, letter by letter. Photograph it. Whether it says BLUETOOTH, BT or BLUE, it must be spelled the way the specification requires.",
                     "zh":"切换到蓝牙模式，逐字母阅读显示内容并拍照。无论显示 BLUETOOTH、BT 还是 BLUE，都必须与规格要求的写法一致。"}},
            {"id":"word_sd","code":"DSP-007","photo":true,
-            "label":{"en":"The word SD is spelled correctly","zh":"SD 一词拼写正确"},
+            "label":{"en":"SD — text correct on the display","zh":"SD — 屏显文字正确"},
             "help":{"en":"With the card inserted, select SD mode, read the display and photograph it. Mark N/A if this reference has no SD slot.",
                     "zh":"插入 SD 卡后切换到 SD 模式，阅读显示内容并拍照。本型号没有 SD 卡槽时标记为“不适用”。"}},
            {"id":"word_aux","code":"DSP-007","photo":true,
-            "label":{"en":"The AUX / LINE word is spelled correctly","zh":"AUX / LINE 模式名称拼写正确"},
+            "label":{"en":"AUX / LINE — text correct on the display","zh":"AUX / LINE — 屏显文字正确"},
             "help":{"en":"With the cable connected, select the auxiliary input, read the display and photograph it. Some references write AUX and others LINE: either is correct as long as it matches the specification for this model and is spelled properly. Mark N/A if this reference has no auxiliary input.",
                     "zh":"接上音频线后切换到辅助输入，阅读显示内容并拍照。部分型号显示 AUX，部分显示 LINE：只要与本型号规格一致且拼写无误，两者均可。本型号没有辅助输入时标记为“不适用”。"}}]},
 
@@ -1656,10 +1656,10 @@ const ES_PLAN = {
   "Photograph the display on each mode, close and square":"Fotografíe la pantalla en cada modo, de cerca y de frente",
   "Read each word letter by letter before judging it":"Lea cada palabra letra por letra antes de calificarla",
   "Characters are white":"Los caracteres son blancos",
-  "The word USB is spelled correctly":"La palabra USB está bien escrita",
-  "The Bluetooth word is spelled correctly":"La palabra del modo Bluetooth está bien escrita",
-  "The word SD is spelled correctly":"La palabra SD está bien escrita",
-  "The AUX / LINE word is spelled correctly":"La palabra del modo AUX / LINE está bien escrita",
+  "USB — text correct on the display":"USB — texto correcto en pantalla",
+  "Bluetooth — text correct on the display":"Bluetooth — texto correcto en pantalla",
+  "SD — text correct on the display":"SD — texto correcto en pantalla",
+  "AUX / LINE — text correct on the display":"AUX / LINE — texto correcto en pantalla",
   "Bluetooth name matches the product":"El nombre Bluetooth coincide con el producto",
   "Set every level, switch the speaker off and on, and check they were kept":"Ajuste todos los niveles, apague y encienda el parlante, y verifique que se conservaron",
   "Bass level is kept after power off":"Conserva el nivel de graves al apagar",
