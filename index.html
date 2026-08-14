@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="4.9">
+<meta name="app-version" content="5.0">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -395,7 +395,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "4.9";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "5.0";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -4742,7 +4742,13 @@ function adminStart(){
      honest, since a report did go out under it. */
   const typed = isFactoryUser() ? String(S.po || "").trim() : "";
   S.po = typed || takePo();
-  S.poLetter = isFactoryUser() ? ADMIN_FACTORY.charAt(0) : "";
+  /* The letter belongs to the series, not to the account: it is what tells Y004
+     apart from R004 when three factories number their own inspections from 001.
+     A number the factory copied from the customer's order is already unique and
+     already theirs — prefixing it turned PO-88213 into YPO-88213, which matches
+     nothing in anybody's system. Which account ran it is recorded in the
+     operator field either way. */
+  S.poLetter = (isFactoryUser() && !typed) ? ADMIN_FACTORY.charAt(0) : "";
   S.operator = isFactoryUser() ? "FÁBRICA " + ADMIN_FACTORY.charAt(0)
                                : "ADMIN HOKLAN";
 
