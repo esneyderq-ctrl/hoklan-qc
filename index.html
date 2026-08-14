@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="2.1">
+<meta name="app-version" content="2.7">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -96,6 +96,10 @@ button:active{transform:scale(.99)}
   background:#14304a;border:1px solid #2b5f92;color:var(--accent);font-size:17px;
   font-weight:700;line-height:1}
 .help-b.on{background:var(--accent);color:#04121e;border-color:var(--accent)}
+/* Marks the whole section N/A. Amber, not blue: it is not a help control, it
+   answers fifteen points at once and deserves to look like a decision. */
+.na-sec{width:auto;padding:0 9px;font-size:11.5px;letter-spacing:.5px;
+  background:#2a2413;border-color:#6b5320;color:var(--amber)}
 .grp-help{margin:0 14px 12px;padding:11px;border-radius:9px;background:#0d1f33;
   border:1px solid #24466b;color:#cfe0f2;font-size:14px;line-height:1.55}
 .na-btn{font-size:12px !important;letter-spacing:0}
@@ -121,6 +125,14 @@ button:active{transform:scale(.99)}
 .pf-h{font-size:12px;font-weight:700;color:#ffc9c5;letter-spacing:.5px;
   margin-bottom:9px}
 .pf textarea{min-height:64px;margin-top:9px;font-size:15px}
+/* The photo a point demands even when it passes. Quieter than the red defect
+   box: it is documentation, not a finding. */
+.pshot{margin:0 0 10px;padding:9px 10px;border-radius:9px;background:#0c1b2d;
+  border:1px solid var(--border)}
+.pshot.miss{border-color:#6b5320;background:#1a1a0d}
+.pshot em{display:block;font-style:normal;font-size:12px;color:var(--amber);
+  margin-top:7px}
+.pshot button{padding:9px;font-size:14px}
 .pf-w{background:rgba(245,185,66,.16);border:1px solid var(--amber);
   border-radius:7px;padding:8px 10px;font-size:12.5px;color:#ffe9bd;margin-top:9px}
 .pf-ok{background:rgba(30,120,70,.18);border:1px solid var(--green);
@@ -188,6 +200,10 @@ button:active{transform:scale(.99)}
 table{width:100%;border-collapse:collapse;font-size:14px}
 td{padding:9px 4px;border-bottom:1px solid #16304d}
 td:last-child{text-align:right;font-weight:700}
+/* Verdict colours. The class comes from verdictClass(), never from the verdict
+   itself: the verdict for a skipped test is the string "N/A", and a class with
+   a slash in it is not a valid selector — those rows printed with no colour at
+   all until this was routed through a mapping. */
 .PASS{color:var(--green)} .FAIL{color:var(--red)} .NA{color:var(--grey)}
 .INCOMPLETE{color:var(--amber)}
 .big{font-size:34px;font-weight:700;text-align:center;padding:20px;border-radius:12px;
@@ -262,6 +278,35 @@ td:last-child{text-align:right;font-weight:700}
 .ri-zoom img{max-width:100%;max-height:76vh;object-fit:contain;border-radius:10px}
 .ri-zoom span{color:var(--muted);font-size:13px;letter-spacing:1px}
 
+/* The erase sheet. Every row says what it holds before offering to remove it:
+   "erase data" with no object is how an afternoon of photographs disappears. */
+.sheet{position:fixed;inset:0;z-index:70;background:rgba(3,8,15,.94);
+  overflow-y:auto;padding:20px 14px}
+.sheet-in{max-width:520px;margin:0 auto}
+.sheet h3{margin:0 0 3px;font-size:17px}
+.sheet p{margin:0 0 14px;color:var(--muted);font-size:12.5px;line-height:1.5}
+.sheet h4{margin:16px 0 7px;font-size:10.5px;letter-spacing:1.2px;
+  color:var(--grey);font-weight:600}
+.wrow{display:flex;align-items:center;gap:10px;background:var(--panel);
+  border:1px solid var(--border);border-radius:11px;padding:11px 12px;
+  margin-bottom:6px}
+.wrow div{flex:1;min-width:0}
+.wrow b{display:block;font-size:13px;font-weight:600}
+.wrow span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.wrow em{display:block;font-style:normal;font-size:11px;color:var(--amber);
+  margin-top:3px}
+.wrow button{width:auto;flex:none;padding:7px 11px;font-size:12.5px;
+  background:none;border-color:#7a3a36;color:var(--red)}
+.wrow.off{opacity:.45}
+.wrow.off b,.wrow.off span{color:var(--grey)}
+.wrow button[disabled]{border-color:#16304d;color:#3d4f63}
+.wall{border-top:1px solid var(--border);margin-top:15px;padding-top:13px}
+.wall button{background:rgba(255,93,85,.1);border-color:#7a3a36;
+  color:var(--red);font-weight:700}
+.wall span{display:block;font-size:11px;color:var(--muted);margin-top:6px;
+  text-align:center;line-height:1.45}
+.sheet-x{margin-top:12px;background:none;color:var(--muted)}
+
 .tag{display:inline-block;background:#10273f;border:1px solid var(--border);
   border-radius:6px;padding:3px 9px;font-size:12px;color:var(--muted);margin-right:6px}
 /* Result of the test-ID lookup: same weight in both directions, so a wrong
@@ -329,7 +374,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "2.1";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "2.7";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -435,10 +480,14 @@ const CONFIG = {
     "AUD-008":{"en":"Bass control does not work","zh":"低音调节无效","es":"El control de graves no funciona"},
     "AUD-009":{"en":"Guitar volume does not work","zh":"吉他音量无效","es":"El volumen de guitarra no funciona"},
     "AUD-010":{"en":"X-BASS does not work or distorts","zh":"X-BASS 无效或失真","es":"X-BASS no funciona o distorsiona"},
+    "AUD-011":{"en":"Audio settings are not kept after switching off","zh":"关机后不记忆音频设置","es":"No conserva los ajustes de audio al apagar"},
     "DSP-001":{"en":"Missing segment","zh":"显示缺笔段","es":"Segmento faltante en la pantalla"},
     "DSP-002":{"en":"Display flickers","zh":"显示闪烁","es":"La pantalla parpadea"},
     "DSP-004":{"en":"Wrong characters","zh":"显示字符错误","es":"Caracteres incorrectos en la pantalla"},
     "DSP-005":{"en":"Mode change does not work","zh":"模式切换无效","es":"El cambio de modo no funciona"},
+    "DSP-006":{"en":"Display colour is not the specified one","zh":"显示颜色与规定不符","es":"El color de la pantalla no es el especificado"},
+    "DSP-007":{"en":"Mode name misspelled on the display","zh":"显示屏上的模式名称拼写错误","es":"Nombre de modo mal escrito en la pantalla"},
+    "BT-012":{"en":"Bluetooth name does not match the product branding","zh":"蓝牙名称与产品标识不一致","es":"El nombre Bluetooth no coincide con la marca del producto"},
     "LED-001":{"en":"Power LED abnormal","zh":"电源指示灯异常","es":"LED de encendido anormal"},
     "LED-002":{"en":"Charging LED abnormal","zh":"充电指示灯异常","es":"LED de carga anormal"},
     "LED-003":{"en":"Mode LED abnormal","zh":"模式指示灯异常","es":"LED de modo anormal"},
@@ -477,7 +526,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 3,
+      "plan_version": 5,
       "tests": [
         {"id":"USB","optional":false,
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -777,7 +826,8 @@ const CONFIG = {
            {"en":"Disconnect, pair an Android phone and play audio","zh":"断开后配对安卓手机并播放音频"},
            {"en":"Switch the speaker off and on to see if it reconnects by itself","zh":"重新开机，确认是否自动回连"},
            {"en":"With the audio playing, check each control on the list","zh":"在播放状态下，逐项检查下列功能"},
-           {"en":"Finally, enable TWS mode and link it to a second speaker","zh":"最后开启 TWS 模式，与第二台音箱串联"}],
+           {"en":"Finally, enable TWS mode and link it to a second speaker","zh":"最后开启 TWS 模式，与第二台音箱串联"},
+           {"en":"Set every level, switch the speaker off and on, and check they were kept","zh":"调好各项音效后关机再开机，确认设置是否保留"}],
          "points":[
            {"section":{"en":"Connection","zh":"连接"},
             "help":{"en":"Put the speaker in Bluetooth mode. Pair an iPhone and play; then disconnect and pair an Android. Finally switch the speaker off and on to see whether it reconnects by itself.",
@@ -788,6 +838,9 @@ const CONFIG = {
            {"id":"android","code":"BT-007","label":{"en":"Connection with Android","zh":"连接安卓手机"},
             "help":{"en":"Disconnect the iPhone first, then pair an Android. Both must work: it is common for a speaker to connect with one and fail with the other.",
                     "zh":"先断开 iPhone，再配对安卓手机。两者都必须正常：只连其中一种的情况很常见。"}},
+           {"id":"name_match","code":"BT-012","label":{"en":"Bluetooth name matches the product","zh":"蓝牙名称与产品一致"},
+            "help":{"en":"Read the name exactly as the phone lists it and compare it with the logo on the grille, the logo on the panel and the model printed in the manual. All of them must say the same thing: a speaker sold as one model that announces itself as another is a defect the customer sees before switching it on. Photograph the phone's list if it does not match.",
+                    "zh":"按手机列表中显示的名称逐字读取，并与网罩标志、面板标志以及说明书上的型号对照。三者必须一致：以某型号出售却以另一个名称广播的音箱，客户开机之前就会发现。若不一致，请拍摄手机列表。"}},
            {"id":"autoconnect","code":"BT-008","label":{"en":"Reconnects automatically on power on","zh":"开机自动回连"},
             "help":{"en":"With the phone paired and nearby, switch the speaker off and on. It must reconnect by itself, without pairing again.",
                     "zh":"手机保持已配对且在附近，关机后再开机。音箱应自动回连，无需重新配对。"}},
@@ -875,7 +928,28 @@ const CONFIG = {
                     "zh":"开启 TWS 模式，与第二台音箱串联，确认两台同时出声。本型号没有 TWS 时标记为“不适用”。"}},
            {"id":"tws","code":"BT-010","label":{"en":"TWS mode: link with a second speaker","zh":"TWS 模式：与第二台音箱串联"},
             "help":{"en":"Enable TWS on both speakers and wait for them to pair with each other. Play music: both must sound together and in sync. Mark N/A if this reference has no TWS.",
-                    "zh":"在两台音箱上都开启 TWS，等待互相配对。播放音乐：两台应同时出声且同步。本型号没有 TWS 时标记为“不适用”。"}}]},
+                    "zh":"在两台音箱上都开启 TWS，等待互相配对。播放音乐：两台应同时出声且同步。本型号没有 TWS 时标记为“不适用”。"}},
+           {"section":{"en":"Settings memory","zh":"设置记忆"},
+            "help":{"en":"Move every level to a position that is easy to recognise — not centred, not at the end — and write down where you left each one. Switch the speaker off, wait ten seconds, switch it on and check them one by one. A speaker that returns to factory levels on every power cycle is one the customer has to set up again every single time.",
+                    "zh":"将每个音效调到容易辨认的位置——不要居中，也不要到底——并记下各自的位置。关机，等待十秒后开机，逐项核对。若每次开机都恢复出厂设置，客户每次使用都得重新调一遍。"}},
+           {"id":"mem_bass","code":"AUD-011","label":{"en":"Bass level is kept after power off","zh":"关机后保留低音设置"},
+            "help":{"en":"Leave the bass clearly above or below the middle, switch off and on. It must come back exactly where it was, on the control and on the display.",
+                    "zh":"将低音明显调高或调低于中间位置，关机再开机。旋钮位置和屏幕显示都应回到原来的数值。"}},
+           {"id":"mem_treble","code":"AUD-011","label":{"en":"Treble level is kept after power off","zh":"关机后保留高音设置"},
+            "help":{"en":"Same check on the treble. Testing one level and assuming the rest is how a speaker ships remembering the bass and forgetting everything else.",
+                    "zh":"对高音做同样的检查。只测一项就推断其余，正是音箱只记住低音、其他全忘的出厂原因。"}},
+           {"id":"mem_mid","code":"AUD-011","label":{"en":"Mid level is kept after power off","zh":"关机后保留中音设置"},
+            "help":{"en":"Same check on the mids. Mark N/A if this reference has no mid control.",
+                    "zh":"对中音做同样的检查。本型号没有中音调节时标记为“不适用”。"}},
+           {"id":"mem_echo","code":"AUD-011","label":{"en":"Echo level is kept after power off","zh":"关机后保留回声设置"},
+            "help":{"en":"Same check on the echo. Speak into the microphone after switching on again: the repetition must sound the same as before.",
+                    "zh":"对回声做同样的检查。重新开机后对麦克风说话，重复声应与之前一致。"}},
+           {"id":"mem_mic_bass","code":"AUD-011","label":{"en":"Microphone bass is kept after power off","zh":"关机后保留麦克风低音设置"},
+            "help":{"en":"Same check on the microphone bass. Mark N/A if this reference has no separate microphone tone controls.",
+                    "zh":"对麦克风低音做同样的检查。本型号没有独立的麦克风音调调节时标记为“不适用”。"}},
+           {"id":"mem_mic_treble","code":"AUD-011","label":{"en":"Microphone treble is kept after power off","zh":"关机后保留麦克风高音设置"},
+            "help":{"en":"Same check on the microphone treble. Mark N/A if this reference has no separate microphone tone controls.",
+                    "zh":"对麦克风高音做同样的检查。本型号没有独立的麦克风音调调节时标记为“不适用”。"}}]},
 
         {"id":"RADIO_FM","optional":true,
          "label":{"en":"FM RADIO","zh":"调频收音"},
@@ -1044,6 +1118,38 @@ const CONFIG = {
            {"id":"light_pattern","code":"LED-007","label":{"en":"Light pattern change","zh":"灯光模式切换"},
             "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
                     "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}}]},
+
+        {"id":"DISPLAY","optional":true,
+         "label":{"en":"DISPLAY","zh":"显示屏"},
+         "steps":[
+           {"en":"Switch the speaker on and let the display settle","zh":"开机并等待显示屏稳定"},
+           {"en":"Check the colour of the characters against the specification","zh":"对照规格确认字符颜色"},
+           {"en":"Step through USB, Bluetooth, SD and radio","zh":"依次切换 USB、蓝牙、SD 和收音"},
+           {"en":"Photograph the display on each mode, close and square","zh":"每个模式都要正对近距离拍摄显示屏"},
+           {"en":"Read each word letter by letter before judging it","zh":"逐字母阅读每个词后再判定"}],
+         "points":[
+           {"section":{"en":"Display","zh":"显示屏"},
+            "help":{"en":"The display is what the customer reads to know what the speaker is doing, and a misspelled mode is a defect that ships on every unit of the batch. Photograph each mode: the photo is what lets the office check the spelling without the speaker in front of them.",
+                    "zh":"显示屏是客户用来判断音箱状态的依据，模式名称拼错会随整批货一起出厂。每个模式都要拍照：办公室凭这张照片就能在没有实物的情况下核对拼写。"}},
+           {"id":"colour","code":"DSP-006","label":{"en":"Characters are white","zh":"字符为白色"},
+            "help":{"en":"Look at the display straight on, in shade. Every character must be white, all of them the same white. A segment that reads bluish or yellowish next to the others is a fault even when the word is legible.",
+                    "zh":"在阴影处正对显示屏观察。所有字符都应为白色，且白度一致。若某一段相比其他偏蓝或偏黄，即使文字仍可辨认也判定为不良。"}},
+           {"id":"word_usb","code":"DSP-007","photo":true,
+            "label":{"en":"The word USB is spelled correctly","zh":"USB 一词拼写正确"},
+            "help":{"en":"Select USB mode and read what the display shows, letter by letter. Photograph it. Compare against the specification: USB, not U5B or U58.",
+                    "zh":"切换到 USB 模式，逐字母阅读显示内容并拍照。与规格对照：应为 USB，而非 U5B 或 U58。"}},
+           {"id":"word_bt","code":"DSP-007","photo":true,
+            "label":{"en":"The Bluetooth word is spelled correctly","zh":"蓝牙模式名称拼写正确"},
+            "help":{"en":"Select Bluetooth mode and read what the display shows, letter by letter. Photograph it. Whether it says BLUETOOTH, BT or BLUE, it must be spelled the way the specification requires.",
+                    "zh":"切换到蓝牙模式，逐字母阅读显示内容并拍照。无论显示 BLUETOOTH、BT 还是 BLUE，都必须与规格要求的写法一致。"}},
+           {"id":"word_sd","code":"DSP-007","photo":true,
+            "label":{"en":"The word SD is spelled correctly","zh":"SD 一词拼写正确"},
+            "help":{"en":"With the card inserted, select SD mode, read the display and photograph it. Mark N/A if this reference has no SD slot.",
+                    "zh":"插入 SD 卡后切换到 SD 模式，阅读显示内容并拍照。本型号没有 SD 卡槽时标记为“不适用”。"}},
+           {"id":"word_radio","code":"DSP-007","photo":true,
+            "label":{"en":"The radio word is spelled correctly","zh":"收音模式名称拼写正确"},
+            "help":{"en":"Select radio mode, read the display and photograph it. Mark N/A if this reference has no radio.",
+                    "zh":"切换到收音模式，阅读显示内容并拍照。本型号没有收音功能时标记为“不适用”。"}}]},
 
         {"id":"REMOTE","optional":true,
          "label":{"en":"REMOTE CONTROL","zh":"遥控器"},
@@ -1367,6 +1473,7 @@ const ES_PLAN = {
   "FM RADIO":"RADIO FM",
   "AUX LINE":"ENTRADA AUX",
   "REMOTE CONTROL":"CONTROL REMOTO",
+  "DISPLAY":"PANTALLA",
   "EXTERNAL PARTS":"PARTES EXTERNAS",
   "ACCESSORIES":"ACCESORIOS",
   "PRINTED MATERIAL":"MATERIAL IMPRESO",
@@ -1391,6 +1498,7 @@ const ES_PLAN = {
   "Playback keys":"Teclas de reproducción",
   "Volume and audio":"Volumen y audio",
   "Microphone and recording":"Micrófono y grabación",
+  "Settings memory":"Memoria de ajustes",
 
   /* Steps — USB */
   "Insert the HOKLAN test USB drive into the speaker":"Inserte la memoria USB de prueba HOKLAN en el parlante",
@@ -1461,7 +1569,27 @@ const ES_PLAN = {
   "Connect the external battery":"Conecte la batería externa",
   "Set the switch to external battery":"Ponga el selector en batería externa",
   "Switch the speaker on, insert the USB drive and play at maximum volume":"Encienda el parlante, inserte la memoria USB y reproduzca a volumen máximo",
-  "Then plug in the AC cable, still on the external battery, and play at maximum volume":"Luego conecte el cable AC, aún con la batería externa, y reproduzca a volumen máximo"
+  "Then plug in the AC cable, still on the external battery, and play at maximum volume":"Luego conecte el cable AC, aún con la batería externa, y reproduzca a volumen máximo",
+
+  /* Steps and points of the display test */
+  "Switch the speaker on and let the display settle":"Encienda el parlante y deje que la pantalla se estabilice",
+  "Check the colour of the characters against the specification":"Verifique el color de los caracteres contra la especificación",
+  "Step through USB, Bluetooth, SD and radio":"Recorra USB, Bluetooth, SD y radio",
+  "Photograph the display on each mode, close and square":"Fotografíe la pantalla en cada modo, de cerca y de frente",
+  "Read each word letter by letter before judging it":"Lea cada palabra letra por letra antes de calificarla",
+  "Characters are white":"Los caracteres son blancos",
+  "The word USB is spelled correctly":"La palabra USB está bien escrita",
+  "The Bluetooth word is spelled correctly":"La palabra del modo Bluetooth está bien escrita",
+  "The word SD is spelled correctly":"La palabra SD está bien escrita",
+  "The radio word is spelled correctly":"La palabra del modo radio está bien escrita",
+  "Bluetooth name matches the product":"El nombre Bluetooth coincide con el producto",
+  "Set every level, switch the speaker off and on, and check they were kept":"Ajuste todos los niveles, apague y encienda el parlante, y verifique que se conservaron",
+  "Bass level is kept after power off":"Conserva el nivel de graves al apagar",
+  "Treble level is kept after power off":"Conserva el nivel de agudos al apagar",
+  "Mid level is kept after power off":"Conserva el nivel de medios al apagar",
+  "Echo level is kept after power off":"Conserva el nivel de eco al apagar",
+  "Microphone bass is kept after power off":"Conserva los graves del micrófono al apagar",
+  "Microphone treble is kept after power off":"Conserva los agudos del micrófono al apagar"
 };
 
 /* Point labels. Short, and printed in the summary table of the report. */
@@ -1650,7 +1778,23 @@ Object.assign(ES_PLAN, {
   "Press the light button several times. It must switch on and off cleanly every time, with no flicker and no LED left lit.":"Pulse la tecla de luz varias veces. Debe encender y apagar de forma limpia cada vez, sin parpadeos y sin que quede ningún LED prendido.",
   "Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.":"Recorra todos los patrones de luz y vuelva al primero. Cada uno debe ser visiblemente distinto, sin LED apagados en ningún patrón.",
   "Connect the AC charging cable with the speaker switched on and watch the display.":"Conecte el cable de carga AC con el parlante encendido y observe la pantalla.",
-  "Plug the AC cable in. The charging indicator must appear on the display within a few seconds, and stay on while the cable is connected.":"Conecte el cable AC. El indicador de carga debe aparecer en la pantalla en pocos segundos y mantenerse mientras el cable esté conectado."
+  "Plug the AC cable in. The charging indicator must appear on the display within a few seconds, and stay on while the cable is connected.":"Conecte el cable AC. El indicador de carga debe aparecer en la pantalla en pocos segundos y mantenerse mientras el cable esté conectado.",
+
+  "Move every level to a position that is easy to recognise — not centred, not at the end — and write down where you left each one. Switch the speaker off, wait ten seconds, switch it on and check them one by one. A speaker that returns to factory levels on every power cycle is one the customer has to set up again every single time.":"Lleve cada nivel a una posición fácil de reconocer —ni centrada ni al tope— y anote dónde dejó cada una. Apague el parlante, espere diez segundos, enciéndalo y verifíquelos uno por uno. Un parlante que vuelve a los niveles de fábrica en cada encendido es uno que el cliente tiene que reconfigurar cada vez que lo usa.",
+  "Leave the bass clearly above or below the middle, switch off and on. It must come back exactly where it was, on the control and on the display.":"Deje los graves claramente por encima o por debajo del centro, apague y encienda. Deben volver exactamente donde estaban, tanto en el control como en la pantalla.",
+  "Same check on the treble. Testing one level and assuming the rest is how a speaker ships remembering the bass and forgetting everything else.":"La misma verificación en los agudos. Probar un solo nivel y dar por hecho el resto es como sale de fábrica un parlante que recuerda los graves y olvida todo lo demás.",
+  "Same check on the mids. Mark N/A if this reference has no mid control.":"La misma verificación en los medios. Marque N/A si esta referencia no tiene control de medios.",
+  "Same check on the echo. Speak into the microphone after switching on again: the repetition must sound the same as before.":"La misma verificación en el eco. Hable al micrófono después de encender de nuevo: la repetición debe sonar igual que antes.",
+  "Same check on the microphone bass. Mark N/A if this reference has no separate microphone tone controls.":"La misma verificación en los graves del micrófono. Marque N/A si esta referencia no tiene controles de tono independientes para micrófono.",
+  "Same check on the microphone treble. Mark N/A if this reference has no separate microphone tone controls.":"La misma verificación en los agudos del micrófono. Marque N/A si esta referencia no tiene controles de tono independientes para micrófono.",
+
+  "The display is what the customer reads to know what the speaker is doing, and a misspelled mode is a defect that ships on every unit of the batch. Photograph each mode: the photo is what lets the office check the spelling without the speaker in front of them.":"La pantalla es lo que el cliente lee para saber qué está haciendo el parlante, y un modo mal escrito es un defecto que sale en todas las unidades del lote. Fotografíe cada modo: esa foto es lo que permite a la oficina revisar la escritura sin tener el parlante delante.",
+  "Look at the display straight on, in shade. Every character must be white, all of them the same white. A segment that reads bluish or yellowish next to the others is a fault even when the word is legible.":"Mire la pantalla de frente y a la sombra. Todos los caracteres deben ser blancos, y del mismo blanco. Un segmento que se vea azulado o amarillento junto a los demás es un defecto aunque la palabra se lea bien.",
+  "Select USB mode and read what the display shows, letter by letter. Photograph it. Compare against the specification: USB, not U5B or U58.":"Cambie a modo USB y lea lo que muestra la pantalla, letra por letra. Fotografíelo. Compare contra la especificación: USB, no U5B ni U58.",
+  "Select Bluetooth mode and read what the display shows, letter by letter. Photograph it. Whether it says BLUETOOTH, BT or BLUE, it must be spelled the way the specification requires.":"Cambie a modo Bluetooth y lea lo que muestra la pantalla, letra por letra. Fotografíelo. Diga BLUETOOTH, BT o BLUE, debe estar escrito como lo exige la especificación.",
+  "With the card inserted, select SD mode, read the display and photograph it. Mark N/A if this reference has no SD slot.":"Con la tarjeta insertada, cambie a modo SD, lea la pantalla y fotografíela. Marque N/A si esta referencia no tiene ranura SD.",
+  "Select radio mode, read the display and photograph it. Mark N/A if this reference has no radio.":"Cambie a modo radio, lea la pantalla y fotografíela. Marque N/A si esta referencia no tiene radio.",
+  "Read the name exactly as the phone lists it and compare it with the logo on the grille, the logo on the panel and the model printed in the manual. All of them must say the same thing: a speaker sold as one model that announces itself as another is a defect the customer sees before switching it on. Photograph the phone's list if it does not match.":"Lea el nombre exactamente como lo lista el teléfono y compárelo con el logo de la malla, el logo del panel y el modelo impreso en el manual. Los tres deben decir lo mismo: un parlante que se vende como un modelo y se anuncia como otro es un defecto que el cliente ve antes de encenderlo. Si no coincide, fotografíe la lista del teléfono."
 });
 
 /* Help texts, continued: Bluetooth, radio, AUX, remote, battery and the photo
@@ -1759,11 +1903,11 @@ const T = {
   ref_img_none:"no reference photo for this model yet",
   ref_img_off:"the photo did not load — check the connection",
   inspection:"Inspection date", po:"Purchase order (PO)", operator:"Operator",
-  select:"— select —", pick_factory:"— enter the test ID first —",
-  start:"START INSPECTION", plan_info:"%n tests · plan v%v",
+  select:"— select —",
+  start:"START INSPECTION", plan_info:"%n tests · KŌHIN v%v",
   units:"Speakers for simultaneous inspection",
   units_report:"Speakers inspected",
-  plan_info_n:"%n tests × %u speakers = %tot checks · plan v%v",
+  plan_info_n:"%n tests × %u speakers = %tot checks · KŌHIN v%v",
   speaker:"Speaker", speaker_n:"SPEAKER %n", units_tag:"%n speakers",
   need_photo_n:"At least one photo of the speakers is required, whether they pass or fail. Photos of a defect go in the red box of the point that failed.",
   by_unit:"Result by speaker",
@@ -1776,6 +1920,8 @@ const T = {
   ask_video:"one clip of a minute or more showing the test being run.",
   ask_photo:"the process and the tools used: USB drive, SD card, battery, cables, phone.",
   need_photo:"At least one photo is required, whether the test passes or fails.",
+  need_point_photo:"This point needs its own photo, whether it passes or fails.",
+  a_point_photos:"%n point(s) are still missing their photo.\n\nThese points are documented whether they pass or fail: the picture is the proof of what was on the display.",
   need_video:"A video of the test being run is required, whether it passes or fails.",
   need_both:"Both are required, whether the test passes or fails: at least one photo and one video of the test being run.",
   notes:"Notes", notes_fail_ph:"What exactly happened? e.g. sound cuts out after 20 seconds",
@@ -1788,28 +1934,27 @@ const T = {
   index_hint:"Tap any test to go straight to it. What you already marked is kept.",
   back_to_test:"BACK TO TEST", here:"HERE", photos_tag:"PHOTOS",
   points_n:"%n point(s)", files_n:"%n file(s)", is_optional:"optional",
-  final:"FINAL RESULT", failures:"Failures:",
+  failures:"Failures:",
   evidence_total:"%n evidence file(s) · %s",
   too_big:"The report is very large. If the phone struggles to generate it, delete duplicate photos from the ☰ menu.",
   download:"⬇ DOWNLOAD",
   save_pdf_dl:"⬇ SAVE AS PDF",
   pdf_wait:"Preparing the report…",
-  view_report:"VIEW REPORT", save_pdf:"SAVE AS PDF", back:"BACK",
+  save_pdf:"SAVE AS PDF", back:"BACK",
   review:"☰ Review or correct a test",
   packet:"What gets sent",
   rm_report_en:"— the full report in English, with the photos.",
-  rm_report_zh:"— the same report in Chinese. Both are always included.",
+  rm_report_zh:"— the same report in Chinese. All three are always included.",
   rm_csv:"— one row per point checked, opens in Excel.",
   rm_photos:"— %n photo(s), named by test.",
   rm_naming:"File names: evidence of a defect reads TEST_point_FAIL_speakerN; general evidence of a test reads TEST only.",
   wm_line:"HOKLAN · Official quality document", incomplete:"INCOMPLETE",
   rm_videos:"— %n video(s) recorded during the inspection.",
   rm_lost:"%n video(s) could not be included: the page was reloaded after recording them.",
-  rm_pdf:"To get the PDF: open REPORT_EN.html or REPORT_ZH.html in any browser, then Print → Save as PDF.",
+  rm_pdf:"To get the PDF: open REPORT_ES.html, REPORT_EN.html or REPORT_ZH.html in any browser, then Print → Save as PDF.",
   packet_note:"All of it travels as one ZIP file. Sending three separate attachments is how one of them gets lost.",
   packing:"Preparing the file… this takes a moment when there are videos.",
   packet_done:"<b>%f</b> · %s · %n photo(s), %v video(s)",
-  saved_as:"<b>Saved:</b> %f<br>It is in the phone's <b>Downloads</b> folder.",
   saved_hint:"<br><br>Attach it from Downloads to send it by WeChat or e-mail.",
   a_no_download:"This browser cannot download files.\n\nOpen this page in Safari or Chrome — in WeChat, tap the ⋯ menu and choose \"Open in browser\" — and try again.",
   a_pack_fail:"The packet could not be built:",
@@ -1827,24 +1972,20 @@ const T = {
   concl_fail:"%n point(s) failed. See section III.",
   concl_pass:"All applicable points passed.",
   footer_note:"Generated by HOKLAN QC. Photo timestamps come from the phone at the moment of capture.",
-  th_test:"Test", th_point:"Point checked", th_result:"Result", th_code:"Code",
+  th_test:"Test", th_result:"Result",
   ok:"OK", fail:"FAIL", documented:"DOCUMENTED", pending:"PENDING",
-  photographed:"%a of %b items photographed",
   a_select_factory:"Enter a valid test ID.", a_select_model:"Select the reference.",
   a_operator:"The operator is required.",
   a_pending:"%n point(s) still to answer.",
   a_photo:"Photo missing.\n\nEvery test must be left with evidence, pass or fail.",
   a_video:"Video missing.\n\nEvery test must be left with a clip of it being run, pass or fail.",
   a_both:"Photo and video missing.\n\nEvery test must be left with at least one photo and one video, pass or fail.",
-  a_describe:"Describe what happened.\n\nA code with no description is useless for analysis later.",
   a_missing_photos:"Photo missing for:", a_and_more:"… and %n more",
   a_mark_na:"Mark N/A anything this reference does not include.",
   a_resume:"There is an unfinished inspection.\n\nContinue where you left off?",
   a_lost:"\n\nNOTE: the photos did not fit in the browser's storage and were NOT kept. Your answers were. Retake the photos from the ☰ menu before generating the report.",
   na_title:"Does not apply to this reference",
-  excel:"EXCEL", open_report:"VIEW REPORT / SAVE PDF",
-  excel_note:"<b>EXCEL</b> exports one row per point checked, ready to filter and pivot. The photos are only in the report.",
-  a_no_csv:"This browser cannot download files. Use VIEW REPORT and save it as PDF.",
+  open_report:"VIEW REPORT / SAVE PDF",
   home:"HOME",
   a_home:"Go back to the start screen?\n\nThe current inspection will be discarded. Download the report first if you have not.",
   how_to:"How to check this",
@@ -1859,6 +2000,8 @@ const T = {
   admin_refs:"References", search:"Filter references",
   admin_refs_hint:"%n references. Tap one to choose which tests to run.",
   no_match:"No reference matches that text.",
+  po_auto:"Assigned automatically when the inspection starts.",
+  a_na_section:"Mark the whole section \"%s\" as N/A?\n\nEvery point in it, on every speaker, including any already answered.",
   tests_pick:"Tests to run", all_on:"Select all", all_off:"Clear all",
   n_selected:"<b>%n</b> of %tot tests selected.",
   admin_start:"START SELECTED TESTS",
@@ -1872,10 +2015,20 @@ const T = {
   scope:"Scope", scope_full:"Complete plan",
   scope_part:"PARTIAL — only %n of the %tot tests in the plan were performed",
   scope_part_note:"This is a partial inspection: only the tests listed in section II were performed. It does not certify the tests that were not.",
-  wipe:"Clear stored data",
-  a_wipe:"Clear all stored data?\n\nAnswers, photos and any unfinished draft will be deleted, so the next report starts clean. Reports you already downloaded are not affected.",
+  wipe:"Clear stored data", wipe_do:"Erase", close:"Close",
+  wipe_intro:"This is everything the app keeps on this phone. Choose what to erase.",
+  wipe_draft:"Inspection in progress", wipe_draft_none:"None saved",
+  wipe_shots:"%n evidence file(s) not downloaded yet",
+  wipe_seqs:"ORDER NUMBERS BY ACCOUNT",
+  wipe_factory:"Factory %l · %d",
+  wipe_seq_at:"at %v · next would be %next", wipe_seq_none:"never used",
+  wipe_all:"Erase all app data",
+  wipe_all_note:"Everything above at once. The phone is left as freshly installed.",
+  a_wipe_draft:"Erase the inspection in progress?\n\nEvery answer and every photo taken go with it. Download the packet first if you have not.",
+  a_wipe_seq:"Reset the order numbers of account %k?\n\nThe next inspection on this account starts again at 001. Reports already issued keep their number.",
+  a_wipe:"Erase all app data?\n\nThe unfinished inspection, the order numbers of every account and the language preference. Reports you already downloaded are not affected.",
   a_wiped:"Data cleared. Ready for a new inspection.",
-  notes_es:"Español",
+  notes_es:"Spanish", notes_zh:"Chinese",
   rm_report_es:"— the same report in Spanish."
  },
  es:{
@@ -1886,11 +2039,11 @@ const T = {
   ref_img_none:"esta referencia aún no tiene imagen",
   ref_img_off:"la imagen no cargó — revise la conexión",
   inspection:"Fecha de inspección", po:"Orden de compra (OC)", operator:"Inspector",
-  select:"— seleccione —", pick_factory:"— primero ingrese el código de prueba —",
-  start:"INICIAR INSPECCIÓN", plan_info:"%n pruebas · plan v%v",
+  select:"— seleccione —",
+  start:"INICIAR INSPECCIÓN", plan_info:"%n pruebas · KŌHIN v%v",
   units:"Parlantes a inspeccionar simultáneamente",
   units_report:"Parlantes inspeccionados",
-  plan_info_n:"%n pruebas × %u parlantes = %tot verificaciones · plan v%v",
+  plan_info_n:"%n pruebas × %u parlantes = %tot verificaciones · KŌHIN v%v",
   speaker:"Parlante", speaker_n:"PARLANTE %n", units_tag:"%n parlantes",
   need_photo_n:"Se requiere al menos una foto de los parlantes, aprueben o no. Las fotos de un defecto van en el recuadro rojo del punto que falló.",
   by_unit:"Resultado por parlante",
@@ -1903,6 +2056,8 @@ const T = {
   ask_video:"un clip de un minuto o más que muestre la prueba en ejecución.",
   ask_photo:"el proceso y las herramientas usadas: memoria USB, tarjeta SD, batería, cables, teléfono.",
   need_photo:"Se requiere al menos una foto, apruebe o falle la prueba.",
+  need_point_photo:"Este punto necesita su propia foto, apruebe o falle.",
+  a_point_photos:"Faltan %n punto(s) por fotografiar.\n\nEstos puntos se documentan aprueben o fallen: la foto es la prueba de lo que mostraba la pantalla.",
   need_video:"Se requiere un video de la prueba en ejecución, apruebe o falle.",
   need_both:"Se requieren ambos, apruebe o falle la prueba: al menos una foto y un video de la prueba en ejecución.",
   notes:"Observaciones", notes_fail_ph:"¿Qué pasó exactamente? Ej.: el sonido se corta a los 20 segundos",
@@ -1915,13 +2070,13 @@ const T = {
   index_hint:"Toque cualquier prueba para ir directo. Lo que ya marcó se conserva.",
   back_to_test:"VOLVER A LA PRUEBA", here:"AQUÍ", photos_tag:"FOTOS",
   points_n:"%n punto(s)", files_n:"%n archivo(s)", is_optional:"opcional",
-  final:"RESULTADO FINAL", failures:"Fallas:",
+  failures:"Fallas:",
   evidence_total:"%n archivo(s) de evidencia · %s",
   too_big:"El informe es muy grande. Si el teléfono se atasca al generarlo, elimine fotos duplicadas desde el menú ☰.",
   download:"⬇ DESCARGAR",
   save_pdf_dl:"⬇ GUARDAR COMO PDF",
   pdf_wait:"Preparando el informe…",
-  view_report:"VER INFORME", save_pdf:"GUARDAR COMO PDF", back:"ATRÁS",
+  save_pdf:"GUARDAR COMO PDF", back:"ATRÁS",
   review:"☰ Revisar o corregir una prueba",
   packet:"Qué se envía",
   rm_report_en:"— el informe completo en inglés, con las fotos.",
@@ -1937,7 +2092,6 @@ const T = {
   packet_note:"Todo viaja en un solo archivo ZIP. Enviar tres adjuntos por separado es la forma segura de perder uno.",
   packing:"Preparando el archivo… toma un momento cuando hay videos.",
   packet_done:"<b>%f</b> · %s · %n foto(s), %v video(s)",
-  saved_as:"<b>Guardado:</b> %f<br>Está en la carpeta <b>Descargas</b> del teléfono.",
   saved_hint:"<br><br>Adjúntelo desde Descargas para enviarlo por WeChat o correo.",
   a_no_download:"Este navegador no puede descargar archivos.\n\nAbra esta página en Safari o Chrome — en WeChat, toque el menú ⋯ y elija \"Abrir en el navegador\" — y vuelva a intentarlo.",
   a_pack_fail:"No se pudo generar el paquete:",
@@ -1955,24 +2109,20 @@ const T = {
   concl_fail:"%n punto(s) fallaron. Véase la sección III.",
   concl_pass:"Todos los puntos aplicables aprobaron.",
   footer_note:"Generado por HOKLAN QC. Las marcas de tiempo de las fotos provienen del teléfono en el momento de la captura.",
-  th_test:"Prueba", th_point:"Punto verificado", th_result:"Resultado", th_code:"Código",
+  th_test:"Prueba", th_result:"Resultado",
   ok:"CONFORME", fail:"NO CONFORME", documented:"DOCUMENTADO", pending:"PENDIENTE",
-  photographed:"%a de %b elementos fotografiados",
   a_select_factory:"Ingrese un código de prueba válido.", a_select_model:"Seleccione la referencia.",
   a_operator:"El inspector es obligatorio.",
   a_pending:"Faltan %n punto(s) por responder.",
   a_photo:"Falta la foto.\n\nToda prueba debe quedar con evidencia, apruebe o falle.",
   a_video:"Falta el video.\n\nToda prueba debe quedar con un clip de su ejecución, apruebe o falle.",
   a_both:"Faltan la foto y el video.\n\nToda prueba debe quedar con al menos una foto y un video, apruebe o falle.",
-  a_describe:"Describa qué pasó.\n\nUn código sin descripción no sirve para analizar después.",
   a_missing_photos:"Falta la foto de:", a_and_more:"… y %n más",
   a_mark_na:"Marque N/A todo lo que esta referencia no incluya.",
   a_resume:"Hay una inspección sin terminar.\n\n¿Continuar donde la dejó?",
   a_lost:"\n\nNOTA: las fotos no cupieron en el almacenamiento del navegador y NO se conservaron. Sus respuestas sí. Vuelva a tomar las fotos desde el menú ☰ antes de generar el informe.",
   na_title:"No aplica a esta referencia",
-  excel:"EXCEL", open_report:"VER INFORME / GUARDAR PDF",
-  excel_note:"<b>EXCEL</b> exporta una fila por punto verificado, listo para filtrar y hacer tablas dinámicas. Las fotos están solo en el informe.",
-  a_no_csv:"Este navegador no puede descargar archivos. Use VER INFORME y guárdelo como PDF.",
+  open_report:"VER INFORME / GUARDAR PDF",
   home:"INICIO",
   a_home:"¿Volver a la pantalla inicial?\n\nLa inspección actual se descartará. Descargue el informe primero si aún no lo ha hecho.",
   how_to:"Cómo verificar esto",
@@ -1987,6 +2137,8 @@ const T = {
   admin_refs:"Referencias", search:"Filtrar referencias",
   admin_refs_hint:"%n referencias. Toque una para elegir qué pruebas ejecutar.",
   no_match:"Ninguna referencia coincide con ese texto.",
+  po_auto:"Se asigna automáticamente al iniciar la inspección.",
+  a_na_section:"¿Marcar toda la sección \"%s\" como N/A?\n\nTodos sus puntos, en todos los parlantes, incluidos los que ya haya respondido.",
   tests_pick:"Pruebas a ejecutar", all_on:"Seleccionar todas", all_off:"Quitar todas",
   n_selected:"<b>%n</b> de %tot pruebas seleccionadas.",
   admin_start:"INICIAR PRUEBAS SELECCIONADAS",
@@ -2000,10 +2152,20 @@ const T = {
   scope:"Alcance", scope_full:"Plan completo",
   scope_part:"PARCIAL — solo se ejecutaron %n de las %tot pruebas del plan",
   scope_part_note:"Esta es una inspección parcial: solo se ejecutaron las pruebas listadas en la sección II. No certifica las pruebas que no se ejecutaron.",
-  wipe:"Borrar datos almacenados",
-  a_wipe:"¿Borrar todos los datos almacenados?\n\nSe eliminarán las respuestas, las fotos y cualquier borrador sin terminar, para que el próximo informe empiece limpio. Los informes ya descargados no se afectan.",
+  wipe:"Borrar datos almacenados", wipe_do:"Borrar", close:"Cerrar",
+  wipe_intro:"Esto es todo lo que la app guarda en este teléfono. Elija qué borrar.",
+  wipe_draft:"Inspección en curso", wipe_draft_none:"No hay ninguna guardada",
+  wipe_shots:"%n archivo(s) de evidencia sin descargar",
+  wipe_seqs:"CONSECUTIVOS POR CUENTA",
+  wipe_factory:"Fábrica %l · %d",
+  wipe_seq_at:"va en %v · el siguiente sería %next", wipe_seq_none:"sin usar",
+  wipe_all:"Borrar toda la data de la app",
+  wipe_all_note:"Todo lo de arriba, de una vez. El teléfono queda como recién instalado.",
+  a_wipe_draft:"¿Borrar la inspección en curso?\n\nSe van con ella todas las respuestas y todas las fotos tomadas. Descargue el paquete primero si aún no lo ha hecho.",
+  a_wipe_seq:"¿Reiniciar los consecutivos de la cuenta %k?\n\nLa próxima inspección de esa cuenta vuelve a empezar en 001. Los informes ya emitidos conservan su número.",
+  a_wipe:"¿Borrar toda la data de la app?\n\nLa inspección sin terminar, los consecutivos de todas las cuentas y el idioma guardado. Los informes ya descargados no se afectan.",
   a_wiped:"Datos borrados. Listo para una nueva inspección.",
-  notes_es:"Español"
+  notes_es:"Español", notes_zh:"Chino"
  },
  zh:{
   subtitle:"质量控制", test_id:"测试编号", bad_id:"编号无效",
@@ -2013,11 +2175,11 @@ const T = {
   ref_img_none:"本型号暂无参考图片",
   ref_img_off:"图片加载失败 — 请检查网络连接",
   inspection:"检验日期", po:"订单号 (PO)", operator:"检验员",
-  select:"— 请选择 —", pick_factory:"— 请先输入测试编号 —",
-  start:"开始检验", plan_info:"%n 项测试 · 方案 v%v",
+  select:"— 请选择 —",
+  start:"开始检验", plan_info:"%n 项测试 · KŌHIN v%v",
   units:"同时检验的音箱数量",
   units_report:"已检验音箱数量",
-  plan_info_n:"%n 项测试 × %u 台音箱 = 共 %tot 项 · 方案 v%v",
+  plan_info_n:"%n 项测试 × %u 台音箱 = 共 %tot 项 · KŌHIN v%v",
   speaker:"音箱", speaker_n:"音箱 %n", units_tag:"%n 台音箱",
   need_photo_n:"无论合格与否，本项至少需要一张音箱照片。具体不良的照片请放在该不良项的红色方框内。",
   by_unit:"各音箱结果",
@@ -2030,6 +2192,8 @@ const T = {
   ask_video:"一段一分钟以上的视频，拍摄测试的实际操作过程。",
   ask_photo:"拍摄操作过程和所用工具：U 盘、SD 卡、电池、线材、手机。",
   need_photo:"无论合格与否，本项至少需要一张照片。",
+  need_point_photo:"无论合格与否，本检查项都需要单独拍照。",
+  a_point_photos:"还有 %n 个检查项未拍照。\n\n这些项目无论合格与否都要留存照片：照片就是显示屏内容的证据。",
   need_video:"无论合格与否，本项均需一段测试过程的视频。",
   need_both:"无论合格与否，本项均需至少一张照片和一段测试过程的视频。",
   notes:"备注", notes_fail_ph:"具体发生了什么？例如：播放 20 秒后声音中断",
@@ -2042,28 +2206,27 @@ const T = {
   index_hint:"点击任一测试直接跳转，已填写的内容会保留。",
   back_to_test:"返回测试", here:"当前", photos_tag:"照片",
   points_n:"%n 个检查项", files_n:"%n 个文件", is_optional:"选做",
-  final:"最终结果", failures:"不合格项：",
+  failures:"不合格项：",
   evidence_total:"%n 个证据文件 · %s",
   too_big:"报告文件很大。如果手机生成时卡顿，请从 ☰ 菜单删除重复照片。",
   download:"⬇ 下载",
   save_pdf_dl:"⬇ 保存为 PDF",
   pdf_wait:"正在准备报告……",
-  view_report:"查看报告", save_pdf:"另存为 PDF", back:"返回",
+  save_pdf:"另存为 PDF", back:"返回",
   review:"☰ 检查或修改某项测试",
   packet:"发送内容",
   rm_report_en:"— 英文版完整报告，含照片。",
-  rm_report_zh:"— 同一份报告的中文版。两个版本始终同时提供。",
+  rm_report_zh:"— 同一份报告的中文版。三个版本始终同时提供。",
   rm_csv:"— 每个检查项一行，可用 Excel 打开。",
   rm_photos:"— %n 张照片，按测试项命名。",
   rm_naming:"命名规则：不良项为 测试_检查项_FAIL；测试的整体证据仅用 测试 名称。",
   wm_line:"HOKLAN · 官方质量文件", incomplete:"未完成",
   rm_videos:"— 检验过程中录制的 %n 段视频。",
   rm_lost:"有 %n 段视频未能打包：录制后页面被重新加载。",
-  rm_pdf:"获取 PDF：用任意浏览器打开 REPORT_EN.html 或 REPORT_ZH.html，然后选择 打印 → 另存为 PDF。",
+  rm_pdf:"获取 PDF：用任意浏览器打开 REPORT_ES.html、REPORT_EN.html 或 REPORT_ZH.html，然后选择 打印 → 另存为 PDF。",
   packet_note:"以上内容打包为一个 ZIP 文件一起发送。分成三个附件发送，往往会漏掉其中一个。",
   packing:"正在生成文件……包含视频时需要稍等片刻。",
   packet_done:"<b>%f</b> · %s · %n 张照片，%v 段视频",
-  saved_as:"<b>已保存：</b>%f<br>文件在手机的<b>下载</b>文件夹中。",
   saved_hint:"<br><br>请从“下载”文件夹中选取该文件，通过微信或邮件发送。",
   a_no_download:"当前浏览器无法下载文件。\n\n请在 Safari 或 Chrome 中打开本页面（在微信中点击 ⋯ 菜单，选择“在浏览器中打开”），然后重试。",
   a_pack_fail:"打包失败：",
@@ -2081,24 +2244,20 @@ const T = {
   concl_fail:"共 %n 项不合格，详见第 III 节。",
   concl_pass:"所有适用项目均合格。",
   footer_note:"由 HOKLAN QC 生成。照片时间戳取自拍摄时手机的时间。",
-  th_test:"测试", th_point:"检查项", th_result:"结果", th_code:"代码",
+  th_test:"测试", th_result:"结果",
   ok:"合格", fail:"不合格", documented:"已记录", pending:"未完成",
-  photographed:"已拍摄 %a / %b 项",
   a_select_factory:"请输入有效的测试编号。", a_select_model:"请选择型号。",
   a_operator:"请填写检验员。",
   a_pending:"还有 %n 项未回答。",
   a_photo:"缺少照片。\n\n无论合格与否，每项测试都必须留下照片证据。",
   a_video:"缺少视频。\n\n无论合格与否，每项测试都必须留下测试过程的视频。",
   a_both:"缺少照片和视频。\n\n无论合格与否，每项测试都必须留下至少一张照片和一段视频。",
-  a_describe:"请填写说明。\n\n只有代码没有说明，后续无法分析。",
   a_missing_photos:"以下项目缺少照片：", a_and_more:"…… 还有 %n 项",
   a_mark_na:"本型号不包含的项目请标记为“不适用”。",
   a_resume:"有一次未完成的检验。\n\n是否从上次中断处继续？",
   a_lost:"\n\n注意：照片超出浏览器存储上限，未能保存；回答已保留。生成报告前请从 ☰ 菜单重新拍照。",
   na_title:"本型号不适用",
-  excel:"EXCEL", open_report:"查看报告 / 保存 PDF",
-  excel_note:"<b>EXCEL</b> 导出每个检查项一行，可直接筛选和透视分析。照片仅包含在报告中。",
-  a_no_csv:"当前浏览器无法下载文件。请使用“查看报告”并另存为 PDF。",
+  open_report:"查看报告 / 保存 PDF",
   home:"首页",
   a_home:"返回首页？\n\n当前检验记录将被清除。如果还没有下载报告，请先下载。",
   how_to:"如何检查",
@@ -2113,6 +2272,8 @@ const T = {
   admin_refs:"型号目录", search:"筛选型号",
   admin_refs_hint:"共 %n 个型号。点击其中一个以选择要执行的测试。",
   no_match:"没有匹配的型号。",
+  po_auto:"开始检验时自动分配。",
+  a_na_section:"将整个“%s”分组标记为不适用？\n\n该分组的所有检查项、所有音箱都会被标记，包括已经作答的项目。",
   tests_pick:"要执行的测试", all_on:"全选", all_off:"全部取消",
   n_selected:"已选择 <b>%n</b> / %tot 项测试。",
   admin_start:"开始所选测试",
@@ -2126,10 +2287,20 @@ const T = {
   scope:"检验范围", scope_full:"完整方案",
   scope_part:"部分检验 — 方案共 %tot 项，仅执行了 %n 项",
   scope_part_note:"本次为部分检验：仅执行了第 II 节所列的测试项目，未执行的项目不在本报告的判定范围内。",
-  wipe:"清除已保存的数据",
-  a_wipe:"清除所有已保存的数据？\n\n所有回答、照片和未完成的记录都会被删除，下一份报告将从空白开始。已经下载的报告不受影响。",
+  wipe:"清除已保存的数据", wipe_do:"清除", close:"关闭",
+  wipe_intro:"以下是本应用在这台手机上保存的全部内容。请选择要清除的项目。",
+  wipe_draft:"进行中的检验", wipe_draft_none:"没有保存的检验",
+  wipe_shots:"%n 个证据文件尚未下载",
+  wipe_seqs:"各账号的流水号",
+  wipe_factory:"工厂 %l · %d",
+  wipe_seq_at:"当前为 %v · 下一个将是 %next", wipe_seq_none:"未使用",
+  wipe_all:"清除应用的全部数据",
+  wipe_all_note:"一次清除以上所有内容，手机恢复到刚安装的状态。",
+  a_wipe_draft:"清除进行中的检验？\n\n所有回答和已拍摄的照片都会一并删除。如果还没下载压缩包，请先下载。",
+  a_wipe_seq:"重置账号 %k 的流水号？\n\n该账号的下一次检验将从 001 重新开始。已出具的报告保留原编号。",
+  a_wipe:"清除应用的全部数据？\n\n包括未完成的检验、所有账号的流水号和已保存的语言设置。已经下载的报告不受影响。",
   a_wiped:"数据已清除，可以开始新的检验。",
-  notes_es:"西班牙文",
+  notes_es:"西班牙文", notes_zh:"中文",
   rm_report_es:"— 同一份报告的西班牙文版。三个版本始终同时提供。"
  }
 };
@@ -2186,7 +2357,7 @@ const S = {
   // A targeted inspection launched from Admin: `pick` is the list of test ids
   // to run, and `fromAdmin` is what puts the ABORT button on the screen. Both
   // null/false in the normal factory flow, which always runs the whole plan.
-  pick:null, fromAdmin:false, adminQuery:"",
+  pick:null, fromAdmin:false, adminQuery:"", poLetter:"",
   // Started from a factory account: the factory checked its own product. Travels
   // into the report, the spreadsheet and the file name, because the reader has to
   // know that the one who inspected is the one who built it.
@@ -2362,11 +2533,19 @@ function save(){
   try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(withoutMedia(S))); }catch(e){}
 }
 function restore(){
+  // Taken before anything is touched: `S` is still the small initial literal at
+  // this point, so the copy is cheap and it is the only way back if the draft
+  // turns out to be unusable half way through.
+  const pristine = JSON.parse(JSON.stringify(S));
   try{
     const raw = localStorage.getItem(DRAFT_KEY);
     if(!raw) return false;
     const d = JSON.parse(raw);
-    if(d && (d.screen === "test" || d.screen === "index") && d.model){
+    // "done" belongs here too. The draft is saved on that screen, and leaving it
+    // out meant an inspection closed but not yet downloaded — the moment when
+    // every answer and every photo already exist — could never be recovered if
+    // the phone closed the page.
+    if(d && ["test","index","done"].indexOf(d.screen) >= 0 && d.model){
       // A draft written before speakers existed carries `results`, not `data`,
       // and an intermediate one may carry a flat `data`. Reading either as
       // speaker 1 keeps the work instead of throwing it away.
@@ -2394,7 +2573,14 @@ function restore(){
       S.adminQuery = S.adminQuery || "";
       return true;
     }
-  }catch(e){}
+  }catch(e){
+    /* Roll back. The draft is copied into `S` before the checks below run, so a
+       failure past that point used to leave the app holding a half-restored
+       state while reporting that there was nothing to restore: boot then opened
+       straight into a checklist nobody was offered the chance to resume. */
+    Object.keys(S).forEach(k => { delete S[k]; });
+    Object.assign(S, pristine);
+  }
   return false;
 }
 function clearDraft(){ try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
@@ -2425,9 +2611,18 @@ function shrink(file){
                url:URL.createObjectURL(file)});
       return;
     }
+    /* Both failure paths resolve as a video-shaped record rather than hanging:
+       a promise that never settles leaves `addMedia` awaiting forever, the file
+       input never clears and the photo disappears without a word. Keeping the
+       original file means the evidence still travels in the packet even when
+       this phone could not decode it. */
+    const raw = () => resolve({kind:"photo", name:file.name, size:file.size,
+                               file, url:URL.createObjectURL(file)});
     const reader = new FileReader();
+    reader.onerror = raw;
     reader.onload = () => {
       const img = new Image();
+      img.onerror = raw;
       img.onload = () => {
         const scale = Math.min(1, MAX_PHOTO_PX / Math.max(img.width, img.height));
         const c = document.createElement("canvas");
@@ -2472,10 +2667,11 @@ function dropMedia(uid){
   render(); save();
 }
 
-/* ---------- notes in English ----------------------------------------------
-   The inspector writes in his own language; the report is read in Colombia. So
-   every note is kept verbatim *and* carries an English line under it. The
-   original is never replaced: a translation is an aid, not the quality record.
+/* ---------- notes in the three languages -----------------------------------
+   The inspector writes in his own language; the report is read in Colombia, in
+   the factory and by the customer. So every note is kept verbatim *and* carries
+   the other two languages under it. The original is never replaced: a
+   translation is an aid, not the quality record.
 
    Two services, in order. Google is the better translator but is unreachable
    from most factory networks in China, so MyMemory backs it up. If both fail
@@ -2483,11 +2679,33 @@ function dropMedia(uid){
    was unavailable rather than leaving a blank where the note should be. */
 const TR_CACHE = {};
 const hasCJK = s => /[㐀-䶿一-鿿぀-ヿ]/.test(s);
-/* The report is issued in three languages and each version has to carry the
-   note in its own, so every note is translated into both of the ones it was not
-   written in. Chinese is not a target: nobody reading the Chinese report needs a
-   note translated out of the language they are already reading. */
-const TR_TARGETS = ["en", "es"];
+/* The report is issued in three languages, and the people who read it do not
+   share one: the factory writes in Chinese, the office answers in Spanish, the
+   customer reads in English. So every note is carried in all three, whichever
+   it was written in — the original verbatim, the other two underneath. */
+const TR_TARGETS = ["en", "es", "zh"];
+/* The app speaks in the codes used everywhere else; the services want their
+   own. Asking Google for "zh" returns traditional characters. */
+const TR_API = {en:"en", es:"es", zh:"zh-CN"};
+const TR_NAME = {en:"notes_en", es:"notes_es", zh:"notes_zh"};
+
+/* What language a note turned out to be written in, as reported by the
+   translator itself. Kept because it is the only reliable way to know which of
+   the three lines to leave out: printing "Spanish: <the same sentence>" under a
+   Spanish note is noise on a document somebody signs. */
+const TR_SRC = {};
+const normLang = c => {
+  c = String(c || "").toLowerCase();
+  return c.indexOf("zh") === 0 ? "zh"
+       : c.indexOf("es") === 0 ? "es"
+       : c.indexOf("en") === 0 ? "en" : "";
+};
+/* Han characters are the one case that can be settled without asking. */
+function srcLangOf(text){
+  const t = String(text || "").trim();
+  if(!t) return "";
+  return TR_SRC[t] || (hasCJK(t) ? "zh" : "");
+}
 
 async function translateTo(text, target){
   const t = String(text || "").trim();
@@ -2497,22 +2715,29 @@ async function translateTo(text, target){
   let out = "";
   try{
     const res = await fetch("https://translate.googleapis.com/translate_a/single" +
-      "?client=gtx&sl=auto&tl=" + target + "&dt=t&q=" + encodeURIComponent(t));
+      "?client=gtx&sl=auto&tl=" + (TR_API[target] || target) +
+      "&dt=t&q=" + encodeURIComponent(t));
     if(res.ok){
       const j = await res.json();
       // The payload is an array of sentence fragments; joining them back is
       // what keeps a three-line note from arriving as its first line only.
       if(Array.isArray(j) && Array.isArray(j[0]))
         out = j[0].map(s => (s && s[0]) || "").join("");
+      // Slot 2 is the language it detected. Free, and it saves two requests.
+      const got = normLang(j && j[2]);
+      if(got) TR_SRC[t] = got;
     }
   }catch(e){}
   if(!out){
     try{
-      // This service cannot auto-detect, so the source is guessed: Chinese if
-      // there are Han characters, otherwise the other of the two Latin ones.
-      const src = hasCJK(t) ? "zh-CN" : (target === "en" ? "es" : "en");
+      // This service cannot auto-detect, so the source is whatever we already
+      // learned, and failing that a guess: Chinese if there are Han characters,
+      // otherwise one of the two Latin ones that is not the target.
+      const src = TR_API[srcLangOf(t)] ||
+        (hasCJK(t) ? "zh-CN" : (target === "en" ? "es" : "en"));
       const res = await fetch("https://api.mymemory.translated.net/get?langpair=" +
-        src + "|" + target + "&q=" + encodeURIComponent(t.slice(0,480)));
+        src + "|" + (TR_API[target] || target) +
+        "&q=" + encodeURIComponent(t.slice(0,480)));
       if(res.ok){
         const j = await res.json();
         const c = j && j.responseData && j.responseData.translatedText;
@@ -2548,7 +2773,7 @@ const trSrc = (r, kind, pointId) => String((kind === "note"
 /* The translation into `target`, but only if it still belongs to the text that
    is there now. Defaults to the language the report is being issued in. */
 function trOf(r, kind, pointId, target){
-  const lang = target || (LANG === "es" ? "es" : "en");
+  const lang = target || LANG;
   const src = trSrc(r, kind, pointId);
   const got = kind === "note"
     ? ((r.notesTr || {})[pointId] || {})[lang]
@@ -2558,19 +2783,33 @@ function trOf(r, kind, pointId, target){
     : (r.commentTrFor || {})[lang];
   return (got && was === src) ? got : "";
 }
-/* The label the translated line carries, in the language of the document it is
-   printed in. */
-const trLabel = () => LANG === "es" ? tr("notes_es") : tr("notes_en");
-/* On screen, show the note in the language the operator is *not* writing in —
-   that is the one worth checking. */
-const appTrTarget = () => LANG === "en" ? "es" : "en";
-/* The line printed under a note box on screen, already labelled. Empty when
-   there is nothing translated yet. */
+/* Every language the note was *not* written in, in a fixed order, each with the
+   name of that language in whatever language is being read at the time. The one
+   it was written in is left out: the original is already on the line above.
+   A translation that came back identical to the source is dropped too — that is
+   what a translator returns when it was handed its own language. */
+function trAll(r, kind, pointId){
+  const src = trSrc(r, kind, pointId).trim();
+  if(!src) return [];
+  const from = srcLangOf(src);
+  const out = [];
+  TR_TARGETS.forEach(lg => {
+    if(lg === from) return;
+    const got = String(trOf(r, kind, pointId, lg) || "").trim();
+    if(!got || got === src) return;
+    out.push({lang:lg, label:tr(TR_NAME[lg]), text:got});
+  });
+  return out;
+}
+/* The same thing as one block of plain text, for the boxes on screen. */
 function appTrLine(r, kind, pointId){
-  const lg = appTrTarget();
-  const out = trOf(r, kind, pointId, lg);
-  if(!out) return "";
-  return (lg === "es" ? tr("notes_es") : tr("notes_en")) + ": " + out;
+  return trAll(r, kind, pointId)
+    .map(x => x.label + ": " + x.text).join("\n");
+}
+/* And as the quiet lines the report prints under a note. */
+function trSpans(r, kind, pointId){
+  return trAll(r, kind, pointId).map(x =>
+    `<span class="en"><b>${esc(x.label)}:</b> ${esc(x.text)}</span>`).join("");
 }
 
 const TR_TIMER = {};
@@ -2610,19 +2849,19 @@ async function runTr(kind, u, pointId){
     save(); enBox(boxId, ""); return;
   }
   enBox(boxId, tr("translating"));
-  const shown = appTrTarget();
-  const label = shown === "es" ? tr("notes_es") : tr("notes_en");
   const outs = {};
-  // Both at once would double the requests to a free service for no gain: the
-  // second language is only needed when the report is built.
-  for(let i = 0; i < TR_TARGETS.length; i++)
-    outs[TR_TARGETS[i]] = await translateTo(t, TR_TARGETS[i]);
+  // One at a time, on purpose. The first answer says what language the note was
+  // written in, and that spares a request for the language it already is.
+  for(let i = 0; i < TR_TARGETS.length; i++){
+    const lg = TR_TARGETS[i];
+    outs[lg] = srcLangOf(t) === lg ? "" : await translateTo(t, lg);
+  }
   TR_TARGETS.forEach(lg => trStore(r, kind, pointId, lg, outs[lg], src));
   save();
   // The operator may have kept typing while the request was in flight; in that
   // case the box belongs to the newer text and a later run will fill it.
   if(trSrc(r, kind, pointId) !== src) return;
-  enBox(boxId, outs[shown] ? label + ": " + outs[shown] : tr("tr_fail"));
+  enBox(boxId, appTrLine(r, kind, pointId) || tr("tr_fail"));
 }
 
 /* Nothing reaches the report untranslated. Whatever the debounce missed — a
@@ -2638,6 +2877,7 @@ async function ensureTranslations(){
         ? ((r.notesTrFor || {})[pid] || {})[lg]
         : (r.commentTrFor || {})[lg];
       if(was === src) return;
+      if(srcLangOf(src) === lg){ trStore(r, kind, pid, lg, "", src); return; }
       jobs.push(translateTo(src, lg)
         .then(x => trStore(r, kind, pid, lg, x, src)));
     });
@@ -2718,7 +2958,6 @@ function pendingCount(){
   }));
   return n;
 }
-const pointsAnswered = () => pendingCount() === 0;
 
 function nextTest(){
   const t = current();
@@ -2765,6 +3004,9 @@ function nextTest(){
     return;
   }
 
+  const missShots = pointShotsMissing(t);
+  if(missShots){ alert(fmt("a_point_photos",{n:missShots})); return; }
+
   const miss = missingEvidence(0);
   if(miss.photo || miss.video){
     alert(miss.photo && miss.video ? tr("a_both")
@@ -2802,9 +3044,15 @@ function advance(){
 }
 
 function skipTest(){
+  const t = current();
   allUnits().forEach(u => {
     const r = row(u);
     r.verdict = "N/A";
+    // Every point of a skipped test is N/A too. Without this the report showed
+    // the test as N/A while the spreadsheet listed each of its points as
+    // PENDING — the same test, two answers, in two documents that are supposed
+    // to agree.
+    realPoints(t).forEach(p => { r.points[p.id] = "NA"; });
     r.seconds = Math.round((Date.now()-r.startedAt)/1000);
   });
   advance();
@@ -2832,6 +3080,14 @@ function unitVerdict(rows){
 }
 /* The verdict is stored as a key, never as text: the report is issued in both
    languages from the same answers, so it has to be translated at print time. */
+/* The CSS class for a verdict. Never the verdict itself: "N/A" carries a slash,
+   which is not a valid class selector, so a skipped test used to print with no
+   colour. DOC is deliberately unstyled — documented is not a verdict. */
+const verdictClass = v => v === "PASS" ? "PASS"
+  : v === "FAIL" ? "FAIL"
+  : v === "N/A" ? "NA"
+  : v === "INCOMPLETE" ? "INCOMPLETE" : "";
+
 const verdictText = v => v === "PASS" ? tr("ok")
   : v === "FAIL" ? tr("fail")
   : v === "INCOMPLETE" ? tr("incomplete")
@@ -2916,15 +3172,15 @@ function buildFindings(){
       // test-level photos would print the same picture under every finding of
       // that test, and the reader could not tell which defect is which.
       const note = ((r.notes && r.notes[p.id]) || "").trim();
-      // The English line follows whichever note is printed: the point's own if
-      // it has one, the test-level comment otherwise.
-      const noteEn = (note ? trOf(r, "note", p.id) : trOf(r, "comment")).trim();
+      // The translated lines follow whichever note is printed: the point's own
+      // if it has one, the test-level comment otherwise.
+      const noteTr = note ? trSpans(r, "note", p.id) : trSpans(r, "comment");
       out.push({
         // The plan's label, not the one stored when the operator answered:
         // the report is issued in both languages, and a stored label would
         // print the answering language inside the other one's report.
         unit: u, test: L(t.label), point: L(p.label), code: p.code,
-        desc: codeText(p.code), note: note || r.comment, noteEn: noteEn,
+        desc: codeText(p.code), note: note || r.comment, noteTr: noteTr,
         media: shotsFor(r, p.id).filter(m => m.kind === "photo"),
         videos: shotsFor(r, p.id).filter(m => m.kind === "video")
       });
@@ -3020,6 +3276,11 @@ td.v{font-weight:400}
 /* The note is printed as the inspector wrote it, with its English line under
    it. Same size, slightly darker: it is a translation, not a footnote. */
 .note .en{display:block;margin-top:3px;color:#33475b}
+/* The inspector's note, tucked under its row in the summary. Indented and quiet
+   so the table still reads as a column of results. */
+tr.cmt td{font-size:8.5pt;color:#5a6b7d;padding:4px 8px 7px 18px;
+  border-left:2px solid #c9d6e2;background:#fbfcfd}
+tr.cmt .en{display:block;margin-top:2px;color:#33475b}
 /* Videos cannot be embedded in a printed page, so the section that has one says
    so and names the file, which is what makes it findable in the packet. */
 .att{font-size:8.5pt;color:#0f3f6b;margin-top:6px;padding:5px 8px;
@@ -3059,9 +3320,10 @@ ${banner}
   <tr><td class="k">${tr("test_id")}</td><td class="v">${esc(S.testId)}</td>
       <td class="k">${tr("inspection")}</td><td class="v">${esc(inspectionDate(S.startedAt))}</td></tr>
   <tr><td class="k">${tr("reference")}</td><td class="v">${esc(S.model)}</td>
-      <td class="k">${tr("po")}</td><td class="v">${esc(S.po||"—")}</td></tr>
+      <td class="k">${tr("po")}</td><td class="v">${esc(poPrinted()||"—")}</td></tr>
   <tr><td class="k">${tr("operator")}</td><td class="v">${esc(S.operator)}</td>
-      <td class="k">${tr("plan")}</td><td class="v">v${plan().plan_version} · HOKLAN QC ${APP_VERSION}</td></tr>
+      <td class="k">${tr("plan")}</td><td class="v">KŌHIN v${
+        plan().plan_version} · HOKLAN QC ${APP_VERSION}</td></tr>
   <tr><td class="k">${tr("units_report")}</td><td class="v">${S.units}</td>
       <td class="k">${tr("by_unit")}</td><td class="v">${allUnits().map(i=>{
         const uv = unitVerdict(unitRows(i));
@@ -3132,6 +3394,15 @@ ${S.selfCheck?`<p class="att">${tr("origin_note")}</p>`:""}
       <td class="c">${na||"—"}</td>
       <td class="c ${cls}">${label}</td>
       <td style="color:#e8720c">${refs.join(" ")}</td></tr>`;
+
+    /* The note the inspector left on this test, under its row. This is the only
+       place a passing test's comment is printed: section III covers failures
+       only, so without this a remark about a test that passed — "the speaker
+       arrived scratched but everything works" — never reached the report. */
+    const cmt = String((r.comment) || "").trim();
+    if(cmt)
+      h += `<tr class="cmt"><td colspan="6">${esc(cmt)}${
+        trSpans(r, "comment")}</td></tr>`;
   });
   });
   h += `</table>`;
@@ -3149,9 +3420,7 @@ ${S.selfCheck?`<p class="att">${tr("origin_note")}</p>`:""}
         <div class="find-b">
           <div>${esc(f.desc)}</div>
           ${f.note?`<div class="note"><b>${tr("notes")}:</b> ${esc(f.note)}${
-            f.noteEn && f.noteEn !== f.note
-              ? `<span class="en"><b>${trLabel()}:</b> ${esc(f.noteEn)}</span>`
-              : ""}</div>`:""}
+            f.noteTr}</div>`:""}
           ${f.videos && f.videos.length?`<div class="att">🎥 <b>${
             fmt("video_att",{n:f.videos.length})}</b><br>${
             f.videos.map(m => esc(videoFiles[m.uid] || m.name || "video"))
@@ -3171,8 +3440,11 @@ ${S.selfCheck?`<p class="att">${tr("origin_note")}</p>`:""}
      printing them twice makes the report look padded and the numbering harder
      to follow — so the same rule applies to a video already named up there. */
   const general = r => (r.media || []).filter(m => m.kind === "photo" && !m.slot);
-  const shownVideos = {};
-  findings.forEach(f => (f.videos || []).forEach(m => { shownVideos[m.uid] = true; }));
+  const shownVideos = {}, shownPhotos = {};
+  findings.forEach(f => {
+    (f.videos || []).forEach(m => { shownVideos[m.uid] = true; });
+    (f.media  || []).forEach(m => { shownPhotos[m.uid] = true; });
+  });
 
   /* One block per test rather than per speaker. General evidence, the notes and
      the videos all document the test itself, not any one unit — they live on
@@ -3194,10 +3466,28 @@ ${S.selfCheck?`<p class="att">${tr("origin_note")}</p>`:""}
         if(m.kind === "video" && !shownVideos[m.uid]) videos.push({m, u});
       });
     });
+    /* Photos attached to a point that asked for one, on a test that is not a
+       photo section. Without this they printed nowhere: section III shows the
+       pictures of failures and section IV only the general evidence, so a
+       display word photographed and passed left no trace in the report. */
+    const pointShots = [];
+    if(!isDoc){
+      realPoints(t).forEach(p => {
+        if(!p.photo) return;
+        allUnits().forEach(u => {
+          const r = unitRows(u)[i];
+          if(!r) return;
+          shotsFor(r, p.id)
+            .filter(m => m.kind === "photo" && !shownPhotos[m.uid])
+            .forEach(m => pointShots.push({m, p, u}));
+        });
+      });
+    }
+
     const note = ((r0 && r0.comment) || "").trim();
-    const noteEn = r0 ? String(trOf(r0, "comment") || "").trim() : "";
-    return {t, r0, isDoc, photos, videos, note, noteEn};
-  }).filter(b => b.photos.length || b.videos.length || b.note);
+    const noteTr = r0 ? trSpans(r0, "comment") : "";
+    return {t, r0, isDoc, photos, pointShots, videos, note, noteTr};
+  }).filter(b => b.photos.length || b.pointShots.length || b.videos.length || b.note);
 
   if(blocksIV.length){
     h += `<div class="sec brk"><i>IV</i><b>${tr("evidence_sec")}</b></div>`;
@@ -3207,9 +3497,7 @@ ${S.selfCheck?`<p class="att">${tr("origin_note")}</p>`:""}
 
       if(b.note)
         h += `<p class="note"><b>${tr("notes")}:</b> ${esc(b.note)}${
-          b.noteEn && b.noteEn !== b.note
-            ? `<span class="en"><b>${trLabel()}:</b> ${esc(b.noteEn)}</span>`
-            : ""}</p>`;
+          b.noteTr}</p>`;
 
       if(b.videos.length)
         h += `<div class="att">🎥 <b>${fmt("video_att",{n:b.videos.length})}</b><br>${
@@ -3220,6 +3508,16 @@ ${S.selfCheck?`<p class="att">${tr("origin_note")}</p>`:""}
                         S.units > 1 && !b.isDoc ? fmt("speaker_n",{n:v.u+1}) : ""]
                        .filter(Boolean).join("  ·  "));
           }).join("<br>")}</div>`;
+
+      if(b.pointShots.length){
+        h += `<div class="grid">${b.pointShots.map(s=>{
+          shot++;
+          return `<div class="cell"><div class="ph"><img src="${s.m.url}">
+            <span class="ts">${shotStamp(s.m.at)}</span></div>
+            <div class="cap">#${shot} ${esc(L(s.p.label))}${
+              S.units > 1 ? " · " + fmt("speaker_n",{n:s.u+1}) : ""}</div></div>`;
+        }).join("")}</div>`;
+      }
 
       if(b.photos.length){
         h += `<div class="grid">`;
@@ -3424,10 +3722,13 @@ function reportCsv(){
       }
 
       // Both columns describe the same note: the original as the inspector
-      // wrote it, and its English line. Whichever note is printed, its own
-      // translation goes next to it — never the other one's.
+      // wrote it, and the other two languages beside it, each named. Whichever
+      // note is printed, its own translations go next to it — never another
+      // point's. One cell rather than one column per language, so the sheet
+      // keeps the shape the consolidator and the dashboard already read.
       const shownNote = note || r.comment || "";
-      const shownEn = note ? trOf(r, "note", p.id) : trOf(r, "comment");
+      const shownEn = trAll(r, note ? "note" : "comment", note ? p.id : null)
+        .map(x => x.label + ": " + x.text).join("  |  ");
 
       rows.push(lead.concat([
         t.id, p.id, key,
@@ -3699,8 +4000,8 @@ function saveBlob(blob, name){
 function showSaved(html){
   const el = document.getElementById("saved");
   if(!el) return;
-  // An empty string hides the box: otherwise cancelling the share dialog left
-  // a blank green bar sitting on the screen.
+  // An empty string hides the box, so callers can clear it without knowing
+  // anything about how it is shown.
   el.innerHTML = html || "";
   el.classList.toggle("hidden", !html);
 }
@@ -3754,7 +4055,7 @@ function render(){
   else if(S.screen === "index")  renderIndex();
   else if(S.screen === "report") renderReport();
   else renderDone();
-  if(typeof updateTopBtn === "function") updateTopBtn();
+  updateTopBtn();
 }
 
 /* ---------- admin ---------------------------------------------------------
@@ -3770,6 +4071,37 @@ function render(){
    catalogue it guards. It stops an operator from wandering in; it stops nobody
    who opens the page source. Actually restricting Admin would need a server.
 --------------------------------------------------------------------------- */
+/* ---------- order numbers for admin inspections ---------------------------
+   An inspection launched from Admin has nobody typing a purchase order, so the
+   app assigns a running number: HK001 for HOKLAN, 001 for a factory account.
+   The factory letter is added when the report is printed, not stored.
+
+   The counter lives in this phone's storage, which is worth saying out loud:
+   two phones running factory inspections will each start at 001 and produce the
+   same numbers. It identifies an inspection within a device, not across a
+   company. A shared sequence would need a server.
+------------------------------------------------------------------------- */
+const PO_SEQ_KEY = "hoklan_qc_po_";
+const poSeqName = () => PO_SEQ_KEY + (ADMIN_FACTORY || "HK");
+const poDigits = n => String(n).padStart(3, "0");
+
+/* What the next inspection will get, without consuming it: shown on the screen
+   where the tests are chosen, so an abandoned selection does not burn a number. */
+function peekPo(){
+  let n = 0;
+  try{ n = parseInt(localStorage.getItem(poSeqName()), 10) || 0; }catch(e){}
+  return n + 1;
+}
+function takePo(){
+  const n = peekPo();
+  try{ localStorage.setItem(poSeqName(), String(n)); }catch(e){}
+  return isFactoryUser() ? poDigits(n) : "HK" + poDigits(n);
+}
+/* The order number as the report prints it. A factory inspection carries the
+   initial of its factory there — and only there, so `S.po` stays the value the
+   spreadsheet and the dashboard can be searched by. */
+const poPrinted = () => (S.poLetter || "") + (S.po || "");
+
 const ADMIN_ID = {digits:"365", code:"365-H8Q2K7L4"};
 
 /* Factory accounts. Same door as the admin code, less behind it: each one only
@@ -3859,7 +4191,10 @@ function renderAdmin(){
         autocomplete="off" oninput="setAdminQuery(this.value)">
       <p class="hint" id="qhint">${fmt("admin_refs_hint",{n:list.length})}</p>
       <div class="rlist" id="rlist">${refRows(list)}</div>
-    </div>`;
+    </div>
+    ${isFactoryUser()?"":`<p style="text-align:center">
+      <button class="jump" style="text-align:center;width:100%;opacity:.7"
+        onclick="wipeData()">${tr("wipe")}</button></p>`}`;
   actions.innerHTML =
     `<button onclick="exitAdmin()">${tr("to_start")}</button>`;
 }
@@ -3925,22 +4260,16 @@ function adminOpen(model){
   render();
 }
 
-/* Read the form back before any rebuild, exactly as setUnits does: the fields
-   sit above the controls that trigger a render and would be silently cleared. */
-function readAdminForm(){
-  S.po = (document.getElementById("po")||{}).value || S.po;
-  S.operator = (document.getElementById("operator")||{}).value || S.operator;
-}
-
+/* No form to read back on this screen any more: the order number is assigned by
+   the app and the operator is the account. Only the speaker count is chosen, and
+   that is a button, not a field. */
 function togglePick(id){
-  readAdminForm();
   S.pick = S.pick || [];
   const i = S.pick.indexOf(id);
   if(i >= 0) S.pick.splice(i,1); else S.pick.push(id);
   render();
 }
 function pickAll(on){
-  readAdminForm();
   S.pick = on ? planTests().map(t => t.id) : [];
   render();
 }
@@ -3976,12 +4305,11 @@ function renderAdminPick(){
     </div>
     <div class="card">
       <label style="margin-top:0">${tr("po")}</label>
-      <input id="po" value="${esc(S.po)}" placeholder="1693"
-        inputmode="numeric" maxlength="12" autocomplete="off"
-        oninput="onlyDigits(this)">
-      <label>${tr("operator")}</label>
-      <input id="operator" value="${esc(S.operator)}" maxlength="40"
-        autocomplete="off" oninput="onlyLetters(this)">
+      <input value="${esc(isFactoryUser()
+        ? ADMIN_FACTORY.charAt(0) + poDigits(peekPo())
+        : "HK" + poDigits(peekPo()))}" readonly
+        style="color:var(--muted);background:#0a1523">
+      <p class="hint" style="margin-top:6px">${tr("po_auto")}</p>
       <label>${tr("units")}</label>
       <div class="units">${Array.from({length:MAX_UNITS},(_,i)=>
         `<button class="${S.units===i+1?"on":""}"
@@ -3995,19 +4323,22 @@ function renderAdminPick(){
 }
 
 function setUnitsAdmin(n){
-  readAdminForm();
   S.units = Math.min(MAX_UNITS, Math.max(1, parseInt(n,10) || 1));
   render();
 }
 
 function adminStart(){
-  readAdminForm();
-  S.po = String(S.po||"").replace(/[^0-9]/g,"").trim();
-  S.operator = String(S.operator||"")
-    .replace(/[^\p{L}\p{M} .'’-]/gu,"").replace(/\s+/g," ").trim();
   if(!S.model || !S.testId){ alert(tr("a_select_model")); return; }
-  if(!S.operator){ alert(tr("a_operator")); return; }
   if(!S.pick || !S.pick.length){ alert(tr("a_pick_tests")); return; }
+
+  /* Nobody is asked for an order number or a name here. The number is assigned
+     now — consuming it only at this point, so abandoning the screen leaves no
+     gap — and the operator records which account ran it. Not a person's name,
+     but the truth about who did it, which is what the field is for. */
+  S.po = takePo();
+  S.poLetter = isFactoryUser() ? ADMIN_FACTORY.charAt(0) : "";
+  S.operator = isFactoryUser() ? "FÁBRICA " + ADMIN_FACTORY.charAt(0)
+                               : "ADMIN HOKLAN";
 
   S.fromAdmin = true;
   S.selfCheck = isFactoryUser();
@@ -4025,7 +4356,7 @@ function abortTest(){
   clearDraft();
   S.data = [[]]; S.units = 1; S.index = 0; S.open = {};
   S.startedAt = null; S.mediaDropped = false;
-  S.pick = null; S.fromAdmin = false; S.selfCheck = false;
+  S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
   S.screen = ADMIN_OK ? "admin" : "setup";
   window.scrollTo(0,0);
   render();
@@ -4147,10 +4478,10 @@ function renderSetup(){
          u:S.units, tot:tests().length*S.units})}<br>
       ${tr("report_note")}</p>
     </div>
-    <p class="hint" style="text-align:center;opacity:.6">HOKLAN QC v${APP_VERSION}</p>
-    ${isFactoryUser()?"":`<p style="text-align:center">
-      <button class="jump" style="text-align:center;width:100%;opacity:.7"
-        onclick="wipeData()">${tr("wipe")}</button></p>`}`;
+    <p class="hint" style="text-align:center;opacity:.6">HOKLAN QC v${APP_VERSION}</p>`;
+  /* No wipe button here any more. Erasing every answer and every photo on the
+     phone does not belong one tap away from the screen an operator opens forty
+     times a day; it lives in Admin, behind the code. */
   actions.innerHTML = `<button class="primary" onclick="start()">${tr("start")}</button>`;
 }
 
@@ -4252,7 +4583,7 @@ function start(){
   // The factory flow always runs the whole plan: any selection left over from
   // an Admin session is dropped here, or a partial plan would leak into a
   // normal inspection and report as if it were complete.
-  S.pick = null; S.fromAdmin = false; S.selfCheck = false;
+  S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
   S.index = 0; S.open = {};
   S.data = Array.from({length:S.units}, () => []);
   S.startedAt = Date.now(); S.screen = "test";
@@ -4263,16 +4594,125 @@ function goHomeReset(){
   S.idDigits = ""; S.testId = ""; S.factory = ""; S.model = "";
 }
 
-/* Wipe everything the app is holding, so the next report starts from an empty
-   sheet: no leftover answers, no leftover photos, no half-finished draft. */
+/* ---------- erasing what the phone keeps ----------------------------------
+   Three kinds of thing live in this device's storage: the inspection in
+   progress, one order-number counter per account, and the language. The dialog
+   lists them with what each one currently holds, because "erase data" without
+   saying what data is how somebody deletes an afternoon of photographs.
+
+   The language is not offered: it is a preference, not data, and erasing it
+   would flip the app to another language for no reason anyone asked for. The
+   full wipe does take it, since that is what "everything" means.
+------------------------------------------------------------------------- */
+function draftSummary(){
+  let d = null;
+  try{ d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null"); }catch(e){}
+  if(!d || !d.model) return null;
+  const shots = (d.data || []).reduce((a,unit) =>
+    a + (unit || []).reduce((b,r) => b + ((r && r.media) || []).length, 0), 0);
+  return {model:d.model, units:d.units || 1,
+          when:inspectionDate(d.startedAt), shots};
+}
+
+function seqRows(){
+  const rows = [{key:"HK", label:"Admin HOKLAN · " + ADMIN_ID.digits, prefix:"HK"}];
+  Object.keys(FACTORY_ADMINS).forEach(d => {
+    const k = FACTORY_ADMINS[d].key;
+    rows.push({key:k, prefix:k.charAt(0),
+               label:fmt("wipe_factory",{l:k.charAt(0), d:d})});
+  });
+  return rows.map(r => {
+    let n = 0;
+    try{ n = parseInt(localStorage.getItem(PO_SEQ_KEY + r.key), 10) || 0; }catch(e){}
+    return Object.assign(r, {n});
+  });
+}
+
 function wipeData(){
-  if(!confirm(tr("a_wipe"))) return;
+  const box = document.createElement("div");
+  box.className = "sheet";
+  box.id = "wipeSheet";
+  const d = draftSummary();
+
+  const row = (title, detail, action, on) => `
+    <div class="wrow${on?"":" off"}">
+      <div><b>${title}</b><span>${detail}</span></div>
+      ${on?`<button onclick="${action}">${tr("wipe_do")}</button>`
+          :`<button disabled>${tr("wipe_do")}</button>`}
+    </div>`;
+
+  box.innerHTML = `
+    <div class="sheet-in">
+      <h3>${tr("wipe")}</h3>
+      <p>${tr("wipe_intro")}</p>
+      ${row(tr("wipe_draft"),
+            d ? `${esc(d.model)} · ${fmt("units_tag",{n:d.units})} · ${esc(d.when)}`
+                + (d.shots ? `<em>${fmt("wipe_shots",{n:d.shots})}</em>` : "")
+              : tr("wipe_draft_none"),
+            "wipeDraft()", !!d)}
+      <h4>${tr("wipe_seqs")}</h4>
+      ${seqRows().map(s => row(esc(s.label),
+          s.n ? fmt("wipe_seq_at",{v: s.prefix === "HK" ? "HK" + poDigits(s.n)
+                                        : poDigits(s.n),
+                                   next: s.prefix + poDigits(s.n + 1)})
+              : tr("wipe_seq_none"),
+          `wipeSeq('${s.key}')`, !!s.n)).join("")}
+      <div class="wall">
+        <button onclick="wipeAll()">${tr("wipe_all")}</button>
+        <span>${tr("wipe_all_note")}</span>
+      </div>
+      <button class="sheet-x" onclick="closeWipe()">${tr("close")}</button>
+    </div>`;
+  document.body.appendChild(box);
+}
+
+function closeWipe(){
+  const box = document.getElementById("wipeSheet");
+  if(box) box.remove();
+}
+
+/* Redrawn in place so the numbers on screen match what is left. */
+function reopenWipe(){ closeWipe(); wipeData(); }
+
+function wipeDraft(){
+  if(!confirm(tr("a_wipe_draft"))) return;
   clearDraft();
   S.data = [[]]; S.units = 1; S.index = 0; S.open = {};
   S.po = ""; S.operator = ""; S.startedAt = null; S.mediaDropped = false;
-  S.pick = null; S.fromAdmin = false;
-  S.screen = "setup";
+  S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
+  // Back to Admin, which is where the button now lives: dropping to the start
+  // screen would mean typing the code again to carry on doing what you were.
+  S.screen = ADMIN_OK ? "admin" : "setup";
   goHomeReset();
+  window.scrollTo(0,0);
+  render();
+  reopenWipe();
+}
+
+/* One account's counter. Kept separate from the draft on purpose: resetting a
+   numbering series and throwing away an inspection are different decisions. */
+function wipeSeq(key){
+  if(!confirm(fmt("a_wipe_seq",{k:key}))) return;
+  try{ localStorage.removeItem(PO_SEQ_KEY + key); }catch(e){}
+  reopenWipe();
+}
+
+/* Everything the app has ever written here, including the language. Anything
+   starting with the app's prefix goes, so a key added later cannot survive a
+   wipe that promised to leave nothing behind. */
+function wipeAll(){
+  if(!confirm(tr("a_wipe"))) return;
+  try{
+    Object.keys(localStorage)
+      .filter(k => k.indexOf("hoklan_qc") === 0)
+      .forEach(k => localStorage.removeItem(k));
+  }catch(e){}
+  S.data = [[]]; S.units = 1; S.index = 0; S.open = {};
+  S.po = ""; S.operator = ""; S.startedAt = null; S.mediaDropped = false;
+  S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
+  S.screen = ADMIN_OK ? "admin" : "setup";
+  goHomeReset();
+  closeWipe();
   window.scrollTo(0,0);
   render();
   alert(tr("a_wiped"));
@@ -4319,6 +4759,26 @@ function pointRow(p, u, showTag){
   const note = (r.notes && r.notes[p.id]) || "";
   const noteEn = appTrLine(r, "note", p.id);
   const evOk = shots.length > 0 && note.trim() !== "";
+
+  /* A point marked `photo` in the plan is documented whether it passes or not:
+     the display words are judged and photographed in the same gesture, so the
+     office can check the spelling later without the speaker in front of it.
+     Not shown when the point failed — the red box below already asks for the
+     same photo, into the same slot. */
+  const wantShot = p.photo && v !== "FAIL";
+  const shotMissing = p.photo && v !== "NA" &&
+    shots.filter(m => m.kind === "photo").length === 0;
+  const shotBox = wantShot ? `
+    <div class="pshot${shotMissing?" miss":""}">
+      <button onclick="document.getElementById('ps_${id}').click()">📷 ${
+        tr("photo")}</button>
+      <input id="ps_${id}" class="hidden" type="file" accept="image/*"
+        capture="environment" multiple onchange="addMedia(this,${u},'${p.id}')">
+      <div class="media">${shots.filter(m=>m.kind==="photo").map(m=>`
+        <div class="thumb"><img src="${m.url}">
+          <span onclick="dropMedia('${m.uid}')">×</span></div>`).join("")}</div>
+      ${shotMissing?`<em>${tr("need_point_photo")}</em>`:""}
+    </div>` : "";
   const id = u + "_" + p.id;
 
   // Once the evidence is complete the box folds into one green line, so a test
@@ -4364,7 +4824,7 @@ function pointRow(p, u, showTag){
       <button class="${v==="FAIL"?"on-f":""}" onclick="setPoint(${u},'${p.id}','FAIL')">✗</button>
       <button class="na-btn ${v==="NA"?"on-n":""}" onclick="setPoint(${u},'${p.id}','NA')"
         title="${tr("na_title")}">N/A</button></div>
-    ${fail}${fold}`;
+    ${shotBox}${fail}${fold}`;
 }
 
 function renderTest(){
@@ -4384,7 +4844,8 @@ function renderTest(){
   allUnits().forEach(u => realPoints(t).forEach(p => {
     if(failOpen(row(u), p)) openFails++;
   }));
-  const ready = pending === 0 && !needsPhoto && !needsVideo && openFails === 0;
+  const ready = pending === 0 && !needsPhoto && !needsVideo && openFails === 0
+    && pointShotsMissing(t) === 0;
   const many = S.units > 1;
 
   const groups = sectionsOf(t).map(sec => {
@@ -4417,6 +4878,8 @@ function renderTest(){
       <div class="grp-h">
         <b onclick="toggleSection('${safe}',${ans},${tot})">${esc(sec.name || tr("checks"))}</b>
         ${badge}
+        ${canSectionNA()?`<button class="help-b na-sec" title="${esc(tr("na_title"))}"
+          onclick="naSection('${safe}')">${tr("na")}</button>`:""}
         ${sec.help?`<button class="help-b ${hOpen?"on":""}"
           onclick="toggleHelp('${safe}')">${hOpen?"−":"+"}</button>`:""}
         <i onclick="toggleSection('${safe}',${ans},${tot})">${open?"▾":"▸"}</i>
@@ -4468,6 +4931,28 @@ function renderTest(){
     ${t.optional?`<button class="skip" style="flex:0 0 66px" onclick="skipTest()">${tr("na")}</button>`:""}`;
 }
 
+/* Marking a whole section as N/A is a HOKLAN admin tool. It exists because a
+   targeted inspection often runs one test on a reference that has none of the
+   optional hardware, and answering fifteen points one by one with N/A is how a
+   checklist stops being read. A factory account does not get it: deciding that
+   a section does not apply is a judgement about the plan, not about the unit. */
+const canSectionNA = () => S.fromAdmin && !S.selfCheck;
+
+function naSection(safe){
+  const sec = sectionsOf(current())
+    .find(s => String(s.name).replace(/['"\\]/g,"") === safe);
+  if(!sec) return;
+  // It can overwrite answers already given, so it asks.
+  if(!confirm(fmt("a_na_section",{s: sec.name || tr("checks")}))) return;
+  allUnits().forEach(u => {
+    const r = row(u);
+    sec.points.forEach(p => { r.points[p.id] = "NA"; });
+  });
+  // Hand the section back to the automatic fold rule now that it is answered.
+  delete S.open[secKey(sec.name)];
+  render(); save();
+}
+
 /* Typing a note cannot trigger a full render — the textarea would be rebuilt
    and the phone keyboard would close on every keystroke. So the three things
    that depend on that note are patched in place instead. */
@@ -4487,6 +4972,19 @@ function missingEvidence(u){
 function evidenceComplete(){
   const m = missingEvidence(0);
   return !m.photo && !m.video;
+}
+
+/* How many `photo` points are still without their picture, across every speaker.
+   A point marked N/A needs none: the mode does not exist on this reference. */
+function pointShotsMissing(t){
+  let n = 0;
+  allUnits().forEach(u => realPoints(t).forEach(p => {
+    if(!p.photo) return;
+    const r = row(u);
+    if(r.points[p.id] === "NA") return;
+    if(shotsFor(r, p.id).filter(m => m.kind === "photo").length === 0) n++;
+  }));
+  return n;
 }
 
 function openFailCount(t){
@@ -4522,8 +5020,8 @@ function syncFail(u, pointId){
 
   const btn = document.getElementById("btn-next");
   if(btn){
-    const ready = pendingCount() === 0 &&
-      evidenceComplete() && openFailCount(t) === 0;
+    const ready = pendingCount() === 0 && evidenceComplete() &&
+      openFailCount(t) === 0 && pointShotsMissing(t) === 0;
     btn.style.opacity = ready ? "" : ".5";
   }
 }
@@ -4607,7 +5105,7 @@ function renderIndex(){
     if(i === S.index){ status = tr("here"); cls = "now"; }
     else if(r && r.verdict === "DOC"){ status = tr("photos_tag"); cls = "PASS"; }
     else if(verdicts.indexOf("FAIL") >= 0){ status = "FAIL"; cls = "FAIL"; }
-    else if(r && r.verdict){ status = r.verdict; cls = r.verdict; }
+    else if(r && r.verdict){ status = r.verdict; cls = verdictClass(r.verdict); }
     else {
       let n = 0;
       if(t.type === "photos"){
@@ -4678,7 +5176,7 @@ function renderDone(){
       // The plan's label, not the one frozen when the operator answered:
       // switching language on this screen has to translate the table too.
       return `<tr><td>${esc(L(t.label))}</td>
-        <td class="${r&&r.verdict!=="DOC"?r.verdict:""}">${
+        <td class="${verdictClass(r && r.verdict)}">${
           esc(verdictText(r && r.verdict))}</td></tr>`;
     }).join("");
     return `<div class="card">
@@ -4767,7 +5265,7 @@ function goHome(){
   S.screen = "setup"; S.index = 0; S.units = 1;
   S.data = [[]]; S.open = {};
   S.startedAt = null; S.mediaDropped = false;
-  S.pick = null; S.fromAdmin = false; S.selfCheck = false;
+  S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
   goHomeReset();
   window.scrollTo(0,0);
   render();
@@ -4795,8 +5293,13 @@ if(restore()){
 }
 render();
 
+/* Warn before leaving with work that has not been downloaded. The finish screen
+   counts: that is where an inspection sits complete and still only inside this
+   phone. */
 window.addEventListener("beforeunload", e => {
-  if(S.screen === "test"){ e.preventDefault(); e.returnValue = ""; }
+  if(S.screen === "test" || S.screen === "done"){
+    e.preventDefault(); e.returnValue = "";
+  }
 });
 updateTopBtn();
 </script>
