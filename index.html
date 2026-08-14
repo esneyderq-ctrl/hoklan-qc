@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="2.7">
+<meta name="app-version" content="2.8">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -374,7 +374,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "2.7";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "2.8";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -544,7 +544,7 @@ const CONFIG = {
                     "es":"Inserte la USB de prueba HOKLAN y seleccione el modo USB. Espere hasta que lea la memoria y reproduzca. Al final, apague y encienda el parlante para ver si arranca en USB por sí solo."}},
            {"id":"recognized","code":"USB-001","label":{"en":"Speaker reads the USB drive and shows USB mode","zh":"识别 U 盘并显示 USB 模式","es":"El parlante lee la memoria USB y muestra el modo USB"},
             "help":{"en":"Insert the USB drive. Within a few seconds the display must switch to USB and show a track number. If it stays blank or keeps searching, it is a fail.",
-                    "zh":"插入 U 盘后几秒内，显示屏应切换到 USB 并显示曲目编号。若一直空白或持续搜索，判定为不合格。",
+                    "zh":"插入 U 盘后几秒内，显示屏应切换到 USB 并显示曲目编号。若一直空白或持续搜索，判定为异常。",
                     "es":"Inserte la memoria. En pocos segundos la pantalla debe cambiar a USB y mostrar un número de pista. Si queda en blanco o sigue buscando, no conforme."}},
            {"id":"playback","code":"USB-002","label":{"en":"Plays the audio from the USB drive","zh":"播放 U 盘音频","es":"Reproduce el audio de la memoria USB"},
             "help":{"en":"Sound must start on its own, or after pressing play. Confirm it really comes out of the speaker, not from another speaker nearby.",
@@ -1133,7 +1133,7 @@ const CONFIG = {
                     "zh":"显示屏是客户用来判断音箱状态的依据，模式名称拼错会随整批货一起出厂。每个模式都要拍照：办公室凭这张照片就能在没有实物的情况下核对拼写。"}},
            {"id":"colour","code":"DSP-006","label":{"en":"Characters are white","zh":"字符为白色"},
             "help":{"en":"Look at the display straight on, in shade. Every character must be white, all of them the same white. A segment that reads bluish or yellowish next to the others is a fault even when the word is legible.",
-                    "zh":"在阴影处正对显示屏观察。所有字符都应为白色，且白度一致。若某一段相比其他偏蓝或偏黄，即使文字仍可辨认也判定为不良。"}},
+                    "zh":"在阴影处正对显示屏观察。所有字符都应为白色，且白度一致。若某一段相比其他偏蓝或偏黄，即使文字仍可辨认也判定为异常。"}},
            {"id":"word_usb","code":"DSP-007","photo":true,
             "label":{"en":"The word USB is spelled correctly","zh":"USB 一词拼写正确"},
             "help":{"en":"Select USB mode and read what the display shows, letter by letter. Photograph it. Compare against the specification: USB, not U5B or U58.",
@@ -2181,7 +2181,7 @@ const T = {
   units_report:"已检验音箱数量",
   plan_info_n:"%n 项测试 × %u 台音箱 = 共 %tot 项 · KŌHIN v%v",
   speaker:"音箱", speaker_n:"音箱 %n", units_tag:"%n 台音箱",
-  need_photo_n:"无论合格与否，本项至少需要一张音箱照片。具体不良的照片请放在该不良项的红色方框内。",
+  need_photo_n:"无论合格与否，本项至少需要一张音箱照片。具体异常的照片请放在该异常项的红色方框内。",
   by_unit:"各音箱结果",
   report_note:"检验结束后将生成含照片的报告。",
   how_test:"测试步骤", how_photos:"拍照要求",
@@ -2206,7 +2206,7 @@ const T = {
   index_hint:"点击任一测试直接跳转，已填写的内容会保留。",
   back_to_test:"返回测试", here:"当前", photos_tag:"照片",
   points_n:"%n 个检查项", files_n:"%n 个文件", is_optional:"选做",
-  failures:"不合格项：",
+  failures:"异常项：",
   evidence_total:"%n 个证据文件 · %s",
   too_big:"报告文件很大。如果手机生成时卡顿，请从 ☰ 菜单删除重复照片。",
   download:"⬇ 下载",
@@ -2219,7 +2219,7 @@ const T = {
   rm_report_zh:"— 同一份报告的中文版。三个版本始终同时提供。",
   rm_csv:"— 每个检查项一行，可用 Excel 打开。",
   rm_photos:"— %n 张照片，按测试项命名。",
-  rm_naming:"命名规则：不良项为 测试_检查项_FAIL；测试的整体证据仅用 测试 名称。",
+  rm_naming:"命名规则：异常项为 测试_检查项_FAIL；测试的整体证据仅用 测试 名称。",
   wm_line:"HOKLAN · 官方质量文件", incomplete:"未完成",
   rm_videos:"— 检验过程中录制的 %n 段视频。",
   rm_lost:"有 %n 段视频未能打包：录制后页面被重新加载。",
@@ -2236,16 +2236,16 @@ const T = {
   save_pdf_btn:"打开打印对话框",
   report_title:"质量检验报告",
   overall:"总体结论", general_info:"基本信息",
-  inspection_summary:"检验汇总", remarks:"不合格项说明",
+  inspection_summary:"检验汇总", remarks:"异常项说明",
   evidence_sec:"照片证据", conclusion:"结论",
   th_remark:"备注编号", plan:"测试方案",
-  remarks_note:"检验过程中判定为不合格的项目，按发现顺序排列。",
+  remarks_note:"检验过程中判定为异常的项目，按发现顺序排列。",
   videos_n:"已录制 %n 个视频，保存在手机中，未嵌入本报告。",
-  concl_fail:"共 %n 项不合格，详见第 III 节。",
+  concl_fail:"共 %n 项异常，详见第 III 节。",
   concl_pass:"所有适用项目均合格。",
   footer_note:"由 HOKLAN QC 生成。照片时间戳取自拍摄时手机的时间。",
   th_test:"测试", th_result:"结果",
-  ok:"合格", fail:"不合格", documented:"已记录", pending:"未完成",
+  ok:"合格", fail:"异常", documented:"已记录", pending:"未完成",
   a_select_factory:"请输入有效的测试编号。", a_select_model:"请选择型号。",
   a_operator:"请填写检验员。",
   a_pending:"还有 %n 项未回答。",
@@ -2261,12 +2261,12 @@ const T = {
   home:"首页",
   a_home:"返回首页？\n\n当前检验记录将被清除。如果还没有下载报告，请先下载。",
   how_to:"如何检查",
-  open_fails:"仍有 %n 个不良项缺少照片和说明。",
-  fail_evidence:"此不良项必须提供证据",
+  open_fails:"仍有 %n 个异常项缺少照片和说明。",
+  fail_evidence:"此异常项必须提供证据",
   fail_required:"请至少上传一张照片或一段视频，并说明问题。两项缺一不可，否则无法继续。",
   fail_ready:"✓ 证据已完整，可继续检查其余项目。",
   n_photos:"%n 张照片", n_videos:"%n 段视频",
-  a_fail_evidence:"以下不良项仍缺少照片或说明：",
+  a_fail_evidence:"以下异常项仍缺少照片或说明：",
   tab_factory:"工厂测试", tab_admin:"管理",
   to_start:"← 返回首页",
   admin_refs:"型号目录", search:"筛选型号",
