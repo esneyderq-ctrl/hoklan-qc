@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="2.8">
+<meta name="app-version" content="2.9">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -374,7 +374,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "2.8";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "2.9";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -1437,10 +1437,11 @@ const CONFIG = {
    never embedded — fifty-three photos inside this file would multiply its weight
    by ten so that every phone downloads all of them to look at one.
 
-   The photo is there to confirm the right model was selected, and nothing more:
-   it is not evidence, it never enters the report, and its absence never blocks
-   an inspection. Photos will not all arrive on the same day, and a missing one
-   has to be a quiet blank rather than a broken page.
+   The photo confirms the right model was selected, and identifies the product
+   at the head of the report. It is never evidence — nothing about the unit on
+   the bench is proved by a catalogue picture — and its absence never blocks an
+   inspection. Photos will not all arrive on the same day, and a missing one has
+   to be a quiet blank rather than a broken page.
 ------------------------------------------------------------------------- */
 const REF_IMG_DIR = "img/";
 /* PNG first because that is what the catalogue exports. The order matters: the
@@ -1449,6 +1450,44 @@ const REF_IMG_DIR = "img/";
    factory connection. */
 const refImgUrl = (model, ext) =>
   REF_IMG_DIR + encodeURIComponent(String(model || "")) + "." + (ext || "png");
+
+/* The same photo again, this time as a data URL, because the report has to
+   carry it. A report is read from inside the ZIP, on a PC that may never reach
+   this server: a linked photo would print as a broken frame in the PDF. Fetched
+   once per reference, when the report is asked for and not before — the
+   inspection itself does not need it, and it is a payment the phone should only
+   make if a document is actually going to be issued.
+
+   Held outside `S` on purpose. Saved in the draft it would add its own weight to
+   every write, and localStorage is the one place in this app that runs out. */
+let REF_IMG_DATA = {model:"", url:""};
+async function ensureRefImg(){
+  const m = String(S.model || "");
+  if(!m || REF_IMG_DATA.model === m) return;
+  REF_IMG_DATA = {model:m, url:""};
+  const exts = ["png", "jpg"];
+  for(let i = 0; i < exts.length; i++){
+    try{
+      const res = await fetch(refImgUrl(m, exts[i]));
+      if(!res.ok) continue;
+      const blob = await res.blob();
+      // A missing file on GitHub Pages answers with an HTML page, not a 404, so
+      // the type is what says whether this is really a photo.
+      if(!/^image\//.test(blob.type || "")) continue;
+      REF_IMG_DATA.url = await new Promise((ok, fail) => {
+        const fr = new FileReader();
+        fr.onload = () => ok(String(fr.result || ""));
+        fr.onerror = fail;
+        fr.readAsDataURL(blob);
+      });
+      break;
+    }catch(e){}
+  }
+}
+/* Empty whenever the reference has no photo, or the model changed after the
+   last fetch — never a stale picture of another product. */
+const refImgForReport = () =>
+  REF_IMG_DATA.model === String(S.model || "") ? REF_IMG_DATA.url : "";
 
 /* ---------- Spanish for the plan -----------------------------------------
    The config above is generated, so Spanish cannot live inside it: the next
@@ -3250,6 +3289,16 @@ td{padding:6px 8px;border:1px solid #d5dde6;vertical-align:top}
    looking for and then reads the answer, instead of the other way round. */
 td.k{background:#f7f9fb;width:170px;color:#33475b;font-weight:700}
 td.v{font-weight:400}
+/* Identification block: the data, and beside it the catalogue photo of the
+   reference. The photo is not evidence — it is there so whoever opens the
+   report six months later recognises the product without looking it up. It
+   only appears when the reference has one; with no photo the table is the
+   full width it has always been. */
+.idbox{display:flex;align-items:flex-start;gap:10px}
+.idbox>table{flex:1}
+.idbox>.ri{flex:none;width:124px;border:1px solid #c9d6e2;background:#f7f9fb;
+  padding:4px}
+.idbox>.ri img{display:block;width:100%}
 .c{text-align:center}
 .p{color:#17743a;font-weight:700}
 .f{color:#b3261e;font-weight:700}
@@ -3316,6 +3365,7 @@ ${watermark()}
 ${banner}
 
 <div class="sec"><i>I</i><b>${tr("general_info")}</b></div>
+<div class="idbox">
 <table>
   <tr><td class="k">${tr("test_id")}</td><td class="v">${esc(S.testId)}</td>
       <td class="k">${tr("inspection")}</td><td class="v">${esc(inspectionDate(S.startedAt))}</td></tr>
@@ -3337,6 +3387,8 @@ ${banner}
     S.selfCheck ? `<b class="f">${tr("origin_factory")}</b>`
                 : tr("origin_hoklan")}</td></tr>
 </table>
+${refImgForReport()?`<div class="ri"><img src="${refImgForReport()}" alt=""></div>`:""}
+</div>
 ${scope?`<p class="att">${tr("scope_part_note")}</p>`:""}
 ${S.selfCheck?`<p class="att">${tr("origin_note")}</p>`:""}
 
@@ -3590,7 +3642,8 @@ ${S.selfCheck?`<p class="att">${tr("origin_note")}</p>`:""}
 function showReport(){
   S.screen = "report";
   render();
-  ensureTranslations().then(() => { if(S.screen === "report") render(); });
+  Promise.all([ensureTranslations(), ensureRefImg()])
+    .then(() => { if(S.screen === "report") render(); });
 }
 
 /* PDF in one tap, from the finish screen. No browser can write a PDF file on
@@ -3600,7 +3653,7 @@ function showReport(){
    a report and then translating it would issue the wrong document. */
 async function savePdfNow(){
   showSaved(tr("pdf_wait"));
-  try{ await ensureTranslations(); }catch(e){}
+  try{ await Promise.all([ensureTranslations(), ensureRefImg()]); }catch(e){}
   showSaved("");
   S.screen = "report";
   render();
@@ -4017,6 +4070,7 @@ async function withPacket(use){
     // Last chance to fill in any English line the debounce did not catch: after
     // this the report is written and the ZIP is closed.
     await ensureTranslations();
+    await ensureRefImg();
     const p = await buildPacket();
     await use(p);
   }catch(err){
