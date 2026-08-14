@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="2.9">
+<meta name="app-version" content="3.0">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -374,7 +374,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "2.9";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "3.0";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -1460,7 +1460,40 @@ const refImgUrl = (model, ext) =>
 
    Held outside `S` on purpose. Saved in the draft it would add its own weight to
    every write, and localStorage is the one place in this app that runs out. */
+const REF_IMG_MAX = 480;   // printed at ~1.3 in, so this is 4x the print grain
 let REF_IMG_DATA = {model:"", url:""};
+
+/* Redrawn small before it is embedded. The catalogue exports at 1800 px and
+   three megabytes, and nothing stops somebody from publishing one of those
+   straight to the img folder — that photo would weigh four times the entire
+   rest of the report, three times over, once per language. Shrinking here
+   rather than trusting the file means the packet stays a sane size whatever
+   arrives in that folder. */
+function shrinkToDataUrl(blob){
+  return new Promise(ok => {
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      try{
+        const k = Math.min(1, REF_IMG_MAX / (img.naturalWidth || REF_IMG_MAX));
+        const cv = document.createElement("canvas");
+        cv.width  = Math.max(1, Math.round((img.naturalWidth  || 1) * k));
+        cv.height = Math.max(1, Math.round((img.naturalHeight || 1) * k));
+        const cx = cv.getContext("2d");
+        // Catalogue photos are cut out on white; a transparent PNG would print
+        // black behind the product without this.
+        cx.fillStyle = "#ffffff";
+        cx.fillRect(0, 0, cv.width, cv.height);
+        cx.drawImage(img, 0, 0, cv.width, cv.height);
+        ok(cv.toDataURL("image/jpeg", 0.82));
+      }catch(e){ ok(""); }
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); ok(""); };
+    img.src = url;
+  });
+}
+
 async function ensureRefImg(){
   const m = String(S.model || "");
   if(!m || REF_IMG_DATA.model === m) return;
@@ -1474,12 +1507,11 @@ async function ensureRefImg(){
       // A missing file on GitHub Pages answers with an HTML page, not a 404, so
       // the type is what says whether this is really a photo.
       if(!/^image\//.test(blob.type || "")) continue;
-      REF_IMG_DATA.url = await new Promise((ok, fail) => {
-        const fr = new FileReader();
-        fr.onload = () => ok(String(fr.result || ""));
-        fr.onerror = fail;
-        fr.readAsDataURL(blob);
-      });
+      const small = await shrinkToDataUrl(blob);
+      if(!small) continue;
+      // The model may have changed while the photo was in flight.
+      if(REF_IMG_DATA.model !== m) return;
+      REF_IMG_DATA.url = small;
       break;
     }catch(e){}
   }
