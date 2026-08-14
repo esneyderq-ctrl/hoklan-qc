@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="3.9">
+<meta name="app-version" content="4.1">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -381,7 +381,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "3.9";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "4.1";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -533,7 +533,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 9,
+      "plan_version": 11,
       "tests": [
         {"id":"USB","optional":false,
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -1344,9 +1344,15 @@ const CONFIG = {
            {"id":"carta_fidelizacion","label":{"en":"Loyalty card","zh":"客户回馈卡"},
             "help":{"en":"The card inviting the customer to register the product. Photograph both faces if it is printed on both, and check the QR code or web address is legible.",
                     "zh":"拍摄邀请客户注册产品的卡片。若双面印刷则两面都要拍，并确认二维码或网址清晰可读。"}},
-           {"id":"bolsa","label":{"en":"Bag","zh":"包装袋"}},
-           {"id":"sello_garantia","label":{"en":"Warranty seal","zh":"保修封签"}},
-           {"id":"sello_calidad","label":{"en":"Quality control seal","zh":"质检封签"}},
+           {"id":"bolsa","label":{"en":"Bag the speaker is packed in","zh":"音箱的包装袋"},
+            "help":{"en":"The bag the speaker itself comes wrapped in inside the box — not the small bags of the accessories. Lay it out flat and photograph it whole, so the print, the thickness and any tear can be seen.",
+                    "zh":"拍摄彩盒内包裹音箱本体的那只袋子，不是配件的小袋。将袋子摊平整只入镜，以便看清印刷内容、厚度以及是否有破损。"}},
+           {"id":"sello_garantia","label":{"en":"Warranty seal","zh":"保修封签"},
+            "help":{"en":"The seal covering a screw or a joint of the cabinet, the one that breaks if the speaker is opened. Photograph it in place and whole: a seal that arrives already broken or badly stuck means the unit cannot be claimed under warranty later.",
+                    "zh":"拍摄贴在螺丝或箱体接缝处、拆机即破的封签。须拍到封签仍贴在原位且完好：封签到货时已破损或粘贴不牢，日后该台将无法办理保修索赔。"}},
+           {"id":"sello_calidad","label":{"en":"Quality control seal","zh":"质检封签"},
+            "help":{"en":"The label the factory's own inspection leaves on the unit, usually with an inspector number or a date. It is a different label from the warranty seal: this one says who passed the speaker inside the factory. Photograph it close enough to read the number.",
+                    "zh":"拍摄工厂自检后贴在整机上的标签，通常带有检验员编号或日期。它与保修封签是两种不同的标签：这一枚记录的是谁在厂内判定该台合格。拍摄距离需能看清编号。"}},
            {"id":"etiqueta_esp","label":{"en":"Technical specification label","zh":"技术规格标签"},
             "help":{"en":"Close-up of the label. Voltage, power, model and serial must all be legible in the photo.",
                     "zh":"标签特写。电压、功率、型号和序列号在照片中都必须清晰可读。"}},
@@ -1779,9 +1785,12 @@ Object.assign(ES_PLAN, {
   "Tag — front":"Etiqueta colgante — frente",
   "Tag — back":"Etiqueta colgante — reverso",
   "Loyalty card":"Tarjeta de fidelización",
-  "Bag":"Bolsa",
+  "Bag the speaker is packed in":"Bolsa en que viene empacado el parlante",
+  "The bag the speaker itself comes wrapped in inside the box — not the small bags of the accessories. Lay it out flat and photograph it whole, so the print, the thickness and any tear can be seen.":"La bolsa que envuelve el parlante dentro de la caja, no las bolsitas de los accesorios. Extiéndala y fotografíela completa, de modo que se vean la impresión, el calibre y cualquier roto.",
   "Warranty seal":"Sello de garantía",
+  "The seal covering a screw or a joint of the cabinet, the one that breaks if the speaker is opened. Photograph it in place and whole: a seal that arrives already broken or badly stuck means the unit cannot be claimed under warranty later.":"El sello que cubre un tornillo o una junta del gabinete, el que se rompe si se abre el parlante. Fotografíelo en su sitio y entero: un sello que llega roto o mal pegado deja esa unidad sin posibilidad de reclamar la garantía después.",
   "Quality control seal":"Sello de control de calidad",
+  "The label the factory's own inspection leaves on the unit, usually with an inspector number or a date. It is a different label from the warranty seal: this one says who passed the speaker inside the factory. Photograph it close enough to read the number.":"La etiqueta que deja la inspección propia de la fábrica, normalmente con un número de inspector o una fecha. Es una etiqueta distinta del sello de garantía: esta dice quién aprobó el parlante dentro de la fábrica. Fotografíela lo bastante cerca como para leer el número.",
   "Technical specification label":"Etiqueta de especificaciones técnicas",
   "Box — front":"Caja — frente",
   "Box — back":"Caja — reverso",
