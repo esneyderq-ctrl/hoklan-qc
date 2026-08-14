@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="4.1">
+<meta name="app-version" content="4.3">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -381,7 +381,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "4.1";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "4.3";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -2010,6 +2010,8 @@ const T = {
   photo:"Photo", video:"Video",
   ask_video:"one clip of a minute or more showing the test being run.",
   ask_photo:"the process and the tools used: USB drive, SD card, battery, cables, phone.",
+  po_ph:"Order number this shipment belongs to",
+  operator_ph:"Who is running the inspection", next_po:"Order no. %p · %o",
   ev_na:"Every point of this test is marked N/A: the reference does not have this function, so no photo or video is required. You can still attach one if it helps explain why.",
   need_photo:"At least one photo is required, whether the test passes or fails.",
   need_point_photo:"This point needs its own photo, whether it passes or fails.",
@@ -2147,6 +2149,8 @@ const T = {
   photo:"Foto", video:"Video",
   ask_video:"un clip de un minuto o más que muestre la prueba en ejecución.",
   ask_photo:"el proceso y las herramientas usadas: memoria USB, tarjeta SD, batería, cables, teléfono.",
+  po_ph:"Número de orden al que pertenece el despacho",
+  operator_ph:"Quién ejecuta la inspección", next_po:"OC %p · %o",
   ev_na:"Todos los puntos de esta prueba están en N/A: la referencia no tiene esta función, así que no se requiere foto ni video. Puede adjuntar uno de todos modos si ayuda a explicar por qué.",
   need_photo:"Se requiere al menos una foto, apruebe o falle la prueba.",
   need_point_photo:"Este punto necesita su propia foto, apruebe o falle.",
@@ -2284,6 +2288,8 @@ const T = {
   photo:"拍照", video:"录像",
   ask_video:"一段一分钟以上的视频，拍摄测试的实际操作过程。",
   ask_photo:"拍摄操作过程和所用工具：U 盘、SD 卡、电池、线材、手机。",
+  po_ph:"本批货所属的订单号",
+  operator_ph:"由谁执行本次检验", next_po:"订单号 %p · %o",
   ev_na:"本测试所有检查项均为不适用：本型号没有该功能，因此无需照片或录像。如有助于说明原因，仍可自行上传。",
   need_photo:"无论合格与否，本项至少需要一张照片。",
   need_point_photo:"无论合格与否，本检查项都需要单独拍照。",
@@ -4387,7 +4393,7 @@ function exitAdmin(){
   // ADMIN_FACTORY is left alone on purpose: see where it is declared.
   S.adminQuery = "";
   S.pick = null; S.fromAdmin = false;
-  S.idDigits = ""; S.testId = ""; S.factory = ""; S.model = "";
+  goHomeReset();
   S.screen = "setup";
   window.scrollTo(0,0);
   render();
@@ -4417,6 +4423,14 @@ function renderAdmin(){
       <div class="tag">${esc(adminCode())}</div>
       ${isFactoryUser()?`<div class="tag" style="background:rgba(245,185,66,.16);
         border-color:var(--amber);color:var(--amber)">${tr("factory_mode")}</div>`:""}
+      ${/* What this account will stamp on the next report. Shown here rather
+            than on the start screen, where it belonged to nobody, and read with
+            peekPo so that looking at it does not consume a number. */""}
+      <div class="tag">${esc(fmt("next_po",{
+        p: isFactoryUser() ? ADMIN_FACTORY.charAt(0) + poDigits(peekPo())
+                           : "HK" + poDigits(peekPo()),
+        o: isFactoryUser() ? "FÁBRICA " + ADMIN_FACTORY.charAt(0)
+                           : "ADMIN HOKLAN"}))}</div>
       <label>${tr("admin_refs")}</label>
       <input id="q" value="${esc(S.adminQuery)}" placeholder="${tr("search")}"
         autocomplete="off" oninput="setAdminQuery(this.value)">
@@ -4693,11 +4707,12 @@ function renderSetup(){
       <input value="${esc(inspectionDate())}" readonly
              style="color:var(--muted);background:#0a1523">
       <label>${tr("po")}</label>
-      <input id="po" value="${esc(S.po)}" placeholder="1693"
+      <input id="po" value="${esc(S.po)}" placeholder="${tr("po_ph")}"
         inputmode="numeric" maxlength="12" autocomplete="off"
         oninput="onlyDigits(this)">
       <label>${tr("operator")}</label>
       <input id="operator" value="${esc(S.operator)}" maxlength="40"
+        placeholder="${tr("operator_ph")}"
         autocomplete="off" oninput="onlyLetters(this)">
       <label>${tr("units")}</label>
       <div class="units">${Array.from({length:MAX_UNITS},(_,i)=>
@@ -4821,8 +4836,14 @@ function start(){
   render(); save();
 }
 
+/* The start screen as it looks the first time. The order number and the
+   operator go too: after an inspection launched from Admin they hold "HK013"
+   and "ADMIN HOKLAN", which are the account's, not this screen's. Left behind
+   they would be offered to whoever types a factory code next, and an inspection
+   would be filed under a number that belongs to another account. */
 function goHomeReset(){
   S.idDigits = ""; S.testId = ""; S.factory = ""; S.model = "";
+  S.po = ""; S.operator = ""; S.poLetter = "";
 }
 
 /* ---------- erasing what the phone keeps ----------------------------------
