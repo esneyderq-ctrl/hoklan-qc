@@ -3764,14 +3764,17 @@ ${banner}
       <td class="k">${tr("inspection")}</td><td class="v">${esc(inspectionDate(S.startedAt))}</td></tr>
   <tr><td class="k">${tr("reference")}</td><td class="v nw">${esc(S.model)}</td>
       <td class="k">${tr("po")}</td><td class="v">${esc(poPrinted()||"—")}</td></tr>
-  ${/* No "test plan" row: the two version numbers were of no use to anybody
-        reading the document, and they now sit in the closing line instead,
-        where the record is kept without taking a field of the identification
-        table. */""}
-  <tr><td class="k">${tr("operator")}</td><td class="v" colspan="3">${
-    esc(S.operator)}</td></tr>
-  <tr><td class="k">${tr("units_report")}</td><td class="v">${S.units}</td>
-      <td class="k">${tr("by_unit")}</td><td class="v">${allUnits().map(i=>{
+  ${/* The paired fields first, the full-width ones after. No "test plan" row:
+        the two version numbers were of no use to anybody reading the document
+        and now sit in the closing line instead.
+
+        The result by speaker is the only field here that grows — with five
+        speakers it prints five verdicts side by side — so it is the one given
+        the whole row; the other four are short and travel in pairs. */""}
+  <tr><td class="k">${tr("operator")}</td><td class="v">${esc(S.operator)}</td>
+      <td class="k">${tr("units_report")}</td><td class="v">${S.units}</td></tr>
+  <tr><td class="k">${tr("by_unit")}</td><td class="v" colspan="3">${
+        allUnits().map(i=>{
         const uv = unitVerdict(unitRows(i));
         return `<span class="${uv==="PASS"?"p":uv==="FAIL"?"f":"na"}">${
           fmt("speaker_n",{n:i+1})}: ${verdictText(uv)}</span>`;
