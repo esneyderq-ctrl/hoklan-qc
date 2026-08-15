@@ -9,7 +9,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
-     truth — APP_VERSION reads it — so there is one number to bump, not two. -->
+     truth — APP_VERSION reads it — so there is one number to bump, not two.
+     It is not printed anywhere: neither on screen nor in the report. This tag
+     is where it is meant to be read. -->
 <meta name="app-version" content="5.8">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
@@ -399,6 +401,12 @@ input.bad{border-color:var(--red)}
    one written by an English-speaking one.
 ============================================================================ */
 
+/* Internal on purpose: nothing on screen and nothing in the report prints it.
+   It is here so the build can be identified from the page itself — from the
+   console, from the meta tag, or by fetching the published file — when a
+   behaviour has to be traced back to a version. What the operator and the
+   customer see is the plan version, which is the one that says what was
+   inspected. */
 const APP_VERSION =
   (document.querySelector('meta[name="app-version"]') || {}).content || "5.8";
 
@@ -2677,12 +2685,36 @@ function togglePointHelp(id){
 const pointHelpOpen = id => !!S.open["p|" + S.index + "|" + id];
 
 const secKey = name => S.index + "|" + name;
-function sectionOpen(name, answered, total){
-  const e = S.open[secKey(name)];
-  return e !== undefined ? e : answered < total;
+
+/* What is still owed in a section, across every speaker. Not just unanswered
+   points: a point can be answered and still be incomplete, because it owes its
+   own photograph or its own reading. Folding on "answered" alone presented
+   those sections as finished, and the operator only found out at NEXT — with
+   the box hidden behind a heading he had watched close. */
+function secNeedsWork(sec){
+  if(!sec) return false;
+  return allUnits().some(u => {
+    const r = row(u);
+    return sec.points.some(p => {
+      if(ANSWERED.indexOf(r.points[p.id]) < 0) return true;
+      if(failOpen(r, p)) return true;
+      if(valueMissing(r, p)) return true;
+      return p.photo && r.points[p.id] !== "NA" &&
+        shotsFor(r, p.id).filter(m => m.kind === "photo").length === 0;
+    });
+  });
 }
-function toggleSection(name, answered, total){
-  S.open[secKey(name)] = !sectionOpen(name, answered, total);
+const secByName = name => sectionsOf(current())
+  .find(s => String(s.name) === String(name) ||
+             String(s.name).replace(/['"\\]/g,"") === String(name));
+
+function sectionOpen(name, sec){
+  const e = S.open[secKey(name)];
+  return e !== undefined ? e : secNeedsWork(sec || secByName(name));
+}
+function toggleSection(name){
+  const sec = secByName(name);
+  S.open[secKey(sec ? sec.name : name)] = !sectionOpen(name, sec);
   render();
 }
 
@@ -3142,22 +3174,10 @@ function collapseIfDone(pointId){
   const at = list.findIndex(s => s.points.some(p => p.id === pointId));
   if(at < 0) return -1;
   const sec = list[at];
-  const done = allUnits().every(u =>
-    sec.points.every(p => ANSWERED.indexOf(row(u).points[p.id]) >= 0));
-  /* Answered is not the same as finished. A point that asks for its own
-     photograph or its own reading is not done until it has them, and folding
-     the section over a missing one presented it as complete: the operator only
-     found out at NEXT, with the box hidden behind a heading he had watched
-     close. */
-  const pending = allUnits().some(u =>
-    sec.points.some(p => {
-      const r = row(u);
-      if(failOpen(r, p)) return true;
-      if(valueMissing(r, p)) return true;
-      return p.photo && r.points[p.id] !== "NA" &&
-        shotsFor(r, p.id).filter(m => m.kind === "photo").length === 0;
-    }));
-  if(!(done && !pending)) return -1;
+  // One definition of "finished", shared with the rule that decides whether a
+  // section opens by default. Answered is not the same as finished: a point can
+  // still owe its own photograph or its own reading.
+  if(secNeedsWork(sec)) return -1;
   delete S.open[secKey(sec.name)];
   return at;               // which one folded, so the view can follow it
 }
@@ -4078,8 +4098,7 @@ ${/* The origin is already stated as a field in the table above; the paragraph
       ${scope?`<div class="note" style="margin-top:8px"><b>${
         fmt("scope_part",{n:scope.n, tot:scope.tot})}</b></div>`:""}
     </div>
-    <p class="note">${tr("footer_note")} · HOKLAN QC v${APP_VERSION
-      } · KŌHIN v${plan().plan_version}</p>`;
+    <p class="note">${tr("footer_note")} · KŌHIN v${plan().plan_version}</p>`;
 
   return h + `</body></html>`;
 }
@@ -5058,11 +5077,13 @@ function renderSetup(){
         {n:tests().length, u:S.units, tot:tests().length*S.units})}<br>
       ${tr("report_note")}</p>
     </div>
-    ${/* Both version numbers together, at the foot and quiet. They are read for
-          the same reason — working out what was inspected and with what — and
-          only ever when something does not add up, never before starting. */""}
+    ${/* The name, and the plan version. The app's own number is internal: it
+          lives in the meta tag at the top of this file, where anybody who needs
+          it can read it, and it answers a question — which build is this — that
+          nobody standing in front of a speaker is asking. The plan version is
+          different: it says what was inspected. */""}
     <p class="hint" style="text-align:center;opacity:.55;font-size:10.5px">
-      HOKLAN QC v${APP_VERSION} · KŌHIN v${plan().plan_version}</p>`;
+      HOKLAN QC · KŌHIN v${plan().plan_version}</p>`;
   /* No wipe button here any more. Erasing every answer and every photo on the
      phone does not belong one tap away from the screen an operator opens forty
      times a day; it lives in Admin, behind the code. */
@@ -5477,7 +5498,7 @@ function renderTest(){
       if(ANSWERED.indexOf(v) >= 0) ans++;
       if(v === "FAIL") bad++;
     }));
-    const open = sectionOpen(sec.name, ans, tot);
+    const open = sectionOpen(sec.name, sec);
     const badge = bad ? `<em class="bad">${bad} ✗</em>`
                 : ans===tot ? `<em class="ok">✓ ${tot}</em>` : `<em>${ans}/${tot}</em>`;
     const rows = sec.points.map(p => {
@@ -5497,7 +5518,7 @@ function renderTest(){
     const hOpen = helpOpen(sec.name);
     return `<div class="grp ${cls}">
       <div class="grp-h">
-        <b onclick="toggleSection('${safe}',${ans},${tot})">${esc(sec.name || tr("checks"))}</b>
+        <b onclick="toggleSection('${safe}')">${esc(sec.name || tr("checks"))}</b>
         ${badge}
         ${canSectionNA()?`<button class="help-b na-sec${
             secAllNA(sec)?" on":""}" title="${esc(
@@ -5505,7 +5526,7 @@ function renderTest(){
           onclick="naSection('${safe}')">${tr("na")}</button>`:""}
         ${sec.help?`<button class="help-b ${hOpen?"on":""}"
           onclick="toggleHelp('${safe}')">${hOpen?"−":"+"}</button>`:""}
-        <i onclick="toggleSection('${safe}',${ans},${tot})">${open?"▾":"▸"}</i>
+        <i onclick="toggleSection('${safe}')">${open?"▾":"▸"}</i>
       </div>
       ${hOpen&&sec.help?`<div class="grp-help">${esc(sec.help)}</div>`:""}
       ${open?`<div class="grp-b">${rows}</div>`:""}</div>`;
