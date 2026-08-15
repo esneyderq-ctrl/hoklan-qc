@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="5.7">
+<meta name="app-version" content="5.8">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -100,6 +100,10 @@ button:active{transform:scale(.99)}
    answers fifteen points at once and deserves to look like a decision. */
 .na-sec{width:auto;padding:0 9px;font-size:11.5px;letter-spacing:.5px;
   background:#2a2413;border-color:#6b5320;color:var(--amber)}
+/* Applied. Filled instead of outlined, so the state of the section can be read
+   from the button itself and pressing it again is visibly an undo. */
+.na-sec.on{background:var(--amber);border-color:var(--amber);color:#2a2413;
+  font-weight:700}
 .grp-help{margin:0 14px 12px;padding:11px;border-radius:9px;background:#0d1f33;
   border:1px solid #24466b;color:#cfe0f2;font-size:14px;line-height:1.55}
 /* Three Han characters where the other two languages have three letters, so the
@@ -396,7 +400,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "5.7";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "5.8";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -549,7 +553,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 14,
+      "plan_version": 15,
       "tests": [
         {"id":"USB","optional":false,
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -1413,9 +1417,10 @@ const CONFIG = {
            {"id":"internal_off","code":"BAT-006","label":{"en":"Internal battery disconnected","zh":"内置电池已断开"},
             "help":{"en":"With the speaker off and unplugged from the mains, open it and unplug the internal battery connector. Leave it disconnected for the whole test.",
                     "zh":"在关机并断开市电的状态下打开箱体，拔掉内置电池插头。整个测试过程保持断开。"}},
-           {"id":"external_on","code":"BAT-001","label":{"en":"External battery connected and detected","zh":"外置电池已连接并被识别"},
-            "help":{"en":"Connect the external battery and set the switch to the external position. The speaker must recognise it as its power source.",
-                    "zh":"接上外置电池并将开关拨到外置位置。音箱应识别其为供电来源。"}},
+           {"id":"external_on","code":"BAT-001","photo":true,
+            "label":{"en":"External battery connected and detected","zh":"外置电池已连接并被识别"},
+            "help":{"en":"Connect the external battery and set the switch to the external position. The speaker must recognise it as its power source. Photograph the battery connected, with its label readable: the picture is what says which battery was used and how it was wired, and no other point in the plan records that.",
+                    "zh":"接上外置电池并将开关拨到外置位置。音箱应识别其为供电来源。拍摄已连接的电池，标签需清晰可读：这张照片记录的是用了哪块电池以及如何接线，方案中没有其他项目会留下这个信息。"}},
            {"id":"switch","code":"BAT-003","label":{"en":"Battery switch works","zh":"电池切换开关有效"},
             "help":{"en":"Move the switch between internal and external. The speaker must respond to the change, not stay dead in one of the positions.",
                     "zh":"在内置与外置之间拨动开关。音箱应对切换有反应，不应在某一档位完全无电。"}},
@@ -1432,7 +1437,7 @@ const CONFIG = {
             "help":{"en":"Reconnect the internal battery, set the switch back to internal and close the speaker. Confirm it still works before finishing.",
                     "zh":"重新接上内置电池，将开关拨回内置，并装回箱体。确认恢复后仍能正常工作再结束。"}}]},
 
-        {"id":"INTERNAL","optional":true,"type":"photos","no_na":true,
+        {"id":"INTERNAL","optional":false,"type":"photos","no_na":true,
          "label":{"en":"INTERNAL PARTS","zh":"内部部件"},
          "steps":[
            {"en":"Remove the screws and open the speaker carefully","zh":"拆下螺丝，小心打开箱体"},
@@ -1985,6 +1990,7 @@ Object.assign(ES_PLAN, {
   "Press it and confirm the recording you just made plays back clearly through the speaker.":"Púlsela y confirme que la grabación que acaba de hacer se reproduce con claridad por el parlante.",
   "Press it while speaking into the microphone and listen for the change in the voice effect. Mark N/A if this reference has no VOICE OUT.":"Púlsela mientras habla al micrófono y escuche el cambio en el efecto de voz. Marque N/A si esta referencia no tiene VOICE OUT.",
   "With the speaker off and unplugged from the mains, open it and unplug the internal battery connector. Leave it disconnected for the whole test.":"Con el parlante apagado y desconectado de la red, ábralo y desconecte el conector de la batería interna. Déjela desconectada durante toda la prueba.",
+  "Connect the external battery and set the switch to the external position. The speaker must recognise it as its power source. Photograph the battery connected, with its label readable: the picture is what says which battery was used and how it was wired, and no other point in the plan records that.":"Conecte la batería externa y ponga el switch en la posición externa. El parlante debe reconocerla como su fuente de energía. Fotografíe la batería conectada, con su etiqueta legible: la foto es lo que dice qué batería se usó y cómo quedó conectada, y ningún otro punto del plan registra eso.",
   "Connect the external battery and set the switch to the external position. The speaker must recognise it as its power source.":"Conecte la batería externa y ponga el selector en la posición externa. El parlante debe reconocerla como su fuente de alimentación.",
   "Move the switch between internal and external. The speaker must respond to the change, not stay dead in one of the positions.":"Mueva el selector entre interna y externa. El parlante debe responder al cambio, no quedar muerto en una de las posiciones.",
   "Switch the speaker on with the mains cable unplugged. It must start up fully on the external battery alone.":"Encienda el parlante con el cable de red desconectado. Debe arrancar por completo solo con la batería externa.",
@@ -2141,6 +2147,8 @@ const T = {
   po_auto:"Assigned automatically when the inspection starts.",
   po_factory:"Write the order number this shipment belongs to. Left empty, the inspection goes out as %p.",
   a_na_section:"Mark the whole section \"%s\" as N/A?\n\nEvery point in it, on every speaker, including any already answered.",
+  a_na_section_undo:"Undo the N/A on the whole section \"%s\"?\n\nEvery point in it goes back to unanswered, on every speaker.",
+  na_undo_title:"The whole section is marked N/A — press to undo",
   tests_pick:"Tests to run", all_on:"Select all", all_off:"Clear all",
   n_selected:"<b>%n</b> of %tot tests selected.",
   admin_start:"START SELECTED TESTS",
@@ -2286,6 +2294,8 @@ const T = {
   po_auto:"Se asigna automáticamente al iniciar la inspección.",
   po_factory:"Escriba el número de orden al que pertenece el despacho. Si lo deja vacío, la inspección sale como %p.",
   a_na_section:"¿Marcar toda la sección \"%s\" como N/A?\n\nTodos sus puntos, en todos los parlantes, incluidos los que ya haya respondido.",
+  a_na_section_undo:"¿Deshacer el N/A de toda la sección \"%s\"?\n\nTodos sus puntos vuelven a quedar sin responder, en todos los parlantes.",
+  na_undo_title:"La sección completa está en N/A — pulse para deshacer",
   tests_pick:"Pruebas a ejecutar", all_on:"Seleccionar todas", all_off:"Quitar todas",
   n_selected:"<b>%n</b> de %tot pruebas seleccionadas.",
   admin_start:"INICIAR PRUEBAS SELECCIONADAS",
@@ -2429,6 +2439,8 @@ const T = {
   po_auto:"开始检验时自动分配。",
   po_factory:"请填写本批货所属的订单号。留空时，本次检验将以 %p 出具。",
   a_na_section:"将整个“%s”分组标记为不适用？\n\n该分组的所有检查项、所有音箱都会被标记，包括已经作答的项目。",
+  a_na_section_undo:"撤销整个“%s”分组的不适用标记？\n\n该分组的所有检查项将在所有音箱上恢复为未作答。",
+  na_undo_title:"整个分组已标记为不适用 — 点击可撤销",
   tests_pick:"要执行的测试", all_on:"全选", all_off:"全部取消",
   n_selected:"已选择 <b>%n</b> / %tot 项测试。",
   admin_start:"开始所选测试",
@@ -3132,8 +3144,19 @@ function collapseIfDone(pointId){
   const sec = list[at];
   const done = allUnits().every(u =>
     sec.points.every(p => ANSWERED.indexOf(row(u).points[p.id]) >= 0));
+  /* Answered is not the same as finished. A point that asks for its own
+     photograph or its own reading is not done until it has them, and folding
+     the section over a missing one presented it as complete: the operator only
+     found out at NEXT, with the box hidden behind a heading he had watched
+     close. */
   const pending = allUnits().some(u =>
-    sec.points.some(p => failOpen(row(u), p)));
+    sec.points.some(p => {
+      const r = row(u);
+      if(failOpen(r, p)) return true;
+      if(valueMissing(r, p)) return true;
+      return p.photo && r.points[p.id] !== "NA" &&
+        shotsFor(r, p.id).filter(m => m.kind === "photo").length === 0;
+    }));
   if(!(done && !pending)) return -1;
   delete S.open[secKey(sec.name)];
   return at;               // which one folded, so the view can follow it
@@ -5476,7 +5499,9 @@ function renderTest(){
       <div class="grp-h">
         <b onclick="toggleSection('${safe}',${ans},${tot})">${esc(sec.name || tr("checks"))}</b>
         ${badge}
-        ${canSectionNA()?`<button class="help-b na-sec" title="${esc(tr("na_title"))}"
+        ${canSectionNA()?`<button class="help-b na-sec${
+            secAllNA(sec)?" on":""}" title="${esc(
+            secAllNA(sec)?tr("na_undo_title"):tr("na_title"))}"
           onclick="naSection('${safe}')">${tr("na")}</button>`:""}
         ${sec.help?`<button class="help-b ${hOpen?"on":""}"
           onclick="toggleHelp('${safe}')">${hOpen?"−":"+"}</button>`:""}
@@ -5537,15 +5562,31 @@ function renderTest(){
    a section does not apply is a judgement about the plan, not about the unit. */
 const canSectionNA = () => S.fromAdmin && !S.selfCheck;
 
+/* Whether the whole section is already N/A, on every speaker. Drives both the
+   look of the button and what pressing it does. */
+function secAllNA(sec){
+  if(!sec || !sec.points.length) return false;
+  return allUnits().every(u =>
+    sec.points.every(p => row(u).points[p.id] === "NA"));
+}
+
+/* A switch, not a one-way action. Marking a whole section N/A by mistake used
+   to mean answering every point again by hand to undo it, and nothing on the
+   screen said the section had been marked at all — the badge read 12/12, the
+   same as a section that had been worked through. */
 function naSection(safe){
   const sec = sectionsOf(current())
     .find(s => String(s.name).replace(/['"\\]/g,"") === safe);
   if(!sec) return;
-  // It can overwrite answers already given, so it asks.
-  if(!confirm(fmt("a_na_section",{s: sec.name || tr("checks")}))) return;
+  const undo = secAllNA(sec);
+  // It can overwrite answers already given, so it asks — both ways round.
+  if(!confirm(fmt(undo ? "a_na_section_undo" : "a_na_section",
+                  {s: sec.name || tr("checks")}))) return;
   allUnits().forEach(u => {
     const r = row(u);
-    sec.points.forEach(p => { r.points[p.id] = "NA"; });
+    sec.points.forEach(p => {
+      if(undo) delete r.points[p.id]; else r.points[p.id] = "NA";
+    });
   });
   // Hand the section back to the automatic fold rule now that it is answered.
   delete S.open[secKey(sec.name)];
