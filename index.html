@@ -4048,8 +4048,21 @@ ${/* The origin is already stated as a field in the table above; the paragraph
 
     const note = ((r0 && r0.comment) || "").trim();
     const noteTr = r0 ? trSpans(r0, "comment") : "";
+    /* The verdict of the test across every speaker, not the verdict of speaker
+       one. A test that passed on unit 1 and failed on unit 2 is a failed test:
+       reading r0 alone filed it under the tests that passed, next to a table
+       showing its own ✗ two columns to the right. */
+    let verdict = null;
+    allUnits().forEach(u => {
+      const rr = unitRows(u)[i];
+      if(!rr || !rr.verdict) return;
+      if(rr.verdict === "FAIL") verdict = "FAIL";
+      else if(verdict !== "FAIL") verdict = verdict === "PASS" ? "PASS" : rr.verdict;
+      if(rr.verdict === "PASS" && verdict !== "FAIL") verdict = "PASS";
+    });
+
     return {t, i, r0, isDoc, photos, pointShots, videos, note, noteTr, reads,
-            verdict: r0 ? r0.verdict : null};
+            verdict};
   });
 
   /* Two different questions, so two different tables. Section II says how each
