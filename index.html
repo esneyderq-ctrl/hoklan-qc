@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="5.6">
+<meta name="app-version" content="5.7">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -396,7 +396,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "5.6";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "5.7";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -5906,10 +5906,22 @@ function goHome(){
 }
 
 const topBtn = document.getElementById("toTop");
+/* HOME is offered only once the inspection is closed.
+
+   Not in Admin: the tabs are already the way back, and a HOME button next to
+   them would be a second one that does something slightly different.
+
+   Not while the checklist is open either. That button discards every answer and
+   every photograph taken so far, and on a phone held in one hand next to a
+   speaker it sits a thumb's width from the buttons the operator is pressing all
+   day. There is no reason to leave a test half way: an inspection launched from
+   Admin has ABORT, which records what was done, and a factory inspection is
+   meant to be finished.
+
+   It comes back on the finish and report screens, where the work is already
+   done and the operator needs a way to start the next unit. */
 function updateTopBtn(){
-  // Not in Admin: the tabs are already the way back, and a HOME button next to
-  // them would just be a second one that does something slightly different.
-  const show = S.screen !== "setup" && !inAdmin();
+  const show = (S.screen === "done" || S.screen === "report") && !inAdmin();
   topBtn.className = "totop" + (show ? " show" : "");
   topBtn.textContent = tr("home");
 }
