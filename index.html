@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="5.5">
+<meta name="app-version" content="5.6">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -396,7 +396,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "5.5";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "5.6";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -4935,8 +4935,21 @@ function refImgFail(img){
    reference photo: one hand is holding a speaker.
 
    The × keeps working because it stops the event before it reaches here. */
+/* Straight through the records rather than through mediaList(): that one
+   returns wrappers built for naming files in the packet — {m, unit, test…} —
+   so looking for a uid on them never matched anything and the viewer opened
+   on nothing at all. */
+function findMedia(uid){
+  let hit = null;
+  allUnits().forEach(u => unitRows(u).forEach(r => {
+    if(!r) return;
+    (r.media || []).forEach(m => { if(!hit && m.uid === uid) hit = m; });
+  }));
+  return hit;
+}
+
 function zoomMedia(uid){
-  const m = mediaList().find(x => x.uid === uid);
+  const m = findMedia(uid);
   if(!m) return;
   const box = document.createElement("div");
   box.className = "ri-zoom";
