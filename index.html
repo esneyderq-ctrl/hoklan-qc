@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="5.4">
+<meta name="app-version" content="5.5">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -296,7 +296,8 @@ td:last-child{text-align:right;font-weight:700}
 .ri-zoom{position:fixed;inset:0;z-index:60;background:rgba(3,8,15,.94);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:14px;padding:22px}
-.ri-zoom img{max-width:100%;max-height:76vh;object-fit:contain;border-radius:10px}
+.ri-zoom img,.ri-zoom video{max-width:100%;max-height:76vh;object-fit:contain;
+  border-radius:10px}
 .ri-zoom span{color:var(--muted);font-size:13px;letter-spacing:1px}
 
 /* The erase sheet. Every row says what it holds before offering to remove it:
@@ -395,7 +396,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "5.4";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "5.5";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -548,7 +549,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 13,
+      "plan_version": 14,
       "tests": [
         {"id":"USB","optional":false,
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -978,8 +979,8 @@ const CONFIG = {
            {"id":"spl_1khz","code":"AUD-012","photo":true,
             "measure":{"unit":"dB","step":"0.1"},
             "label":{"en":"SPL at 1 kHz, one metre","zh":"1 kHz 声压级（1 米）"},
-            "help":{"en":"Take the sound level meter and set it to PEAK and SLOW. Place it one metre from the speaker, at the same height as the woofer and pointing at it. From the phone, over Bluetooth, play a 1 kHz tone with a signal generator app. Photograph the meter with the reading visible and write the value in the box.",
-                    "zh":"取声级计，设置为峰值（PEAK）和慢档（SLOW）。将其置于距音箱一米处，与低音单元同高并正对。用手机通过蓝牙，以信号发生器 App 播放 1 kHz 正弦音。拍摄声级计读数清晰可见的照片，并将数值填入方框。"}}]},
+            "help":{"en":"Everything at maximum before measuring: bass, treble, the volume on the speaker and the volume on the phone. What is being measured is what this unit can deliver, and a single control left halfway makes the reading worthless and impossible to compare with the next speaker. Then take the sound level meter and set it to PEAK and SLOW. Place it one metre from the speaker, at the same height as the woofer and pointing at it. From the phone, over Bluetooth, play a 1 kHz tone with a signal generator app. Photograph the meter with the reading visible and write the value in the box.",
+                    "zh":"测量前全部调到最大：低音、高音、音箱音量和手机音量。所测的是本机能达到的水平，任何一个旋钮停在中间，这个数据就失去意义，也无法与下一台比较。然后取声级计，设置为峰值（PEAK）和慢档（SLOW），置于距音箱一米处，与低音单元同高并正对。用手机通过蓝牙，以信号发生器 App 播放 1 kHz 正弦音。拍摄声级计读数清晰可见的照片，并将数值填入方框。"}}]},
 
         {"id":"RADIO_FM","optional":true,
          "label":{"en":"FM RADIO","zh":"调频收音"},
@@ -1821,7 +1822,7 @@ Object.assign(ES_PLAN, {
   "Sound pressure level at 1 kHz":"Medición de SPL a 1 kHz",
   "Measured over Bluetooth because that is how the customer uses the speaker, and because the phone is both the source and the meter. Volume at maximum on the speaker and on the phone: what is being measured is what this unit can deliver, not what it was left at.":"Se mide por Bluetooth porque así es como el cliente usa el parlante, y porque el mismo teléfono es la fuente y el medidor. Volumen al máximo en el parlante y en el teléfono: lo que se mide es lo que esta unidad puede entregar, no dónde quedó el control.",
   "SPL at 1 kHz, one metre":"SPL a 1 kHz, a un metro",
-  "Take the sound level meter and set it to PEAK and SLOW. Place it one metre from the speaker, at the same height as the woofer and pointing at it. From the phone, over Bluetooth, play a 1 kHz tone with a signal generator app. Photograph the meter with the reading visible and write the value in the box.":"Tome el sonómetro y configúrelo en PICO (PEAK) y LENTA (SLOW). Ubíquelo a un metro del parlante, a la misma altura del woofer y apuntando hacia él. Desde el celular, por Bluetooth, reproduzca un tono de 1 kHz con una aplicación generadora de señal. Fotografíe el sonómetro con la lectura visible y escriba el valor en el recuadro.",
+  "Everything at maximum before measuring: bass, treble, the volume on the speaker and the volume on the phone. What is being measured is what this unit can deliver, and a single control left halfway makes the reading worthless and impossible to compare with the next speaker. Then take the sound level meter and set it to PEAK and SLOW. Place it one metre from the speaker, at the same height as the woofer and pointing at it. From the phone, over Bluetooth, play a 1 kHz tone with a signal generator app. Photograph the meter with the reading visible and write the value in the box.":"Todo al máximo antes de medir: graves, agudos, el volumen de la cabina y el volumen del celular. Lo que se mide es lo que esta unidad puede entregar, y un solo control a media marcha deja la lectura sin valor e imposible de comparar con el siguiente parlante. Luego tome el sonómetro y configúrelo en PICO (PEAK) y LENTA (SLOW). Ubíquelo a un metro del parlante, a la misma altura del woofer y apuntando hacia él. Desde el celular, por Bluetooth, reproduzca un tono de 1 kHz con una aplicación generadora de señal. Fotografíe el sonómetro con la lectura visible y escriba el valor en el recuadro.",
   "Woofer — weight":"Woofer — peso",
   "Place the woofer on the scale on its own, with no screws, gasket or cable attached. Photograph the reading and write the value in the box. Weight is what tells the magnet apart: two woofers that look identical from the front can be hundreds of grams apart, and that difference is the sound.":"Coloque el woofer solo sobre la balanza, sin tornillos, empaque ni cables. Fotografíe la medida y escriba el valor en el recuadro. El peso es lo que delata el imán: dos woofers idénticos de frente pueden diferir en cientos de gramos, y esa diferencia es el sonido.",
   "Bag the speaker is packed in":"Bolsa en que viene empacado el parlante",
@@ -2106,6 +2107,7 @@ const T = {
   concl_fail:"%n point(s) failed. See sections III and IV.",
   nc_found:"NONCONFORMITIES FOUND", tests_done:"TESTS PERFORMED",
   th_photos:"Photos", n_readings:"%n readings", no_remarks:"No remarks recorded.",
+  tap_close:"tap anywhere to close",
   concl_pass:"All applicable points passed.",
   footer_note:"Generated by HOKLAN QC. Photo timestamps come from the phone at the moment of capture.",
   th_test:"Test", th_result:"Result", th_point:"Point",
@@ -2250,6 +2252,7 @@ const T = {
   concl_fail:"%n punto(s) fallaron. Véanse las secciones III y IV.",
   nc_found:"NO CONFORMIDADES ENCONTRADAS", tests_done:"PRUEBAS REALIZADAS",
   th_photos:"Fotos", n_readings:"%n mediciones", no_remarks:"Sin observaciones.",
+  tap_close:"toque en cualquier parte para cerrar",
   concl_pass:"Todos los puntos aplicables aprobaron.",
   footer_note:"Generado por HOKLAN QC. Las marcas de tiempo de las fotos provienen del teléfono en el momento de la captura.",
   th_test:"Prueba", th_result:"Resultado", th_point:"Punto",
@@ -2392,6 +2395,7 @@ const T = {
   concl_fail:"共 %n 项异常，详见第 III、IV 节。",
   nc_found:"发现的异常项", tests_done:"已执行的测试",
   th_photos:"照片", n_readings:"%n 项实测值", no_remarks:"无备注。",
+  tap_close:"点击任意处关闭",
   concl_pass:"所有适用项目均合格。",
   footer_note:"由 HOKLAN QC 生成。照片时间戳取自拍摄时手机的时间。",
   th_test:"测试", th_result:"结果", th_point:"检查项",
@@ -4924,6 +4928,30 @@ function refImgFail(img){
     ? tr("ref_img_off") : tr("ref_img_none");
 }
 
+/* Any piece of evidence, opened full screen from its thumbnail. A photograph of
+   a sound level meter is unreadable at 62 px, and the operator has to be able to
+   check the reading he is about to write down — and to see whether the shot came
+   out at all — without leaving the test. Closes on a tap anywhere, like the
+   reference photo: one hand is holding a speaker.
+
+   The × keeps working because it stops the event before it reaches here. */
+function zoomMedia(uid){
+  const m = mediaList().find(x => x.uid === uid);
+  if(!m) return;
+  const box = document.createElement("div");
+  box.className = "ri-zoom";
+  box.onclick = () => box.remove();
+  box.innerHTML = m.kind === "photo"
+    ? `<img src="${m.url}" alt="">`
+    // Controls and no autoplay: the operator decides when it runs, and a clip
+    // that starts by itself in a quiet workshop is startling.
+    : `<video src="${m.url}" controls playsinline
+         onclick="event.stopPropagation()"></video>`;
+  box.innerHTML += `<span>${esc(m.kind === "photo" ? tr("photo") : tr("video"))
+    } · ${esc(tr("tap_close"))}</span>`;
+  document.body.appendChild(box);
+}
+
 function zoomRef(){
   const img = document.getElementById("riImg");
   if(!img || !img.complete || !img.naturalWidth) return;   // nothing loaded yet
@@ -5267,10 +5295,10 @@ function abortBlock(){
 
 function mediaBlock(r){
   return `<div class="media">${r.media.filter(m=>!m.slot).map(m=>`
-    <div class="thumb">
+    <div class="thumb" onclick="zoomMedia('${m.uid}')">
       ${m.kind==="photo"?`<img src="${m.url}">`:`<video src="${m.url}" muted></video>`}
       <b>${m.kind==="photo"?tr("photo"):tr("video")}</b>
-      <span onclick="dropMedia('${m.uid}')">×</span>
+      <span onclick="event.stopPropagation();dropMedia('${m.uid}')">×</span>
     </div>`).join("")}</div>`;
 }
 
@@ -5330,8 +5358,9 @@ function pointRow(p, u, showTag){
       <input id="ps_${id}" class="hidden" type="file" accept="image/*"
         capture="environment" multiple onchange="addMedia(this,${u},'${p.id}')">
       <div class="media">${shots.filter(m=>m.kind==="photo").map(m=>`
-        <div class="thumb"><img src="${m.url}">
-          <span onclick="dropMedia('${m.uid}')">×</span></div>`).join("")}</div>`:""}
+        <div class="thumb" onclick="zoomMedia('${m.uid}')"><img src="${m.url}">
+          <span onclick="event.stopPropagation();dropMedia('${m.uid}')">×</span>
+        </div>`).join("")}</div>`:""}
       ${wantValue?measureBox(p, u, id):""}
       ${shotMissing?`<em>${tr("need_point_photo")}</em>`:""}
     </div>` : "";
@@ -5358,10 +5387,10 @@ function pointRow(p, u, showTag){
       <input id="pv_${id}" class="hidden" type="file" accept="video/*"
         capture="environment" multiple onchange="addMedia(this,${u},'${p.id}')">
       <div class="media">${shots.map(m=>`
-        <div class="thumb">
+        <div class="thumb" onclick="zoomMedia('${m.uid}')">
           ${m.kind==="photo"?`<img src="${m.url}">`:`<video src="${m.url}" muted></video>`}
           <b>${m.kind==="photo"?tr("photo"):tr("video")}</b>
-          <span onclick="dropMedia('${m.uid}')">×</span>
+          <span onclick="event.stopPropagation();dropMedia('${m.uid}')">×</span>
         </div>`).join("")}</div>
       <textarea placeholder="${tr("notes_fail_ph")}"
         oninput="noteTyped(${u},'${p.id}', this.value)"
@@ -5644,8 +5673,9 @@ function renderPhotoTest(t, r, done, total){
       <input id="s_${p.id}" class="hidden" type="file" accept="image/*"
         capture="environment" multiple onchange="addMedia(this,0,'${p.id}')">
       <div class="media">${shots.map(m=>`
-        <div class="thumb"><img src="${m.url}">
-          <span onclick="dropMedia('${m.uid}')">×</span></div>`).join("")}</div>
+        <div class="thumb" onclick="zoomMedia('${m.uid}')"><img src="${m.url}">
+          <span onclick="event.stopPropagation();dropMedia('${m.uid}')">×</span>
+        </div>`).join("")}</div>
       ${p.measure && !na ? measureBox(p, 0, "0_" + p.id) : ""}
     </div>`;
   }).join("");
