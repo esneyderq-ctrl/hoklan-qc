@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="5.9">
+<meta name="app-version" content="6.0">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -408,7 +408,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "5.9";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "6.0";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -2123,6 +2123,8 @@ const T = {
   concl_fail:"%n point(s) failed. See sections III and IV.",
   nc_found:"NONCONFORMITIES FOUND", tests_done:"TESTS PERFORMED",
   tests_ok:"TESTS PASSED", test_evidence:"evidence of the test",
+  speaker_short:"S%n",
+  doc_once:"This section documents the shipment, not each speaker: its photographs are taken once for the lot.",
   th_photos:"Photos", n_readings:"%n readings", no_remarks:"No remarks recorded.",
   tap_close:"tap anywhere to close",
   concl_pass:"All applicable points passed.",
@@ -2273,6 +2275,8 @@ const T = {
   concl_fail:"%n punto(s) fallaron. Véanse las secciones III y IV.",
   nc_found:"NO CONFORMIDADES ENCONTRADAS", tests_done:"PRUEBAS REALIZADAS",
   tests_ok:"PRUEBAS APROBADAS", test_evidence:"evidencia de la prueba",
+  speaker_short:"P%n",
+  doc_once:"Esta sección documenta el despacho, no cada parlante: sus fotos se toman una sola vez para el lote.",
   th_photos:"Fotos", n_readings:"%n mediciones", no_remarks:"Sin observaciones.",
   tap_close:"toque en cualquier parte para cerrar",
   concl_pass:"Todos los puntos aplicables aprobaron.",
@@ -2421,6 +2425,8 @@ const T = {
   concl_fail:"共 %n 项异常，详见第 III、IV 节。",
   nc_found:"发现的异常项", tests_done:"已执行的测试",
   tests_ok:"合格的测试", test_evidence:"该测试的证据",
+  speaker_short:"%n 号",
+  doc_once:"本节记录的是整批货，而非每台音箱：其照片按批次拍摄一次。",
   th_photos:"照片", n_readings:"%n 项实测值", no_remarks:"无备注。",
   tap_close:"点击任意处关闭",
   concl_pass:"所有适用项目均合格。",
@@ -3561,6 +3567,66 @@ function buildFindings(){
   return out;
 }
 
+/* Every point of a test that passed, one row each, with a column per speaker.
+
+   The obvious layout — repeat the whole checklist once per speaker — multiplies
+   by five what is almost always the same answer five times, and turns a claim
+   about one unit into a comparison somebody has to do by memory across pages.
+   Side by side, a single ✗ in a row of ✓ says immediately that the fault is in
+   that cabinet and not in the lot. Two hundred rows whatever the number of
+   speakers, instead of two hundred per speaker.
+
+   Photo sections document the shipment, not each unit: their pictures live on
+   speaker 1 and their row carries one mark for the lot, said out loud rather
+   than left looking like four missing answers. */
+function pointsTable(b){
+  const t = b.t;
+  const secs = sectionsOf(t);
+  if(!secs.length) return "";
+  const many = S.units > 1;
+  const isDoc = t.type === "photos";
+  const cols = (many && !isDoc) ? S.units : 1;
+
+  // A word when there is room for a word, a symbol when there are five columns.
+  const mark = v => {
+    if(v === "PASS") return `<span class="p">${many ? "✓" : tr("ok")}</span>`;
+    if(v === "FAIL") return `<span class="f">${many ? "✗" : tr("fail")}</span>`;
+    if(v === "NA")   return `<span class="na">${tr("na")}</span>`;
+    return `<span class="na">—</span>`;
+  };
+
+  let rows = "";
+  secs.forEach(sec => {
+    if(sec.name)
+      rows += `<tr><td class="g" colspan="${cols + 1}">${esc(sec.name)}</td></tr>`;
+    sec.points.forEach(p => {
+      let cells = "";
+      if(isDoc){
+        const r0 = unitRows(0)[b.i];
+        const v = r0 && r0.points[p.id] === "NA" ? "NA"
+                : (r0 && shotsFor(r0, p.id).length) ? "PASS" : "";
+        cells = `<td class="c" colspan="${cols}">${mark(v)}</td>`;
+      } else {
+        for(let u = 0; u < cols; u++){
+          const r = unitRows(u)[b.i];
+          cells += `<td class="c">${mark(r ? r.points[p.id] : "")}</td>`;
+        }
+      }
+      rows += `<tr><td>${esc(L(p.label))}</td>${cells}</tr>`;
+    });
+  });
+  if(!rows) return "";
+
+  const head = `<tr><th>${tr("th_point")}</th>${
+    (many && !isDoc)
+      ? allUnits().map(i => `<th class="c" style="width:44px">${
+          fmt("speaker_short",{n:i+1})}</th>`).join("")
+      : `<th class="c" style="width:96px">${tr("th_result")}</th>`}</tr>`;
+
+  return `<table class="pts">${head}${rows}</table>${
+    isDoc && many ? `<p class="pts-n">${tr("doc_once")}</p>` : ""}`;
+}
+
 function reportHtml(){
   const v = finalVerdict();
   const colour = v === "PASS" ? "#17743a" : v === "FAIL" ? "#b3261e" : "#9a6b00";
@@ -3656,16 +3722,25 @@ td.v{font-weight:400}
 .reads td b{font-size:11pt}
 /* The index of findings: R number, where it was found, and its code. Read in
    one pass before any of them is opened. */
-/* A test that passed: its name, and everything about it stepped in underneath.
-   A list rather than a table — there is one row per test and nothing to compare
-   down a column, and the remark needs the width. */
-.okt{margin:9px 0 0;page-break-inside:avoid}
-.okt > b{font-size:10pt;letter-spacing:.4px}
-.okt-b{margin:2px 0 0 16px;font-size:9pt;color:#33475b;line-height:1.55}
-.okt-b b{font-weight:700}
+/* A test that passed: name on the left in the grey column, everything about it
+   on the right — the same two-column shape the identification block uses, so
+   the section belongs to the document instead of looking like a list pasted
+   into it. */
+.okt{margin:10px 0 0;page-break-inside:avoid}
+.okt td.k{font-size:9.5pt;letter-spacing:.4px;vertical-align:top}
+.okt td.v{font-size:9pt;color:#33475b;line-height:1.55}
+.okt td.v b{font-weight:700}
 .okt-tr{margin-left:10px;color:#5a6b7d}
 .okt-tr .en{display:block}
 .okt-no{color:#8fa1b3;font-style:italic}
+
+/* The checklist of that test: one row per point, one column per speaker. */
+.pts{margin:0 0 4px;font-size:8pt}
+.pts th{font-size:7.5pt;padding:3px 7px}
+.pts td{padding:2px 7px;border-color:#e6ecf2}
+.pts td.g{background:#fbfcfd;color:#5a6b7d;font-weight:700;font-size:7.5pt;
+  letter-spacing:.4px}
+.pts-n{font-size:7.5pt;color:#8fa1b3;margin:0 0 6px;font-style:italic}
 .ncidx{margin:6px 0 4px}
 .ncidx td{padding:5px 8px}
 .ncidx .r{width:34px;color:#e8720c;font-weight:700;text-align:center}
@@ -4055,9 +4130,9 @@ ${/* The origin is already stated as a field in the table above; the paragraph
       if(shots) bits.push(fmt("n_photos",{n:shots}));
       if(clips) bits.push(fmt("n_videos",{n:clips}));
 
-      h += `<div class="okt">
-        <b>${esc(L(b.t.label))}</b>
-        <div class="okt-b">
+      h += `<table class="okt"><tr>
+        <td class="k">${esc(L(b.t.label))}</td>
+        <td class="v">
           <div><span class="${verdictClass(b.verdict === "PASS" ? "PASS" : "N/A")}">${
             verdictText(b.verdict)}</span>${bits.length ? " · " + bits.join(" · ") : ""}</div>
           ${b.reads.map(x => `<div>${esc(x.label)}${
@@ -4067,7 +4142,7 @@ ${/* The origin is already stated as a field in the table above; the paragraph
             ? `<div><b>${tr("notes")}:</b> ${esc(b.note)}</div>${
                 b.noteTr ? `<div class="okt-tr">${b.noteTr}</div>` : ""}`
             : `<div class="okt-no">${tr("no_remarks")}</div>`}
-        </div></div>`;
+        </td></tr></table>${pointsTable(b)}`;
     });
   }
 
@@ -4166,7 +4241,9 @@ ${/* The origin is already stated as a field in the table above; the paragraph
           esc(inspectionDate(S.startedAt))}</span>
         <span>${findings.length ? fmt("concl_fail",{n:findings.length})
                                 : tr("concl_pass")}</span>
-        ${scope?`<b class="f">${fmt("scope_part",{n:scope.n, tot:scope.tot})}</b>`:""}
+        ${/* The partial scope is not repeated here. It is stated as a field in
+              section I and again in the note under it, and a third time inside
+              the conclusion it read as a second verdict. */""}
       </div>
     </div>
     ${/* The signature and nothing else. The note about where the photo
