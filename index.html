@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="6.0">
+<meta name="app-version" content="6.1">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -408,7 +408,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "6.0";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "6.1";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -2124,6 +2124,8 @@ const T = {
   nc_found:"NONCONFORMITIES FOUND", tests_done:"TESTS PERFORMED",
   tests_ok:"TESTS PASSED", test_evidence:"evidence of the test",
   speaker_short:"S%n",
+  time_start:"Start time", time_end:"End time", duration:"Duration",
+  dur_hm:"%h h %m min", dur_m:"%m min",
   doc_once:"This section documents the shipment, not each speaker: its photographs are taken once for the lot.",
   th_photos:"Photos", n_readings:"%n readings", no_remarks:"No remarks recorded.",
   tap_close:"tap anywhere to close",
@@ -2280,6 +2282,8 @@ const T = {
   nc_found:"NO CONFORMIDADES ENCONTRADAS", tests_done:"PRUEBAS REALIZADAS",
   tests_ok:"PRUEBAS APROBADAS", test_evidence:"evidencia de la prueba",
   speaker_short:"P%n",
+  time_start:"Hora de inicio", time_end:"Hora de finalización", duration:"Duración",
+  dur_hm:"%h h %m min", dur_m:"%m min",
   doc_once:"Esta sección documenta el despacho, no cada parlante: sus fotos se toman una sola vez para el lote.",
   th_photos:"Fotos", n_readings:"%n mediciones", no_remarks:"Sin observaciones.",
   tap_close:"toque en cualquier parte para cerrar",
@@ -2430,6 +2434,8 @@ const T = {
   nc_found:"发现的异常项", tests_done:"已执行的测试",
   tests_ok:"合格的测试", test_evidence:"该测试的证据",
   speaker_short:"%n 号",
+  time_start:"开始时间", time_end:"结束时间", duration:"用时",
+  dur_hm:"%h 小时 %m 分", dur_m:"%m 分",
   doc_once:"本节记录的是整批货，而非每台音箱：其照片按批次拍摄一次。",
   th_photos:"照片", n_readings:"%n 项实测值", no_remarks:"无备注。",
   tap_close:"点击任意处关闭",
@@ -2558,7 +2564,10 @@ const S = {
   selfCheck:false,
   units:1,       // how many speakers are on the bench
   data:[[]],     // data[speaker][testIndex] — every speaker's own answers
-  index:0, open:{}, startedAt:null
+  // `finishedAt` is stamped when the inspection is closed, not when the report
+  // is printed: the report can be reopened days later and must still say how
+  // long the inspection took, not how long ago it was.
+  index:0, open:{}, startedAt:null, finishedAt:null
 };
 
 /* The checklist is walked once and each question is answered for every speaker
@@ -2633,6 +2642,24 @@ function inspectionDate(ms){
   return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ` +
          `${p(d.getHours())}:${p(d.getMinutes())}`;
 }
+/* The day on its own, and the clock on its own. The report prints them in
+   different fields now: the date identifies the inspection, the two times
+   measure it. */
+const dayOnly = ms => inspectionDate(ms).slice(0, 10);
+const clockOnly = ms => inspectionDate(ms).slice(11);
+
+/* Wall clock, start to finish — pauses, lunch and interruptions included. Said
+   out loud in the report, because the first thing anybody does with a duration
+   on a signed document is compare it with another one. */
+function durationText(from, to){
+  if(!from || !to || to < from) return "—";
+  const mins = Math.round((to - from) / 60000);
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return h ? fmt("dur_hm",{h, m}) : fmt("dur_m",{m});
+}
+/* When the inspection was closed. Kept on the record rather than recomputed, so
+   a report printed again tomorrow shows the same duration as the first one. */
+const finishedAt = () => S.finishedAt || null;
 
 function sectionsOf(t){
   const out = []; let cur = null;
@@ -3413,7 +3440,7 @@ function nextTest(){
 
 function advance(){
   S.index++;
-  if(S.index >= tests().length) S.screen = "done";
+  if(S.index >= tests().length){ S.screen = "done"; markFinished(); }
   window.scrollTo(0,0);
   render(); save();
   // Translate the note just left behind while the operator reads the next test:
@@ -3840,18 +3867,25 @@ ${banner}
 <div class="idbox">
 <table>
   <tr><td class="k">${tr("test_id")}</td><td class="v nw">${esc(S.testId)}</td>
-      <td class="k">${tr("inspection")}</td><td class="v">${esc(inspectionDate(S.startedAt))}</td></tr>
+      <td class="k">${tr("inspection")}</td><td class="v">${
+        esc(dayOnly(S.startedAt))}</td></tr>
   <tr><td class="k">${tr("reference")}</td><td class="v nw">${esc(S.model)}</td>
       <td class="k">${tr("po")}</td><td class="v">${esc(poPrinted()||"—")}</td></tr>
-  ${/* The paired fields first, the full-width ones after. No "test plan" row:
-        the two version numbers were of no use to anybody reading the document
-        and now sit in the closing line instead.
-
-        The result by speaker is the only field here that grows — with five
-        speakers it prints five verdicts side by side — so it is the one given
-        the whole row; the other four are short and travel in pairs. */""}
-  <tr><td class="k">${tr("operator")}</td><td class="v">${esc(S.operator)}</td>
+  ${/* The clock in its own fields. The date above no longer carries the hour:
+        it was the same information printed twice, and the two times are what
+        the reader compares between one inspection and the next. */""}
+  <tr><td class="k">${tr("time_start")}</td><td class="v">${
+        esc(clockOnly(S.startedAt))}</td>
+      <td class="k">${tr("time_end")}</td><td class="v">${
+        finishedAt() ? esc(clockOnly(finishedAt())) : "—"}</td></tr>
+  <tr><td class="k">${tr("duration")}</td><td class="v"><b>${
+        esc(durationText(S.startedAt, finishedAt()))}</b></td>
       <td class="k">${tr("units_report")}</td><td class="v">${S.units}</td></tr>
+  <tr><td class="k">${tr("operator")}</td><td class="v" colspan="3">${
+        esc(S.operator)}</td></tr>
+  ${/* The paired fields first, the full-width ones after. The result by speaker
+        is the only field here that grows — with five speakers it prints five
+        verdicts side by side — so it is the one given the whole row. */""}
   <tr><td class="k">${tr("by_unit")}</td><td class="v" colspan="3">${
         allUnits().map(i=>{
         const uv = unitVerdict(unitRows(i));
@@ -5107,7 +5141,7 @@ function adminStart(){
   S.selfCheck = isFactoryUser();
   S.index = 0; S.open = {};
   S.data = Array.from({length:S.units}, () => []);
-  S.startedAt = Date.now(); S.screen = "test";
+  S.startedAt = Date.now(); S.finishedAt = null; S.screen = "test";
   window.scrollTo(0,0);
   render(); save();
 }
@@ -5118,7 +5152,7 @@ function abortTest(){
   if(!confirm(tr("a_abort"))) return;
   clearDraft();
   S.data = [[]]; S.units = 1; S.index = 0; S.open = {};
-  S.startedAt = null; S.mediaDropped = false;
+  S.startedAt = null; S.finishedAt = null; S.mediaDropped = false;
   S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
   S.screen = ADMIN_OK ? "admin" : "setup";
   window.scrollTo(0,0);
@@ -5392,7 +5426,7 @@ function start(){
   S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
   S.index = 0; S.open = {};
   S.data = Array.from({length:S.units}, () => []);
-  S.startedAt = Date.now(); S.screen = "test";
+  S.startedAt = Date.now(); S.finishedAt = null; S.screen = "test";
   render(); save();
 }
 
@@ -5490,7 +5524,7 @@ function wipeDraft(){
   if(!confirm(tr("a_wipe_draft"))) return;
   clearDraft();
   S.data = [[]]; S.units = 1; S.index = 0; S.open = {};
-  S.po = ""; S.operator = ""; S.startedAt = null; S.mediaDropped = false;
+  S.po = ""; S.operator = ""; S.startedAt = null; S.finishedAt = null; S.mediaDropped = false;
   S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
   // Back to Admin, which is where the button now lives: dropping to the start
   // screen would mean typing the code again to carry on doing what you were.
@@ -5520,7 +5554,7 @@ function wipeAll(){
       .forEach(k => localStorage.removeItem(k));
   }catch(e){}
   S.data = [[]]; S.units = 1; S.index = 0; S.open = {};
-  S.po = ""; S.operator = ""; S.startedAt = null; S.mediaDropped = false;
+  S.po = ""; S.operator = ""; S.startedAt = null; S.finishedAt = null; S.mediaDropped = false;
   S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
   S.screen = ADMIN_OK ? "admin" : "setup";
   goHomeReset();
@@ -5989,7 +6023,15 @@ function goTest(i){
   window.scrollTo(0,0);   // a new test must start at its first step
   render(); save();
 }
-function finish(){ S.screen = "done"; render(); save(); ensureTranslations(); }
+/* Stamped the first time the inspection is closed and never again: reaching the
+   finish screen twice — because the operator went back to fix a photo — must not
+   stretch the duration the report prints. */
+function markFinished(){ if(!S.finishedAt) S.finishedAt = Date.now(); }
+
+function finish(){
+  S.screen = "done"; markFinished();
+  render(); save(); ensureTranslations();
+}
 
 function renderIndex(){
   const list = tests().map((t,i)=>{
@@ -6161,7 +6203,7 @@ function goHome(){
   clearDraft();
   S.screen = "setup"; S.index = 0; S.units = 1;
   S.data = [[]]; S.open = {};
-  S.startedAt = null; S.mediaDropped = false;
+  S.startedAt = null; S.finishedAt = null; S.mediaDropped = false;
   S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
   goHomeReset();
   window.scrollTo(0,0);
