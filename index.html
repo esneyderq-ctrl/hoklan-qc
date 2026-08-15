@@ -3618,10 +3618,14 @@ table{width:100%;border-collapse:collapse;font-size:9.5pt}
 th{background:#eef2f6;padding:6px 8px;text-align:left;border:1px solid #b9c6d4;
   font-size:9pt;color:#33475b}
 /* Left by default. The report is also shown inside the app, where the app's own
-   sheet aligns the last cell of a row to the right — on screen that pushed
-   every second value of the identification block against the border, and the
-   preview stopped matching the file that gets printed. */
+   sheet aligns the last cell of a row to the right and prints it bold — on
+   screen that pushed the values of every table against the border, and the
+   preview stopped matching the file that gets printed. The two rules below
+   cover the last cell specifically, because that is the one the app's sheet
+   claims; the centred cells take it back by being more specific still. */
 td{padding:6px 8px;border:1px solid #d5dde6;vertical-align:top;text-align:left}
+td:last-child{text-align:left;font-weight:400}
+td.c:last-child{text-align:center}
 /* Field name in bold, value in plain text: the eye finds the field it is
    looking for and then reads the answer, instead of the other way round. */
 td.k{background:#f7f9fb;width:170px;color:#33475b;font-weight:700}
@@ -3705,10 +3709,11 @@ td.v{font-weight:400}
 .concl .cx span,.concl .cx b{display:block}
 .concl .cx b{font-size:9pt;letter-spacing:0}
 
-/* The closing rule: the tool on the left, the caveat on the right. */
-.foot{display:flex;justify-content:space-between;gap:16px;margin-top:22px;
-  padding-top:8px;border-top:1px solid #d5dde6;font-size:7.5pt;color:#8fa1b3;
-  letter-spacing:.2px}
+/* The closing line. Centred, 7 pt, and a hairline above it: the convention for
+   the foot of a printed document, and small enough not to argue with the
+   verdict two centimetres above. */
+.foot{margin-top:22px;padding-top:7px;border-top:1px solid #e2e8ee;
+  text-align:center;font-size:7pt;color:#a8b4c0;letter-spacing:1.2px}
 .note{font-size:8.5pt;color:#5a6b7d;margin-top:6px}
 /* The note is printed as the inspector wrote it, with its English line under
    it. Same size, slightly darker: it is a translation, not a footnote. */
@@ -3839,14 +3844,12 @@ ${/* The origin is already stated as a field in the table above; the paragraph
       <td class="c ${cls}">${label}</td>
       <td style="color:#e8720c">${refs.join(" ")}</td></tr>`;
 
-    /* The note the inspector left on this test, under its row. This is the only
-       place a passing test's comment is printed: the findings sections cover
-       failures only, so without this a remark about a test that passed — "the speaker
-       arrived scratched but everything works" — never reached the report. */
-    const cmt = String((r.comment) || "").trim();
-    if(cmt)
-      h += `<tr class="cmt"><td colspan="6">${esc(cmt)}${
-        trSpans(r, "comment")}</td></tr>`;
+    /* No comment row here any more. It existed because the findings sections
+       cover failures only, so a remark about a test that passed had nowhere to
+       go; section V now prints it under its test, with its translations. Left
+       in both places it was the same paragraph twice, inside a table that is
+       meant to be read as a column of results. The Obs. column above still
+       carries the R numbers, which is what this table is for. */
   });
   });
   h += `</table>`;
@@ -4163,14 +4166,12 @@ ${/* The origin is already stated as a field in the table above; the paragraph
         ${scope?`<b class="f">${fmt("scope_part",{n:scope.n, tot:scope.tot})}</b>`:""}
       </div>
     </div>
-    ${/* Two ends of one rule: what produced the document on one side, the note
-          about the timestamps on the other. Neither is a sentence anybody reads
-          on purpose, so neither should sit in the middle of the page looking
-          like one. */""}
-    <div class="foot">
-      <span>HOKLAN QC · KŌHIN v${plan().plan_version}</span>
-      <span>${tr("footer_note")}</span>
-    </div>`;
+    ${/* The signature and nothing else. The note about where the photo
+          timestamps come from is a caveat about the evidence, not part of the
+          conclusion, and it is already in the READ_ME of the packet — next to
+          the photographs it is talking about. Here it only made the last line
+          of a signed document look like a disclaimer. */""}
+    <div class="foot">HOKLAN QC · KŌHIN v${plan().plan_version}</div>`;
 
   return h + `</body></html>`;
 }
@@ -4605,6 +4606,10 @@ function packetReadme(photos, videos, lost, lostVideos){
   }
   out.push("");
   out.push(tr("rm_pdf"));
+  // Moved out of the report's closing line and kept here, next to the folder of
+  // photographs it is talking about.
+  out.push("");
+  out.push(tr("footer_note"));
   // BOM: Notepad on Windows shows the Chinese and the em-dashes as mojibake
   // without it.
   return "﻿" + out.join("\r\n") + "\r\n";
