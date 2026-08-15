@@ -10,7 +10,7 @@
 <!-- The published version, readable without running the app: fetching the page
      is enough to tell which build is live. This tag is the single source of
      truth — APP_VERSION reads it — so there is one number to bump, not two. -->
-<meta name="app-version" content="5.3">
+<meta name="app-version" content="5.4">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -395,7 +395,7 @@ input.bad{border-color:var(--red)}
 ============================================================================ */
 
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "5.3";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "5.4";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -3887,7 +3887,7 @@ ${/* The origin is already stated as a field in the table above; the paragraph
 
     const note = ((r0 && r0.comment) || "").trim();
     const noteTr = r0 ? trSpans(r0, "comment") : "";
-    return {t, r0, isDoc, photos, pointShots, videos, note, noteTr, reads,
+    return {t, i, r0, isDoc, photos, pointShots, videos, note, noteTr, reads,
             verdict: r0 ? r0.verdict : null};
   });
 
@@ -3916,7 +3916,19 @@ ${/* The origin is already stated as a field in the table above; the paragraph
             <th class="c" style="width:84px">${tr("measured")}</th>
             <th class="c" style="width:46px">${tr("th_remark")}</th></tr>
         ${rowsV.map(b => {
-          const shots = b.photos.length + b.pointShots.length;
+          /* Everything the test carries, across every speaker — not only what
+             this section prints. A photograph of a defect is printed with its
+             finding, and counting only what is below said "1 photo" for a test
+             that has two. The column answers how much evidence exists, and it
+             has to be true wherever the evidence ended up. */
+          let shots = 0, clips = 0;
+          allUnits().forEach(u => {
+            const rr = unitRows(u)[b.i];
+            if(!rr) return;
+            (rr.media || []).forEach(m => {
+              if(m.kind === "photo") shots++; else clips++;
+            });
+          });
           const meas = b.reads.length
             ? (b.reads.length === 1
                 ? b.reads[0].v + " " + b.reads[0].unit
@@ -3926,7 +3938,7 @@ ${/* The origin is already stated as a field in the table above; the paragraph
             <td class="c ${verdictClass(b.verdict === "FAIL" ? "FAIL"
               : b.verdict === "PASS" ? "PASS" : "N/A")}">${verdictText(b.verdict)}</td>
             <td class="c">${shots || "—"}</td>
-            <td class="c">${b.videos.length || "—"}</td>
+            <td class="c">${clips || "—"}</td>
             <td class="c">${esc(meas)}</td>
             <td class="c">${b.note ? "✓" : "—"}</td></tr>`;
         }).join("")}
