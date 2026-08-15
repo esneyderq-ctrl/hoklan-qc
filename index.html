@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="5.8">
+<meta name="app-version" content="5.9">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -408,7 +408,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "5.8";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "5.9";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -2100,6 +2100,8 @@ const T = {
   wm_line:"HOKLAN · Official quality document", incomplete:"INCOMPLETE",
   rm_videos:"— %n video(s) recorded during the inspection.",
   rm_lost:"%n video(s) could not be included: the page was reloaded after recording them.",
+  lost_head:"%n video(s) could not be packed into the folder:",
+  lost_wechat:"They were not lost: they are still in this phone's gallery, where they were recorded. Send them by WeChat next to the packet, saying which inspection they belong to. A video only survives inside the app while the page stays open — reloading it, or opening another one, is what leaves it out.",
   rm_pdf:"To get the PDF: open REPORT_ES.html, REPORT_EN.html or REPORT_ZH.html in any browser, then Print → Save as PDF.",
   packet_note:"All of it travels as one ZIP file. Sending three separate attachments is how one of them gets lost.",
   packing:"Preparing the file… this takes a moment when there are videos.",
@@ -2120,6 +2122,7 @@ const T = {
   videos_n:"%n video(s) recorded, held on the phone and not embedded in this report.",
   concl_fail:"%n point(s) failed. See sections III and IV.",
   nc_found:"NONCONFORMITIES FOUND", tests_done:"TESTS PERFORMED",
+  tests_ok:"TESTS PASSED", test_evidence:"evidence of the test",
   th_photos:"Photos", n_readings:"%n readings", no_remarks:"No remarks recorded.",
   tap_close:"tap anywhere to close",
   concl_pass:"All applicable points passed.",
@@ -2247,6 +2250,8 @@ const T = {
   wm_line:"HOKLAN · Documento oficial de calidad", incomplete:"INCOMPLETA",
   rm_videos:"— %n video(s) grabados durante la inspección.",
   rm_lost:"%n video(s) no pudieron incluirse: la página se recargó después de grabarlos.",
+  lost_head:"%n video(s) no se pudieron empacar en la carpeta:",
+  lost_wechat:"No se perdieron: siguen en la galería de este teléfono, donde se grabaron. Envíelos por WeChat junto con el paquete, diciendo a qué inspección pertenecen. Un video solo sobrevive dentro de la app mientras la página siga abierta — recargarla, o abrir otra, es lo que lo deja por fuera.",
   rm_pdf:"Para obtener el PDF: abra REPORT_ES.html, REPORT_EN.html o REPORT_ZH.html en cualquier navegador y elija Imprimir → Guardar como PDF.",
   packet_note:"Todo viaja en un solo archivo ZIP. Enviar tres adjuntos por separado es la forma segura de perder uno.",
   packing:"Preparando el archivo… toma un momento cuando hay videos.",
@@ -2267,6 +2272,7 @@ const T = {
   videos_n:"%n video(s) grabados, guardados en el teléfono y no incrustados en este informe.",
   concl_fail:"%n punto(s) fallaron. Véanse las secciones III y IV.",
   nc_found:"NO CONFORMIDADES ENCONTRADAS", tests_done:"PRUEBAS REALIZADAS",
+  tests_ok:"PRUEBAS APROBADAS", test_evidence:"evidencia de la prueba",
   th_photos:"Fotos", n_readings:"%n mediciones", no_remarks:"Sin observaciones.",
   tap_close:"toque en cualquier parte para cerrar",
   concl_pass:"Todos los puntos aplicables aprobaron.",
@@ -2392,6 +2398,8 @@ const T = {
   wm_line:"HOKLAN · 官方质量文件", incomplete:"未完成",
   rm_videos:"— 检验过程中录制的 %n 段视频。",
   rm_lost:"有 %n 段视频未能打包：录制后页面被重新加载。",
+  lost_head:"有 %n 段视频未能打包进文件夹：",
+  lost_wechat:"这些视频并未丢失：它们仍保存在本机相册中，就是录制时的位置。请通过微信随压缩包一并发送，并注明属于哪次检验。视频只在页面保持打开期间存在于应用内——重新加载页面或打开其他页面，就会导致其无法打包。",
   rm_pdf:"获取 PDF：用任意浏览器打开 REPORT_ES.html、REPORT_EN.html 或 REPORT_ZH.html，然后选择 打印 → 另存为 PDF。",
   packet_note:"以上内容打包为一个 ZIP 文件一起发送。分成三个附件发送，往往会漏掉其中一个。",
   packing:"正在生成文件……包含视频时需要稍等片刻。",
@@ -2412,6 +2420,7 @@ const T = {
   videos_n:"已录制 %n 个视频，保存在手机中，未嵌入本报告。",
   concl_fail:"共 %n 项异常，详见第 III、IV 节。",
   nc_found:"发现的异常项", tests_done:"已执行的测试",
+  tests_ok:"合格的测试", test_evidence:"该测试的证据",
   th_photos:"照片", n_readings:"%n 项实测值", no_remarks:"无备注。",
   tap_close:"点击任意处关闭",
   concl_pass:"所有适用项目均合格。",
@@ -3643,9 +3652,16 @@ td.v{font-weight:400}
 .reads td b{font-size:11pt}
 /* The index of findings: R number, where it was found, and its code. Read in
    one pass before any of them is opened. */
-/* What backs each test up. Sits at the head of section V, before the blocks. */
-.evid{margin:6px 0 12px}
-.evid td{padding:5px 8px}
+/* A test that passed: its name, and everything about it stepped in underneath.
+   A list rather than a table — there is one row per test and nothing to compare
+   down a column, and the remark needs the width. */
+.okt{margin:9px 0 0;page-break-inside:avoid}
+.okt > b{font-size:10pt;letter-spacing:.4px}
+.okt-b{margin:2px 0 0 16px;font-size:9pt;color:#33475b;line-height:1.55}
+.okt-b b{font-weight:700}
+.okt-tr{margin-left:10px;color:#5a6b7d}
+.okt-tr .en{display:block}
+.okt-no{color:#8fa1b3;font-style:italic}
 .ncidx{margin:6px 0 4px}
 .ncidx td{padding:5px 8px}
 .ncidx .r{width:34px;color:#e8720c;font-weight:700;text-align:center}
@@ -3676,10 +3692,21 @@ td.v{font-weight:400}
 /* The verdict, stated once and no larger than it needs to be. Twenty-six point
    type was a poster; this is a document, and the word is not more true for
    being bigger. */
-.concl{border:2px solid ${colour};padding:12px 14px;text-align:center;
-  margin-top:10px}
-.concl b{display:block;font-size:15pt;color:${colour};letter-spacing:2px}
-.concl span{font-size:9pt;color:#5a6b7d}
+.concl{border:1.5px solid ${colour};padding:9px 14px;margin-top:10px;
+  display:flex;align-items:center;gap:14px}
+/* The verdict only — `> b`, not any bold inside the block. Without the child
+   selector the bold in the partial-scope note below inherited the verdict's
+   size and printed as a second headline twice the width of the conclusion. */
+.concl > b{font-size:15pt;color:${colour};letter-spacing:2px;white-space:nowrap}
+.concl .cx{margin-left:auto;text-align:right;font-size:9pt;color:#5a6b7d;
+  line-height:1.5}
+.concl .cx span,.concl .cx b{display:block}
+.concl .cx b{font-size:9pt;letter-spacing:0}
+
+/* The closing rule: the tool on the left, the caveat on the right. */
+.foot{display:flex;justify-content:space-between;gap:16px;margin-top:22px;
+  padding-top:8px;border-top:1px solid #d5dde6;font-size:7.5pt;color:#8fa1b3;
+  letter-spacing:.2px}
 .note{font-size:8.5pt;color:#5a6b7d;margin-top:6px}
 /* The note is printed as the inspector wrote it, with its English line under
    it. Same size, slightly darker: it is a translation, not a footnote. */
@@ -3949,74 +3976,105 @@ ${/* The origin is already stated as a field in the table above; the paragraph
      one went missing. Only the tests that left something behind get a block of
      their own further down — there is nothing to detail about a test the
      reference does not have. */
-  const rowsV = blocksV.filter(b => b.verdict);
-  const detailV = blocksV.filter(b => b.photos.length || b.pointShots.length
-                 || b.videos.length || b.note || b.reads.length);
+  /* The general evidence of a test that failed — the bench photograph, the clip
+     of the section being run — printed at the end of section IV, under the
+     findings it belongs to. It documents how the test was performed, not how it
+     came out, so it cannot travel with the tests that passed; and dropping it
+     would lose exactly the material a claim asks for. */
+  const badV = blocksV.filter(b => b.verdict === "FAIL" &&
+    (b.photos.length || b.videos.length || b.pointShots.length ||
+     b.note || b.reads.length));
+  badV.forEach(b => {
+    h += `<div class="sec" style="background:#fdf2ee"><i>&nbsp;</i><b>${
+      esc(L(b.t.label))}</b><em style="margin-left:auto;padding:6px 12px;
+      font-style:normal;font-size:8.5pt;color:#8a6a5c">${
+      tr("test_evidence")}</em></div>`;
 
-  if(rowsV.length){
-    h += `<div class="sec brk"><i>V</i><b>${tr("tests_done")}</b></div>
-      <table class="evid">
-        <tr><th>${tr("th_test")}</th>
-            <th class="c" style="width:86px">${tr("th_result")}</th>
-            <th class="c" style="width:48px">${tr("th_photos")}</th>
-            <th class="c" style="width:48px">${tr("video")}</th>
-            <th class="c" style="width:84px">${tr("measured")}</th>
-            <th class="c" style="width:46px">${tr("th_remark")}</th></tr>
-        ${rowsV.map(b => {
-          /* Everything the test carries, across every speaker — not only what
-             this section prints. A photograph of a defect is printed with its
-             finding, and counting only what is below said "1 photo" for a test
-             that has two. The column answers how much evidence exists, and it
-             has to be true wherever the evidence ended up. */
-          let shots = 0, clips = 0;
-          allUnits().forEach(u => {
-            const rr = unitRows(u)[b.i];
-            if(!rr) return;
-            (rr.media || []).forEach(m => {
-              if(m.kind === "photo") shots++; else clips++;
-            });
-          });
-          const meas = b.reads.length
-            ? (b.reads.length === 1
-                ? b.reads[0].v + " " + b.reads[0].unit
-                : fmt("n_readings",{n:b.reads.length}))
-            : "—";
-          return `<tr><td>${esc(L(b.t.label))}</td>
-            <td class="c ${verdictClass(b.verdict === "FAIL" ? "FAIL"
-              : b.verdict === "PASS" ? "PASS" : "N/A")}">${verdictText(b.verdict)}</td>
-            <td class="c">${shots || "—"}</td>
-            <td class="c">${clips || "—"}</td>
-            <td class="c">${esc(meas)}</td>
-            <td class="c">${b.note ? "✓" : "—"}</td></tr>`;
-        }).join("")}
-      </table>`;
+    if(b.reads.length)
+      h += `<table class="reads"><tr><th>${tr("th_point")}</th>${
+        S.units>1?`<th style="width:110px">${tr("speaker")}</th>`:""
+        }<th class="c" style="width:110px">${tr("measured")}</th></tr>${
+        b.reads.map(x => `<tr><td>${esc(x.label)}</td>${
+          S.units>1?`<td>${fmt("speaker_n",{n:x.u+1})}</td>`:""
+          }<td class="c"><b>${esc(x.v)}</b> ${esc(x.unit)}</td></tr>`).join("")}</table>`;
 
+    if(b.note)
+      h += `<p class="note"><b>${tr("notes")}:</b> ${esc(b.note)}${b.noteTr}</p>`;
+
+    if(b.videos.length)
+      h += `<div class="att">🎥 <b>${fmt("video_att",{n:b.videos.length})}</b><br>${
+        b.videos.map(v => {
+          const p = v.m.slot ? realPoints(b.t).find(x => x.id === v.m.slot) : null;
+          return esc([videoFiles[v.m.uid] || v.m.name || "video",
+                      p ? L(p.label) : "",
+                      S.units > 1 && !b.isDoc ? fmt("speaker_n",{n:v.u+1}) : ""]
+                     .filter(Boolean).join("  ·  "));
+        }).join("<br>")}</div>`;
+
+    const cells = b.pointShots.map(s => ({url:s.m.url, at:s.m.at,
+        cap: L(s.p.label) + (S.units > 1 ? " · " + fmt("speaker_n",{n:s.u+1}) : "")}))
+      .concat(b.photos.map(s => ({url:s.url, at:s.at, cap: L(b.t.label)})));
+    if(cells.length)
+      h += `<div class="grid">${cells.map(c => {
+        shot++;
+        return `<div class="cell"><div class="ph"><img src="${c.url}">
+          <span class="ts">${shotStamp(c.at)}</span></div>
+          <div class="cap">#${shot} ${esc(c.cap)}</div></div>`;
+      }).join("")}</div>`;
+  });
+
+  /* Only the tests that came out clean. The ones that failed are already in
+     III and IV, with their evidence, and repeating them here made this section
+     a second copy of the summary table. */
+  const okV = blocksV.filter(b => b.verdict && b.verdict !== "FAIL");
+
+  if(okV.length){
+    h += `<div class="sec brk"><i>V</i><b>${tr("tests_ok")}</b></div>`;
+
+    okV.forEach(b => {
+      /* Everything the test carries, across every speaker. A test with no
+         evidence at all still gets its line: the reader has to be able to see
+         that it was run and what it came out at. */
+      let shots = 0, clips = 0;
+      allUnits().forEach(u => {
+        const rr = unitRows(u)[b.i];
+        if(!rr) return;
+        (rr.media || []).forEach(m => {
+          if(m.kind === "photo") shots++; else clips++;
+        });
+      });
+      const bits = [];
+      if(shots) bits.push(fmt("n_photos",{n:shots}));
+      if(clips) bits.push(fmt("n_videos",{n:clips}));
+
+      h += `<div class="okt">
+        <b>${esc(L(b.t.label))}</b>
+        <div class="okt-b">
+          <div><span class="${verdictClass(b.verdict === "PASS" ? "PASS" : "N/A")}">${
+            verdictText(b.verdict)}</span>${bits.length ? " · " + bits.join(" · ") : ""}</div>
+          ${b.reads.map(x => `<div>${esc(x.label)}${
+            S.units>1 ? " · " + fmt("speaker_n",{n:x.u+1}) : ""
+            }: <b>${esc(x.v)}</b> ${esc(x.unit)}</div>`).join("")}
+          ${b.note
+            ? `<div><b>${tr("notes")}:</b> ${esc(b.note)}</div>${
+                b.noteTr ? `<div class="okt-tr">${b.noteTr}</div>` : ""}`
+            : `<div class="okt-no">${tr("no_remarks")}</div>`}
+        </div></div>`;
+    });
+  }
+
+  /* The photographs and clips of the tests that passed, kept out of the list
+     above so it stays readable, and printed together underneath it. */
+  const detailV = okV.filter(b => b.photos.length || b.pointShots.length
+                 || b.videos.length);
+
+  if(detailV.length){
     detailV.forEach(b => {
-      // The result next to the name of the test, so this section can be read
-      // on its own without going back to the summary table to find out how
-      // each one came out.
-      const bv = b.verdict;
+      // Only the name here: the result, the readings and the remark were
+      // printed in the list above, and repeating them over every block of
+      // photographs is what made this section read as a third summary.
       h += `<div class="sec" style="background:#f7f9fb"><i>&nbsp;</i><b>${
-        esc(L(b.t.label))}</b><em style="margin-left:auto;padding:6px 12px;
-        font-style:normal;font-size:9pt" class="${verdictClass(
-          bv === "FAIL" ? "FAIL" : bv === "PASS" ? "PASS" : "N/A")}">${
-        bv ? verdictText(bv) : ""}</em></div>`;
-
-      if(b.reads.length)
-        h += `<table class="reads"><tr><th>${tr("th_point")}</th>${
-          S.units>1?`<th style="width:110px">${tr("speaker")}</th>`:""
-          }<th class="c" style="width:110px">${tr("measured")}</th></tr>${
-          b.reads.map(x => `<tr><td>${esc(x.label)}</td>${
-            S.units>1?`<td>${fmt("speaker_n",{n:x.u+1})}</td>`:""
-            }<td class="c"><b>${esc(x.v)}</b> ${esc(x.unit)}</td></tr>`).join("")}</table>`;
-
-      /* Said out loud when there is nothing to say. A blank space where a
-         remark would go is ambiguous — the reader cannot tell whether the
-         inspector wrote nothing or the report lost the text. */
-      h += b.note
-        ? `<p class="note"><b>${tr("notes")}:</b> ${esc(b.note)}${b.noteTr}</p>`
-        : `<p class="note" style="font-style:italic;color:#8fa1b3">${
-            tr("no_remarks")}</p>`;
+        esc(L(b.t.label))}</b></div>`;
 
       if(b.videos.length)
         h += `<div class="att">🎥 <b>${fmt("video_att",{n:b.videos.length})}</b><br>${
@@ -4089,16 +4147,28 @@ ${/* The origin is already stated as a field in the table above; the paragraph
           <td>${esc(cs.join(", ")) || "—"}</td></tr>`;
       }).join("")}
     </table>`:""}
+    ${/* The verdict alone on the left, everything that qualifies it stacked on
+          the right. Wide and shallow: it is the last line of a document, not a
+          poster, and the right-hand block can grow — partial scope, factory
+          origin — without the box changing shape. */""}
     <div class="concl">
       <b>${verdictText(v)}</b>
-      <span>${tr("operator")}: ${esc(S.operator)} · ${esc(inspectionDate(S.startedAt))}</span>
-      ${findings.length?`<div class="note" style="margin-top:10px">
-        ${fmt("concl_fail",{n:findings.length})}</div>`:
-        `<div class="note" style="margin-top:10px">${tr("concl_pass")}</div>`}
-      ${scope?`<div class="note" style="margin-top:8px"><b>${
-        fmt("scope_part",{n:scope.n, tot:scope.tot})}</b></div>`:""}
+      <div class="cx">
+        <span>${tr("operator")}: ${esc(S.operator)} · ${
+          esc(inspectionDate(S.startedAt))}</span>
+        <span>${findings.length ? fmt("concl_fail",{n:findings.length})
+                                : tr("concl_pass")}</span>
+        ${scope?`<b class="f">${fmt("scope_part",{n:scope.n, tot:scope.tot})}</b>`:""}
+      </div>
     </div>
-    <p class="note">${tr("footer_note")} · KŌHIN v${plan().plan_version}</p>`;
+    ${/* Two ends of one rule: what produced the document on one side, the note
+          about the timestamps on the other. Neither is a sentence anybody reads
+          on purpose, so neither should sit in the middle of the page looking
+          like one. */""}
+    <div class="foot">
+      <span>HOKLAN QC · KŌHIN v${plan().plan_version}</span>
+      <span>${tr("footer_note")}</span>
+    </div>`;
 
   return h + `</body></html>`;
 }
@@ -4430,6 +4500,11 @@ async function buildPacket(){
   let lost = 0, photos = 0, videos = 0;
   const files = [];
   const seen = {};   // same name twice would silently overwrite in some tools
+  /* The clips that could not be packed, by the name they would have carried.
+     A count on its own — "2 videos could not be included" — leaves the operator
+     with no way to know which two, and the recordings are still sitting in the
+     phone's gallery. Named, they can be found there and sent by hand. */
+  const lostVideos = [];
 
   mediaList().forEach(v => {
     const isVideo = v.m.kind === "video";
@@ -4443,7 +4518,11 @@ async function buildPacket(){
       // `instanceof Blob`, not for truthiness — JSON.stringify turns a File
       // into `{}`, which is truthy, and a restored draft would then pack a
       // 15-byte file containing "[object Object]" and report nothing lost.
-      if(!(v.m.file instanceof Blob)){ lost++; return; }
+      if(!(v.m.file instanceof Blob)){
+        lost++;
+        lostVideos.push(stem + (v.m.at ? "  ·  " + shotStamp(v.m.at) : ""));
+        return;
+      }
       const ext = (v.m.name && v.m.name.indexOf(".") >= 0)
         ? v.m.name.split(".").pop().toLowerCase().slice(0,4) : "mp4";
       files.push({name: `${base}/videos/${stem}.${ext}`, data: v.m.file});
@@ -4488,15 +4567,15 @@ async function buildPacket(){
     {name: base + "/" + base + ".csv",
      data: new Blob([inLang("es", reportCsv)], {type:"text/csv;charset=utf-8"})},
     {name: base + "/READ_ME.txt",
-     data: new Blob([packetReadme(photos, videos, lost)],
+     data: new Blob([packetReadme(photos, videos, lost, lostVideos)],
                     {type:"text/plain;charset=utf-8"})}
   ].concat(files);
 
   return {blob: await makeZip(entries), name: base + ".zip",
-          videos, photos, lost};
+          videos, photos, lost, lostVideos};
 }
 
-function packetReadme(photos, videos, lost){
+function packetReadme(photos, videos, lost, lostVideos){
   const out = [];   // not `L`: that is the localisation helper
   out.push("HOKLAN QC — " + S.testId + " — " + S.model);
   out.push(inspectionDate(S.startedAt) + "  ·  " + S.operator);
@@ -4513,7 +4592,15 @@ function packetReadme(photos, videos, lost){
   if(videos) out.push("videos/         " + fmt("rm_videos",{n:videos}));
   out.push("");
   out.push(tr("rm_naming"));
-  if(lost){ out.push(""); out.push("!! " + fmt("rm_lost",{n:lost})); }
+  /* Named here too, and not only on the screen: whoever opens this folder in
+     Colombia is the one who will notice a clip is missing, and this is the
+     file that tells him it was never packed rather than lost in transit. */
+  if(lost){
+    out.push("");
+    out.push("!! " + fmt("lost_head",{n:lost}));
+    (lostVideos || []).forEach(n => out.push("   · " + n));
+    out.push("   " + tr("lost_wechat"));
+  }
   out.push("");
   out.push(tr("rm_pdf"));
   // BOM: Notepad on Windows shows the Chinese and the em-dashes as mojibake
@@ -4560,10 +4647,20 @@ async function withPacket(use){
   }
 }
 
+/* What ended up in the file, and — when something did not — what is missing and
+   what to do about it. A clip that could not be packed is not lost: it is in the
+   phone's gallery, where it was recorded. The operator has to be told that, by
+   name, at the moment he is about to send the packet and assume it is complete. */
 function packetSummary(p){
-  return fmt("packet_done",{f:esc(p.name), s:humanSize(p.blob.size),
-                            n:p.photos, v:p.videos}) +
-         (p.lost ? " " + fmt("rm_lost",{n:p.lost}) : "");
+  const head = fmt("packet_done",{f:esc(p.name), s:humanSize(p.blob.size),
+                                  n:p.photos, v:p.videos});
+  if(!p.lost) return head;
+  const list = (p.lostVideos || []).length
+    ? `<br>${(p.lostVideos || []).map(n => "· " + esc(n)).join("<br>")}` : "";
+  return head +
+    `<div class="warn" style="margin-top:10px;text-align:left">` +
+    `<b>${fmt("lost_head",{n:p.lost})}</b>${list}<br><br>` +
+    `${tr("lost_wechat")}</div>`;
 }
 
 function downloadPacket(){
@@ -5980,10 +6077,13 @@ const topBtn = document.getElementById("toTop");
    Admin has ABORT, which records what was done, and a factory inspection is
    meant to be finished.
 
-   It comes back on the finish and report screens, where the work is already
-   done and the operator needs a way to start the next unit. */
+   It comes back on the finish screen, where the work is already done and the
+   operator needs a way to start the next unit. Not on the report: that screen
+   has its own way back, and a floating button over a document the operator is
+   about to print is one more thing that can be pressed by mistake — and it
+   lands in the printed page as well. */
 function updateTopBtn(){
-  const show = (S.screen === "done" || S.screen === "report") && !inAdmin();
+  const show = S.screen === "done" && !inAdmin();
   topBtn.className = "totop" + (show ? " show" : "");
   topBtn.textContent = tr("home");
 }
