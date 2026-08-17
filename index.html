@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="6.7">
+<meta name="app-version" content="6.8">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -441,19 +441,27 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "6.7";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "6.8";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
   /* Test IDs. The operator types the three digits and the app completes the
      rest. The factory name is never shown or stored anywhere - only the code
      travels in the report, the file name and the spreadsheet. The short keys
-     below are internal, used solely to filter the reference list. */
+     below are internal, used solely to filter the reference list.
+
+     The suffix is not random: the letters between the digits are the first four
+     of the factory name plus its last one - RHYME, YISIN, EAGLE, LESHG. It reads
+     as noise to anybody who does not know the rule, which is the point, and it
+     lets whoever does know it check a code by eye. LESHENG's suffix used to spell
+     VTRUS, a name belonging to nothing in this catalogue; it was corrected before
+     any inspection had been filed under it. Correcting one afterwards would split
+     that factory's history in two on the dashboard, which groups by this code. */
   "test_ids": {
     "583": {"code":"583-R7H9Y2M4E", "key":"RHY"},
     "741": {"code":"741-Y9I4S2I6N", "key":"YIS"},
     "926": {"code":"926-E4A7G2L9E", "key":"EAG"},
-    "418": {"code":"418-V7T2R9U4S", "key":"LES"}
+    "418": {"code":"418-L3E6S5H8G", "key":"LES"}
   },
 
   "models": {
@@ -628,7 +636,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 20,
+      "plan_version": 21,
       "tests": [
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -2884,6 +2892,8 @@ const T = {
   ok:"PASS", fail:"FAIL", documented:"DOCUMENTED", pending:"PENDING",
   a_select_factory:"Enter a valid test ID.", a_select_model:"Select the reference.",
   a_operator:"The operator is required.",
+  a_po_min:"The order number needs at least %n digits.\n\nIt is what every report, every file and every row of the spreadsheet is filed under: a number of one or two digits cannot be found again months later.",
+  po_min_hint:"At least %n digits.",
   a_pending:"%n point(s) still to answer.",
   a_photo:"Photo missing.\n\nEvery test must be left with evidence, pass or fail.",
   a_video:"Video missing.\n\nEvery test must be left with a clip of it being run, pass or fail.",
@@ -3069,6 +3079,8 @@ const T = {
   ok:"CONFORME", fail:"NO CONFORME", documented:"DOCUMENTADO", pending:"PENDIENTE",
   a_select_factory:"Ingrese un código de prueba válido.", a_select_model:"Seleccione la referencia.",
   a_operator:"El inspector es obligatorio.",
+  a_po_min:"El número de orden necesita al menos %n dígitos.\n\nEs bajo lo que queda archivado cada informe, cada archivo y cada fila del Excel: un número de uno o dos dígitos no se vuelve a encontrar meses después.",
+  po_min_hint:"Al menos %n dígitos.",
   a_pending:"Faltan %n punto(s) por responder.",
   a_photo:"Falta la foto.\n\nToda prueba debe quedar con evidencia, apruebe o falle.",
   a_video:"Falta el video.\n\nToda prueba debe quedar con un clip de su ejecución, apruebe o falle.",
@@ -3252,6 +3264,8 @@ const T = {
   ok:"合格", fail:"异常", documented:"已记录", pending:"未完成",
   a_select_factory:"请输入有效的测试编号。", a_select_model:"请选择型号。",
   a_operator:"请填写检验员。",
+  a_po_min:"订单号至少需要 %n 位数字。\n\n每份报告、每个文件和表格中的每一行都以它归档：只有一两位数字的编号，几个月后再也找不回来。",
+  po_min_hint:"至少 %n 位数字。",
   a_pending:"还有 %n 项未回答。",
   a_photo:"缺少照片。\n\n无论合格与否，每项测试都必须留下照片证据。",
   a_video:"缺少视频。\n\n无论合格与否，每项测试都必须留下测试过程的视频。",
@@ -3427,6 +3441,14 @@ const S = {
    "current speaker". Test-level evidence and notes are kept on speaker 1,
    because they document the test rather than any one unit. */
 const MAX_UNITS = 5;
+
+/* Shortest order number the app will accept. Not a format check — the customer's
+   numbering is the customer's business and it is stored exactly as typed — but a
+   floor, because everything downstream is filed under it: the report, the name of
+   the ZIP, and the column the dashboard groups by. A one-digit order number is
+   one nobody can search for six months later, and two shipments both numbered 1
+   are indistinguishable in the spreadsheet. */
+const PO_MIN = 4;
 
 const app = document.getElementById("app");
 const actions = document.getElementById("actions");
@@ -6316,6 +6338,16 @@ function adminStart(){
      leaves the field empty; taking the number in that case too keeps the series
      honest, since a report did go out under it. */
   const typed = isFactoryUser() ? String(S.po || "").trim() : "";
+  /* Empty still means "number it for me", which is why the floor is not applied
+     to an empty field here. What it does catch is the half-typed one: a factory
+     that starts copying the customer's order and stops at two digits gets a
+     number that looks deliberate and is not. */
+  if(typed && typed.length < PO_MIN){
+    alert(fmt("a_po_min",{n:PO_MIN}));
+    const box = document.getElementById("adminPo");
+    if(box){ box.focus(); box.scrollIntoView({block:"center"}); }
+    return;
+  }
   S.po = typed || takePo();
   /* The letter belongs to the series, not to the account: it is what tells Y004
      apart from R004 when three factories number their own inspections from 001.
@@ -6525,8 +6557,12 @@ function renderSetup(){
              style="color:var(--muted);background:#0a1523">
       <label>${tr("po")}</label>
       <input id="po" value="${esc(S.po)}" placeholder="${tr("po_ph")}"
-        inputmode="numeric" maxlength="12" autocomplete="off"
+        inputmode="numeric" maxlength="12" minlength="${PO_MIN}" autocomplete="off"
         oninput="onlyDigits(this)">
+      ${/* Said before the operator types, not only after pressing START. An
+            alert that explains a rule nobody was told is a rule discovered by
+            being stopped. */""}
+      <p class="hint" style="margin-top:6px">${fmt("po_min_hint",{n:PO_MIN})}</p>
       <label>${tr("operator")}</label>
       <input id="operator" value="${esc(S.operator)}" maxlength="40"
         placeholder="${tr("operator_ph")}"
@@ -6679,6 +6715,18 @@ function start(){
     .replace(/[^\p{L}\p{M} .'’-]/gu,"").replace(/\s+/g," ").trim();
   if(!S.testId){ alert(tr("a_select_factory")); return; }
   if(!S.model){ alert(tr("a_select_model")); return; }
+  /* The order number is what every report, file name and spreadsheet row is
+     filed under, so a short one is not a small problem: "7" cannot be found
+     again, and two shipments numbered 1 and 1 are indistinguishable in the
+     dashboard. Checked before the operator name on purpose — the fields are
+     read top to bottom, and being sent back up is worse than being stopped at
+     the first gap. */
+  if(S.po.length < PO_MIN){
+    alert(fmt("a_po_min",{n:PO_MIN}));
+    const box = document.getElementById("po");
+    if(box){ box.focus(); box.scrollIntoView({block:"center"}); }
+    return;
+  }
   if(!S.operator){ alert(tr("a_operator")); return; }
   const un = document.getElementById("units");
   S.units = un ? Math.min(MAX_UNITS, Math.max(1, parseInt(un.value,10)||1)) : 1;
