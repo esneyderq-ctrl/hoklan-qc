@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="6.1">
+<meta name="app-version" content="6.2">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -111,6 +111,15 @@ button:active{transform:scale(.99)}
 /* Three Han characters where the other two languages have three letters, so the
    type has to come down a notch to keep 不适用 off the border. */
 .na-btn{font-size:11.5px !important;letter-spacing:0;font-weight:600}
+
+/* The example photograph: small, quiet, and clearly not evidence. Bordered in
+   blue rather than amber or green so it cannot be mistaken for something the
+   operator has to complete. */
+.samp{display:flex;align-items:center;gap:9px;margin-top:8px;padding:7px 9px;
+  border:1px dashed #2b5d8a;border-radius:9px;background:rgba(46,163,242,.05)}
+.samp img{width:64px;height:48px;object-fit:cover;border-radius:6px;
+  border:1px solid #23507d;flex:none}
+.samp span{font-size:11.5px;color:var(--muted);line-height:1.4}
 
 /* A reading, next to the photograph of the instrument that gave it. Amber until
    it is filled in — the same colour every other pending requirement uses. */
@@ -408,7 +417,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "6.1";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "6.2";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -561,7 +570,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 15,
+      "plan_version": 17,
       "tests": [
         {"id":"USB","optional":false,
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -593,34 +602,6 @@ const CONFIG = {
             "help":{"en":"Listen close to the grille at medium volume. Behind the music there must be no hum, hiss or crackle.",
                     "zh":"中等音量下靠近网罩细听，音乐背景不应有嗡嗡声、嘶声或爆音。",
                     "es":"Escuche cerca de la malla a volumen medio. Detrás de la música no debe haber zumbido, siseo ni crujidos."}},
-           {"id":"autostart","code":"USB-014","label":{"en":"Starts in USB automatically on power on","zh":"开机自动进入 USB 播放","es":"Arranca en USB automáticamente al encender"},
-            "help":{"en":"With the USB drive still inserted, switch the speaker off and on. It must return to USB mode and start playing without pressing anything.",
-                    "zh":"U 盘保持插入，关机后再开机。应自动回到 USB 模式并开始播放，无需按任何键。",
-                    "es":"Con la memoria aún insertada, apague y encienda el parlante. Debe volver al modo USB y empezar a reproducir sin pulsar nada."}},
-           {"section":{"en":"Sound quality","zh":"音质","es":"Calidad de sonido"},
-            "help":{"en":"Listen at medium and then high volume. Put your hand on the speaker to feel for abnormal vibration or rattles.",
-                    "zh":"先中等音量再大音量试听。用手触摸箱体，感受是否有异常振动或杂音。",
-                    "es":"Escuche a volumen medio y luego alto. Ponga la mano sobre el gabinete para sentir vibraciones anormales o traqueteos."}},
-           {"id":"woofer","code":"AUD-001","label":{"en":"Woofer sounds","zh":"低音单元出声","es":"El woofer suena"},
-            "help":{"en":"Play a track with bass. Hold your hand in front of the woofer and feel it move. The low end must be present and clean, not weak or muffled.",
-                    "zh":"播放有低音的曲目，手放在低音单元前感受振动。低频应饱满干净，不应无力或发闷。",
-                    "es":"Reproduzca una pista con graves. Ponga la mano frente al woofer y sienta el movimiento. El bajo debe estar presente y limpio, no débil ni apagado."}},
-           {"id":"tweeter","code":"AUD-002","label":{"en":"Tweeter sounds","zh":"高音单元出声","es":"El tweeter suena"},
-            "help":{"en":"Listen for cymbals and high detail. Cover the woofer with your hand: the treble must still be clearly audible.",
-                    "zh":"注意听镲片和高频细节。用手挡住低音单元，高音仍应清晰可闻。",
-                    "es":"Escuche los platillos y el detalle agudo. Tape el woofer con la mano: los agudos deben seguir oyéndose con claridad."}},
-           {"id":"distortion","code":"AUD-003","label":{"en":"No distortion at high volume","zh":"大音量无失真","es":"Sin distorsión a volumen alto"},
-            "help":{"en":"Raise the volume to maximum for a few seconds. The sound must stay clean, without breaking up, buzzing or going harsh.",
-                    "zh":"将音量调到最大持续几秒。声音应保持干净，不破音、不嗡响、不刺耳。",
-                    "es":"Suba el volumen al máximo unos segundos. El sonido debe mantenerse limpio, sin quebrarse, zumbar ni volverse estridente."}},
-           {"id":"vibration","code":"AUD-004","label":{"en":"No abnormal speaker vibration","zh":"箱体无异常振动","es":"Sin vibración anormal del gabinete"},
-            "help":{"en":"At high volume run your hand over the speaker, grille and back panel. Nothing must rattle, buzz or feel loose.",
-                    "zh":"大音量时用手抚过箱体、网罩和后盖。不应有松动、嗡响或异常抖动。",
-                    "es":"A volumen alto pase la mano por el gabinete, la malla y la tapa trasera. Nada debe traquetear, zumbar ni sentirse flojo."}},
-           {"id":"strange_noise","code":"AUD-005","label":{"en":"No abnormal noise","zh":"无异响","es":"Sin ruidos anormales"},
-            "help":{"en":"Pause the track with the speaker still on. The speakers must be silent: no hiss, hum or clicking.",
-                    "zh":"保持开机并暂停播放。喇叭应完全安静，无嘶声、嗡声或咔哒声。",
-                    "es":"Pause la pista con el parlante encendido. Los altavoces deben quedar en silencio: sin siseo, zumbido ni chasquidos."}},
            {"section":{"en":"Playback controls","zh":"播放控制","es":"Controles de reproducción"},
             "help":{"en":"With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat, record and mode.",
                     "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环、录音和模式。",
@@ -649,10 +630,6 @@ const CONFIG = {
             "help":{"en":"Set repeat-one and let the track end: the same track must play again. Then set repeat-all: at the end it must move to the next track.",
                     "zh":"设为单曲循环，让曲目播完：应重复播放同一首。再设为全部循环：播完应自动进入下一首。",
                     "es":"Ponga repetir-una y deje terminar la pista: debe volver a sonar la misma. Luego ponga repetir-todas: al terminar debe pasar a la siguiente."}},
-           {"id":"record","code":"USB-013","label":{"en":"REC button: records and saves to the USB drive","zh":"REC 录音按键：保存到 U 盘","es":"Tecla REC: graba y guarda en la memoria USB"},
-            "help":{"en":"Press REC, speak into the microphone for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.",
-                    "zh":"按 REC，对着麦克风说几秒后停止。在音箱上回放该录音，确认文件确实已保存。",
-                    "es":"Pulse REC, hable al micrófono unos segundos y detenga. Reproduzca la grabación en el parlante para confirmar que el archivo quedó guardado."}},
            {"id":"modes","code":"DSP-005","label":{"en":"Mode button","zh":"模式按键","es":"Tecla de modo"},
             "help":{"en":"Press the mode button through the full cycle until it returns to USB. The display must follow every change.",
                     "zh":"反复按模式键走完一轮回到 USB。显示屏应随每一次切换变化。",
@@ -661,10 +638,6 @@ const CONFIG = {
             "help":{"en":"Move each control through its full range and check the on-screen indicator follows it.",
                     "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。",
                     "es":"Mueva cada control en todo su recorrido y verifique que el indicador en pantalla lo siga."}},
-           {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum and its on-screen indicator","zh":"音量调到最大及屏幕显示","es":"Volumen al máximo y su indicador en pantalla"},
-            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
-                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。",
-                    "es":"Lleve el volumen del mínimo al máximo lentamente. El número en pantalla debe seguirlo en todo el recorrido, sin saltos, zonas muertas ni sonido rasposo."}},
            {"id":"treble","code":"AUD-007","label":{"en":"Treble level and its on-screen indicator","zh":"高音调节及屏幕显示","es":"Nivel de agudos y su indicador en pantalla"},
             "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible and the indicator must follow it.",
                     "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。",
@@ -678,6 +651,34 @@ const CONFIG = {
             "help":{"en":"Playing from the USB drive, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.",
                     "zh":"用 U 盘播放时，反复开关 X-BASS。开启时低音应明显增强，关闭时恢复原状，屏幕应显示状态变化。随后在开启 X-BASS 的状态下将音量调到最大：低音应保持干净，不失真，低音单元不应有异响。",
                     "es":"Reproduciendo desde la memoria USB, active y desactive X-BASS varias veces. El bajo debe aumentar notoriamente al activarlo y volver a su estado al desactivarlo, y la pantalla debe mostrar el cambio. Luego suba el volumen al máximo con X-BASS activo: el bajo debe mantenerse limpio, sin distorsión y sin traqueteo del woofer."}},
+           {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum and its on-screen indicator","zh":"音量调到最大及屏幕显示","es":"Volumen al máximo y su indicador en pantalla"},
+            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound. Leave it at maximum: the next group is listened to like this.",
+                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。保持最大音量：下一组就是在这个状态下听的。",
+                    "es":"Lleve el volumen del mínimo al máximo lentamente. El número en pantalla debe seguirlo en todo el recorrido, sin saltos, zonas muertas ni sonido rasposo. Déjelo en el máximo: el grupo siguiente se escucha así."}},
+           {"section":{"en":"Sound quality","zh":"音质","es":"Calidad de sonido"},
+            "help":{"en":"With the volume still at maximum from the group above. Listen, then put your hand on the speaker to feel for abnormal vibration or rattles.",
+                    "zh":"承接上一组，音量保持最大。先听，再用手触摸箱体，感受是否有异常振动或杂音。",
+                    "es":"Con el volumen aún en el máximo del grupo anterior. Escuche y luego ponga la mano sobre el gabinete para sentir vibraciones anormales o traqueteos."}},
+           {"id":"woofer","code":"AUD-001","label":{"en":"Woofer sounds","zh":"低音单元出声","es":"El woofer suena"},
+            "help":{"en":"Play a track with bass. Hold your hand in front of the woofer and feel it move. The low end must be present and clean, not weak or muffled.",
+                    "zh":"播放有低音的曲目，手放在低音单元前感受振动。低频应饱满干净，不应无力或发闷。",
+                    "es":"Reproduzca una pista con graves. Ponga la mano frente al woofer y sienta el movimiento. El bajo debe estar presente y limpio, no débil ni apagado."}},
+           {"id":"tweeter","code":"AUD-002","label":{"en":"Tweeter sounds","zh":"高音单元出声","es":"El tweeter suena"},
+            "help":{"en":"Listen for cymbals and high detail. Cover the woofer with your hand: the treble must still be clearly audible.",
+                    "zh":"注意听镲片和高频细节。用手挡住低音单元，高音仍应清晰可闻。",
+                    "es":"Escuche los platillos y el detalle agudo. Tape el woofer con la mano: los agudos deben seguir oyéndose con claridad."}},
+           {"id":"distortion","code":"AUD-003","label":{"en":"No distortion at high volume","zh":"大音量无失真","es":"Sin distorsión a volumen alto"},
+            "help":{"en":"At the maximum volume already set. The sound must stay clean, without breaking up, buzzing or going harsh.",
+                    "zh":"在已调到最大的音量下。声音应保持干净，不破音、不嗡响、不刺耳。",
+                    "es":"Al volumen máximo ya puesto. El sonido debe mantenerse limpio, sin quebrarse, zumbar ni volverse estridente."}},
+           {"id":"vibration","code":"AUD-004","label":{"en":"No abnormal speaker vibration","zh":"箱体无异常振动","es":"Sin vibración anormal del gabinete"},
+            "help":{"en":"At high volume run your hand over the speaker, grille and back panel. Nothing must rattle, buzz or feel loose.",
+                    "zh":"大音量时用手抚过箱体、网罩和后盖。不应有松动、嗡响或异常抖动。",
+                    "es":"A volumen alto pase la mano por el gabinete, la malla y la tapa trasera. Nada debe traquetear, zumbar ni sentirse flojo."}},
+           {"id":"strange_noise","code":"AUD-005","label":{"en":"No abnormal noise","zh":"无异响","es":"Sin ruidos anormales"},
+            "help":{"en":"Pause the track with the speaker still on. The speakers must be silent: no hiss, hum or clicking.",
+                    "zh":"保持开机并暂停播放。喇叭应完全安静，无嘶声、嗡声或咔哒声。",
+                    "es":"Pause la pista con el parlante encendido. Los altavoces deben quedar en silencio: sin siseo, zumbido ni chasquidos."}},
            {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他","es":"Micrófonos y guitarra"},
             "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
                     "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。",
@@ -718,6 +719,10 @@ const CONFIG = {
             "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
                     "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。",
                     "es":"Conecte la guitarra en su entrada y toque mientras mueve su control de volumen del mínimo al máximo. Marque N/A si esta referencia no tiene entrada de guitarra."}},
+           {"id":"record","code":"USB-013","label":{"en":"REC button: records and saves to the USB drive","zh":"REC 录音按键：保存到 U 盘","es":"Tecla REC: graba y guarda en la memoria USB"},
+            "help":{"en":"With the microphone still connected from the points above. Press REC, speak for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.",
+                    "zh":"麦克风保持上面几项测试的连接状态。按 REC，说几秒后停止。在音箱上回放该录音，确认文件确实已保存。",
+                    "es":"Con el micrófono aún conectado de los puntos anteriores. Pulse REC, hable unos segundos y detenga. Reproduzca la grabación en el parlante para confirmar que el archivo quedó guardado."}},
            {"section":{"en":"Lights","zh":"灯光","es":"Luces"},
             "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
                     "zh":"开关灯光，如有多种灯光模式请逐一切换确认。",
@@ -737,7 +742,15 @@ const CONFIG = {
            {"id":"ac_charge","code":"CHG-002","label":{"en":"Charging indicator","zh":"充电指示","es":"Indicador de carga"},
             "help":{"en":"Plug the AC cable in. The charging indicator must appear on the display within a few seconds, and stay on while the cable is connected.",
                     "zh":"接上 AC 充电线。几秒内显示屏应出现充电指示，并在连接期间保持显示。",
-                    "es":"Conecte el cable AC. El indicador de carga debe aparecer en la pantalla en pocos segundos y mantenerse mientras el cable esté conectado."}}]},
+                    "es":"Conecte el cable AC. El indicador de carga debe aparecer en la pantalla en pocos segundos y mantenerse mientras el cable esté conectado."}},
+           {"section":{"en":"Power on","zh":"开机","es":"Encendido"},
+            "help":{"en":"The only power cycle of this test, kept for the end so that nothing already set up has to be built again.",
+                    "zh":"本测试中唯一一次关机再开机，放在最后，以免已经搭好的状态需要重做。",
+                    "es":"El único apagado de esta prueba, dejado para el final para no tener que volver a montar nada de lo ya dispuesto."}},
+           {"id":"autostart","code":"USB-014","label":{"en":"Starts in USB automatically on power on","zh":"开机自动进入 USB 播放","es":"Arranca en USB automáticamente al encender"},
+            "help":{"en":"With the USB drive still inserted, switch the speaker off and on. It must return to USB mode and start playing without pressing anything.",
+                    "zh":"U 盘保持插入，关机后再开机。应自动回到 USB 模式并开始播放，无需按任何键。",
+                    "es":"Con la memoria aún insertada, apague y encienda el parlante. Debe volver al modo USB y empezar a reproducir sin pulsar nada."}}]},
 
         {"id":"SD","optional":true,
          "label":{"en":"SD CARD","zh":"SD 卡"},
@@ -750,8 +763,9 @@ const CONFIG = {
            {"en":"Finally, switch the speaker off and on to see if it starts in SD","zh":"最后重新开机，确认是否自动进入 SD 模式"}],
          "points":[
            {"section":{"en":"Playback","zh":"播放"},
-            "help":{"en":"Insert the HOKLAN test SD card and select SD mode. Wait until it reads the card and plays. At the end, switch the speaker off and on to see whether it starts in SD by itself.",
-                    "zh":"插入 HOKLAN 测试 SD 卡并切换到 SD 模式，等待识别并播放。最后重新开机，确认是否自动进入 SD 播放。"}},
+            "help":{"en":"Insert the HOKLAN test SD card and select SD mode. Wait until it reads the card and plays.",
+                    "zh":"插入 HOKLAN 测试 SD 卡并切换到 SD 模式，等待识别并播放。",
+                    "es":"Inserte la tarjeta SD de prueba HOKLAN y seleccione el modo SD. Espere hasta que lea la tarjeta y reproduzca."}},
            {"id":"recognized","code":"SD-001","label":{"en":"Speaker reads the card and shows SD mode","zh":"识别 SD 卡并显示 SD 模式"},
             "help":{"en":"Insert the card fully until it clicks. Within a few seconds the display must switch to SD and show a track number.",
                     "zh":"将卡完全插入至卡扣到位。几秒内显示屏应切换到 SD 并显示曲目编号。"}},
@@ -764,12 +778,10 @@ const CONFIG = {
            {"id":"quality","code":"SD-007","label":{"en":"No hum or interference","zh":"无杂音或干扰"},
             "help":{"en":"Listen close to the grille at medium volume. Behind the music there must be no hum, hiss or crackle.",
                     "zh":"中等音量下靠近网罩细听，音乐背景不应有嗡嗡声、嘶声或爆音。"}},
-           {"id":"autostart","code":"SD-014","label":{"en":"Starts in SD automatically on power on","zh":"开机自动进入 SD 播放"},
-            "help":{"en":"With the card still inserted, switch the speaker off and on. It must return to SD mode and start playing without pressing anything.",
-                    "zh":"SD 卡保持插入，关机后再开机。应自动回到 SD 模式并开始播放，无需按任何键。"}},
            {"section":{"en":"Playback controls","zh":"播放控制"},
-            "help":{"en":"With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat, record and mode.",
-                    "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环、录音和模式。"}},
+            "help":{"en":"With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat and mode.",
+                    "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环和模式。",
+                    "es":"Con el audio sonando, pulse cada tecla del parlante y confirme que responde: pista, carpeta, reproducir/pausar, repetición y modo."}},
            {"id":"song_next","code":"SD-006","label":{"en":"Next track button","zh":"下一曲按键"},
             "help":{"en":"Press it three times. The track number must advance one at a time and the music must change with each press.",
                     "zh":"连续按三次。曲目编号应逐一递增，每按一次音乐都要随之切换。"}},
@@ -788,12 +800,6 @@ const CONFIG = {
            {"id":"repeat","code":"SD-012","label":{"en":"Repeat one / all button","zh":"单曲/全部循环按键"},
             "help":{"en":"Set repeat-one and let the track end: the same track must play again. Then set repeat-all: at the end it must move to the next track.",
                     "zh":"设为单曲循环，让曲目播完：应重复播放同一首。再设为全部循环：播完应自动进入下一首。"}},
-           {"id":"record","code":"SD-013","label":{"en":"REC button: records and saves to the SD","zh":"REC 录音按键：保存到 SD 卡"},
-            "help":{"en":"Press REC, speak into the microphone for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.",
-                    "zh":"按 REC，对着麦克风说几秒后停止。在音箱上回放该录音，确认文件确实已保存。"}},
-           {"id":"erase","code":"SD-015","label":{"en":"Delete recordings button","zh":"删除录音按键"},
-            "help":{"en":"Delete the recording you just made and confirm it no longer plays back. The music tracks must remain untouched.",
-                    "zh":"删除刚才的录音并确认无法再回放。音乐曲目不应被一并删除。"}},
            {"id":"modes","code":"DSP-005","label":{"en":"Mode button","zh":"模式按键"},
             "help":{"en":"Press the mode button through the full cycle until it returns to SD. The display must follow every change.",
                     "zh":"反复按模式键走完一轮回到 SD。显示屏应随每一次切换变化。"}},
@@ -843,6 +849,13 @@ const CONFIG = {
            {"id":"guitar","code":"AUD-009","label":{"en":"Guitar volume","zh":"吉他音量"},
             "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
                     "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
+           {"id":"record","code":"SD-013","label":{"en":"REC button: records and saves to the SD","zh":"REC 录音按键：保存到 SD 卡"},
+            "help":{"en":"With the microphone still connected from the points above. Press REC, speak for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.",
+                    "zh":"麦克风保持上面几项测试的连接状态。按 REC，说几秒后停止。在音箱上回放该录音，确认文件确实已保存。",
+                    "es":"Con el micrófono aún conectado de los puntos anteriores. Pulse REC, hable unos segundos y detenga. Reproduzca la grabación en el parlante para confirmar que el archivo quedó guardado."}},
+           {"id":"erase","code":"SD-015","label":{"en":"Delete recordings button","zh":"删除录音按键"},
+            "help":{"en":"Delete the recording you just made and confirm it no longer plays back. The music tracks must remain untouched.",
+                    "zh":"删除刚才的录音并确认无法再回放。音乐曲目不应被一并删除。"}},
            {"section":{"en":"Lights","zh":"灯光"},
             "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
                     "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
@@ -851,7 +864,14 @@ const CONFIG = {
                     "zh":"多次按下灯光键。每次都应干脆地开和关，不闪烁，也不应有个别灯珠残亮。"}},
            {"id":"light_pattern","code":"LED-007","label":{"en":"Light pattern change","zh":"灯光模式切换"},
             "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
-                    "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}}]},
+                    "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}},
+           {"section":{"en":"Power on","zh":"开机","es":"Encendido"},
+            "help":{"en":"The only power cycle of this test, kept for the end so that nothing already set up has to be built again.",
+                    "zh":"本测试中唯一一次关机再开机，放在最后，以免已经搭好的状态需要重做。",
+                    "es":"El único apagado de esta prueba, dejado para el final para no tener que volver a montar nada de lo ya dispuesto."}},
+           {"id":"autostart","code":"SD-014","label":{"en":"Starts in SD automatically on power on","zh":"开机自动进入 SD 播放"},
+            "help":{"en":"With the card still inserted, switch the speaker off and on. It must return to SD mode and start playing without pressing anything.",
+                    "zh":"SD 卡保持插入，关机后再开机。应自动回到 SD 模式并开始播放，无需按任何键。"}}]},
 
         {"id":"BLUETOOTH","optional":false,
          "label":{"en":"BLUETOOTH","zh":"蓝牙"},
@@ -913,6 +933,15 @@ const CONFIG = {
             "label":{"en":"X-BASS function","zh":"X-BASS 功能"},
             "help":{"en":"Playing over Bluetooth, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.",
                     "zh":"通过蓝牙播放时，反复开关 X-BASS。开启时低音应明显增强，关闭时恢复原状，屏幕应显示状态变化。随后在开启 X-BASS 的状态下将音量调到最大：低音应保持干净，不失真，低音单元不应有异响。"}},
+           {"section":{"en":"Sound pressure level at 1 kHz","zh":"1 kHz 声压级测量"},
+            "help":{"en":"Measured over Bluetooth because that is how the customer uses the speaker, and because the phone is both the source and the meter. It comes right after the audio controls so that the levels are already at maximum from the group above: volume at maximum on the speaker and on the phone, because what is being measured is what this unit can deliver, not what it was left at.",
+                    "zh":"通过蓝牙测量，因为客户就是这样使用音箱的，而且手机既是信号源也是测量工具。本组紧接音频控制之后，正好沿用上一组已经调到最大的状态：音箱和手机音量都开到最大，所测的是本机能达到的水平，而不是当时随便停在哪个位置。",
+                    "es":"Se mide por Bluetooth porque así es como el cliente usa el parlante y porque el teléfono es a la vez fuente y medidor. Va justo después de los controles de audio para aprovechar que los niveles ya quedaron al máximo del grupo anterior: volumen al máximo en el parlante y en el teléfono, porque lo que se mide es lo que esta unidad puede entregar, no en qué punto quedó."}},
+           {"id":"spl_1khz","code":"AUD-012","photo":true,
+            "measure":{"unit":"dB","step":"0.1"},
+            "label":{"en":"SPL at 1 kHz, one metre","zh":"1 kHz 声压级（1 米）"},
+            "help":{"en":"Everything at maximum before measuring: bass, treble, the volume on the speaker and the volume on the phone. What is being measured is what this unit can deliver, and a single control left halfway makes the reading worthless and impossible to compare with the next speaker. Then take the sound level meter and set it to PEAK and SLOW. Place it one metre from the speaker, at the same height as the woofer and pointing at it. From the phone, over Bluetooth, play a 1 kHz tone with a signal generator app. Photograph the meter with the reading visible and write the value in the box.",
+                    "zh":"测量前全部调到最大：低音、高音、音箱音量和手机音量。所测的是本机能达到的水平，任何一个旋钮停在中间，这个数据就失去意义，也无法与下一台比较。然后取声级计，设置为峰值（PEAK）和慢档（SLOW），置于距音箱一米处，与低音单元同高并正对。用手机通过蓝牙，以信号发生器 App 播放 1 kHz 正弦音。拍摄声级计读数清晰可见的照片，并将数值填入方框。"}},
            {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
             "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
                     "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
@@ -984,15 +1013,7 @@ const CONFIG = {
                     "zh":"对麦克风低音做同样的检查。本型号没有独立的麦克风音调调节时标记为“不适用”。"}},
            {"id":"mem_mic_treble","code":"AUD-011","label":{"en":"Microphone treble is kept after power off","zh":"关机后保留麦克风高音设置"},
             "help":{"en":"Same check on the microphone treble. Mark N/A if this reference has no separate microphone tone controls.",
-                    "zh":"对麦克风高音做同样的检查。本型号没有独立的麦克风音调调节时标记为“不适用”。"}},
-           {"section":{"en":"Sound pressure level at 1 kHz","zh":"1 kHz 声压级测量"},
-            "help":{"en":"Measured over Bluetooth because that is how the customer uses the speaker, and because the phone is both the source and the meter. Volume at maximum on the speaker and on the phone: what is being measured is what this unit can deliver, not what it was left at.",
-                    "zh":"通过蓝牙测量，因为客户就是这样使用音箱的，而且手机既是信号源也是测量工具。音箱和手机音量都开到最大：所测的是本机能达到的水平，而不是当时随便停在哪个位置。"}},
-           {"id":"spl_1khz","code":"AUD-012","photo":true,
-            "measure":{"unit":"dB","step":"0.1"},
-            "label":{"en":"SPL at 1 kHz, one metre","zh":"1 kHz 声压级（1 米）"},
-            "help":{"en":"Everything at maximum before measuring: bass, treble, the volume on the speaker and the volume on the phone. What is being measured is what this unit can deliver, and a single control left halfway makes the reading worthless and impossible to compare with the next speaker. Then take the sound level meter and set it to PEAK and SLOW. Place it one metre from the speaker, at the same height as the woofer and pointing at it. From the phone, over Bluetooth, play a 1 kHz tone with a signal generator app. Photograph the meter with the reading visible and write the value in the box.",
-                    "zh":"测量前全部调到最大：低音、高音、音箱音量和手机音量。所测的是本机能达到的水平，任何一个旋钮停在中间，这个数据就失去意义，也无法与下一台比较。然后取声级计，设置为峰值（PEAK）和慢档（SLOW），置于距音箱一米处，与低音单元同高并正对。用手机通过蓝牙，以信号发生器 App 播放 1 kHz 正弦音。拍摄声级计读数清晰可见的照片，并将数值填入方框。"}}]},
+                    "zh":"对麦克风高音做同样的检查。本型号没有独立的麦克风音调调节时标记为“不适用”。"}}]},
 
         {"id":"RADIO_FM","optional":true,
          "label":{"en":"FM RADIO","zh":"调频收音"},
@@ -1102,8 +1123,9 @@ const CONFIG = {
             "help":{"en":"Let one full track play without touching anything. Listen for cuts, stutters or channels dropping out.",
                     "zh":"完整播放一首曲目，中途不做任何操作。注意是否有断音、卡顿或某个声道消失。"}},
            {"section":{"en":"Playback controls","zh":"播放控制"},
-            "help":{"en":"With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat, record and mode.",
-                    "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环、录音和模式。"}},
+            "help":{"en":"With the audio still playing from the source, press play/pause and the mode button on the speaker and confirm it reacts.",
+                    "zh":"在音源继续播放的状态下，按下音箱上的播放/暂停键和模式键，确认有反应。",
+                    "es":"Con el audio aún sonando desde la fuente, pulse reproducir/pausar y la tecla de modo en el parlante y confirme que responde."}},
            {"id":"play_pause","code":"AUX-005","label":{"en":"PLAY / PAUSE button","zh":"播放/暂停按键"},
             "help":{"en":"Press it on the speaker. The sound must stop and resume. Mark N/A if this reference does not control the AUX source.",
                     "zh":"在音箱上按下。声音应停止并可恢复。本型号无法控制 AUX 音源时标记为“不适用”。"}},
@@ -1410,7 +1432,22 @@ const CONFIG = {
                     "zh":"拍摄顶面，需拍到封口摇盖和胶带。"}},
            {"id":"caja_inferior","label":{"en":"Box — bottom","zh":"彩盒 — 底面"},
             "help":{"en":"The bottom, including the seal and any shipping label.",
-                    "zh":"拍摄底面，需拍到封口和运输标签。"}}]},
+                    "zh":"拍摄底面，需拍到封口和运输标签。"}},
+           {"id":"caja_ancho","measure":{"unit":"cm","step":"0.1"},
+            "sample":"ejemplo_caja_ancho",
+            "label":{"en":"Box — width","zh":"彩盒 — 宽"},
+            "help":{"en":"The horizontal side of the front face. Hook the tape on one edge and read it at the opposite edge, with both ends inside the frame: a photo that shows only the number cannot be checked by anybody afterwards. Read the centimetre scale, not the inches — the tape carries both, and 86 cm sits right next to 34 in.",
+                    "zh":"正面的水平边。将卷尺钩在一端，在另一端读数，两端都要在画面之内：只拍到数字的照片，事后无人能够复核。读厘米刻度，不要读英寸——卷尺上两种刻度并排，86 厘米就紧挨着 34 英寸。"}},
+           {"id":"caja_largo","measure":{"unit":"cm","step":"0.1"},
+            "sample":"ejemplo_caja_largo",
+            "label":{"en":"Box — depth","zh":"彩盒 — 深"},
+            "help":{"en":"The depth: the tape crosses the top face, from the front edge to the back edge. Same rule — both ends of the tape in the photo, and centimetres.",
+                    "zh":"深度：卷尺横跨顶面，从前沿量到后沿。规则相同——卷尺两端都要入镜，读厘米。"}},
+           {"id":"caja_alto","measure":{"unit":"cm","step":"0.1"},
+            "sample":"ejemplo_caja_alto",
+            "label":{"en":"Box — height","zh":"彩盒 — 高"},
+            "help":{"en":"The vertical side, from the base to the top. Stand the box up and run the tape down one corner. This is the one where the bottom end usually falls out of the frame: step back until the base and the reading are both in the picture.",
+                    "zh":"垂直边，从底部量到顶部。将彩盒立起，卷尺沿一条棱垂直放置。这一项最容易把底端拍出画面：请后退，直到底部和读数同时在画面之内。"}}]},
 
         {"id":"EXT_BATTERY","optional":true,"skip_factory":["RHY"],
          "label":{"en":"EXTERNAL BATTERY","zh":"外置电池"},
@@ -1838,6 +1875,12 @@ Object.assign(ES_PLAN, {
   "Everything at maximum before measuring: bass, treble, the volume on the speaker and the volume on the phone. What is being measured is what this unit can deliver, and a single control left halfway makes the reading worthless and impossible to compare with the next speaker. Then take the sound level meter and set it to PEAK and SLOW. Place it one metre from the speaker, at the same height as the woofer and pointing at it. From the phone, over Bluetooth, play a 1 kHz tone with a signal generator app. Photograph the meter with the reading visible and write the value in the box.":"Todo al máximo antes de medir: graves, agudos, el volumen de la cabina y el volumen del celular. Lo que se mide es lo que esta unidad puede entregar, y un solo control a media marcha deja la lectura sin valor e imposible de comparar con el siguiente parlante. Luego tome el sonómetro y configúrelo en PICO (PEAK) y LENTA (SLOW). Ubíquelo a un metro del parlante, a la misma altura del woofer y apuntando hacia él. Desde el celular, por Bluetooth, reproduzca un tono de 1 kHz con una aplicación generadora de señal. Fotografíe el sonómetro con la lectura visible y escriba el valor en el recuadro.",
   "Woofer — weight":"Woofer — peso",
   "Place the woofer on the scale on its own, with no screws, gasket or cable attached. Photograph the reading and write the value in the box. Weight is what tells the magnet apart: two woofers that look identical from the front can be hundreds of grams apart, and that difference is the sound.":"Coloque el woofer solo sobre la balanza, sin tornillos, empaque ni cables. Fotografíe la medida y escriba el valor en el recuadro. El peso es lo que delata el imán: dos woofers idénticos de frente pueden diferir en cientos de gramos, y esa diferencia es el sonido.",
+  "Box — width":"Caja — ancho",
+  "The horizontal side of the front face. Hook the tape on one edge and read it at the opposite edge, with both ends inside the frame: a photo that shows only the number cannot be checked by anybody afterwards. Read the centimetre scale, not the inches — the tape carries both, and 86 cm sits right next to 34 in.":"El lado horizontal de la cara frontal. Enganche la cinta en un borde y lea en el borde opuesto, con los dos extremos dentro del encuadre: una foto que solo muestra el número no la puede verificar nadie después. Lea la escala en centímetros, no las pulgadas — la cinta trae las dos, y 86 cm queda justo al lado de 34 in.",
+  "Box — depth":"Caja — largo",
+  "The depth: the tape crosses the top face, from the front edge to the back edge. Same rule — both ends of the tape in the photo, and centimetres.":"El largo: la cinta cruza la tapa superior, del borde delantero al trasero. La misma regla — los dos extremos de la cinta en la foto, y en centímetros.",
+  "Box — height":"Caja — alto",
+  "The vertical side, from the base to the top. Stand the box up and run the tape down one corner. This is the one where the bottom end usually falls out of the frame: step back until the base and the reading are both in the picture.":"El lado vertical, de la base al tope. Pare la caja y baje la cinta por una esquina. Esta es la que más se toma con el extremo inferior fuera de cuadro: retroceda hasta que la base y la lectura entren las dos en la foto.",
   "Bag the speaker is packed in":"Bolsa en que viene empacado el parlante",
   "The bag the speaker itself comes wrapped in inside the box — not the small bags of the accessories. Lay it out flat and photograph it whole, so the print, the thickness and any tear can be seen.":"La bolsa que envuelve el parlante dentro de la caja, no las bolsitas de los accesorios. Extiéndala y fotografíela completa, de modo que se vean la impresión, el calibre y cualquier roto.",
   "Warranty seal":"Sello de garantía",
@@ -2129,6 +2172,7 @@ const T = {
   doc_once:"This section documents the shipment, not each speaker: its photographs are taken once for the lot.",
   th_photos:"Photos", n_readings:"%n readings", no_remarks:"No remarks recorded.",
   tap_close:"tap anywhere to close",
+  sample_hint:"Example — take the photo like this. Tap to enlarge.",
   concl_pass:"All applicable points passed.",
   footer_note:"Generated by HOKLAN QC. Photo timestamps come from the phone at the moment of capture.",
   th_test:"Test", th_result:"Result", th_point:"Point",
@@ -2287,6 +2331,7 @@ const T = {
   doc_once:"Esta sección documenta el despacho, no cada parlante: sus fotos se toman una sola vez para el lote.",
   th_photos:"Fotos", n_readings:"%n mediciones", no_remarks:"Sin observaciones.",
   tap_close:"toque en cualquier parte para cerrar",
+  sample_hint:"Ejemplo — tome la foto así. Toque para ampliar.",
   concl_pass:"Todos los puntos aplicables aprobaron.",
   footer_note:"Generado por HOKLAN QC. Las marcas de tiempo de las fotos provienen del teléfono en el momento de la captura.",
   th_test:"Prueba", th_result:"Resultado", th_point:"Punto",
@@ -2439,6 +2484,7 @@ const T = {
   doc_once:"本节记录的是整批货，而非每台音箱：其照片按批次拍摄一次。",
   th_photos:"照片", n_readings:"%n 项实测值", no_remarks:"无备注。",
   tap_close:"点击任意处关闭",
+  sample_hint:"示例 — 请照此拍摄。点击可放大。",
   concl_pass:"所有适用项目均合格。",
   footer_note:"由 HOKLAN QC 生成。照片时间戳取自拍摄时手机的时间。",
   th_test:"测试", th_result:"结果", th_point:"检查项",
@@ -5599,6 +5645,34 @@ function mediaBlock(r){
    the operator answers the question for each unit on the bench without losing
    sight of what the question is. */
 
+/* An example of the photograph being asked for, next to the camera button.
+
+   A sentence describing where to put the tape measure is read once and
+   interpreted five ways; the picture of somebody doing it is not. These live in
+   the same img/ folder as the reference photos, are never evidence, and never
+   travel into the report or the packet — they are instructions.
+
+   Missing on purpose is a fallback: if the file is not there the block simply
+   does not appear, exactly like a reference photo that has not been uploaded
+   yet. A point can be added today and its example the week after. */
+function sampleBox(p){
+  if(!p.sample) return "";
+  return `<div class="samp">
+    <img src="${REF_IMG_DIR}${encodeURIComponent(p.sample)}.png" alt=""
+      onclick="zoomSample(this)" onerror="this.parentNode.remove()">
+    <span>${tr("sample_hint")}</span>
+  </div>`;
+}
+function zoomSample(img){
+  if(!img || !img.naturalWidth) return;
+  const box = document.createElement("div");
+  box.className = "ri-zoom";
+  box.onclick = () => box.remove();
+  box.innerHTML = `<img src="${esc(img.src)}" alt="">
+    <span>${esc(tr("sample_hint"))} · ${esc(tr("tap_close"))}</span>`;
+  document.body.appendChild(box);
+}
+
 /* The box where the number goes, right under the photo of the instrument that
    produced it. Amber while it is empty, like every other thing the test will
    not close without. `oninput` never renders: it would rebuild the field and
@@ -5653,6 +5727,7 @@ function pointRow(p, u, showTag){
         <div class="thumb" onclick="zoomMedia('${m.uid}')"><img src="${m.url}">
           <span onclick="event.stopPropagation();dropMedia('${m.uid}')">×</span>
         </div>`).join("")}</div>`:""}
+      ${sampleBox(p)}
       ${wantValue?measureBox(p, u, id):""}
       ${shotMissing?`<em>${tr("need_point_photo")}</em>`:""}
     </div>` : "";
@@ -5986,6 +6061,7 @@ function renderPhotoTest(t, r, done, total){
         <div class="thumb" onclick="zoomMedia('${m.uid}')"><img src="${m.url}">
           <span onclick="event.stopPropagation();dropMedia('${m.uid}')">×</span>
         </div>`).join("")}</div>
+      ${sampleBox(p)}
       ${p.measure && !na ? measureBox(p, 0, "0_" + p.id) : ""}
     </div>`;
   }).join("");
