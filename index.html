@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="6.8">
+<meta name="app-version" content="6.9">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -392,6 +392,11 @@ input.bad{border-color:var(--red)}
   border-radius:7px}
 
 #report{background:#fff;color:#16212e;padding:10px;border-radius:10px}
+/* The report, rendered for the printer but never for the screen. Off-screen at a
+   real page size rather than display:none or 1px: a browser does not paginate
+   what it has not laid out, and the first pages came out blank. */
+#printframe{position:absolute;left:-10000px;top:0;width:210mm;height:297mm;
+  border:0;visibility:hidden}
 @media print{
   /* Browsers drop background colours when printing unless told otherwise, and
      the watermark is a background: without this it prints blank. */
@@ -400,6 +405,9 @@ input.bad{border-color:var(--red)}
   .wrap{max-width:none;padding:0}
   .actions,.noprint{display:none !important}
   #report{padding:0;border-radius:0}
+  /* The frame is never what gets printed — its own window is — so it must not
+     take a page of its own if this page is printed too. */
+  #printframe{display:none !important}
 }
 </style>
 </head>
@@ -441,7 +449,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "6.8";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "6.9";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -636,7 +644,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 21,
+      "plan_version": 22,
       "tests": [
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -1621,17 +1629,17 @@ const CONFIG = {
             "help":{"en":"Two minutes that decide whether the rest is worth doing: inspecting the wrong model to the letter is worse than not inspecting it at all, because the report says it was checked.",
                     "zh":"这两分钟决定后面的工作是否有意义：把型号弄错却一丝不苟地检完，比不检更糟，因为报告会写着已经检过。",
                     "es":"Dos minutos que deciden si vale la pena el resto: inspeccionar al detalle el modelo equivocado es peor que no inspeccionarlo, porque el informe dirá que se revisó."}},
-           {"id":"logo_mic1","code":"WMIC-014","skip":["HK-RHO102-BAG"],
+           {"id":"logo_mic1","code":"WMIC-014",
             "label":{"en":"Logo on microphone 1","zh":"麦克风 1 上的标志","es":"Logo en el micrófono 1"},
             "help":{"en":"Read the brand printed on the body. It must be the one the order asks for, complete and without smudges.",
                     "zh":"读取机身上印制的品牌标识。应与订单一致，完整且无模糊。",
                     "es":"Lea la marca impresa en el cuerpo. Debe ser la que pide la orden, completa y sin manchas."}},
-           {"id":"logo_mic2","code":"WMIC-014","skip":["HK-RHO101","HK-RHO102-BAG"],
+           {"id":"logo_mic2","code":"WMIC-014","skip":["HK-RHO101"],
             "label":{"en":"Logo on microphone 2","zh":"麦克风 2 上的标志","es":"Logo en el micrófono 2"},
             "help":{"en":"Same check on the second microphone. Both are asked for separately because a mixed pair leaves the factory as one box.",
                     "zh":"对第二支麦克风做同样的检查。两支分开核对，是因为混装的一对是作为同一个包装出厂的。",
                     "es":"La misma revisión en el segundo micrófono. Se piden por separado porque una pareja mezclada sale de la fábrica dentro de una sola caja."}},
-           {"id":"logo_receiver","code":"WMIC-014","skip":["HK-RHO102-BAG"],
+           {"id":"logo_receiver","code":"WMIC-014",
             "label":{"en":"Logo on the receiver","zh":"接收器上的标志","es":"Logo en el receptor"},
             "help":{"en":"The receiver carries the same brand as the microphones. A kit with two different brands is a defect the customer sees on the table.",
                     "zh":"接收器应与麦克风为同一品牌。一套里出现两个品牌，客户放到桌上就会看到。",
@@ -1641,12 +1649,13 @@ const CONFIG = {
             "help":{"en":"Compare the printed model with the order or the data sheet, character by character. Photograph the label or the batch code: that photo is what lets the office check it later without the product in front of them.",
                     "zh":"将印制的型号与订单或资料表逐字对照。拍摄标签或批号：办公室日后凭这张照片就能在没有实物的情况下核对。",
                     "es":"Compare el modelo impreso con la orden o la ficha técnica, carácter por carácter. Fotografíe la etiqueta o el código de lote: esa foto es la que permite verificarlo después en la oficina sin tener el producto delante."}},
-           {"id":"lot","code":"WMIC-018","label":{"en":"Lot number legible","zh":"批号清晰可读","es":"Número de lote legible"},
-            "help":{"en":"The lot must be readable without a magnifier. A lot that cannot be read is a batch that cannot be traced the day a claim arrives.",
-                    "zh":"批号应无需放大镜即可辨认。看不清的批号意味着日后出现客诉时无法追溯这一批货。",
-                    "es":"El lote debe leerse sin lupa. Un lote ilegible es un lote que no se puede rastrear el día que llegue un reclamo."}}]},
+           /* The lot number point was removed at HOKLAN's request. What remains
+              covering identity is the model check above, whose photograph of the
+              label carries the batch code anyway — so the record does not lose
+              it, only the separate question. WMIC-018 stays in the code list
+              because that point still uses it. */]},
 
-        {"id":"LOGO_ANTENNA","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"LOGO_ANTENNA","optional":false,"only_factory":["LES"],
          "label":{"en":"LOGO AND ANTENNA","zh":"标志与天线","es":"LOGO Y ANTENA"},
          "steps":[
            {"en":"Look at the front of the receiver and of both microphones","zh":"观察接收器和两支麦克风的正面","es":"Observe el frente del receptor y de los dos micrófonos"},
@@ -1679,7 +1688,7 @@ const CONFIG = {
                     "zh":"退后一步看整套产品。标志、机身和天线应像同一件产品，而不像两批生产的零件拼在一起。",
                     "es":"Aléjese un paso y mire el conjunto. Logo, cuerpo y antena deben verse como un solo producto, no como piezas de dos corridas de producción."}}]},
 
-        {"id":"MIC_ACCESSORIES","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"MIC_ACCESSORIES","optional":false,"only_factory":["LES"],
          "label":{"en":"ACCESSORIES","zh":"配件","es":"ACCESORIOS"},
          "steps":[
            {"en":"Open the box and take everything out onto a clean table","zh":"打开包装，将全部物品取出放在干净台面上","es":"Abra la caja y saque todo sobre una mesa limpia"},
@@ -1716,7 +1725,7 @@ const CONFIG = {
                     "zh":"注意油污、指纹和划痕。将全套摊开在台面上拍一张合影，这张照片就是箱内配置的凭证。",
                     "es":"Busque manchas de aceite, huellas y rayones. Fotografíe el juego completo extendido sobre la mesa: esa es la foto que prueba qué traía la caja."}}]},
 
-        {"id":"MIC_BUTTONS","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"MIC_BUTTONS","optional":false,"only_factory":["LES"],
          "label":{"en":"BUTTONS","zh":"按键","es":"BOTONES"},
          "steps":[
            {"en":"The microphone has four buttons, counted from the top down","zh":"麦克风共四个按键，自上而下计数","es":"El micrófono tiene cuatro botones, contados de arriba hacia abajo"},
@@ -1753,7 +1762,7 @@ const CONFIG = {
                     "zh":"长按 2 至 3 秒开机，短按一次关机。注意开与关在这里不是同一个动作。",
                     "es":"Manténgalo 2 a 3 segundos para encender el receptor, y púlselo una vez para apagarlo. Ojo: encender y apagar no son el mismo gesto aquí."}}]},
 
-        {"id":"MIC_VISUAL","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"MIC_VISUAL","optional":false,"only_factory":["LES"],
          "label":{"en":"VISUAL INSPECTION","zh":"外观检查","es":"INSPECCIÓN VISUAL"},
          "steps":[
            {"en":"Go over the whole body of each microphone: grille, housing, buttons and screen","zh":"检查每支麦克风的整个机身：网罩、外壳、按键和显示屏","es":"Recorra todo el cuerpo de cada micrófono: rejilla, carcasa, botones y pantalla"},
@@ -1791,7 +1800,7 @@ const CONFIG = {
                     "zh":"缓慢转动麦克风录一小段视频，各个面都要拍到。这是唯一能呈现照片拍不到的侧面的证据。",
                     "es":"Un video corto girando el micrófono despacio para que se vean todas las caras. Es la única evidencia que muestra los costados que una foto deja fuera."}}]},
 
-        {"id":"MIC_POWER_LIGHT","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"MIC_POWER_LIGHT","optional":false,"only_factory":["LES"],
          "label":{"en":"POWER ON AND LIGHTS","zh":"开机与灯光","es":"ENCENDIDO Y LUCES"},
          "steps":[
            {"en":"Hold button 1 for 2 to 3 seconds to switch the microphone on","zh":"长按按键 1 约 2 至 3 秒开机","es":"Mantenga el botón 1 durante 2 a 3 segundos para encender el micrófono"},
@@ -1825,7 +1834,7 @@ const CONFIG = {
                     "zh":"应干净地关机，屏幕不应残亮。若该型号配备两支麦克风，继续下一项之前请在第二支上重复以上全部步骤。",
                     "es":"Debe apagar limpio, sin que la pantalla quede prendida. En una referencia que trae dos micrófonos, repita todo lo anterior en el segundo antes de seguir."}}]},
 
-        {"id":"RECEIVER_CHARGE","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"RECEIVER_CHARGE","optional":false,"only_factory":["LES"],
          "label":{"en":"RECEIVER CHARGING","zh":"接收器充电","es":"CARGA DEL RECEPTOR"},
          "steps":[
            {"en":"Switch the receiver on","zh":"打开接收器","es":"Encienda el receptor"},
@@ -1855,7 +1864,7 @@ const CONFIG = {
                     "zh":"拔掉线并再拍一次指示灯。它必须有反应：未接任何线却仍然常红的指示灯对客户毫无意义。",
                     "es":"Desconecte el cable y vuelva a fotografiar el LED. Debe reaccionar: un indicador que sigue en rojo sin nada conectado no le dice nada al cliente."}}]},
 
-        {"id":"MIC_CHARGE","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"MIC_CHARGE","optional":false,"only_factory":["LES"],
          "label":{"en":"MICROPHONE CHARGING","zh":"麦克风充电","es":"CARGA DEL MICRÓFONO"},
          "steps":[
            {"en":"Switch the microphone on and read the battery level","zh":"开机并读取电量","es":"Encienda el micrófono y lea el nivel de batería"},
@@ -1887,7 +1896,7 @@ const CONFIG = {
                     "zh":"屏幕应停止动画并显示满电。拍摄充满后的状态：这是充电流程能够正常结束、而不是一直转下去的凭证。",
                     "es":"La pantalla debe detener la animación y mostrar la batería llena. Fotografíe el estado final: es la prueba de que el ciclo de carga cierra y no se queda girando para siempre."}}]},
 
-        {"id":"MIC_BATTERY","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"MIC_BATTERY","optional":false,"only_factory":["LES"],
          "label":{"en":"BATTERY","zh":"电池","es":"BATERÍA"},
          "steps":[
            {"en":"Take the battery out of the microphone and out of the receiver","zh":"取出麦克风和接收器中的电池","es":"Retire la batería del micrófono y la del receptor"},
@@ -1920,10 +1929,10 @@ const CONFIG = {
                     "zh":"将万用表调到直流电压档，按正负极接触电池端子，在电池已取出的状态下读数。拍摄读数清晰可见的万用表照片，并将数值填入方框。只有在电芯断开的情况下读数才有意义：在麦克风内测量时电路会拉低数值，每一台都会显得偏低。",
                     "es":"Ponga el multímetro en voltios de corriente continua, apoye las puntas en los bornes respetando la polaridad y lea el valor con la batería fuera del micrófono. Fotografíe el multímetro con la lectura visible y escriba el valor en el recuadro. La lectura solo significa algo con la celda desconectada: medida dentro del micrófono el circuito tira el número hacia abajo y todas las unidades parecen bajas."}}]},
 
-        /* The bag is its own reference, not an accessory of the kit: HK-RHO101
-           is one microphone, HK-RHO102 is two, and HK-RHO102-BAG is the bag
-           that carries the two. So this is the only test that reference runs,
-           and it is the one test the other two do not. */
+        /* HK-RHO101 is one microphone, HK-RHO102 is two, and HK-RHO102-BAG is
+           that same pair sold with its bag. So the bag reference runs the whole
+           microphone plan and this test on top: it is the one test the other two
+           do not carry, not a plan of its own. */
         {"id":"RHO102_BAG","optional":false,"only_factory":["LES"],
          "only":["HK-RHO102-BAG"],
          "label":{"en":"RHO102 BAG","zh":"RHO102 收纳包","es":"BOLSA RHO102"},
@@ -1933,9 +1942,9 @@ const CONFIG = {
            {"en":"Photograph each of the five checks","zh":"五个检查项各拍一张照片","es":"Fotografíe cada una de las cinco revisiones"}],
          "points":[
            {"section":{"en":"General appearance","zh":"整体外观","es":"Aspecto general"},
-            "help":{"en":"HK-RHO102-BAG is the bag on its own, so this test and the identification are the whole inspection. Nothing here needs power or a bench: it is judged by looking, pressing and pulling.",
-                    "zh":"HK-RHO102-BAG 是单独出货的收纳包，因此本项测试连同产品识别就是全部检验内容。这里的检查都不需要通电或工位：靠看、按和拉来判定。",
-                    "es":"HK-RHO102-BAG es la bolsa sola, así que esta prueba junto con la identificación son toda la inspección. Nada aquí necesita energía ni puesto de trabajo: se juzga mirando, presionando y tirando."}},
+            "help":{"en":"Only HK-RHO102-BAG carries this test, because it is the version that ships with the bag. Nothing here needs power or a bench: it is judged by looking, pressing and pulling, so it fits into the gap while the microphones are still charging.",
+                    "zh":"只有 HK-RHO102-BAG 有本项测试，因为它是随附收纳包的版本。这里的检查都不需要通电或工位：靠看、按和拉来判定，正好利用麦克风仍在充电的时间完成。",
+                    "es":"Solo HK-RHO102-BAG lleva esta prueba, porque es la versión que se despacha con bolsa. Nada aquí necesita energía ni puesto de trabajo: se juzga mirando, presionando y tirando, así que cabe en el hueco mientras los micrófonos siguen cargando."}},
            {"id":"bag_surface","code":"BAG-001","photo":true,
             "label":{"en":"Surface without tears, scratches or stains","zh":"表面无破损、划痕或污渍","es":"Superficie sin rasgaduras, rayones ni manchas"},
             "help":{"en":"Go over the whole outside under a lamp, including the base, which is the part that is always forgotten and the one that rubs.",
@@ -2014,7 +2023,7 @@ const CONFIG = {
            where there are two: HK-RHO101 ships a single microphone and there is
            nothing here it could be asked to do. */
         {"id":"SIMULTANEOUS","optional":false,"only_factory":["LES"],
-         "skip":["HK-RHO102-BAG","HK-RHO101"],
+         "skip":["HK-RHO101"],
          "label":{"en":"SIMULTANEOUS CONNECTION","zh":"双麦同时连接","es":"CONEXIÓN SIMULTÁNEA"},
          "steps":[
            {"en":"Switch on both microphones and the receiver","zh":"打开两支麦克风和接收器","es":"Encienda los dos micrófonos y el receptor"},
@@ -2047,7 +2056,7 @@ const CONFIG = {
                     "zh":"两人同时讲话，各对一支麦克风。两个人声应各自清晰可辨，不应有啸叫、串音，也不应互相切断。",
                     "es":"Dos personas hablan a la vez, una por cada micrófono. Deben oírse las dos voces por separado, sin pitidos, sin señales mezcladas y sin que una corte a la otra."}}]},
 
-        {"id":"CHANNELS","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"CHANNELS","optional":false,"only_factory":["LES"],
          "label":{"en":"CHANNELS","zh":"频道","es":"CANALES"},
          "steps":[
            {"en":"With the receiver on and connected to the test speaker","zh":"保持接收器开启并接到测试音箱","es":"Con el receptor encendido y conectado al parlante de prueba"},
@@ -2081,7 +2090,7 @@ const CONFIG = {
                     "zh":"走完一整轮直到回到第一个频道，不得跳过。因为前三个正常就停在第三个，正是整批货高频段全哑却照常出厂的原因。",
                     "es":"Dé la vuelta completa hasta volver al primero, sin saltarse ninguno. Detenerse en el tercero porque los tres primeros funcionaron es como sale un lote con la parte alta de la banda muerta."}}]},
 
-        {"id":"AUDIO_VOLUME","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"AUDIO_VOLUME","optional":false,"only_factory":["LES"],
          "label":{"en":"AUDIO AND VOLUME","zh":"音质与音量","es":"AUDIO Y VOLUMEN"},
          "steps":[
            {"en":"With the microphone paired, speak at a medium volume","zh":"在已对码状态下，用中等音量讲话","es":"Con el micrófono emparejado, hable a volumen medio"},
@@ -2115,7 +2124,7 @@ const CONFIG = {
                     "zh":"走到 15 米外，麦克风保持朝向接收器，并讲话。人声应保持同样的质量，不应断续或有爆音。",
                     "es":"Aléjese hasta 15 metros, manteniendo el micrófono apuntando al receptor, y hable. La voz debe llegar con la misma calidad, sin cortes ni crujidos."}}]},
 
-        {"id":"WIRELESS_RANGE","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"WIRELESS_RANGE","optional":false,"only_factory":["LES"],
          "label":{"en":"WIRELESS CONNECTION AND RANGE","zh":"无线连接与距离","es":"CONEXIÓN INALÁMBRICA Y ALCANCE"},
          "steps":[
            {"en":"Hold button 3 until CH XX flashes","zh":"长按按键 3 直至 CH XX 闪烁","es":"Mantenga el botón 3 hasta que parpadee CH XX"},
@@ -2151,7 +2160,7 @@ const CONFIG = {
                     "zh":"一边持续讲话一边直线走远，中间不隔墙体，直到声音开始断续。记录声音仍然干净的最后一个距离，而不是出现异常的那个距离。拍摄所到达的位置，若可能请让接收器入镜。规格为最远 40 米：明显达不到即判定为异常，即使麦克风在工位上完全正常。",
                     "es":"Aléjese hablando de forma continua y en línea recta, sin paredes de por medio, hasta que el sonido empiece a cortarse. Anote la última distancia en la que se oía limpio, no aquella en la que falló. Fotografíe el punto al que llegó, con el receptor a la vista si puede. La especificación es hasta 40 metros: quedarse muy por debajo es un fallo aunque el micrófono funcione perfecto en el puesto."}}]},
 
-        {"id":"DISTORTION","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"DISTORTION","optional":false,"only_factory":["LES"],
          "label":{"en":"DISTORTION","zh":"失真测试","es":"DISTORSIÓN"},
          "steps":[
            {"en":"Turn the microphone volume up to 10","zh":"将麦克风音量调到 10","es":"Suba el volumen del micrófono a 10"},
@@ -2185,7 +2194,7 @@ const CONFIG = {
                     "zh":"将音量调到 10 以上再听一次。在 10 以内干净、到 12 就破音的麦克风，在台上恰恰会被开到 12。",
                     "es":"Pase de 10 y vuelva a escuchar. Un micrófono limpio hasta 10 que se rompe en 12 es un micrófono que en tarima se va a usar en 12."}}]},
 
-        {"id":"AUTO_OFF","optional":true,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+        {"id":"AUTO_OFF","optional":true,"only_factory":["LES"],
          "label":{"en":"IDLE SHUTDOWN","zh":"自动关机","es":"APAGADO AUTOMÁTICO"},
          "steps":[
            {"en":"Switch on every microphone and the receiver","zh":"打开每支麦克风和接收器","es":"Encienda cada micrófono y el receptor"},
@@ -2892,7 +2901,10 @@ const T = {
   ok:"PASS", fail:"FAIL", documented:"DOCUMENTED", pending:"PENDING",
   a_select_factory:"Enter a valid test ID.", a_select_model:"Select the reference.",
   a_operator:"The operator is required.",
-  a_po_min:"The order number needs at least %n digits.\n\nIt is what every report, every file and every row of the spreadsheet is filed under: a number of one or two digits cannot be found again months later.",
+  /* One line. The reason it matters is written under the field, where it is read
+     before the number is typed; repeating it inside the alert only made the
+     operator dismiss a paragraph he had already seen. */
+  a_po_min:"The order number needs at least %n digits.",
   po_min_hint:"At least %n digits.",
   a_pending:"%n point(s) still to answer.",
   a_photo:"Photo missing.\n\nEvery test must be left with evidence, pass or fail.",
@@ -3079,7 +3091,7 @@ const T = {
   ok:"CONFORME", fail:"NO CONFORME", documented:"DOCUMENTADO", pending:"PENDIENTE",
   a_select_factory:"Ingrese un código de prueba válido.", a_select_model:"Seleccione la referencia.",
   a_operator:"El inspector es obligatorio.",
-  a_po_min:"El número de orden necesita al menos %n dígitos.\n\nEs bajo lo que queda archivado cada informe, cada archivo y cada fila del Excel: un número de uno o dos dígitos no se vuelve a encontrar meses después.",
+  a_po_min:"El número de orden necesita al menos %n dígitos.",
   po_min_hint:"Al menos %n dígitos.",
   a_pending:"Faltan %n punto(s) por responder.",
   a_photo:"Falta la foto.\n\nToda prueba debe quedar con evidencia, apruebe o falle.",
@@ -3264,7 +3276,7 @@ const T = {
   ok:"合格", fail:"异常", documented:"已记录", pending:"未完成",
   a_select_factory:"请输入有效的测试编号。", a_select_model:"请选择型号。",
   a_operator:"请填写检验员。",
-  a_po_min:"订单号至少需要 %n 位数字。\n\n每份报告、每个文件和表格中的每一行都以它归档：只有一两位数字的编号，几个月后再也找不回来。",
+  a_po_min:"订单号至少需要 %n 位数字。",
   po_min_hint:"至少 %n 位数字。",
   a_pending:"还有 %n 项未回答。",
   a_photo:"缺少照片。\n\n无论合格与否，每项测试都必须留下照片证据。",
@@ -5341,21 +5353,89 @@ function showReport(){
     .then(() => { if(S.screen === "report") render(); });
 }
 
-/* PDF in one tap, from the finish screen. No browser can write a PDF file on
-   its own — what exists is the print dialog with "Save as PDF" as the
-   destination — so this opens the report and calls it straight away instead of
-   making the operator find it. The English lines are filled in first: printing
-   a report and then translating it would issue the wrong document. */
+/* PDF in one tap, from the finish screen. No browser can write a PDF file on its
+   own — what exists is the print dialog with "Save as PDF" as the destination —
+   so this calls it straight away instead of making the operator find it. The
+   English lines are filled in first: printing a report and then translating it
+   would issue the wrong document.
+
+   The report is no longer shown on screen on the way. It used to switch to the
+   report view, print from there, and leave the operator on a document he did not
+   ask to read, having to find his way back. Printing does need the pages to exist
+   somewhere, so they go into an iframe: its own document, its own stylesheet, its
+   own title. That is what makes it invisible — not a CSS trick. Injecting the
+   report's stylesheet into this page would have restyled the app underneath,
+   because it sets rules for `table`, `td` and `body`, and the operator would have
+   watched the finish screen come apart for half a second.
+
+   Viewing the report is still one tap away on that same screen, for whoever does
+   want to read it. */
+let PRINT_FRAME = null;
+
+function dropPrintFrame(){
+  if(PRINT_FRAME && PRINT_FRAME.parentNode) PRINT_FRAME.parentNode.removeChild(PRINT_FRAME);
+  PRINT_FRAME = null;
+}
+
 async function savePdfNow(){
   showSaved(tr("pdf_wait"));
   try{ await Promise.all([ensureTranslations(), ensureRefImg()]); }catch(e){}
+
+  dropPrintFrame();
+  const fr = document.createElement("iframe");
+  fr.id = "printframe";
+  fr.setAttribute("aria-hidden", "true");
+  document.body.appendChild(fr);
+  PRINT_FRAME = fr;
+
+  let doc = null;
+  try{
+    doc = fr.contentWindow.document;
+    doc.open();
+    doc.write(reportHtml());
+    doc.close();
+    /* The suggested PDF name comes from the title of the document being printed,
+       and here that is the iframe's — so the packet name is set on it and this
+       page's own title is left alone. That title also names the home-screen
+       shortcut, which the old approach had to borrow and give back. */
+    doc.title = packetName();
+  }catch(e){ doc = null; }
+
   showSaved("");
-  S.screen = "report";
-  render();
-  window.scrollTo(0,0);
+
+  if(!doc){
+    // Some in-app browsers refuse to write into an iframe. Rather than fail
+    // silently, fall back to what this used to do: show the report and print it.
+    dropPrintFrame();
+    S.screen = "report";
+    render();
+    window.scrollTo(0, 0);
+    setTimeout(() => { if(S.screen === "report") printReport(); }, 600);
+    return;
+  }
+
   // The report is hundreds of images; give the browser a frame to lay them out
   // before the print dialog freezes the page, or the first pages come out blank.
-  setTimeout(() => { if(S.screen === "report") printReport(); }, 600);
+  setTimeout(() => {
+    try{
+      fr.contentWindow.addEventListener("afterprint",
+        () => setTimeout(dropPrintFrame, 400), {once:true});
+    }catch(e){}
+    try{
+      fr.contentWindow.focus();
+      fr.contentWindow.print();
+    }catch(e){
+      // Printing the frame was refused. Same fallback as above.
+      dropPrintFrame();
+      S.screen = "report";
+      render();
+      setTimeout(() => { if(S.screen === "report") printReport(); }, 600);
+      return;
+    }
+    // afterprint does not fire in every mobile browser; the frame must not be
+    // left behind holding every photograph in the inspection.
+    setTimeout(dropPrintFrame, 120000);
+  }, 600);
 }
 
 /* The PDF has to arrive with the same name as the ZIP, so that a report sent on
@@ -6373,9 +6453,22 @@ function adminStart(){
 function abortTest(){
   if(!confirm(tr("a_abort"))) return;
   clearDraft();
-  S.data = [[]]; S.units = 1; S.index = 0; S.open = {};
+  S.data = [[]]; S.index = 0; S.open = {};
   S.startedAt = null; S.finishedAt = null; S.mediaDropped = false;
-  S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
+  S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
+  /* An assignment survives being aborted, and it has to: HOKLAN said this
+     inspection is required, and abandoning one unit does not withdraw that. The
+     reference, the tests and the unit count are put back exactly as they came, so
+     the operator lands on the start screen with the same instruction waiting.
+     Clearing `pick` here while leaving `assigned` standing used to hand back the
+     whole plan under the banner of an assignment for two tests. */
+  if(S.assigned && ASSIGN){
+    S.pick = ASSIGN.tests.slice();
+    S.units = ASSIGN.units;
+  } else {
+    S.pick = null;
+    S.units = 1;
+  }
   S.screen = ADMIN_OK ? "admin" : "setup";
   window.scrollTo(0,0);
   render();
@@ -6905,10 +6998,21 @@ function header(t, done, total){
 /* Only a targeted inspection launched from Admin can be walked out of. In the
    factory flow the way out is finishing, or the home button with its warning —
    an operator does not get a one-tap discard next to the checklist. */
+/* Available in every inspection now, not only in one launched from Admin. It
+   used to be held back on the grounds that an operator should not have a
+   one-tap discard beside the checklist — but the way out without it was the HOME
+   button, which does the same thing while saying something else, and an
+   inspector who has to abandon a unit ends up there anyway. Better to name the
+   act than to have it happen through a door labelled for something else.
+
+   What guards it is not its absence but the confirmation: it says plainly that
+   every answer and every photograph will be thrown away and that no report will
+   be produced. That warning is the whole safety mechanism, so it is asked even
+   when there is nothing yet to lose. */
 function abortBlock(){
-  return S.fromAdmin ? `<p style="text-align:center;margin:0">
+  return `<p style="text-align:center;margin:0">
     <button class="jump" style="width:100%;color:var(--red);border-color:#7a3a36"
-      onclick="abortTest()">${tr("abort")}</button></p>` : "";
+      onclick="abortTest()">${tr("abort")}</button></p>`;
 }
 
 function mediaBlock(r){
@@ -7459,7 +7563,10 @@ function renderIndex(){
     ${units}
     <h2>${tr("tests_title")}</h2>
     <p class="hint" style="margin:0 0 12px">${tr("index_hint")}</p>
-    <div class="card">${list}</div>`;
+    <div class="card">${list}</div>
+    ${/* The index is the other place you stand inside an inspection, and the one
+          you reach when looking for a way out of it. */""}
+    ${abortBlock()}`;
 
   const complete = allUnits().every(i => unitVerdict(unitRows(i)) !== "INCOMPLETE");
   actions.innerHTML = `
