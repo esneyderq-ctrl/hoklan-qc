@@ -1,0 +1,91 @@
+ASIGNAR UNA PRUEBA A LA FÁBRICA
+===============================
+
+El inspector escribe siempre el mismo código de tres dígitos:
+
+    800
+
+Ese código no cambia nunca. Lo que cambia es este archivo:
+
+    asignacion.json
+
+Va en la raíz del repositorio, al mismo nivel que index.html. Cuando el
+inspector escribe 800, la app lo lee y abre la referencia y las pruebas que
+diga. No hay que tocar index.html ni subir la app de nuevo.
+
+CÓMO SE GENERA
+--------------
+1. En la app, escriba el código de admin de HOKLAN en el campo de código.
+2. Toque la referencia que quiere inspeccionar.
+3. Marque las pruebas que quiere que ejecuten y desmarque el resto.
+4. Escoja cuántas unidades deben inspeccionar. Ese número también viaja en la
+   asignación y el inspector no lo puede cambiar.
+5. Baje hasta CREAR ASIGNACIÓN y toque el botón.
+6. Aparece el contenido exacto del archivo. Toque Copiar.
+7. Abra https://github.com/hoklan-qc/hoklan-qc.github.io/edit/main/asignacion.json
+   pegue lo copiado, reemplazando todo, y pulse Commit changes.
+   (Si el archivo aún no existe, use .../new/main y llámelo asignacion.json)
+
+En uno o dos minutos, cualquier teléfono que escriba 800 recibe la asignación
+nueva.
+
+QUÉ CONTIENE
+------------
+    {
+     "ref": "HK-ARC101",
+     "tests": ["RADIO_FM", "DISPLAY"],
+     "units": 2,
+     "plan": 20,
+     "issued": "2026-08-17",
+     "note": ""
+    }
+
+ref      la referencia, exactamente como aparece en el catálogo de la app.
+tests    los identificadores de las pruebas a ejecutar. Se nombran, no se
+         numeran: así una prueba nueva en el plan no corre la lista.
+units    cuántas unidades deben poner en la mesa. De 1 a 5. Fuera de ese rango
+         la app lo ajusta al más cercano en vez de creerle al archivo.
+plan     la versión del plan con la que se creó. Informativo.
+issued   la fecha en que se creó. Informativo.
+note     texto libre que el inspector verá en pantalla. Puede quedar vacío.
+         Sirve para decir por qué: "Reinspección del lote 0007", por ejemplo.
+
+En "note" no escriba nada que la fábrica no deba leer. Este archivo se publica
+en internet junto con la app.
+
+UNA SOLA ASIGNACIÓN A LA VEZ
+----------------------------
+Hay un único código, así que hay una única asignación activa. Publicar una
+nueva reemplaza la anterior para todas las fábricas. Si necesita que dos
+fábricas trabajen en pruebas distintas al mismo tiempo, dígamelo: se puede
+pasar a un código por fábrica, pero son cuatro códigos que alguien tiene que
+administrar.
+
+SI NO HAY RED
+-------------
+La app guarda la última asignación que alcanzó a leer en ese teléfono. Un
+teléfono que ya la leyó sigue funcionando sin conexión, y avisa en pantalla que
+la leyó de su memoria y que puede no ser la última.
+
+Un teléfono que nunca la ha leído y no tiene red no puede entrar con 800: avisa
+que necesita conexión una vez. Para no quedarse detenido, el inspector siempre
+puede escribir su código de prueba habitual y ejecutar el plan completo.
+
+ES OBLIGATORIA
+--------------
+Una vez cargada, la asignación no se puede descartar desde la pantalla: no hay
+botón para eso. La referencia, las pruebas y la cantidad de unidades quedan
+fijadas, y el selector de referencia desaparece.
+
+Salirse cuesta un acto deliberado: escribir otro código de prueba encima del
+que quedó en el campo, o volver a la pantalla inicial con INICIO. Nada de eso
+ocurre por accidente ni con un solo toque.
+
+QUÉ DICE EL INFORME
+-------------------
+Origen: INSPECCIÓN SOLICITADA POR HOKLAN. No dice "Inspección HOKLAN", porque
+no la hizo un inspector de HOKLAN, ni "Autoinspección de fábrica", porque el
+alcance no lo decidió la fábrica.
+
+El alcance sale como PARCIAL, con la cuenta de cuántas pruebas del plan se
+ejecutaron, igual que cualquier inspección dirigida.

@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="6.5">
+<meta name="app-version" content="6.6">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -123,7 +123,11 @@ button:active{transform:scale(.99)}
 .asg span{display:block}
 .asg .w{color:var(--amber);font-size:12.5px;margin-top:4px}
 .asg.bad{background:#2b1614;border-color:#7a3a36;color:#f0c8c4}
-.asg .jump{margin-top:6px}
+.asg .req{color:var(--amber);font-size:12.5px;margin-top:6px}
+/* The unit count when it arrived fixed: the same chip, with nothing next to it
+   to press. Reads as a value, not as a control left disabled. */
+.units.fixed{pointer-events:none}
+.units.fixed button{flex:0 0 auto;min-width:52px}
 .grp-help{margin:0 14px 12px;padding:11px;border-radius:9px;background:#0d1f33;
   border:1px solid #24466b;color:#cfe0f2;font-size:14px;line-height:1.55}
 /* Three Han characters where the other two languages have three letters, so the
@@ -435,7 +439,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "6.5";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "6.6";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -2897,7 +2901,7 @@ const T = {
   assign_tests:"The assignment names no test this reference carries. Ask HOKLAN to publish it again.",
   assign_gone:"%n test(s) in the assignment no longer exist in the plan and were left out.",
   assign_cached:"Read from this phone's memory, not from the network: it may not be the latest one.",
-  assign_drop:"Drop the assignment",
+  assign_must:"This inspection is required. The reference, the tests and the number of units come fixed by HOKLAN.",
   origin_assigned:"INSPECTION REQUESTED BY HOKLAN",
   assign_make:"CREATE ASSIGNMENT",
   assign_file:"Publish this as asignacion.json, next to index.html. Nothing else changes, and index.html is not touched.",
@@ -3080,7 +3084,7 @@ const T = {
   assign_tests:"La asignación no nombra ninguna prueba que esta referencia lleve. Pida a HOKLAN que la publique de nuevo.",
   assign_gone:"%n prueba(s) de la asignación ya no existen en el plan y quedaron fuera.",
   assign_cached:"Leída de la memoria de este teléfono, no de la red: puede no ser la última.",
-  assign_drop:"Descartar la asignación",
+  assign_must:"Esta inspección es obligatoria. La referencia, las pruebas y la cantidad de unidades vienen fijadas por HOKLAN.",
   origin_assigned:"INSPECCIÓN SOLICITADA POR HOKLAN",
   assign_make:"CREAR ASIGNACIÓN",
   assign_file:"Publique esto como asignacion.json, al lado de index.html. No cambia nada más, y no se toca index.html.",
@@ -3261,7 +3265,7 @@ const T = {
   assign_tests:"指派中没有本型号具备的测试项目。请联系 HOKLAN 重新发布。",
   assign_gone:"指派中有 %n 项测试在当前方案中已不存在，已略去。",
   assign_cached:"读取自本机存储而非网络：可能不是最新的指派。",
-  assign_drop:"放弃此指派",
+  assign_must:"本次检验为强制项。型号、测试项目和检验数量均由 HOKLAN 指定。",
   origin_assigned:"HOKLAN 委托检验",
   assign_make:"生成指派",
   assign_file:"请将以下内容发布为 asignacion.json，与 index.html 同级。其余内容不变，index.html 无需改动。",
@@ -5932,7 +5936,12 @@ function validateAssignment(a){
   const want = Array.isArray(a.tests) ? a.tests.map(String) : [];
   const ok = want.filter(id => valid.indexOf(id) >= 0);
   if(!ok.length) return {err:"assign_tests", ref};
-  return {ref, tests:ok, gone: want.filter(id => valid.indexOf(id) < 0),
+  // How many units go on the bench is HOKLAN's call too: a re-inspection of one
+  // defect on one speaker and a check of five out of a shipment are different
+  // instructions, and the count is what makes them different. Clamped rather
+  // than trusted — a hand-edited file could say 0, or 400.
+  const units = Math.min(MAX_UNITS, Math.max(1, parseInt(a.units, 10) || 1));
+  return {ref, tests:ok, units, gone: want.filter(id => valid.indexOf(id) < 0),
           note:String(a.note || ""), issued:String(a.issued || ""),
           fromCache:!!a.fromCache};
 }
@@ -5946,16 +5955,18 @@ function applyAssignment(a){
   S.idDigits = digitsOfKey(S.factory);
   S.testId = S.idDigits ? CONFIG.test_ids[S.idDigits].code : "";
   S.pick = a.tests.slice();
+  S.units = a.units;
   S.assigned = true;
   S.fromAdmin = false;
   S.selfCheck = false;
   ASSIGN = a;
 }
 
+/* Not offered as a button. It runs when the operator types another test code
+   over the assignment — a deliberate act, not a tap — and when the app is taken
+   back to the start screen through HOME. */
 function clearAssignment(){
   S.assigned = false; S.pick = null; ASSIGN = null; ASSIGN_STATE = "";
-  S.idDigits = ""; S.testId = ""; S.factory = ""; S.model = "";
-  render();
 }
 
 /* Factory accounts. Same door as the admin code, less behind it: each one only
@@ -6214,6 +6225,7 @@ function assignJson(){
   return JSON.stringify({
     ref: S.model,
     tests: (S.pick || []).slice(),
+    units: S.units,
     plan: plan().plan_version,
     issued: inspectionDate().slice(0, 10),
     note: ""
@@ -6436,11 +6448,17 @@ function renderSetup(){
           const t = planTests().find(x => x.id === id);
           return t ? L(t.label) : id;
         }).join(", "))}</span>
+      <span>${fmt("units_tag",{n: ASSIGN.units})}</span>
       ${ASSIGN.note ? `<span>${esc(ASSIGN.note)}</span>` : ""}
       ${ASSIGN.gone && ASSIGN.gone.length
         ? `<span class="w">${fmt("assign_gone",{n:ASSIGN.gone.length})}</span>` : ""}
       ${ASSIGN.fromCache ? `<span class="w">${tr("assign_cached")}</span>` : ""}
-      <button class="jump" onclick="clearAssignment()">${tr("assign_drop")}</button>
+      ${/* No way out from here on purpose. An assignment is an instruction, not
+            a suggestion: a one-tap discard next to it turns the whole mechanism
+            into something the factory can decline. Recovering is still
+            possible, but it costs a deliberate act — typing another test code
+            over this one, or leaving through HOME. */""}
+      <span class="req">${tr("assign_must")}</span>
     </div>`;
 
   app.innerHTML = `
@@ -6475,9 +6493,15 @@ function renderSetup(){
         placeholder="${tr("operator_ph")}"
         autocomplete="off" oninput="onlyLetters(this)">
       <label>${tr("units")}</label>
-      <div class="units">${Array.from({length:MAX_UNITS},(_,i)=>
+      ${/* Fixed when it came in an assignment. The count is part of the
+            instruction — one unit to re-check a defect, five to sample a
+            shipment — so it is shown, not offered. The hidden field stays
+            either way, because that is what start() reads. */""}
+      ${S.assigned
+        ? `<div class="units fixed"><button class="on">${S.units}</button></div>`
+        : `<div class="units">${Array.from({length:MAX_UNITS},(_,i)=>
         `<button class="${S.units===i+1?"on":""}"
-          onclick="setUnits(${i+1})">${i+1}</button>`).join("")}</div>
+          onclick="setUnits(${i+1})">${i+1}</button>`).join("")}</div>`}
       <input id="units" class="hidden" value="${S.units}">
       <p class="hint">${fmt(S.units>1?"plan_info_n":"plan_info",
         {n:tests().length, u:S.units, tot:tests().length*S.units})}<br>
@@ -6571,6 +6595,11 @@ function setTestId(value){
     render();
     return;
   }
+
+  // Typing a code by hand over an assignment replaces it. This is the only way
+  // back to the normal flow from this screen, and it costs deliberate effort:
+  // there is no button, and no accident produces it.
+  if(S.assigned) clearAssignment();
 
   const entry = CONFIG.test_ids[digits];
   const newKey = entry ? entry.key : "";

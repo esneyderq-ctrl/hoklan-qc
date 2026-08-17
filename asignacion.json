@@ -1,8 +1,7 @@
 {
  "ref": "HK-ARC101",
- "tests": [
-  "USB"
- ],
+ "tests": ["RADIO_FM", "DISPLAY"],
+ "units": 2,
  "plan": 20,
  "issued": "2026-08-17",
  "note": ""
