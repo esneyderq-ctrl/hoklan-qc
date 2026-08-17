@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="6.6">
+<meta name="app-version" content="6.7">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -62,14 +62,9 @@ button:active{transform:scale(.99)}
   color:var(--grey);padding:12px 8px;font-size:14px;letter-spacing:.5px}
 .tabs button.on{background:rgba(46,163,242,.16);border-color:var(--accent);
   color:var(--accent)}
-/* The reference catalogue: one tappable row each, and there are fifty-odd of
-   them, so the list is filterable and the rows are kept to one line. */
-.rlist{display:flex;flex-direction:column;gap:6px}
-.rlist button{display:flex;align-items:center;justify-content:space-between;
-  gap:10px;background:#0a1523;padding:12px;font-size:14.5px;font-weight:600;
-  text-align:left}
-.rlist button em{font-style:normal;font-size:10.5px;color:var(--grey);
-  letter-spacing:1.5px;font-weight:700;white-space:nowrap}
+/* The reference catalogue used to be fifty-odd tappable rows on a screen of its
+   own, with a text filter above them. It is a dropdown now, grouped by factory:
+   one control instead of a screen, and no keyboard to reach a code. */
 /* One selectable test. The box on the left is drawn, not an <input>: a real
    checkbox cannot be styled consistently across Android and iOS. */
 .pk{display:flex;align-items:center;gap:11px;background:#0a1523;padding:11px 12px;
@@ -128,6 +123,13 @@ button:active{transform:scale(.99)}
    to press. Reads as a value, not as a control left disabled. */
 .units.fixed{pointer-events:none}
 .units.fixed button{flex:0 0 auto;min-width:52px}
+/* The header of a folded block: what is inside, said as a count, and the arrow.
+   Same shape as a section header in the checklist, so it is already understood. */
+.fold{display:flex;align-items:center;justify-content:space-between;
+  background:#0a1523;border:1px solid #24466b;color:var(--ink);
+  border-radius:9px;padding:12px 13px;font-size:14px;text-align:left}
+.fold b{font-weight:600;color:var(--accent)}
+.fold i{font-style:normal;color:var(--muted);font-size:13px}
 .grp-help{margin:0 14px 12px;padding:11px;border-radius:9px;background:#0d1f33;
   border:1px solid #24466b;color:#cfe0f2;font-size:14px;line-height:1.55}
 /* Three Han characters where the other two languages have three letters, so the
@@ -439,7 +441,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "6.6";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "6.7";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -2934,6 +2936,8 @@ const T = {
   na_undo_title:"The whole section is marked N/A — press to undo",
   tests_pick:"Tests to run", all_on:"Select all", all_off:"Clear all",
   n_selected:"<b>%n</b> of %tot tests selected.",
+  n_selected_short:"%n of %tot selected",
+  admin_refs_pick:"%n references, grouped by factory.",
   admin_start:"START SELECTED TESTS",
   abort:"✕ ABORT INSPECTION",
   a_abort:"Abort this inspection?\n\nEverything answered and every photo taken will be discarded, and nothing will be reported.",
@@ -3117,6 +3121,8 @@ const T = {
   na_undo_title:"La sección completa está en N/A — pulse para deshacer",
   tests_pick:"Pruebas a ejecutar", all_on:"Seleccionar todas", all_off:"Quitar todas",
   n_selected:"<b>%n</b> de %tot pruebas seleccionadas.",
+  n_selected_short:"%n de %tot seleccionadas",
+  admin_refs_pick:"%n referencias, agrupadas por fábrica.",
   admin_start:"INICIAR PRUEBAS SELECCIONADAS",
   abort:"✕ ABORTAR INSPECCIÓN",
   a_abort:"¿Abortar esta inspección?\n\nTodo lo respondido y todas las fotos tomadas se descartarán, y no se reportará nada.",
@@ -3298,6 +3304,8 @@ const T = {
   na_undo_title:"整个分组已标记为不适用 — 点击可撤销",
   tests_pick:"要执行的测试", all_on:"全选", all_off:"全部取消",
   n_selected:"已选择 <b>%n</b> / %tot 项测试。",
+  n_selected_short:"已选 %n / %tot",
+  admin_refs_pick:"共 %n 个型号，按工厂分组。",
   admin_start:"开始所选测试",
   abort:"✕ 中止检验",
   a_abort:"确定中止本次检验？\n\n已填写的所有回答和拍摄的所有照片都将被丢弃，且不会生成任何报告。",
@@ -3395,7 +3403,10 @@ const S = {
   // A targeted inspection launched from Admin: `pick` is the list of test ids
   // to run, and `fromAdmin` is what puts the ABORT button on the screen. Both
   // null/false in the normal factory flow, which always runs the whole plan.
-  pick:null, fromAdmin:false, adminQuery:"", poLetter:"",
+  pick:null, fromAdmin:false, poLetter:"",
+  // Whether the test list is unfolded in Admin. Folded by default: the common
+  // case is running all of them and never opening it.
+  adminTests:false,
   // Started from a factory account: the factory checked its own product. Travels
   // into the report, the spreadsheet and the file name, because the reader has to
   // know that the one who inspected is the one who built it.
@@ -3674,7 +3685,7 @@ function restore(){
       if(!Array.isArray(S.pick) || !S.pick.length) S.pick = null;
       S.fromAdmin = !!S.fromAdmin;
       S.selfCheck = !!S.selfCheck;
-      S.adminQuery = S.adminQuery || "";
+      S.adminTests = !!S.adminTests;
       return true;
     }
   }catch(e){
@@ -5817,8 +5828,12 @@ function downloadPacket(){
 /* ---------- screens ------------------------------------------------------- */
 function render(){
   if(S.screen === "setup")  renderSetup();
-  else if(S.screen === "admin")     renderAdmin();
-  else if(S.screen === "adminPick") renderAdminPick();
+  // "adminPick" was the second Admin screen; there is only one now. A draft
+  // saved by an older build can still name it, and landing on nothing would be
+  // a blank page.
+  else if(S.screen === "admin" || S.screen === "adminPick"){
+    S.screen = "admin"; renderAdmin();
+  }
   else if(S.screen === "test")   renderTest();
   else if(S.screen === "index")  renderIndex();
   else if(S.screen === "report") renderReport();
@@ -5982,6 +5997,14 @@ const FACTORY_ADMINS = {
   "733": {code:"733-J2Q6L8W4Z", key:"EAG"}
 };
 
+/* Only for the group headings of the reference dropdown, and only inside Admin.
+   These names never reach a report, a file name or the spreadsheet — there the
+   factory travels as its test ID and nothing else, which is the whole reason the
+   test IDs exist. */
+const FACTORY_NAMES = {
+  YIS:"YISION", RHY:"RHYME", LES:"LESHENG", EAG:"EAGLE"
+};
+
 let ADMIN_OK = false;      // per session on purpose: never remembered on disk
 /* "" while the full admin code is in use; the factory key for a factory
    account. Deliberately not cleared when Admin is left: once the phone has been
@@ -6019,15 +6042,16 @@ function adminCode(){
 function exitAdmin(){
   ADMIN_OK = false;
   // ADMIN_FACTORY is left alone on purpose: see where it is declared.
-  S.adminQuery = "";
+  S.adminTests = false;
   S.pick = null; S.fromAdmin = false;
   goHomeReset();
   S.screen = "setup";
   window.scrollTo(0,0);
   render();
 }
-/* Back to the reference list. Without the session flag there is no Admin to go
-   back to, so this lands on the start screen instead. */
+/* Back to Admin. There is one Admin screen now, so this only matters as the way
+   home from anywhere that still calls it. Without the session flag there is no
+   Admin to go back to, so it lands on the start screen instead. */
 function goAdminTab(){
   if(!ADMIN_OK){ exitAdmin(); return; }
   S.screen = "admin";
@@ -6041,6 +6065,18 @@ function renderAdmin(){
   if(!ADMIN_OK){ S.screen = "setup"; renderSetup(); return; }
 
   const list = refList();
+  // Built before the template so the header of the fold can carry the count
+  // whether or not the list below it is open.
+  const all = S.model ? planTests() : [];
+  const picked = S.pick || [];
+  const rows = all.map(t => {
+    const on = picked.indexOf(t.id) >= 0;
+    const n = realPoints(t).length;
+    return `<button class="pk ${on?"on":""}" onclick="togglePick('${t.id}')">
+      <i>${on?"✓":""}</i><b>${esc(L(t.label))}</b>
+      <em>${fmt("points_n",{n})}${t.optional?" · "+tr("is_optional"):""}</em>
+    </button>`;
+  }).join("");
 
   app.innerHTML = `
     ${langBar()}
@@ -6059,53 +6095,80 @@ function renderAdmin(){
                            : "HK" + poDigits(peekPo()),
         o: isFactoryUser() ? "FÁBRICA " + ADMIN_FACTORY.charAt(0)
                            : "ADMIN HOKLAN"}))}</div>
-      <label>${tr("admin_refs")}</label>
-      <input id="q" value="${esc(S.adminQuery)}" placeholder="${tr("search")}"
-        autocomplete="off" oninput="setAdminQuery(this.value)">
-      <p class="hint" id="qhint">${fmt("admin_refs_hint",{n:list.length})}</p>
-      <div class="rlist" id="rlist">${refRows(list)}</div>
+      <label>${tr("reference")}</label>
+      <select id="aref" onchange="setAdminModel(this.value)">${refOptions()}</select>
+      <p class="hint" style="margin-top:6px">${
+        S.model ? esc(S.testId) : fmt("admin_refs_pick",{n:list.length})}</p>
+      ${S.model ? refImageRow(S.model) : ""}
+
+      ${!S.model ? "" : `
+      ${/* The tests, folded, with their count in the header. Fifteen toggles are
+            what made this screen a scroll, and the operator who wants all of
+            them — which is most of the time — never has to open it. */""}
+      <label>${tr("tests_pick")}</label>
+      <button class="fold" onclick="toggleAdminTests()">
+        <b>${fmt("n_selected_short",{n:picked.length, tot:all.length})}</b>
+        <i>${S.adminTests ? "▾" : "▸"}</i>
+      </button>
+      ${S.adminTests ? `
+        <div class="row" style="margin:8px 0">
+          <button onclick="pickAll(true)">${tr("all_on")}</button>
+          <button onclick="pickAll(false)">${tr("all_off")}</button>
+        </div>
+        ${rows}` : ""}
+
+      <label>${tr("units")}</label>
+      <div class="units">${Array.from({length:MAX_UNITS},(_,i)=>
+        `<button class="${S.units===i+1?"on":""}"
+          onclick="setUnitsAdmin(${i+1})">${i+1}</button>`).join("")}</div>
+
+      ${isFactoryUser() ? `
+      <label>${tr("po")}</label>
+      <input id="adminPo" value="${esc(S.po)}" maxlength="12" autocomplete="off"
+        placeholder="${tr("po_ph")}" oninput="setAdminPo(this.value)">
+      <p class="hint" style="margin-top:6px">${fmt("po_factory",{
+        p: ADMIN_FACTORY.charAt(0) + poDigits(peekPo())})}</p>` : ""}`}
     </div>
+
+    ${S.model && canAssign() ? `
+    <div class="card">
+      <label style="margin-top:0">${tr("assign_make")}</label>
+      <p class="hint" style="margin:0 0 10px">${
+        fmt("assign_code_is",{d: ASSIGN_ID.digits})}</p>
+      <button onclick="showAssignFile()">${tr("assign_make")}</button>
+      <div id="asgfile" class="hidden">
+        <p class="hint" style="margin:12px 0 6px">${tr("assign_file")}</p>
+        <textarea id="asgtext" readonly rows="8"
+          style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px"
+          >${esc(assignJson())}</textarea>
+        <button id="asgcopy" onclick="copyAssign()">${tr("assign_copy")}</button>
+      </div>
+    </div>` : ""}
+
     ${isFactoryUser()?"":`<p style="text-align:center">
       <button class="jump" style="text-align:center;width:100%;opacity:.7"
         onclick="wipeData()">${tr("wipe")}</button></p>`}`;
-  actions.innerHTML =
-    `<button onclick="exitAdmin()">${tr("to_start")}</button>`;
+
+  actions.innerHTML = S.model
+    ? `<button style="flex:0 0 34%" onclick="exitAdmin()">${tr("to_start")}</button>
+       <button class="primary" style="flex:4${picked.length?"":";opacity:.5"}"
+         onclick="adminStart()">${tr("admin_start")}</button>`
+    : `<button onclick="exitAdmin()">${tr("to_start")}</button>`;
 }
 
 /* The references the filter currently leaves. A factory account never sees past
    its own catalogue: the filter is applied before the text search, so no query
    can reach a reference that belongs to somebody else. */
 function refList(){
-  const q = String(S.adminQuery || "").trim().toUpperCase();
   let all = Object.keys(CONFIG.models).sort();
   if(ADMIN_FACTORY) all = all.filter(m => keyOfModel(m) === ADMIN_FACTORY);
-  return q ? all.filter(m => m.toUpperCase().indexOf(q) >= 0) : all;
+  return all;
 }
-function refRows(list){
-  if(!list.length) return `<p class="hint" style="margin:0">${tr("no_match")}</p>`;
-  return list.map(m => {
-    // Belt and braces on top of the filter above: a test ID is only ever printed
-    // next to a reference of the factory that is logged in.
-    const code = (!ADMIN_FACTORY || keyOfModel(m) === ADMIN_FACTORY)
-      ? codeOfModel(m) : "";
-    return `<button onclick="adminOpen('${esc(m)}')">
-      <span>${esc(m)}</span><em>${esc(code)}</em></button>`;
-  }).join("");
-}
-
-/* Filtering must not rebuild the input being typed into, so the list and its
-   count are patched in place and the field is left alone. Both are addressed by
-   id: the empty result is a message inside the same container, so there is
-   always something to write into — a filter that matched nothing used to leave
-   the previous list on screen. */
-function setAdminQuery(value){
-  S.adminQuery = value;
-  const list = refList();
-  const hint = document.getElementById("qhint");
-  const box = document.getElementById("rlist");
-  if(hint) hint.innerHTML = fmt("admin_refs_hint",{n:list.length});
-  if(box) box.innerHTML = refRows(list);
-}
+/* The search box and the list of buttons are gone with the second screen. The
+   dropdown holds all fifty-three grouped by factory, and a native picker on a
+   phone is faster to reach one of them than a text filter that needs the
+   keyboard. refList is kept because the grouping is built from it, and because
+   it is where the factory restriction lives. */
 
 /* The reference decides the factory, and each factory has exactly one test ID,
    so picking a reference in Admin fills in the code the report has to carry —
@@ -6120,6 +6183,12 @@ function codeOfModel(m){
   return d ? CONFIG.test_ids[d].code : "—";
 }
 
+/* Choosing the reference no longer changes screen. Admin used to be two: a list
+   of fifty-three references, and then the tests of the one you tapped. Two
+   screens for what is one decision, and neither of them said on arrival whether
+   you were about to inspect or about to assign. Now it is one screen and the
+   reference is a dropdown, which is also the only control on a phone that can
+   hold fifty-three options without becoming a scroll. */
 function adminOpen(model){
   S.model = model;
   S.factory = keyOfModel(model);
@@ -6128,9 +6197,48 @@ function adminOpen(model){
   // Everything ticked to begin with: the common case is "all of it, on this
   // reference", and unticking three is less work than ticking eleven.
   S.pick = planTests().map(t => t.id);
-  S.screen = "adminPick";
-  window.scrollTo(0,0);
+  // A reference just chosen folds the test list away and shows its count. The
+  // operator who wants all of them — most of them — never has to open it.
+  S.adminTests = false;
   render();
+}
+
+/* Empty means "none chosen": the tests, the units and the buttons all wait for
+   a reference, because none of them mean anything without one. */
+function setAdminModel(value){
+  if(!value){
+    S.model = ""; S.factory = ""; S.idDigits = ""; S.testId = "";
+    S.pick = null; S.adminTests = false;
+    render();
+    return;
+  }
+  adminOpen(value);
+}
+
+function toggleAdminTests(){
+  S.adminTests = !S.adminTests;
+  render();
+}
+
+/* The dropdown, grouped by factory. The groups are what make a list of this
+   length navigable without a search box: a reference is remembered as "one of
+   RHYME's" long before its code comes to mind. A factory account sees one group
+   — its own — and the label is dropped, because naming the only group there is
+   would be telling it something it already knows. */
+function refOptions(){
+  const byKey = {};
+  refList().forEach(m => {
+    const k = keyOfModel(m) || "—";
+    (byKey[k] = byKey[k] || []).push(m);
+  });
+  const keys = Object.keys(byKey).sort();
+  const opt = m => `<option value="${esc(m)}"${
+    m === S.model ? " selected" : ""}>${esc(m)}</option>`;
+  const head = `<option value="">${tr("select")}</option>`;
+  if(keys.length <= 1) return head + (byKey[keys[0]] || []).map(opt).join("");
+  return head + keys.map(k =>
+    `<optgroup label="${esc(FACTORY_NAMES[k] || k)}">${
+      byKey[k].map(opt).join("")}</optgroup>`).join("");
 }
 
 /* No form to read back on this screen any more: the order number is assigned by
@@ -6145,75 +6253,6 @@ function togglePick(id){
 function pickAll(on){
   S.pick = on ? planTests().map(t => t.id) : [];
   render();
-}
-
-function renderAdminPick(){
-  const all = planTests();
-  const picked = S.pick || [];
-  const rows = all.map(t => {
-    const on = picked.indexOf(t.id) >= 0;
-    const n = realPoints(t).length;
-    return `<button class="pk ${on?"on":""}" onclick="togglePick('${t.id}')">
-      <i>${on?"✓":""}</i><b>${esc(L(t.label))}</b>
-      <em>${fmt("points_n",{n})}${t.optional?" · "+tr("is_optional"):""}</em>
-    </button>`;
-  }).join("");
-
-  app.innerHTML = `
-    ${langBar()}
-    <h1>HOKLAN QC</h1>
-    <p class="sub">${tr("tab_admin")}</p>
-    ${tabBar()}
-    <div class="card">
-      <div class="tag">${esc(S.model)}</div><div class="tag">${esc(S.testId)}</div>
-      <div class="tag">${esc(inspectionDate())}</div>
-      ${refImageRow(S.model)}
-      <label>${tr("tests_pick")}</label>
-      <div class="row" style="margin-bottom:8px">
-        <button onclick="pickAll(true)">${tr("all_on")}</button>
-        <button onclick="pickAll(false)">${tr("all_off")}</button>
-      </div>
-      ${rows}
-      <p class="hint">${fmt("n_selected",{n:picked.length, tot:all.length})}</p>
-    </div>
-    <div class="card">
-      <label style="margin-top:0">${tr("po")}</label>
-      ${/* The factory works against the customer's order number, which it has on
-            the papers in front of it; HOKLAN numbers its own inspections and has
-            nothing to type. So one account gets a field and the other a label —
-            the same box, two different jobs. */""}
-      ${isFactoryUser() ? `
-      <input id="adminPo" value="${esc(S.po)}" maxlength="12" autocomplete="off"
-        placeholder="${tr("po_ph")}" oninput="setAdminPo(this.value)">
-      <p class="hint" style="margin-top:6px">${fmt("po_factory",{
-        p: ADMIN_FACTORY.charAt(0) + poDigits(peekPo())})}</p>` : `
-      <input value="HK${poDigits(peekPo())}" readonly
-        style="color:var(--muted);background:#0a1523">
-      <p class="hint" style="margin-top:6px">${tr("po_auto")}</p>`}
-      <label>${tr("units")}</label>
-      <div class="units">${Array.from({length:MAX_UNITS},(_,i)=>
-        `<button class="${S.units===i+1?"on":""}"
-          onclick="setUnitsAdmin(${i+1})">${i+1}</button>`).join("")}</div>
-    </div>
-    ${canAssign() ? `
-    <div class="card">
-      <label style="margin-top:0">${tr("assign_make")}</label>
-      <p class="hint" style="margin:0 0 10px">${
-        fmt("assign_code_is",{d: ASSIGN_ID.digits})}</p>
-      <button onclick="showAssignFile()">${tr("assign_make")}</button>
-      <div id="asgfile" class="hidden">
-        <p class="hint" style="margin:12px 0 6px">${tr("assign_file")}</p>
-        <textarea id="asgtext" readonly rows="7"
-          style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px"
-          >${esc(assignJson())}</textarea>
-        <button id="asgcopy" onclick="copyAssign()">${tr("assign_copy")}</button>
-      </div>
-    </div>` : ""}`;
-
-  actions.innerHTML = `
-    <button style="flex:0 0 40%" onclick="goAdminTab()">${tr("back")}</button>
-    <button class="primary" style="flex:4${picked.length?"":";opacity:.5"}"
-      onclick="adminStart()">${tr("admin_start")}</button>`;
 }
 
 /* The same selection, sent instead of run. Only the full admin gets this: what
