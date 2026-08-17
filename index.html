@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="6.2">
+<meta name="app-version" content="6.3">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -417,7 +417,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "6.2";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "6.3";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -565,14 +565,48 @@ const CONFIG = {
     "RMT-022":{"en":"Folder back button does not respond","zh":"上一文件夹键无响应","es":"La tecla de carpeta anterior no responde"},
     "RMT-023":{"en":"EQ button does not respond","zh":"EQ 键无响应","es":"La tecla EQ no responde"},
     "RMT-024":{"en":"Repeat button does not respond","zh":"循环键无响应","es":"La tecla de repetición no responde"},
-    "RMT-025":{"en":"Remote does not respond at all","zh":"遥控器完全无响应","es":"El control remoto no responde en absoluto"}
+    "RMT-025":{"en":"Remote does not respond at all","zh":"遥控器完全无响应","es":"El control remoto no responde en absoluto"},
+
+    /* LESHENG builds a wireless microphone system, so it needs codes of its own.
+       Only what has no equivalent above is added: "does not charge" is already
+       CHG-001 and distortion is already AUD-003, and giving them a second code
+       would split the same defect into two columns on the dashboard, which is
+       the one thing the code list exists to prevent. */
+    "WMIC-001":{"en":"Microphone does not power on","zh":"麦克风无法开机","es":"El micrófono no enciende"},
+    "WMIC-002":{"en":"Screen backlight does not work","zh":"屏幕背光异常","es":"La retroiluminación de la pantalla no funciona"},
+    "WMIC-003":{"en":"Backlight colours incomplete or wrong","zh":"背光颜色缺失或不符","es":"Colores de retroiluminación incompletos o incorrectos"},
+    "WMIC-004":{"en":"Microphone starts muted","zh":"开机即静音","es":"El micrófono arranca en silencio"},
+    "WMIC-005":{"en":"Channel change does not work","zh":"频道切换无效","es":"El cambio de canal no funciona"},
+    "WMIC-006":{"en":"Does not pair with the receiver","zh":"无法与接收器对码","es":"No empareja con el receptor"},
+    "WMIC-007":{"en":"Loses signal within the specified range","zh":"规定距离内信号丢失","es":"Pierde señal dentro del alcance especificado"},
+    "WMIC-008":{"en":"Interference between the two microphones","zh":"两支麦克风互相干扰","es":"Interferencia entre los dos micrófonos"},
+    "WMIC-009":{"en":"Microphone volume does not work","zh":"麦克风音量调节无效","es":"El volumen del micrófono no funciona"},
+    "WMIC-010":{"en":"Button does not respond","zh":"按键无响应","es":"Una tecla no responde"},
+    "WMIC-011":{"en":"Does not switch off after the idle time","zh":"闲置后未自动关机","es":"No se apaga tras el tiempo de inactividad"},
+    "WMIC-012":{"en":"Battery voltage out of specification","zh":"电池电压超出规格","es":"Voltaje de batería fuera de especificación"},
+    "WMIC-013":{"en":"Battery or its compartment in poor condition","zh":"电池或电池仓状态不良","es":"Batería o su compartimento en mal estado"},
+    "WMIC-014":{"en":"Logo defective, smudged or misaligned","zh":"标志有缺陷、模糊或歪斜","es":"Logo defectuoso, manchado o desalineado"},
+    "WMIC-015":{"en":"Antenna bent, cracked or loose","zh":"天线弯曲、开裂或松动","es":"Antena doblada, agrietada o floja"},
+    "WMIC-016":{"en":"Accessory missing or mixed up","zh":"配件缺失或混装","es":"Accesorio faltante o cambiado"},
+    "WMIC-017":{"en":"Receiver does not power on","zh":"接收器无法开机","es":"El receptor no enciende"},
+    "WMIC-018":{"en":"Model or lot does not match the order","zh":"型号或批号与订单不符","es":"El modelo o el lote no coincide con la orden"},
+    "WMIC-019":{"en":"Physical damage on the housing","zh":"外壳有物理损伤","es":"Daño físico en la carcasa"},
+    "WMIC-020":{"en":"Label missing, illegible or peeling","zh":"标签缺失、模糊或翘边","es":"Etiqueta faltante, ilegible o despegada"},
+    "BAG-001":{"en":"Tears, scratches or stains on the bag","zh":"包体破损、划痕或污渍","es":"Rasgaduras, rayones o manchas en la bolsa"},
+    "BAG-002":{"en":"Loose threads or visible glue","zh":"线头外露或胶痕可见","es":"Hilos sueltos o pegante a la vista"},
+    "BAG-003":{"en":"Seams crooked or weak","zh":"缝线歪斜或不牢","es":"Costuras torcidas o débiles"},
+    "BAG-004":{"en":"Zipper does not run smoothly","zh":"拉链不顺畅","es":"La cremallera no corre bien"},
+    "BAG-005":{"en":"Buckle, strap or handle loose","zh":"扣具、背带或提手松动","es":"Hebilla, correa o asa floja"},
+    "BAG-006":{"en":"Bag loses its shape","zh":"包体变形","es":"La bolsa pierde su forma"},
+    "BAG-007":{"en":"Material or padding inconsistent","zh":"材质或衬垫不一致","es":"Material o acolchado inconsistente"},
+    "BAG-008":{"en":"Relief logo incomplete or dirty","zh":"浮雕标志不完整或有污","es":"Logo en relieve incompleto o sucio"}
   },
 
   "plans": {
     "default": {
-      "plan_version": 17,
+      "plan_version": 18,
       "tests": [
-        {"id":"USB","optional":false,
+        {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
          "steps":[
            {"en":"Insert the HOKLAN test USB drive into the speaker","zh":"将 HOKLAN 测试 U 盘插入音箱","es":"Inserte la memoria USB de prueba HOKLAN en el parlante"},
@@ -752,7 +786,7 @@ const CONFIG = {
                     "zh":"U 盘保持插入，关机后再开机。应自动回到 USB 模式并开始播放，无需按任何键。",
                     "es":"Con la memoria aún insertada, apague y encienda el parlante. Debe volver al modo USB y empezar a reproducir sin pulsar nada."}}]},
 
-        {"id":"SD","optional":true,
+        {"id":"SD","optional":true,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"SD CARD","zh":"SD 卡"},
          "steps":[
            {"en":"Insert the HOKLAN test SD card into the speaker","zh":"将 HOKLAN 测试 SD 卡插入音箱"},
@@ -873,7 +907,7 @@ const CONFIG = {
             "help":{"en":"With the card still inserted, switch the speaker off and on. It must return to SD mode and start playing without pressing anything.",
                     "zh":"SD 卡保持插入，关机后再开机。应自动回到 SD 模式并开始播放，无需按任何键。"}}]},
 
-        {"id":"BLUETOOTH","optional":false,
+        {"id":"BLUETOOTH","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"BLUETOOTH","zh":"蓝牙"},
          "steps":[
            {"en":"Put the speaker in Bluetooth mode and leave it discoverable","zh":"将音箱切换到蓝牙模式并保持可被搜索"},
@@ -1015,7 +1049,7 @@ const CONFIG = {
             "help":{"en":"Same check on the microphone treble. Mark N/A if this reference has no separate microphone tone controls.",
                     "zh":"对麦克风高音做同样的检查。本型号没有独立的麦克风音调调节时标记为“不适用”。"}}]},
 
-        {"id":"RADIO_FM","optional":true,
+        {"id":"RADIO_FM","optional":true,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"FM RADIO","zh":"调频收音"},
          "steps":[
            {"en":"Select radio mode on the speaker","zh":"将音箱切换到收音模式"},
@@ -1099,7 +1133,7 @@ const CONFIG = {
             "help":{"en":"In radio mode the lights must stay off by design: the LED drivers interfere with FM reception. If they come on, it is a firmware fault.",
                     "zh":"收音模式下灯光应按设计保持关闭：灯板驱动会干扰调频接收。若灯亮起，属于固件缺陷。"}}]},
 
-        {"id":"AUX","optional":false,
+        {"id":"AUX","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"AUX LINE","zh":"AUX 音频输入"},
          "steps":[
            {"en":"Select AUX mode on the speaker first","zh":"先在音箱上切换到 AUX 模式"},
@@ -1184,7 +1218,7 @@ const CONFIG = {
             "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
                     "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}}]},
 
-        {"id":"DISPLAY","optional":true,
+        {"id":"DISPLAY","optional":true,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"DISPLAY","zh":"显示屏"},
          "steps":[
            {"en":"Switch the speaker on and let the display settle","zh":"开机并等待显示屏稳定"},
@@ -1216,7 +1250,7 @@ const CONFIG = {
             "help":{"en":"With the cable connected, select the auxiliary input, read the display and photograph it. Some references write AUX and others LINE: either is correct as long as it matches the specification for this model and is spelled properly. Mark N/A if this reference has no auxiliary input.",
                     "zh":"接上音频线后切换到辅助输入，阅读显示内容并拍照。部分型号显示 AUX，部分显示 LINE：只要与本型号规格一致且拼写无误，两者均可。本型号没有辅助输入时标记为“不适用”。"}}]},
 
-        {"id":"REMOTE","optional":true,
+        {"id":"REMOTE","optional":true,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"REMOTE CONTROL","zh":"遥控器"},
          "steps":[
            {"en":"Check the remote has a battery; remove the insulator if new","zh":"确认遥控器有电池，新品请抽出绝缘片"},
@@ -1314,6 +1348,7 @@ const CONFIG = {
                     "zh":"对麦克风说话时按下此键，注意人声效果的变化（该键用于消去原唱人声）。遥控器上仍印英文 VOICE OUT。本型号没有此键时标记为“不适用”。"}}]},
 
         {"id":"EXTERNAL","optional":false,"type":"photos","no_na":true,
+         "only_factory":["YIS","RHY","EAG"],
          "label":{"en":"EXTERNAL PARTS","zh":"外观部件"},
          "steps":[
            {"en":"Place the speaker in good light, avoiding direct reflections","zh":"将音箱置于光线充足处，避免反光"},
@@ -1349,6 +1384,7 @@ const CONFIG = {
                     "zh":"拍摄音箱批号（生产批次号）的特写：即印制或贴在产品本体上的编号，通常在规格标签旁边。照片中每一位数字都必须清晰可读，且必须与检验单上记录的批号一致。若本型号没有批号，则改拍序列号，并在备注中说明。"}}]},
 
         {"id":"ACCESSORIES","optional":false,"type":"photos",
+         "only_factory":["YIS","RHY","EAG"],
          "label":{"en":"ACCESSORIES","zh":"配件"},
          "steps":[
            {"en":"Take the accessories out of the box onto a clear surface","zh":"将配件从箱中取出，放在干净台面上"},
@@ -1380,6 +1416,7 @@ const CONFIG = {
                     "zh":"拍摄背面，需拍到锁紧旋钮和焊接部位。"}}]},
 
         {"id":"GRAPHICS","optional":false,"type":"photos","no_na":true,
+         "only_factory":["YIS","RHY","EAG"],
          "label":{"en":"PRINTED MATERIAL","zh":"印刷品"},
          "steps":[
            {"en":"Take a photo of each item on the list","zh":"逐项拍摄下列物品"},
@@ -1434,22 +1471,23 @@ const CONFIG = {
             "help":{"en":"The bottom, including the seal and any shipping label.",
                     "zh":"拍摄底面，需拍到封口和运输标签。"}},
            {"id":"caja_ancho","measure":{"unit":"cm","step":"0.1"},
-            "sample":"ejemplo_caja_ancho",
+            "sample":"caja_ancho",
             "label":{"en":"Box — width","zh":"彩盒 — 宽"},
             "help":{"en":"The horizontal side of the front face. Hook the tape on one edge and read it at the opposite edge, with both ends inside the frame: a photo that shows only the number cannot be checked by anybody afterwards. Read the centimetre scale, not the inches — the tape carries both, and 86 cm sits right next to 34 in.",
                     "zh":"正面的水平边。将卷尺钩在一端，在另一端读数，两端都要在画面之内：只拍到数字的照片，事后无人能够复核。读厘米刻度，不要读英寸——卷尺上两种刻度并排，86 厘米就紧挨着 34 英寸。"}},
            {"id":"caja_largo","measure":{"unit":"cm","step":"0.1"},
-            "sample":"ejemplo_caja_largo",
+            "sample":"caja_largo",
             "label":{"en":"Box — depth","zh":"彩盒 — 深"},
             "help":{"en":"The depth: the tape crosses the top face, from the front edge to the back edge. Same rule — both ends of the tape in the photo, and centimetres.",
                     "zh":"深度：卷尺横跨顶面，从前沿量到后沿。规则相同——卷尺两端都要入镜，读厘米。"}},
            {"id":"caja_alto","measure":{"unit":"cm","step":"0.1"},
-            "sample":"ejemplo_caja_alto",
+            "sample":"caja_alto",
             "label":{"en":"Box — height","zh":"彩盒 — 高"},
             "help":{"en":"The vertical side, from the base to the top. Stand the box up and run the tape down one corner. This is the one where the bottom end usually falls out of the frame: step back until the base and the reading are both in the picture.",
                     "zh":"垂直边，从底部量到顶部。将彩盒立起，卷尺沿一条棱垂直放置。这一项最容易把底端拍出画面：请后退，直到底部和读数同时在画面之内。"}}]},
 
         {"id":"EXT_BATTERY","optional":true,"skip_factory":["RHY"],
+         "only_factory":["YIS","RHY","EAG"],
          "label":{"en":"EXTERNAL BATTERY","zh":"外置电池"},
          "steps":[
            {"en":"Switch the speaker off and disconnect it from the mains","zh":"关机并断开市电"},
@@ -1483,6 +1521,7 @@ const CONFIG = {
                     "zh":"重新接上内置电池，将开关拨回内置，并装回箱体。确认恢复后仍能正常工作再结束。"}}]},
 
         {"id":"INTERNAL","optional":false,"type":"photos","no_na":true,
+         "only_factory":["YIS","RHY","EAG"],
          "label":{"en":"INTERNAL PARTS","zh":"内部部件"},
          "steps":[
            {"en":"Remove the screws and open the speaker carefully","zh":"拆下螺丝，小心打开箱体"},
@@ -1517,7 +1556,624 @@ const CONFIG = {
            {"id":"bateria","label":{"en":"Battery","zh":"电池"},
             "help":{"en":"Photograph the face that carries the specifications: voltage, capacity in mAh, chemistry and manufacturer. A photo of the wrapped battery without the label proves nothing.",
                     "zh":"拍摄带规格的一面：电压、容量（mAh）、电芯类型和生产厂家。只拍电池外观而看不到标签没有意义。"}},
-           {"id":"antena_fm","label":{"en":"FM antenna position","zh":"收音天线位置"}}]}
+           {"id":"antena_fm","label":{"en":"FM antenna position","zh":"收音天线位置"}}]},
+
+        /* ===== LESHENG — wireless microphone system =========================
+           A different product, so a different plan: two microphones and a
+           receiver, and on RHO102 a bag as well. Built from the factory's own
+           SOP so that what the inspector reads here and what the factory
+           reviews there are the same document.
+           The order is by how long each test takes the operator, shortest
+           first: the identification takes two minutes and the idle shutdown
+           takes twenty. Anything that goes wrong tends to go wrong early, and
+           finding it in the first ten minutes saves setting up the rest. It
+           also lands the three distance tests next to each other at the end,
+           so the walk down the corridor is made once. */
+
+        /* The one test the bag runs too. A bag with no model and no lot on the
+           report is a bag nobody can trace when a claim arrives, so the three
+           points about logos on microphones and receiver step aside for it and
+           the identification itself stays. */
+        {"id":"IDENTIFICATION","optional":false,"only_factory":["LES"],
+         "label":{"en":"IDENTIFICATION","zh":"产品识别","es":"IDENTIFICACIÓN"},
+         "steps":[
+           {"en":"Have the order or the technical data sheet at hand","zh":"备好订单或技术资料表","es":"Tenga a mano la orden o la ficha técnica"},
+           {"en":"Read the model printed on both microphones and on the receiver","zh":"读取两支麦克风和接收器上印制的型号","es":"Lea el modelo impreso en los dos micrófonos y en el receptor"},
+           {"en":"Photograph the label or the batch code","zh":"拍摄标签或批号","es":"Fotografíe la etiqueta o el código de lote"}],
+         "points":[
+           {"section":{"en":"Identification","zh":"产品识别","es":"Identificación"},
+            "help":{"en":"Two minutes that decide whether the rest is worth doing: inspecting the wrong model to the letter is worse than not inspecting it at all, because the report says it was checked.",
+                    "zh":"这两分钟决定后面的工作是否有意义：把型号弄错却一丝不苟地检完，比不检更糟，因为报告会写着已经检过。",
+                    "es":"Dos minutos que deciden si vale la pena el resto: inspeccionar al detalle el modelo equivocado es peor que no inspeccionarlo, porque el informe dirá que se revisó."}},
+           {"id":"logo_mic1","code":"WMIC-014","skip":["HK-RHO102-BAG"],
+            "label":{"en":"Logo on microphone 1","zh":"麦克风 1 上的标志","es":"Logo en el micrófono 1"},
+            "help":{"en":"Read the brand printed on the body. It must be the one the order asks for, complete and without smudges.",
+                    "zh":"读取机身上印制的品牌标识。应与订单一致，完整且无模糊。",
+                    "es":"Lea la marca impresa en el cuerpo. Debe ser la que pide la orden, completa y sin manchas."}},
+           {"id":"logo_mic2","code":"WMIC-014","skip":["HK-RHO101","HK-RHO102-BAG"],
+            "label":{"en":"Logo on microphone 2","zh":"麦克风 2 上的标志","es":"Logo en el micrófono 2"},
+            "help":{"en":"Same check on the second microphone. Both are asked for separately because a mixed pair leaves the factory as one box.",
+                    "zh":"对第二支麦克风做同样的检查。两支分开核对，是因为混装的一对是作为同一个包装出厂的。",
+                    "es":"La misma revisión en el segundo micrófono. Se piden por separado porque una pareja mezclada sale de la fábrica dentro de una sola caja."}},
+           {"id":"logo_receiver","code":"WMIC-014","skip":["HK-RHO102-BAG"],
+            "label":{"en":"Logo on the receiver","zh":"接收器上的标志","es":"Logo en el receptor"},
+            "help":{"en":"The receiver carries the same brand as the microphones. A kit with two different brands is a defect the customer sees on the table.",
+                    "zh":"接收器应与麦克风为同一品牌。一套里出现两个品牌，客户放到桌上就会看到。",
+                    "es":"El receptor lleva la misma marca que los micrófonos. Un juego con dos marcas distintas es un defecto que el cliente ve sobre la mesa."}},
+           {"id":"model_match","code":"WMIC-018","photo":true,
+            "label":{"en":"Model matches the order","zh":"型号与订单一致","es":"El modelo coincide con la orden"},
+            "help":{"en":"Compare the printed model with the order or the data sheet, character by character. Photograph the label or the batch code: that photo is what lets the office check it later without the product in front of them.",
+                    "zh":"将印制的型号与订单或资料表逐字对照。拍摄标签或批号：办公室日后凭这张照片就能在没有实物的情况下核对。",
+                    "es":"Compare el modelo impreso con la orden o la ficha técnica, carácter por carácter. Fotografíe la etiqueta o el código de lote: esa foto es la que permite verificarlo después en la oficina sin tener el producto delante."}},
+           {"id":"lot","code":"WMIC-018","label":{"en":"Lot number legible","zh":"批号清晰可读","es":"Número de lote legible"},
+            "help":{"en":"The lot must be readable without a magnifier. A lot that cannot be read is a batch that cannot be traced the day a claim arrives.",
+                    "zh":"批号应无需放大镜即可辨认。看不清的批号意味着日后出现客诉时无法追溯这一批货。",
+                    "es":"El lote debe leerse sin lupa. Un lote ilegible es un lote que no se puede rastrear el día que llegue un reclamo."}}]},
+
+        {"id":"LOGO_ANTENNA","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"LOGO AND ANTENNA","zh":"标志与天线","es":"LOGO Y ANTENA"},
+         "steps":[
+           {"en":"Look at the front of the receiver and of both microphones","zh":"观察接收器和两支麦克风的正面","es":"Observe el frente del receptor y de los dos micrófonos"},
+           {"en":"Compare the colour against the approved sample","zh":"与承认样对比颜色","es":"Compare el color contra la muestra aprobada"},
+           {"en":"Check the antenna along its whole length and at its base","zh":"检查天线全长及其根部","es":"Revise la antena en todo su largo y en su base"}],
+         "points":[
+           {"section":{"en":"Logo and antenna","zh":"标志与天线","es":"Logo y antena"},
+            "help":{"en":"Everything here is seen without switching anything on, which is why it comes early: three minutes of looking, and no setup to undo afterwards.",
+                    "zh":"本组全部无需开机即可查看，所以放在前面：三分钟的目视，事后也没有需要拆掉的准备工作。",
+                    "es":"Todo esto se ve sin encender nada, y por eso va temprano: tres minutos de mirar, y nada que desmontar después."}},
+           {"id":"logo_print","code":"WMIC-014","photo":true,
+            "label":{"en":"Logo printed without defects","zh":"标志印制无缺陷","es":"Logo impreso sin defectos"},
+            "help":{"en":"Look at it in daylight or under a lamp, not against a window. There must be no smudges, scratches or letters cut off, and it must sit straight. Photograph it.",
+                    "zh":"在自然光或灯光下观察，不要逆光。不应有污渍、划痕或缺笔，且应端正不歪斜。请拍照。",
+                    "es":"Mírelo con luz de día o de lámpara, no a contraluz. No debe tener manchas, rayones ni letras cortadas, y debe quedar derecho. Fotografíelo."}},
+           {"id":"logo_colour","code":"WMIC-014","label":{"en":"Colour and finish match the sample","zh":"颜色与表面处理与样品一致","es":"Color y acabado iguales a la muestra"},
+            "help":{"en":"Put the approved sample beside the unit. Judging a colour from memory is how a whole batch ships one shade off.",
+                    "zh":"将承认样放在产品旁边对比。凭记忆判断颜色，正是整批货偏色出厂的原因。",
+                    "es":"Ponga la muestra aprobada al lado de la unidad. Juzgar un color de memoria es la forma en que un lote entero sale con un tono distinto."}},
+           {"id":"antenna_body","code":"WMIC-015","label":{"en":"Antenna without bends or cracks","zh":"天线无弯曲或开裂","es":"Antena sin dobleces ni grietas"},
+            "help":{"en":"Run it through your fingers along its whole length. A crack at the base is the usual one, and it is the one that only shows when you bend it slightly.",
+                    "zh":"用手指沿全长捋一遍。最常见的是根部开裂，而这种裂纹只有轻轻弯折时才看得出来。",
+                    "es":"Recórrala con los dedos en todo su largo. La grieta en la base es la habitual, y es la que solo aparece al doblarla un poco."}},
+           {"id":"antenna_fix","code":"WMIC-015","label":{"en":"Antenna firm and correctly oriented","zh":"天线固定牢固、朝向正确","es":"Antena firme y bien orientada"},
+            "help":{"en":"Move it gently at the base. It may turn if the design says so, but it must not wobble or feel loose, and it must sit as the drawing shows.",
+                    "zh":"在根部轻轻晃动。若设计允许可以转动，但不应松动或有旷量，并应符合图纸的朝向。",
+                    "es":"Muévala suavemente en la base. Puede girar si el diseño lo indica, pero no debe bailar ni sentirse floja, y debe quedar como muestra el plano."}},
+           {"id":"set_uniform","code":"WMIC-014","label":{"en":"Assembly looks uniform","zh":"整体外观一致","es":"El conjunto se ve uniforme"},
+            "help":{"en":"Step back and look at the whole set. Logo, body and antenna must look like one product, not like parts from two production runs.",
+                    "zh":"退后一步看整套产品。标志、机身和天线应像同一件产品，而不像两批生产的零件拼在一起。",
+                    "es":"Aléjese un paso y mire el conjunto. Logo, cuerpo y antena deben verse como un solo producto, no como piezas de dos corridas de producción."}}]},
+
+        {"id":"MIC_ACCESSORIES","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"ACCESSORIES","zh":"配件","es":"ACCESORIOS"},
+         "steps":[
+           {"en":"Open the box and take everything out onto a clean table","zh":"打开包装，将全部物品取出放在干净台面上","es":"Abra la caja y saque todo sobre una mesa limpia"},
+           {"en":"Compare each item against the customisation details of the order","zh":"逐项与订单的定制明细核对","es":"Compare cada artículo contra el detalle de personalización de la orden"},
+           {"en":"Photograph everything together before putting it back","zh":"装回之前把全部物品合影","es":"Fotografíe todo junto antes de volver a guardarlo"}],
+         "points":[
+           {"section":{"en":"Accessories","zh":"配件","es":"Accesorios"},
+            "help":{"en":"Done with the box already open, before anything is switched on: the packing is checked once and does not have to be undone again later.",
+                    "zh":"在包装已经打开、尚未开机时进行：包装只拆一次，后面不必再拆第二遍。",
+                    "es":"Se hace con la caja ya abierta y antes de encender nada: el empaque se revisa una sola vez y no hay que volver a deshacerlo."}},
+           {"id":"acc_round","code":"WMIC-016","label":{"en":"Round-head microphone","zh":"圆头麦克风","es":"Micrófono de cabeza redonda"},
+            "help":{"en":"Present and matching the order. Mark N/A if this reference does not include it.",
+                    "zh":"应齐全并与订单一致。本型号不含该件时标记为“不适用”。",
+                    "es":"Presente y conforme a la orden. Marque N/A si esta referencia no lo incluye."}},
+           {"id":"acc_hoklan","code":"WMIC-016","label":{"en":"HOKLAN-head microphone","zh":"HOKLAN 头麦克风","es":"Micrófono de cabeza HOKLAN"},
+            "help":{"en":"The second head, the one that carries the brand. It is the piece most often swapped for the generic one.",
+                    "zh":"第二种网头，即带品牌标识的那一款。这一件最常被换成通用款。",
+                    "es":"La segunda cabeza, la que lleva la marca. Es la pieza que con más frecuencia se cambia por la genérica."}},
+           {"id":"acc_receiver","code":"WMIC-016","label":{"en":"Receiver","zh":"接收器","es":"Receptor"},
+            "help":{"en":"One receiver per kit, with its own packaging and undamaged.",
+                    "zh":"每套一台接收器，应有自身包装且无损伤。",
+                    "es":"Un receptor por juego, con su empaque y sin daños."}},
+           {"id":"acc_aux","code":"WMIC-016","label":{"en":"AUX adapter","zh":"AUX 转接头","es":"Adaptador AUX"},
+            "help":{"en":"Check the connector, not just the cable: the wrong tip makes the whole kit useless on the customer's mixer.",
+                    "zh":"要看接头，而不只是线材：接头规格不对，整套产品在客户的调音台上就用不了。",
+                    "es":"Revise el conector, no solo el cable: una punta equivocada deja el juego inservible en la consola del cliente."}},
+           {"id":"acc_mixed","code":"WMIC-016","label":{"en":"Nothing missing or mixed up","zh":"无缺件、无混装","es":"Nada falta ni está cambiado"},
+            "help":{"en":"Count against the list and look for parts from another model. A kit that is complete but carries one wrong cable fails here.",
+                    "zh":"按清单清点，并注意是否混入其他型号的零件。件数齐全但混入一条错线，本项判定为异常。",
+                    "es":"Cuente contra la lista y busque piezas de otro modelo. Un juego completo pero con un cable equivocado falla aquí."}},
+           {"id":"acc_clean","code":"WMIC-016","photo":true,
+            "label":{"en":"Everything clean and undamaged","zh":"全部清洁无损伤","es":"Todo limpio y sin daños"},
+            "help":{"en":"Look for oil marks, fingerprints and scratches. Photograph the whole set laid out on the table, which is the photo that proves what the box contained.",
+                    "zh":"注意油污、指纹和划痕。将全套摊开在台面上拍一张合影，这张照片就是箱内配置的凭证。",
+                    "es":"Busque manchas de aceite, huellas y rayones. Fotografíe el juego completo extendido sobre la mesa: esa es la foto que prueba qué traía la caja."}}]},
+
+        {"id":"MIC_BUTTONS","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"BUTTONS","zh":"按键","es":"BOTONES"},
+         "steps":[
+           {"en":"The microphone has four buttons, counted from the top down","zh":"麦克风共四个按键，自上而下计数","es":"El micrófono tiene cuatro botones, contados de arriba hacia abajo"},
+           {"en":"Press each one and confirm it responds without bounce or delay","zh":"逐个按下，确认无抖动、无延迟","es":"Pulse cada uno y confirme que responde sin rebote ni retardo"},
+           {"en":"Finish with the single button on the receiver","zh":"最后测试接收器上的单个按键","es":"Termine con el único botón del receptor"},
+           {"en":"Record a video covering the buttons of every microphone and of the receiver","zh":"录制视频，涵盖每支麦克风和接收器的按键","es":"Grabe un video que cubra los botones de cada micrófono y del receptor"}],
+         "points":[
+           {"section":{"en":"Buttons","zh":"按键","es":"Botones"},
+            "help":{"en":"Five minutes with the microphone in your hand, no receiver and no distance involved. It comes before the connection tests because a button that does not respond makes every one of them impossible to judge.",
+                    "zh":"五分钟，只需手持麦克风，不涉及接收器和距离。放在连接测试之前，是因为按键没反应会让后面每一项都无法判定。",
+                    "es":"Cinco minutos con el micrófono en la mano, sin receptor ni distancias. Va antes de las pruebas de conexión porque una tecla que no responde deja sin poder juzgar todas las demás."}},
+           {"id":"btn_power","code":"WMIC-010","label":{"en":"Button 1 — power on and off","zh":"按键 1 — 开关机","es":"Botón 1 — encendido y apagado"},
+            "help":{"en":"Hold it for 2 to 3 seconds to switch on, and again to switch off. It must not switch on with a short press, and it must not need five seconds.",
+                    "zh":"长按 2 至 3 秒开机，再长按关机。短按不应开机，也不应需要按满五秒。",
+                    "es":"Manténgalo 2 a 3 segundos para encender, y otra vez para apagar. No debe encender con un toque corto ni exigir cinco segundos."}},
+           {"id":"btn_mute","code":"WMIC-010","label":{"en":"Button 1 — mute with a short press","zh":"按键 1 — 短按静音","es":"Botón 1 — silencio con pulsación corta"},
+            "help":{"en":"With the microphone on, press it once. The audio must cut and the screen must show it. Press again and the voice must come back.",
+                    "zh":"开机状态下按一次，声音应切断且屏幕有指示；再按一次，声音应恢复。",
+                    "es":"Con el micrófono encendido, púlselo una vez. El audio debe cortarse y la pantalla debe indicarlo. Púlselo de nuevo y la voz debe volver."}},
+           {"id":"btn_vol_up","code":"WMIC-009","label":{"en":"Button 2 — volume up to 16","zh":"按键 2 — 音量增至 16","es":"Botón 2 — sube el volumen hasta 16"},
+            "help":{"en":"Press it up to the top. The number on the screen must climb one at a time and stop at 16, with no skipped steps.",
+                    "zh":"一直按到最大。屏幕数值应逐级递增并停在 16，中间不应跳数。",
+                    "es":"Púlselo hasta el tope. El número en pantalla debe subir de uno en uno y detenerse en 16, sin saltarse pasos."}},
+           {"id":"btn_vol_down","code":"WMIC-009","label":{"en":"Button 4 — volume down to 1","zh":"按键 4 — 音量降至 1","es":"Botón 4 — baja el volumen hasta 1"},
+            "help":{"en":"Press it down to the bottom. It must reach 1 and stop there, without wrapping round to 16.",
+                    "zh":"一直按到最小。应到达 1 并停住，不应跳回 16。",
+                    "es":"Púlselo hasta el fondo. Debe llegar a 1 y quedarse ahí, sin dar la vuelta hasta 16."}},
+           {"id":"btn_channel","code":"WMIC-005","label":{"en":"Button 3 — channel, IR and colour","zh":"按键 3 — 频道、对码与灯色","es":"Botón 3 — canal, IR y color"},
+            "help":{"en":"Hold it until CH XX flashes, press again to reach IR, and press it repeatedly to change the light colour. All three functions live on this one button and all three must work.",
+                    "zh":"长按至 CH XX 闪烁，再按进入 IR，反复按则切换灯色。三个功能都在这一个键上，三个都必须有效。",
+                    "es":"Manténgalo hasta que parpadee CH XX, púlselo de nuevo para llegar a IR, y púlselo repetidamente para cambiar el color de la luz. Las tres funciones viven en esta misma tecla y las tres deben funcionar."}},
+           {"id":"btn_receiver","code":"WMIC-017","label":{"en":"Receiver button","zh":"接收器按键","es":"Botón del receptor"},
+            "help":{"en":"Hold it 2 to 3 seconds to switch the receiver on, and press it once to switch it off. Note that on and off are not the same gesture here.",
+                    "zh":"长按 2 至 3 秒开机，短按一次关机。注意开与关在这里不是同一个动作。",
+                    "es":"Manténgalo 2 a 3 segundos para encender el receptor, y púlselo una vez para apagarlo. Ojo: encender y apagar no son el mismo gesto aquí."}}]},
+
+        {"id":"MIC_VISUAL","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"VISUAL INSPECTION","zh":"外观检查","es":"INSPECCIÓN VISUAL"},
+         "steps":[
+           {"en":"Go over the whole body of each microphone: grille, housing, buttons and screen","zh":"检查每支麦克风的整个机身：网罩、外壳、按键和显示屏","es":"Recorra todo el cuerpo de cada micrófono: rejilla, carcasa, botones y pantalla"},
+           {"en":"Check the charging connector and the battery cover","zh":"检查充电接口和电池盖","es":"Revise el conector de carga y la tapa de la batería"},
+           {"en":"Record a video going round the microphone","zh":"录制一段绕麦克风一圈的视频","es":"Grabe un video dando la vuelta al micrófono"}],
+         "points":[
+           {"section":{"en":"Visual inspection","zh":"外观检查","es":"Inspección visual"},
+            "help":{"en":"The last of the tests that need nothing switched on. What is found here is what must not be sent for electrical testing: a cracked housing does not become acceptable because the audio comes out clean.",
+                    "zh":"这是最后一项无需开机的测试。这里发现的问题不应再送去做电气测试：外壳开裂不会因为声音正常就变得可以接受。",
+                    "es":"La última de las pruebas que no necesitan encender nada. Lo que aparezca aquí es lo que no debe pasar a las pruebas eléctricas: una carcasa partida no se vuelve aceptable porque el audio salga limpio."}},
+           {"id":"body","code":"WMIC-019","photo":true,
+            "label":{"en":"Body, grille and buttons in good condition","zh":"机身、网罩和按键状态良好","es":"Cuerpo, rejilla y botones en buen estado"},
+            "help":{"en":"Turn the microphone in your hand under a lamp. The grille must not be dented, the buttons must sit flush, and the screen must have no scratches over the digits. Take a general photo.",
+                    "zh":"在灯光下转动麦克风观察。网罩不应凹陷，按键应与机身齐平，显示窗数字区域不应有划痕。请拍一张整体照片。",
+                    "es":"Gire el micrófono en la mano bajo una lámpara. La rejilla no debe estar abollada, los botones deben quedar a ras, y la pantalla no debe tener rayones sobre los dígitos. Tome una foto general."}},
+           {"id":"cracks","code":"WMIC-019","label":{"en":"No cracks, dents or loose parts","zh":"无裂纹、凹陷或松动件","es":"Sin grietas, golpes ni piezas flojas"},
+            "help":{"en":"Squeeze the body gently and listen. A part that rattles inside is loose even when nothing shows from outside.",
+                    "zh":"轻轻握压机身并倾听。内部有异响即说明有零件松动，即使外观看不出来。",
+                    "es":"Apriete el cuerpo suavemente y escuche. Una pieza que suena dentro está floja aunque por fuera no se vea nada."}},
+           {"id":"connector","code":"WMIC-019","photo":true,
+            "label":{"en":"Charging connector without damage","zh":"充电接口无损伤","es":"Conector de carga sin daño"},
+            "help":{"en":"Look inside the port for bent pins or debris, and check that the plug goes in without forcing. Photograph the connector together with the product label.",
+                    "zh":"查看接口内部是否有针脚变形或异物，并确认插头无需用力即可插入。将接口与产品标签一起拍照。",
+                    "es":"Mire dentro del puerto por pines doblados o suciedad, y compruebe que el conector entra sin forzar. Fotografíe el conector junto con la etiqueta del producto."}},
+           {"id":"battery_cover","code":"WMIC-013","label":{"en":"Battery cover fits properly","zh":"电池盖闭合到位","es":"La tapa de la batería cierra bien"},
+            "help":{"en":"Open it and close it. It must click shut and stay shut: a cover that opens in the customer's bag drops the batteries on the floor.",
+                    "zh":"打开再合上。应能扣紧并保持闭合：在客户包里自行打开的电池盖会把电池掉在地上。",
+                    "es":"Ábrala y ciérrela. Debe encajar y quedarse cerrada: una tapa que se abre en el bolso del cliente le tira las pilas al piso."}},
+           {"id":"labels","code":"WMIC-020","label":{"en":"Labels legible and well stuck","zh":"标签清晰且粘贴牢固","es":"Etiquetas legibles y bien pegadas"},
+            "help":{"en":"Run a finger along the edges. A label that is already lifting at the corner will be gone by the time the product reaches the shop.",
+                    "zh":"用手指沿标签边缘划过。边角已经翘起的标签，等产品到店时就会脱落。",
+                    "es":"Pase el dedo por los bordes. Una etiqueta que ya se levanta en la esquina no llegará pegada a la tienda."}},
+           {"id":"video_visual","code":"WMIC-019","label":{"en":"Video going round the microphone","zh":"绕麦克风一圈的视频","es":"Video dando la vuelta al micrófono"},
+            "help":{"en":"A short video turning the microphone slowly so every face is seen. It is the only evidence that shows the sides a photo leaves out.",
+                    "zh":"缓慢转动麦克风录一小段视频，各个面都要拍到。这是唯一能呈现照片拍不到的侧面的证据。",
+                    "es":"Un video corto girando el micrófono despacio para que se vean todas las caras. Es la única evidencia que muestra los costados que una foto deja fuera."}}]},
+
+        {"id":"MIC_POWER_LIGHT","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"POWER ON AND LIGHTS","zh":"开机与灯光","es":"ENCENDIDO Y LUCES"},
+         "steps":[
+           {"en":"Hold button 1 for 2 to 3 seconds to switch the microphone on","zh":"长按按键 1 约 2 至 3 秒开机","es":"Mantenga el botón 1 durante 2 a 3 segundos para encender el micrófono"},
+           {"en":"Check the screen backlight and that it is not muted","zh":"检查屏幕背光，并确认未处于静音","es":"Revise la retroiluminación de la pantalla y que no quede en silencio"},
+           {"en":"Step through the light colours with button 3","zh":"用按键 3 逐一切换灯光颜色","es":"Recorra los colores de la luz con el botón 3"},
+           {"en":"Repeat the whole thing on every microphone the reference carries","zh":"在该型号配备的每支麦克风上重复全部步骤","es":"Repita todo en cada micrófono que traiga la referencia"}],
+         "points":[
+           {"section":{"en":"Power on and lights","zh":"开机与灯光","es":"Encendido y luces"},
+            "help":{"en":"The first test that needs power. Everything is done with the microphone alone, without the receiver, so a fault found here is the microphone's and not the link's.",
+                    "zh":"第一项需要通电的测试。全部只用麦克风本体完成，不接接收器，因此这里发现的问题属于麦克风，而不是无线链路。",
+                    "es":"La primera prueba que necesita energía. Todo se hace con el micrófono solo, sin receptor, así que un fallo aquí es del micrófono y no del enlace."}},
+           {"id":"power_on","code":"WMIC-001","label":{"en":"Switches on with a 2 to 3 second hold","zh":"长按 2 至 3 秒可开机","es":"Enciende con 2 a 3 segundos de pulsación"},
+            "help":{"en":"The screen must come up and stay up. A microphone that needs two attempts to start is a fail even when it works afterwards.",
+                    "zh":"屏幕应点亮并保持。需要按两次才能启动的麦克风，即使随后正常工作也判定为异常。",
+                    "es":"La pantalla debe encender y mantenerse. Un micrófono que necesita dos intentos para arrancar es un fallo aunque después funcione."}},
+           {"id":"backlight","code":"WMIC-002","label":{"en":"Screen backlight even","zh":"屏幕背光均匀","es":"Retroiluminación de la pantalla pareja"},
+            "help":{"en":"Look at the screen in shade. The light must be even across it, with no darker corner and no flicker.",
+                    "zh":"在阴影处观察屏幕。背光应整屏均匀，不应有暗角或闪烁。",
+                    "es":"Mire la pantalla en sombra. La luz debe ser pareja en todo el ancho, sin una esquina más oscura ni parpadeos."}},
+           {"id":"not_muted","code":"WMIC-004","label":{"en":"Does not start muted","zh":"开机不应处于静音","es":"No arranca en silencio"},
+            "help":{"en":"Speak into it as soon as it starts. A microphone that comes up muted looks broken to whoever picks it up on stage.",
+                    "zh":"开机后立即对着说话。开机即静音的麦克风，在台上拿起来的人会以为它坏了。",
+                    "es":"Hable apenas arranque. Un micrófono que enciende en silencio parece dañado para quien lo toma en tarima."}},
+           {"id":"colours","code":"WMIC-003","photo":true,
+            "label":{"en":"The seven light colours","zh":"七种灯光颜色","es":"Los siete colores de la luz"},
+            "help":{"en":"Press button 3 through the whole cycle. There must be seven colours and all seven must appear: blue, red, green, yellow, orange, cyan and purple. Photograph at least one of them. A missing colour is a defect even though the microphone works.",
+                    "zh":"按按键 3 走完一轮。应有七种颜色且七种都要出现：蓝、红、绿、黄、橙、青和紫。至少拍摄其中一种。缺少一种颜色即为缺陷，即使麦克风仍能正常使用。",
+                    "es":"Pulse el botón 3 hasta completar el ciclo. Deben ser siete colores y los siete deben aparecer: azul, rojo, verde, amarillo, naranja, cian y morado. Fotografíe al menos uno. Un color que falta es un defecto aunque el micrófono funcione."}},
+           {"id":"power_off","code":"WMIC-001","label":{"en":"Switches off with a 2 to 3 second hold","zh":"长按 2 至 3 秒可关机","es":"Apaga con 2 a 3 segundos de pulsación"},
+            "help":{"en":"It must switch off cleanly, without the screen staying lit. On a reference that carries two microphones, repeat everything above on the second one before moving on.",
+                    "zh":"应干净地关机，屏幕不应残亮。若该型号配备两支麦克风，继续下一项之前请在第二支上重复以上全部步骤。",
+                    "es":"Debe apagar limpio, sin que la pantalla quede prendida. En una referencia que trae dos micrófonos, repita todo lo anterior en el segundo antes de seguir."}}]},
+
+        {"id":"RECEIVER_CHARGE","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"RECEIVER CHARGING","zh":"接收器充电","es":"CARGA DEL RECEPTOR"},
+         "steps":[
+           {"en":"Switch the receiver on","zh":"打开接收器","es":"Encienda el receptor"},
+           {"en":"Connect the charger or the USB cable","zh":"接上充电器或 USB 线","es":"Conecte el cargador o el cable USB"},
+           {"en":"Watch the charging LED, then unplug it","zh":"观察充电指示灯，然后拔掉","es":"Observe el LED de carga y luego desconecte"}],
+         "points":[
+           {"section":{"en":"Receiver charging","zh":"接收器充电","es":"Carga del receptor"},
+            "help":{"en":"Charging is checked on the receiver first and on the microphones straight after, so the chargers are plugged in once and both tests share the same bench.",
+                    "zh":"先测接收器充电，紧接着测麦克风充电，这样充电器只接一次，两项测试共用同一个工位。",
+                    "es":"La carga se revisa primero en el receptor y enseguida en los micrófonos, así los cargadores se conectan una sola vez y las dos pruebas comparten el mismo puesto."}},
+           {"id":"rcv_on","code":"WMIC-017","label":{"en":"Receiver switches on","zh":"接收器可开机","es":"El receptor enciende"},
+            "help":{"en":"Hold its button 2 to 3 seconds. Its indicator must come up before you connect anything.",
+                    "zh":"长按其按键 2 至 3 秒。在连接任何线之前，指示灯就应亮起。",
+                    "es":"Mantenga su botón 2 a 3 segundos. Su indicador debe encender antes de conectar nada."}},
+           {"id":"rcv_led_on","code":"LED-002","photo":true,
+            "label":{"en":"Red LED comes on when connected","zh":"接通后红色指示灯亮起","es":"El LED rojo enciende al conectar"},
+            "help":{"en":"Plug the cable in and photograph the lit LED. It must come on within a few seconds, not after a minute.",
+                    "zh":"接上线并拍摄亮起的指示灯。应在几秒内亮起，而不是过一分钟才亮。",
+                    "es":"Conecte el cable y fotografíe el LED encendido. Debe encender en pocos segundos, no al cabo de un minuto."}},
+           {"id":"rcv_led_steady","code":"CHG-003","label":{"en":"The LED stays steady","zh":"指示灯保持常亮","es":"El LED se mantiene fijo"},
+            "help":{"en":"Wait a few seconds and watch it. A LED that blinks or comes and goes is an unstable contact, and that is a defect even if it does charge.",
+                    "zh":"等待几秒并持续观察。指示灯闪烁或时亮时灭说明接触不稳，即使能充上电也判定为缺陷。",
+                    "es":"Espere unos segundos y obsérvelo. Un LED que parpadea o va y viene es un contacto inestable, y eso es un defecto aunque cargue."}},
+           {"id":"rcv_led_off","code":"LED-002","photo":true,
+            "label":{"en":"The LED changes or goes out when unplugged","zh":"拔线后指示灯变色或熄灭","es":"El LED cambia o se apaga al desconectar"},
+            "help":{"en":"Unplug the cable and photograph the LED again. It must react: an indicator that stays red with nothing connected tells the customer nothing.",
+                    "zh":"拔掉线并再拍一次指示灯。它必须有反应：未接任何线却仍然常红的指示灯对客户毫无意义。",
+                    "es":"Desconecte el cable y vuelva a fotografiar el LED. Debe reaccionar: un indicador que sigue en rojo sin nada conectado no le dice nada al cliente."}}]},
+
+        {"id":"MIC_CHARGE","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"MICROPHONE CHARGING","zh":"麦克风充电","es":"CARGA DEL MICRÓFONO"},
+         "steps":[
+           {"en":"Switch the microphone on and read the battery level","zh":"开机并读取电量","es":"Encienda el micrófono y lea el nivel de batería"},
+           {"en":"Connect the charger or the USB cable","zh":"接上充电器或 USB 线","es":"Conecte el cargador o el cable USB"},
+           {"en":"Watch the three lines rotating on the screen","zh":"观察屏幕上转动的三格电量条","es":"Observe las tres rayas girando en la pantalla"},
+           {"en":"Repeat on the second microphone","zh":"在第二支麦克风上重复","es":"Repita en el segundo micrófono"}],
+         "points":[
+           {"section":{"en":"Microphone charging","zh":"麦克风充电","es":"Carga del micrófono"},
+            "help":{"en":"Same bench as the receiver, one test later. Leave the microphones charging while the battery test below is prepared.",
+                    "zh":"与接收器同一工位，紧随其后。可让麦克风继续充电，同时准备下面的电池测试。",
+                    "es":"El mismo puesto que el receptor, una prueba después. Deje los micrófonos cargando mientras prepara la prueba de batería siguiente."}},
+           {"id":"chg_level","code":"WMIC-012","label":{"en":"Battery level shown on the screen","zh":"屏幕显示电量","es":"El nivel de batería aparece en pantalla"},
+            "help":{"en":"Read it before connecting anything. A microphone that ships with an empty battery arrives at the customer unusable on the first day.",
+                    "zh":"在连接任何线之前先读数。出厂时电量为空的麦克风，客户第一天拿到就用不了。",
+                    "es":"Léalo antes de conectar nada. Un micrófono que sale con la batería vacía llega al cliente inservible el primer día."}},
+           {"id":"chg_lines","code":"CHG-001","photo":true,
+            "label":{"en":"The three lines rotate while charging","zh":"充电时三格电量条循环滚动","es":"Las tres rayas giran durante la carga"},
+            "help":{"en":"Connect the cable and watch the screen. The three lines must cycle to show it is charging. Photograph the microphone with the animation visible.",
+                    "zh":"接上线并观察屏幕。三格电量条应循环滚动以表示正在充电。拍摄可见该动画的照片。",
+                    "es":"Conecte el cable y mire la pantalla. Las tres rayas deben ir rotando para indicar que está cargando. Fotografíe el micrófono con la animación visible."}},
+           {"id":"chg_mic2","code":"CHG-001","skip":["HK-RHO101"],
+            "label":{"en":"Same result on the second microphone","zh":"第二支麦克风结果相同","es":"El mismo resultado en el segundo micrófono"},
+            "help":{"en":"Charging is the part of the kit most often assembled with a different cell. Testing one microphone and assuming the other is how a pair ships half working.",
+                    "zh":"充电部分最容易出现两支使用不同电芯的情况。只测一支就推断另一支，正是一对产品有一半是坏的的原因。",
+                    "es":"La carga es la parte del juego que con más frecuencia se arma con otra celda. Probar un micrófono y suponer el otro es como sale una pareja funcionando a medias."}},
+           {"id":"chg_done","code":"LED-002","photo":true,
+            "label":{"en":"The indicator changes when charging finishes","zh":"充满后指示状态改变","es":"El indicador cambia al terminar la carga"},
+            "help":{"en":"The screen must stop the animation and show a full battery. Photograph the finished state: it is the proof that the charge cycle closes and does not stay running for ever.",
+                    "zh":"屏幕应停止动画并显示满电。拍摄充满后的状态：这是充电流程能够正常结束、而不是一直转下去的凭证。",
+                    "es":"La pantalla debe detener la animación y mostrar la batería llena. Fotografíe el estado final: es la prueba de que el ciclo de carga cierra y no se queda girando para siempre."}}]},
+
+        {"id":"MIC_BATTERY","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"BATTERY","zh":"电池","es":"BATERÍA"},
+         "steps":[
+           {"en":"Take the battery out of the microphone and out of the receiver","zh":"取出麦克风和接收器中的电池","es":"Retire la batería del micrófono y la del receptor"},
+           {"en":"Check its physical condition and read its capacity","zh":"检查外观状态并读取容量","es":"Revise su estado físico y lea su capacidad"},
+           {"en":"Measure the voltage with a multimeter and write it down","zh":"用万用表测量电压并记录","es":"Mida el voltaje con un multímetro y anótelo"},
+           {"en":"Put everything back exactly as it was","zh":"完全按原样装回","es":"Vuelva a montar todo exactamente como estaba"}],
+         "points":[
+           {"section":{"en":"Battery","zh":"电池","es":"Batería"},
+            "help":{"en":"The first test that needs the product opened, which is why it comes after everything that can be judged with it closed. Nothing beyond this point works if the unit is not put back together properly.",
+                    "zh":"这是第一项需要拆开产品的测试，因此放在所有闭合状态即可判定的项目之后。若未正确装回，后面的项目都无法进行。",
+                    "es":"La primera prueba que exige abrir el producto, y por eso va después de todo lo que se puede juzgar con él cerrado. Nada de lo que sigue funciona si la unidad no queda bien armada."}},
+           {"id":"bat_out","code":"WMIC-013","label":{"en":"Battery comes out without forcing","zh":"电池无需用力即可取出","es":"La batería sale sin forzar"},
+            "help":{"en":"Open the cover and take the battery out of the microphone, then out of the receiver. A cell that has to be prised out will be damaged the first time the customer changes it.",
+                    "zh":"打开盖子取出麦克风中的电池，再取出接收器中的电池。需要撬才能取出的电芯，客户第一次更换时就会损坏。",
+                    "es":"Abra la tapa y saque la batería del micrófono, y luego la del receptor. Una celda que hay que hacer palanca para sacar se dañará la primera vez que el cliente la cambie."}},
+           {"id":"bat_state","code":"WMIC-013","photo":true,
+            "label":{"en":"Battery and compartment in good condition","zh":"电池与电池仓状态良好","es":"Batería y compartimento en buen estado"},
+            "help":{"en":"Look for swelling, a torn wrap, corrosion on the contacts or marks of heat. Photograph the compartment showing the contacts and the connection.",
+                    "zh":"注意是否鼓包、外皮破损、触点腐蚀或过热痕迹。拍摄电池仓，需拍到触点和连接。",
+                    "es":"Busque abombamiento, envoltura rota, corrosión en los contactos o marcas de calor. Fotografíe el compartimento mostrando los contactos y la conexión."}},
+           {"id":"bat_capacity","code":"WMIC-013","photo":true,
+            "label":{"en":"Printed capacity legible","zh":"标称容量清晰可读","es":"Capacidad impresa legible"},
+            "help":{"en":"Photograph the face of the cell that carries the specification: voltage, capacity in mAh and manufacturer. A battery with no readable printing cannot be compared against the data sheet.",
+                    "zh":"拍摄电芯带规格的一面：电压、容量（mAh）和生产厂家。印字不可辨认的电池无法与资料表核对。",
+                    "es":"Fotografíe la cara de la celda que trae la especificación: voltaje, capacidad en mAh y fabricante. Una batería sin impresión legible no se puede comparar contra la ficha técnica."}},
+           {"id":"bat_voltage","code":"WMIC-012","photo":true,
+            "measure":{"unit":"V","step":"0.01"},
+            "label":{"en":"Battery voltage","zh":"电池电压","es":"Voltaje de la batería"},
+            "help":{"en":"Set the multimeter to DC volts, touch the probes to the terminals respecting the polarity, and read the value with the battery out of the microphone. Photograph the multimeter with the reading visible and write the value in the box. The reading only means something with the cell disconnected: measured inside the microphone the circuit pulls the number down and every unit looks low.",
+                    "zh":"将万用表调到直流电压档，按正负极接触电池端子，在电池已取出的状态下读数。拍摄读数清晰可见的万用表照片，并将数值填入方框。只有在电芯断开的情况下读数才有意义：在麦克风内测量时电路会拉低数值，每一台都会显得偏低。",
+                    "es":"Ponga el multímetro en voltios de corriente continua, apoye las puntas en los bornes respetando la polaridad y lea el valor con la batería fuera del micrófono. Fotografíe el multímetro con la lectura visible y escriba el valor en el recuadro. La lectura solo significa algo con la celda desconectada: medida dentro del micrófono el circuito tira el número hacia abajo y todas las unidades parecen bajas."}}]},
+
+        /* The bag is its own reference, not an accessory of the kit: HK-RHO101
+           is one microphone, HK-RHO102 is two, and HK-RHO102-BAG is the bag
+           that carries the two. So this is the only test that reference runs,
+           and it is the one test the other two do not. */
+        {"id":"RHO102_BAG","optional":false,"only_factory":["LES"],
+         "only":["HK-RHO102-BAG"],
+         "label":{"en":"RHO102 BAG","zh":"RHO102 收纳包","es":"BOLSA RHO102"},
+         "steps":[
+           {"en":"Take the bag out and put it on a clean table","zh":"取出收纳包放在干净台面上","es":"Saque la bolsa y póngala sobre una mesa limpia"},
+           {"en":"Go over surface, seams, zippers, shape and finish","zh":"依次检查表面、缝线、拉链、形状和整体做工","es":"Recorra superficie, costuras, cremalleras, forma y acabado"},
+           {"en":"Photograph each of the five checks","zh":"五个检查项各拍一张照片","es":"Fotografíe cada una de las cinco revisiones"}],
+         "points":[
+           {"section":{"en":"General appearance","zh":"整体外观","es":"Aspecto general"},
+            "help":{"en":"HK-RHO102-BAG is the bag on its own, so this test and the identification are the whole inspection. Nothing here needs power or a bench: it is judged by looking, pressing and pulling.",
+                    "zh":"HK-RHO102-BAG 是单独出货的收纳包，因此本项测试连同产品识别就是全部检验内容。这里的检查都不需要通电或工位：靠看、按和拉来判定。",
+                    "es":"HK-RHO102-BAG es la bolsa sola, así que esta prueba junto con la identificación son toda la inspección. Nada aquí necesita energía ni puesto de trabajo: se juzga mirando, presionando y tirando."}},
+           {"id":"bag_surface","code":"BAG-001","photo":true,
+            "label":{"en":"Surface without tears, scratches or stains","zh":"表面无破损、划痕或污渍","es":"Superficie sin rasgaduras, rayones ni manchas"},
+            "help":{"en":"Go over the whole outside under a lamp, including the base, which is the part that is always forgotten and the one that rubs.",
+                    "zh":"在灯光下检查整个外表面，包括包底——这是最容易被忽略、也最容易磨损的部位。",
+                    "es":"Recorra todo el exterior bajo una lámpara, incluida la base: es la parte que siempre se olvida y la que roza."}},
+           {"id":"bag_threads","code":"BAG-002","label":{"en":"No loose threads or visible glue","zh":"无线头外露或胶痕","es":"Sin hilos sueltos ni pegante a la vista"},
+            "help":{"en":"Look along every edge. A thread left hanging says the bag was not trimmed, and glue that shows says it was assembled in a hurry.",
+                    "zh":"沿每条边缘查看。留有线头说明未修剪，胶痕外露说明装配仓促。",
+                    "es":"Mire a lo largo de cada borde. Un hilo colgando dice que no se recortó, y el pegante a la vista dice que se armó con prisa."}},
+           {"id":"bag_logo","code":"BAG-008","label":{"en":"Relief logo complete and clean","zh":"浮雕标志完整清洁","es":"Logo en relieve completo y limpio"},
+            "help":{"en":"The relief must be sharp all the way round, with no flattened letters and no dirt caught in the grooves.",
+                    "zh":"浮雕应整圈清晰，字母不应被压平，凹槽内不应积污。",
+                    "es":"El relieve debe estar nítido en todo su contorno, sin letras aplastadas ni suciedad atrapada en los surcos."}},
+           {"section":{"en":"Seams and assembly","zh":"缝线与装配","es":"Costuras y ensamble"},
+            "help":{"en":"This is what decides whether the bag survives being carried full. Everything below is checked by pulling gently, not by looking only.",
+                    "zh":"这一组决定收纳包装满后能否经受住携带。以下各项都要轻轻拉拽检查，而不是只看。",
+                    "es":"Esto es lo que decide si la bolsa aguanta cargarse llena. Todo lo de abajo se revisa tirando con suavidad, no solo mirando."}},
+           {"id":"bag_seams","code":"BAG-003","photo":true,
+            "label":{"en":"Seams straight and firm","zh":"缝线笔直牢固","es":"Costuras rectas y firmes"},
+            "help":{"en":"The stitching must run straight with an even pitch. Uneven stitches are the point where the seam opens first.",
+                    "zh":"缝线应笔直、针距均匀。针距不均之处就是缝线最先开裂的地方。",
+                    "es":"La puntada debe ir recta y con paso parejo. La puntada despareja es el punto por donde la costura se abre primero."}},
+           {"id":"bag_reinforced","code":"BAG-003","label":{"en":"Reinforced areas intact","zh":"加固部位完好","es":"Zonas reforzadas íntegras"},
+            "help":{"en":"Pull gently where the handles and straps are anchored. That is where the whole weight goes.",
+                    "zh":"在提手和背带的固定处轻轻拉拽。整包的重量都由这些点承受。",
+                    "es":"Tire suavemente donde se anclan asas y correas. Ahí va todo el peso."}},
+           {"id":"bag_panels","code":"BAG-003","label":{"en":"Panels properly joined","zh":"各片料拼接到位","es":"Paneles bien unidos"},
+            "help":{"en":"There must be no gaps between panels and no gap at a corner where the lining shows through.",
+                    "zh":"各片之间不应有缝隙，转角处也不应露出内衬。",
+                    "es":"No debe haber huecos entre paneles ni aberturas en una esquina por donde asome el forro."}},
+           {"section":{"en":"Zippers and hardware","zh":"拉链与五金","es":"Cremalleras y herrajes"},
+            "help":{"en":"The part with moving pieces, and the one that generates most of the claims after the sale.",
+                    "zh":"这是唯一有活动件的部分，也是售后客诉最集中的部分。",
+                    "es":"La parte con piezas móviles, y la que genera la mayoría de los reclamos después de la venta."}},
+           {"id":"bag_zip","code":"BAG-004","photo":true,
+            "label":{"en":"Zippers run smoothly","zh":"拉链顺畅","es":"Las cremalleras corren bien"},
+            "help":{"en":"Open and close each one from end to end, twice. It must not catch or need a second hand to hold the fabric.",
+                    "zh":"每条拉链从头到尾开合两次。不应卡顿，也不应需要另一只手压住面料。",
+                    "es":"Abra y cierre cada una de extremo a extremo, dos veces. No debe trabarse ni necesitar la otra mano para sostener la tela."}},
+           {"id":"bag_teeth","code":"BAG-004","label":{"en":"Zipper teeth aligned","zh":"链齿对齐","es":"Dientes de la cremallera alineados"},
+            "help":{"en":"Look at the closed zipper against the light. A tooth out of line is where it will split open under load.",
+                    "zh":"对光观察已拉合的拉链。错位的链齿就是受力时崩开的位置。",
+                    "es":"Mire la cremallera cerrada a contraluz. Un diente desalineado es por donde se va a abrir con carga."}},
+           {"id":"bag_hardware","code":"BAG-005","label":{"en":"Buckles, straps and handles secure","zh":"扣具、背带和提手牢固","es":"Hebillas, correas y asas firmes"},
+            "help":{"en":"Click every buckle and pull on every strap. Nothing must be deformed and nothing must come away.",
+                    "zh":"逐个扣合扣具并拉拽每条背带。不应有变形，也不应脱开。",
+                    "es":"Encaje cada hebilla y tire de cada correa. Nada debe estar deformado ni soltarse."}},
+           {"section":{"en":"Shape and material","zh":"形状与材质","es":"Forma y material"},
+            "help":{"en":"An empty bag that has already lost its shape on the shelf will not hold a microphone kit.",
+                    "zh":"空包在货架上就已经塌形的，装不住一套麦克风。",
+                    "es":"Una bolsa vacía que ya perdió la forma en el estante no va a sostener un juego de micrófonos."}},
+           {"id":"bag_shape","code":"BAG-006","photo":true,
+            "label":{"en":"Keeps its shape when pressed","zh":"按压后能恢复形状","es":"Mantiene la forma al presionar"},
+            "help":{"en":"Press gently on each face and let go. It must come back, not stay dented.",
+                    "zh":"轻按各面后松手。应能回弹，而不是留下凹痕。",
+                    "es":"Presione suavemente cada cara y suelte. Debe volver, no quedarse hundida."}},
+           {"id":"bag_padding","code":"BAG-007","label":{"en":"Padding uniform","zh":"衬垫均匀","es":"Acolchado uniforme"},
+            "help":{"en":"Feel the whole surface with the flat of your hand. A soft spot means the padding shifted or was cut short there.",
+                    "zh":"用手掌摊平摸遍整个表面。有软塌处说明衬垫移位或该处裁短了。",
+                    "es":"Recorra toda la superficie con la palma. Una zona blanda significa que el acolchado se corrió o quedó corto ahí."}},
+           {"id":"bag_material","code":"BAG-007","label":{"en":"Material consistent throughout","zh":"整包材质一致","es":"Material consistente en toda la bolsa"},
+            "help":{"en":"Texture and thickness must be the same everywhere. A panel from another roll shows up as a different sheen.",
+                    "zh":"纹理和厚度应处处一致。用了另一卷料的片区会呈现不同的光泽。",
+                    "es":"Textura y grosor deben ser iguales en todas partes. Un panel de otro rollo se nota como un brillo distinto."}},
+           {"section":{"en":"Final check","zh":"最终确认","es":"Revisión final"},
+            "help":{"en":"The last look, with everything already checked: the question here is no longer whether each part is right but whether the bag is fit to ship.",
+                    "zh":"在各项都已检查完毕后的最后一看：这里的问题不再是每个部位是否合格，而是这只包能否出货。",
+                    "es":"La última mirada, con todo ya revisado: aquí la pregunta ya no es si cada parte está bien, sino si la bolsa está para despachar."}},
+           {"id":"bag_final","code":"BAG-001","photo":true,
+            "label":{"en":"Ready to pack and ship","zh":"可以装箱出货","es":"Lista para empacar y despachar"},
+            "help":{"en":"Look at the bag as the customer will see it when the box is opened. Photograph it whole. If anything above was marked as a finding, this point cannot pass.",
+                    "zh":"以客户开箱时看到的角度审视这只包，并拍摄整体照片。若上面任何一项判定为异常，本项不能通过。",
+                    "es":"Mire la bolsa como la verá el cliente al abrir la caja. Fotografíela entera. Si algo de lo anterior quedó marcado como novedad, este punto no puede aprobar."}}]},
+
+        /* Two microphones on one receiver at the same time, so it exists only
+           where there are two: HK-RHO101 ships a single microphone and there is
+           nothing here it could be asked to do. */
+        {"id":"SIMULTANEOUS","optional":false,"only_factory":["LES"],
+         "skip":["HK-RHO102-BAG","HK-RHO101"],
+         "label":{"en":"SIMULTANEOUS CONNECTION","zh":"双麦同时连接","es":"CONEXIÓN SIMULTÁNEA"},
+         "steps":[
+           {"en":"Switch on both microphones and the receiver","zh":"打开两支麦克风和接收器","es":"Encienda los dos micrófonos y el receptor"},
+           {"en":"Connect the receiver to the test speaker","zh":"将接收器接到测试音箱","es":"Conecte el receptor al parlante de prueba"},
+           {"en":"Speak into them one at a time, then into both at once","zh":"先逐支说话，再两支同时说话","es":"Hable por uno a la vez y luego por los dos a la vez"}],
+         "points":[
+           {"section":{"en":"Simultaneous connection","zh":"双麦同时连接","es":"Conexión simultánea"},
+            "help":{"en":"The first test with the receiver on the bench. From here on the setup stays as it is: channels, audio, range and distortion all run on this same arrangement.",
+                    "zh":"这是第一项需要在工位上接入接收器的测试。从这里开始整套布置保持不变：频道、音频、距离和失真都在同一套布置上完成。",
+                    "es":"La primera prueba con el receptor en el puesto. De aquí en adelante el montaje se queda como está: canales, audio, alcance y distorsión corren sobre esta misma disposición."}},
+           {"id":"both_on","code":"WMIC-001","label":{"en":"Both microphones switch on","zh":"两支麦克风都能开机","es":"Los dos micrófonos encienden"},
+            "help":{"en":"Switch them on one after the other and leave them on for the whole test. From now on the pair is treated as one product.",
+                    "zh":"依次开机，并在整个测试期间保持开启。从现在起，这一对作为一件产品来对待。",
+                    "es":"Enciéndalos uno tras otro y déjelos encendidos durante toda la prueba. De aquí en adelante la pareja se trata como un solo producto."}},
+           {"id":"auto_pair","code":"WMIC-006","label":{"en":"Both pair with the receiver on their own","zh":"两支均能自动与接收器对码","es":"Ambos emparejan solos con el receptor"},
+            "help":{"en":"They must find the receiver without the IR procedure. Having to pair by hand out of the box is a fail: the customer does not read the manual first.",
+                    "zh":"应无需红外对码流程即可连上接收器。开箱后还要手动对码即判定为异常：客户不会先看说明书。",
+                    "es":"Deben encontrar el receptor sin el procedimiento de IR. Tener que emparejar a mano recién sacado de la caja es un fallo: el cliente no lee el manual primero."}},
+           {"id":"diff_channels","code":"WMIC-005","photo":true,
+            "label":{"en":"Each one on a different channel","zh":"两支处于不同频道","es":"Cada uno en un canal distinto"},
+            "help":{"en":"Read both screens and photograph them together with the channels visible. Two microphones on the same channel cancel each other and it looks like a broken microphone.",
+                    "zh":"读取两块屏幕，并拍摄一张能同时看到两个频道号的照片。同频的两支麦克风会互相抵消，看起来就像其中一支坏了。",
+                    "es":"Lea las dos pantallas y fotografíelas juntas con los canales visibles. Dos micrófonos en el mismo canal se anulan entre sí y parece un micrófono dañado."}},
+           {"id":"alternate","code":"WMIC-008","label":{"en":"Alternating speech comes through clean","zh":"交替讲话时声音清晰","es":"Hablar alternando sale limpio"},
+            "help":{"en":"Speak a few seconds into one and then into the other. Both must be heard at the same level, with no delay in taking over.",
+                    "zh":"先对一支说几秒，再换另一支。两者音量应一致，接替时不应有延迟。",
+                    "es":"Hable unos segundos por uno y luego por el otro. Los dos deben oírse al mismo nivel, sin retardo al tomar el relevo."}},
+           {"id":"together","code":"WMIC-008","label":{"en":"Speaking into both at once, no interference","zh":"两支同时讲话无干扰","es":"Hablando por los dos a la vez, sin interferencia"},
+            "help":{"en":"Two people speak at the same time, one into each microphone. Both voices must be heard separately, with no whistling, no signals mixing and neither one cutting the other off.",
+                    "zh":"两人同时讲话，各对一支麦克风。两个人声应各自清晰可辨，不应有啸叫、串音，也不应互相切断。",
+                    "es":"Dos personas hablan a la vez, una por cada micrófono. Deben oírse las dos voces por separado, sin pitidos, sin señales mezcladas y sin que una corte a la otra."}}]},
+
+        {"id":"CHANNELS","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"CHANNELS","zh":"频道","es":"CANALES"},
+         "steps":[
+           {"en":"With the receiver on and connected to the test speaker","zh":"保持接收器开启并接到测试音箱","es":"Con el receptor encendido y conectado al parlante de prueba"},
+           {"en":"Hold button 3 until CH# starts flashing","zh":"长按按键 3 直至 CH# 开始闪烁","es":"Mantenga el botón 3 hasta que CH# empiece a parpadear"},
+           {"en":"Change channel with buttons 2 and 4","zh":"用按键 2 和 4 切换频道","es":"Cambie de canal con los botones 2 y 4"},
+           {"en":"Go through every channel the microphone has","zh":"遍历该麦克风的全部频道","es":"Recorra todos los canales que tenga el micrófono"}],
+         "points":[
+           {"section":{"en":"Channels","zh":"频道","es":"Canales"},
+            "help":{"en":"The setup from the previous test is left exactly as it is. What is being checked is not that one channel works but that all of them do: the customer who buys four kits for one venue needs every channel.",
+                    "zh":"沿用上一项的布置，不做任何改动。这里要确认的不是某一个频道可用，而是全部可用：为同一场地购买四套的客户，每个频道都要能用。",
+                    "es":"El montaje de la prueba anterior se deja tal cual. Lo que se comprueba no es que funcione un canal, sino todos: el cliente que compra cuatro juegos para un mismo local necesita cada canal."}},
+           {"id":"ch_enter","code":"WMIC-005","label":{"en":"Enters channel mode","zh":"可进入频道设置","es":"Entra en el modo de canal"},
+            "help":{"en":"Hold button 3 until CH# flashes. If it does not flash, the channel cannot be changed and nothing below can be tested.",
+                    "zh":"长按按键 3 至 CH# 闪烁。若不闪烁，则无法换台，下面的项目也无法测试。",
+                    "es":"Mantenga el botón 3 hasta que CH# parpadee. Si no parpadea, el canal no se puede cambiar y nada de lo de abajo se puede probar."}},
+           {"id":"ch_change","code":"WMIC-005","label":{"en":"Buttons 2 and 4 change the channel","zh":"按键 2 和 4 可切换频道","es":"Los botones 2 y 4 cambian el canal"},
+            "help":{"en":"One goes up and the other down, one channel at a time. It must not skip numbers or jump back to the first.",
+                    "zh":"一个向上、一个向下，每次一个频道。不应跳号，也不应跳回第一个。",
+                    "es":"Uno sube y el otro baja, de un canal a la vez. No debe saltarse números ni volver al primero."}},
+           {"id":"ch_display","code":"WMIC-005","photo":true,
+            "label":{"en":"The screen follows every change","zh":"屏幕随每次切换更新","es":"La pantalla sigue cada cambio"},
+            "help":{"en":"The number must change with each press, with no lag and no leftover digit. Photograph the screen on one of the channels tested.",
+                    "zh":"每按一次数字都应变化，不应延迟或残留笔段。拍摄其中一个已测频道的屏幕。",
+                    "es":"El número debe cambiar con cada pulsación, sin retardo ni dígitos que queden pegados. Fotografíe la pantalla en uno de los canales probados."}},
+           {"id":"ch_repair","code":"WMIC-006","label":{"en":"The receiver picks it up again after each change","zh":"每次换台后接收器都能重新接上","es":"El receptor lo vuelve a tomar tras cada cambio"},
+            "help":{"en":"Speak after each change and confirm the sound comes through. A channel that appears on the screen but does not reach the receiver is a channel the customer cannot use.",
+                    "zh":"每次换台后说话确认有声音。屏幕上能显示但接收器收不到的频道，客户实际上用不了。",
+                    "es":"Hable después de cada cambio y confirme que el sonido llega. Un canal que aparece en pantalla pero no llega al receptor es un canal que el cliente no puede usar."}},
+           {"id":"ch_all","code":"WMIC-005","label":{"en":"All the channels were checked","zh":"全部频道均已检查","es":"Se recorrieron todos los canales"},
+            "help":{"en":"Go round the full cycle until it returns to the first one, without skipping any. Stopping at the third because the first three worked is how a batch ships with the top of the band dead.",
+                    "zh":"走完一整轮直到回到第一个频道，不得跳过。因为前三个正常就停在第三个，正是整批货高频段全哑却照常出厂的原因。",
+                    "es":"Dé la vuelta completa hasta volver al primero, sin saltarse ninguno. Detenerse en el tercero porque los tres primeros funcionaron es como sale un lote con la parte alta de la banda muerta."}}]},
+
+        {"id":"AUDIO_VOLUME","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"AUDIO AND VOLUME","zh":"音质与音量","es":"AUDIO Y VOLUMEN"},
+         "steps":[
+           {"en":"With the microphone paired, speak at a medium volume","zh":"在已对码状态下，用中等音量讲话","es":"Con el micrófono emparejado, hable a volumen medio"},
+           {"en":"Move the volume through its whole range","zh":"将音量从最小调到最大","es":"Recorra el volumen en todo su rango"},
+           {"en":"Change channel and confirm the audio stays the same","zh":"切换频道并确认音质不变","es":"Cambie de canal y confirme que el audio se mantiene"},
+           {"en":"Walk to 15 metres and speak again","zh":"走到 15 米处再次讲话","es":"Camine hasta 15 metros y vuelva a hablar"}],
+         "points":[
+           {"section":{"en":"Audio and volume","zh":"音质与音量","es":"Audio y volumen"},
+            "help":{"en":"The first of the three tests that need distance. From here to the end of the plan the operator is walking, which is why they are grouped: the corridor is measured and marked once.",
+                    "zh":"这是三项需要距离的测试中的第一项。从这里到计划结束，操作员都在走动，因此把它们放在一起：走廊只量一次、只标一次。",
+                    "es":"La primera de las tres pruebas que necesitan distancia. De aquí al final del plan el operario camina, y por eso van juntas: el corredor se mide y se marca una sola vez."}},
+           {"id":"aud_clean","code":"AUD-005","label":{"en":"Clear voice at medium volume","zh":"中等音量下人声清晰","es":"Voz clara a volumen medio"},
+            "help":{"en":"Speak normally, close to the microphone. The voice must come out clean, with no hiss behind it and no crackle.",
+                    "zh":"靠近麦克风正常讲话。人声应干净，背景不应有嘶声或爆音。",
+                    "es":"Hable normal, cerca del micrófono. La voz debe salir limpia, sin siseo de fondo ni chasquidos."}},
+           {"id":"aud_volume","code":"WMIC-009","photo":true,
+            "label":{"en":"Volume control works across its range","zh":"音量在全程可调","es":"El control de volumen funciona en todo el rango"},
+            "help":{"en":"Take it from 1 to 16 while speaking continuously. The level must rise smoothly, with no dead steps and no jump. Photograph the screen showing the level.",
+                    "zh":"一边持续讲话，一边从 1 调到 16。音量应平滑上升，不应有失效档位或突跳。拍摄显示音量值的屏幕。",
+                    "es":"Llévelo de 1 a 16 mientras habla de forma continua. El nivel debe subir de forma suave, sin escalones muertos ni saltos. Fotografíe la pantalla mostrando el nivel."}},
+           {"id":"aud_noise","code":"AUD-005","label":{"en":"No noise or hum","zh":"无噪声或嗡嗡声","es":"Sin ruido ni zumbido"},
+            "help":{"en":"Stop speaking and listen with the microphone still on. The line must be silent: what you hear now is what the audience hears between songs.",
+                    "zh":"停止讲话，但保持麦克风开启并倾听。此时线路应安静：现在听到的，就是观众在曲间听到的。",
+                    "es":"Deje de hablar y escuche con el micrófono aún encendido. La línea debe quedar en silencio: lo que se oiga ahora es lo que oye el público entre canción y canción."}},
+           {"id":"aud_channel_stable","code":"WMIC-007","label":{"en":"Audio holds when the channel changes","zh":"换台后音质保持一致","es":"El audio se mantiene al cambiar de canal"},
+            "help":{"en":"Change channel and speak again. The sound must be the same on every channel: one channel quieter than the rest is a fault, not a setting.",
+                    "zh":"切换频道后再讲话。各频道音质应一致：某个频道明显偏小是故障，而不是设置问题。",
+                    "es":"Cambie de canal y hable de nuevo. El sonido debe ser el mismo en todos los canales: un canal más bajo que los demás es una falla, no un ajuste."}},
+           {"id":"aud_15m","code":"WMIC-007","label":{"en":"Audio holds at 15 metres","zh":"15 米处音质保持","es":"El audio se mantiene a 15 metros"},
+            "help":{"en":"Walk away to 15 metres, keeping the microphone pointing at the receiver, and speak. The voice must arrive with the same quality, with no dropouts and no crackle.",
+                    "zh":"走到 15 米外，麦克风保持朝向接收器，并讲话。人声应保持同样的质量，不应断续或有爆音。",
+                    "es":"Aléjese hasta 15 metros, manteniendo el micrófono apuntando al receptor, y hable. La voz debe llegar con la misma calidad, sin cortes ni crujidos."}}]},
+
+        {"id":"WIRELESS_RANGE","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"WIRELESS CONNECTION AND RANGE","zh":"无线连接与距离","es":"CONEXIÓN INALÁMBRICA Y ALCANCE"},
+         "steps":[
+           {"en":"Hold button 3 until CH XX flashes","zh":"长按按键 3 直至 CH XX 闪烁","es":"Mantenga el botón 3 hasta que parpadee CH XX"},
+           {"en":"Press button 4 twice, then button 3 again until IR appears","zh":"按两次按键 4，再按按键 3 直至出现 IR","es":"Pulse dos veces el botón 4 y luego el botón 3 hasta que aparezca IR"},
+           {"en":"Point the microphone at the receiver's IR LED, 8 to 15 cm away","zh":"将麦克风对准接收器的红外灯，距离 8 至 15 厘米","es":"Apunte el micrófono al LED infrarrojo del receptor, a 8 a 15 cm"},
+           {"en":"Then walk away, testing the audio as far as the range allows","zh":"随后逐步走远，边走边测试音频直至极限距离","es":"Después aléjese probando el audio hasta donde llegue el alcance"}],
+         "points":[
+           {"section":{"en":"Pairing and range","zh":"对码与距离","es":"Emparejamiento y alcance"},
+            "help":{"en":"The manual pairing takes a minute; what makes this test long is the walk. It comes here because the corridor is already measured from the previous test and the receiver is already on the bench.",
+                    "zh":"手动对码只需一分钟，本项耗时长是因为要走距离。放在这里，是因为上一项已经量好了走廊，接收器也已经在工位上。",
+                    "es":"El emparejamiento manual toma un minuto; lo que alarga esta prueba es la caminata. Va aquí porque el corredor ya quedó medido en la prueba anterior y el receptor ya está en el puesto."}},
+           {"id":"ir_mode","code":"WMIC-006","label":{"en":"IR appears on the screen","zh":"屏幕显示 IR","es":"Aparece IR en la pantalla"},
+            "help":{"en":"Hold button 3 until CH XX flashes, press button 4 twice and press button 3 again. The word IR must appear: if it does not, there is no way to pair by hand.",
+                    "zh":"长按按键 3 至 CH XX 闪烁，按两次按键 4，再按一次按键 3。屏幕应出现 IR 字样；若不出现，则无法手动对码。",
+                    "es":"Mantenga el botón 3 hasta que parpadee CH XX, pulse dos veces el botón 4 y vuelva a pulsar el botón 3. Debe aparecer la palabra IR: si no aparece, no hay forma de emparejar a mano."}},
+           {"id":"ir_pair","code":"WMIC-006","label":{"en":"Pairs at 8 to 15 cm","zh":"在 8 至 15 厘米处完成对码","es":"Empareja entre 8 y 15 cm"},
+            "help":{"en":"Hold the microphone pointing at the receiver's IR LED, at that distance. Closer or further away it will not read, and it looks like a fault when it is only the distance.",
+                    "zh":"将麦克风对准接收器的红外灯，保持该距离。距离过近或过远都读不到，看起来像故障，其实只是距离问题。",
+                    "es":"Sostenga el micrófono apuntando al LED infrarrojo del receptor, a esa distancia. Más cerca o más lejos no lee, y parece una falla cuando es solo la distancia."}},
+           {"id":"ir_led","code":"WMIC-006","label":{"en":"The red LED goes out when it takes","zh":"对码成功后红灯熄灭","es":"El LED rojo se apaga al tomar"},
+            "help":{"en":"Wait without moving the microphone. The red LED on the screen going out is the signal that the pairing took; taking the microphone away too early leaves it half done.",
+                    "zh":"保持麦克风不动等待。屏幕上的红灯熄灭即表示对码成功；过早移开麦克风会导致对码只完成一半。",
+                    "es":"Espere sin mover el micrófono. Que se apague el LED rojo de la pantalla es la señal de que el emparejamiento tomó; retirar el micrófono antes lo deja a medias."}},
+           {"id":"ir_channel","code":"WMIC-005","photo":true,
+            "label":{"en":"The paired channel stays on the screen","zh":"屏幕保留已对码的频道","es":"El canal emparejado queda en pantalla"},
+            "help":{"en":"Read the channel and photograph the screen. That photo is what proves which channel this unit was left on.",
+                    "zh":"读取频道并拍摄屏幕。这张照片就是本机最终停留在哪个频道的凭证。",
+                    "es":"Lea el canal y fotografíe la pantalla. Esa foto es la que prueba en qué canal quedó esta unidad."}},
+           {"id":"range","code":"WMIC-007","photo":true,
+            "measure":{"unit":"m","step":"1"},
+            "label":{"en":"Range at which the audio still holds","zh":"音频仍稳定的最远距离","es":"Alcance al que el audio se mantiene"},
+            "help":{"en":"Walk away speaking continuously and in a straight line, without walls in between, until the sound starts breaking up. Write down the last distance where it was still clean, not the one where it failed. Photograph the point you reached, with the receiver in view if you can. The specification is up to 40 metres: anything well below that is a fail even if the microphone works perfectly on the bench.",
+                    "zh":"一边持续讲话一边直线走远，中间不隔墙体，直到声音开始断续。记录声音仍然干净的最后一个距离，而不是出现异常的那个距离。拍摄所到达的位置，若可能请让接收器入镜。规格为最远 40 米：明显达不到即判定为异常，即使麦克风在工位上完全正常。",
+                    "es":"Aléjese hablando de forma continua y en línea recta, sin paredes de por medio, hasta que el sonido empiece a cortarse. Anote la última distancia en la que se oía limpio, no aquella en la que falló. Fotografíe el punto al que llegó, con el receptor a la vista si puede. La especificación es hasta 40 metros: quedarse muy por debajo es un fallo aunque el micrófono funcione perfecto en el puesto."}}]},
+
+        {"id":"DISTORTION","optional":false,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"DISTORTION","zh":"失真测试","es":"DISTORSIÓN"},
+         "steps":[
+           {"en":"Turn the microphone volume up to 10","zh":"将麦克风音量调到 10","es":"Suba el volumen del micrófono a 10"},
+           {"en":"Speak from 1, 5, 10 and 15 metres","zh":"分别在 1、5、10 和 15 米处讲话","es":"Hable a 1, 5, 10 y 15 metros"},
+           {"en":"Then go above 10 and listen again","zh":"随后调到 10 以上再听一次","es":"Luego pase de 10 y vuelva a escuchar"},
+           {"en":"Repeat on every microphone the reference carries","zh":"该型号配备的每支麦克风都要重复","es":"Repita con cada micrófono que traiga la referencia"}],
+         "points":[
+           {"section":{"en":"Distortion","zh":"失真测试","es":"Distorsión"},
+            "help":{"en":"The longest of the tests that can still be done by hand: four distances on every microphone the reference carries. It goes last of the distance group because it reuses the marks already on the floor from the two before it.",
+                    "zh":"这是仍可人工完成的测试中最耗时的一项：该型号配备的每支麦克风都要走四个距离。它排在距离组的最后，因为可以沿用前两项已经在地面标好的位置。",
+                    "es":"La más larga de las pruebas que aún se hacen a mano: cuatro distancias por cada micrófono que traiga la referencia. Va de última en el grupo de distancia porque reutiliza las marcas que ya quedaron en el piso en las dos anteriores."}},
+           {"id":"dist_1m","code":"AUD-003","label":{"en":"No distortion at 1 metre","zh":"1 米处无失真","es":"Sin distorsión a 1 metro"},
+            "help":{"en":"With the volume at 10, speak close. This is the harshest case: the loudest signal at the shortest distance is where clipping shows first.",
+                    "zh":"音量置于 10，靠近讲话。这是最苛刻的情况：最大信号加最近距离，削波最先在这里出现。",
+                    "es":"Con el volumen en 10, hable de cerca. Es el caso más exigente: la señal más fuerte a la distancia más corta es donde primero aparece el recorte."}},
+           {"id":"dist_5m","code":"AUD-003","label":{"en":"No distortion at 5 metres","zh":"5 米处无失真","es":"Sin distorsión a 5 metros"},
+            "help":{"en":"Same volume, five metres away. Listen to the consonants: distortion shows up on them before it shows on the vowels.",
+                    "zh":"同样音量，距离 5 米。注意听辅音：失真会先出现在辅音上，然后才是元音。",
+                    "es":"El mismo volumen, a cinco metros. Escuche las consonantes: la distorsión aparece en ellas antes que en las vocales."}},
+           {"id":"dist_10m","code":"AUD-003","label":{"en":"No distortion at 10 metres","zh":"10 米处无失真","es":"Sin distorsión a 10 metros"},
+            "help":{"en":"Same volume, ten metres away, in a straight line and without obstacles in between.",
+                    "zh":"同样音量，距离 10 米，直线且中间无遮挡。",
+                    "es":"El mismo volumen, a diez metros, en línea recta y sin obstáculos de por medio."}},
+           {"id":"dist_15m","code":"AUD-003","photo":true,
+            "label":{"en":"No distortion at 15 metres","zh":"15 米处无失真","es":"Sin distorsión a 15 metros"},
+            "help":{"en":"The furthest of the four. Photograph the measured distance: without that photo the report says fifteen metres and nobody can tell whether it was ten.",
+                    "zh":"四个距离中最远的一个。拍摄已测量的距离：没有这张照片，报告写着十五米，但谁也说不清是不是十米。",
+                    "es":"La más lejana de las cuatro. Fotografíe la distancia medida: sin esa foto el informe dice quince metros y nadie puede saber si fueron diez."}},
+           {"id":"dist_over10","code":"AUD-003","label":{"en":"No distortion above volume 10","zh":"音量超过 10 时无失真","es":"Sin distorsión por encima del volumen 10"},
+            "help":{"en":"Go above 10 and listen again. A microphone that is clean up to 10 and breaks up at 12 is a microphone that will be used at 12 on stage.",
+                    "zh":"将音量调到 10 以上再听一次。在 10 以内干净、到 12 就破音的麦克风，在台上恰恰会被开到 12。",
+                    "es":"Pase de 10 y vuelva a escuchar. Un micrófono limpio hasta 10 que se rompe en 12 es un micrófono que en tarima se va a usar en 12."}}]},
+
+        {"id":"AUTO_OFF","optional":true,"only_factory":["LES"],"skip":["HK-RHO102-BAG"],
+         "label":{"en":"IDLE SHUTDOWN","zh":"自动关机","es":"APAGADO AUTOMÁTICO"},
+         "steps":[
+           {"en":"Switch on every microphone and the receiver","zh":"打开每支麦克风和接收器","es":"Encienda cada micrófono y el receptor"},
+           {"en":"Speak into each one to confirm they are working","zh":"分别对每支说话，确认工作正常","es":"Hable por cada uno para confirmar que funcionan"},
+           {"en":"Leave them switched on and untouched for 20 minutes","zh":"保持开启并静置 20 分钟不做任何操作","es":"Déjelos encendidos y sin tocar durante 20 minutos"},
+           {"en":"Check that they switched off and switch them back on","zh":"确认已自动关机后再重新开机","es":"Compruebe que se apagaron y vuelva a encenderlos"}],
+         "points":[
+           {"section":{"en":"Idle shutdown","zh":"自动关机","es":"Apagado automático"},
+            "help":{"en":"Twenty minutes of waiting, which is why it is last: nothing else in the plan is left to do while the clock runs, so the wait costs only the wait. Leave the microphones on the bench and do not touch them, do not knock the table and do not speak nearby. Any sound resets the timer and the twenty minutes start again.",
+                    "zh":"需要等待二十分钟，因此放在最后：计时期间计划里已无其他事项，等待的代价就只是等待本身。将麦克风放在工位上不要触碰，不要碰撞桌面，也不要在旁边说话。任何声音都会重置计时，二十分钟要从头开始。",
+                    "es":"Veinte minutos de espera, y por eso va de última: no queda nada más del plan por hacer mientras corre el reloj, así que la espera cuesta solo la espera. Deje los micrófonos en el puesto sin tocarlos, sin golpear la mesa y sin hablar cerca. Cualquier sonido reinicia el conteo y los veinte minutos empiezan de nuevo."}},
+           {"id":"both_work","code":"WMIC-001","label":{"en":"Every microphone works before the wait","zh":"等待前每支均正常","es":"Cada micrófono funciona antes de la espera"},
+            "help":{"en":"Speak into each one for a few seconds and confirm the sound comes through. Without this the test proves nothing: a microphone that was already dead also switches off after twenty minutes.",
+                    "zh":"分别对每支说几秒并确认有声音。缺少这一步，本项测试毫无意义：本来就已经坏掉的麦克风，二十分钟后同样是关着的。",
+                    "es":"Hable unos segundos por cada uno y confirme que el sonido llega. Sin esto la prueba no demuestra nada: un micrófono que ya estaba muerto también aparece apagado a los veinte minutos."}},
+           {"id":"off_20","code":"WMIC-011","photo":true,
+            "label":{"en":"They switch off on their own after 20 minutes","zh":"20 分钟后自动关机","es":"Se apagan solos a los 20 minutos"},
+            "help":{"en":"After the twenty minutes, every screen must be off. Photograph or film them off. A microphone that stays on drains the battery in the customer's bag and arrives at the show dead.",
+                    "zh":"二十分钟后，每块屏幕都应熄灭。拍摄或录下已关机的状态。不会自动关机的麦克风会在客户包里耗尽电量，到了演出现场就是没电的。",
+                    "es":"Pasados los veinte minutos, cada pantalla debe estar apagada. Fotografíelos o fílmelos apagados. Un micrófono que se queda encendido consume la batería en el bolso del cliente y llega sin carga al evento."}},
+           {"id":"back_on","code":"WMIC-001","label":{"en":"They come back on and work","zh":"可重新开机并正常工作","es":"Vuelven a encender y funcionan"},
+            "help":{"en":"Switch each one on again and speak. They must come up as normal and be heard: switching off is only correct if waking up works too.",
+                    "zh":"逐支重新开机并说话。应正常启动并有声音：只有能正常唤醒，自动关机才算正确。",
+                    "es":"Vuelva a encender cada uno y hable. Deben arrancar con normalidad y oírse: apagarse solo está bien si también sabe volver."}}]}
       ]
     }
   }
@@ -2099,6 +2755,20 @@ const T = {
   speaker:"Speaker", speaker_n:"SPEAKER %n", units_tag:"%n speakers",
   need_photo_n:"At least one photo of the speakers is required, whether they pass or fail. Photos of a defect go in the red box of the point that failed.",
   by_unit:"Result by speaker",
+  /* LESHENG does not build speakers, and it does not build one microphone
+     either: HK-RHO101 ships one, HK-RHO102 ships two and HK-RHO102-BAG is the
+     bag that carries them. "Set" is what covers all three, and it is what the
+     factory already counts in — 套 is the Chinese classifier for exactly this,
+     a receiver and its microphones sold together. It does not say "two" on
+     purpose: how many the box holds is the reference's job, and the reference
+     is printed next to it. See UNIT_SFX in tr(). */
+  units_les:"Sets for simultaneous inspection",
+  units_report_les:"Sets inspected",
+  plan_info_n_les:"%n tests × %u sets = %tot checks.",
+  speaker_les:"Set", speaker_n_les:"SET %n",
+  units_tag_les:"%n sets",
+  need_photo_n_les:"At least one photo of the sets is required, whether they pass or fail. Photos of a defect go in the red box of the point that failed.",
+  by_unit_les:"Result by set",
   report_note:"A report with the photos is generated at the end.",
   how_test:"How to perform the test", how_photos:"How to take the photos",
   remaining:"<b>%n</b> point(s) remaining. Tap a section to open it.",
@@ -2257,6 +2927,13 @@ const T = {
   speaker:"Parlante", speaker_n:"PARLANTE %n", units_tag:"%n parlantes",
   need_photo_n:"Se requiere al menos una foto de los parlantes, aprueben o no. Las fotos de un defecto van en el recuadro rojo del punto que falló.",
   by_unit:"Resultado por parlante",
+  units_les:"Juegos a inspeccionar simultáneamente",
+  units_report_les:"Juegos inspeccionados",
+  plan_info_n_les:"%n pruebas × %u juegos = %tot verificaciones.",
+  speaker_les:"Juego", speaker_n_les:"JUEGO %n",
+  units_tag_les:"%n juegos",
+  need_photo_n_les:"Se requiere al menos una foto de los juegos, aprueben o no. Las fotos de un defecto van en el recuadro rojo del punto que falló.",
+  by_unit_les:"Resultado por juego",
   report_note:"Al final se genera un informe con las fotos.",
   how_test:"Cómo ejecutar la prueba", how_photos:"Cómo tomar las fotos",
   remaining:"Quedan <b>%n</b> punto(s). Toque una sección para abrirla.",
@@ -2411,6 +3088,13 @@ const T = {
   speaker:"音箱", speaker_n:"音箱 %n", units_tag:"%n 台音箱",
   need_photo_n:"无论合格与否，本项至少需要一张音箱照片。具体异常的照片请放在该异常项的红色方框内。",
   by_unit:"各音箱结果",
+  units_les:"同时检验的套数",
+  units_report_les:"已检验套数",
+  plan_info_n_les:"%n 项测试 × %u 套 = 共 %tot 项。",
+  speaker_les:"套", speaker_n_les:"第 %n 套",
+  units_tag_les:"%n 套",
+  need_photo_n_les:"无论合格与否，本项至少需要一张整套产品的照片。具体异常的照片请放在该异常项的红色方框内。",
+  by_unit_les:"各套结果",
   report_note:"检验结束后将生成含照片的报告。",
   how_test:"测试步骤", how_photos:"拍照要求",
   remaining:"还有 <b>%n</b> 项未完成。点击分组展开。",
@@ -2565,7 +3249,23 @@ if(!LANG){
 }
 if(!T[LANG]) LANG = "en";
 
-const tr = k => (T[LANG] && T[LANG][k]) || T.en[k] || k;
+/* What one inspected unit is called changes with the factory: a speaker for the
+   ones that build speakers, a set for LESHENG, whose product is a receiver with
+   one or two microphones and, on one reference, a bag. Rather than branching at
+   the twenty-odd places that print that word — the setup screen, the checklist
+   header, the summary table, the findings, the report — the lookup itself tries
+   the suffixed key first: "speaker_n_les" before "speaker_n". A factory that
+   builds something else again needs a handful of strings and no code.
+   S is read at call time, never while this file is still being evaluated. */
+const UNIT_SFX = {LES:"_les"};
+const tr = k => {
+  const sfx = UNIT_SFX[S.factory];
+  if(sfx){
+    const alt = (T[LANG] && T[LANG][k + sfx]) || T.en[k + sfx];
+    if(alt) return alt;
+  }
+  return (T[LANG] && T[LANG][k]) || T.en[k] || k;
+};
 /* Localised value of a {en, zh, es} pair. Plain strings pass through unchanged.
    When the pair carries nothing for the current language, the Spanish table of
    plan strings is consulted before falling back to English — that is where the
@@ -2641,15 +3341,30 @@ const CAN_DOWNLOAD = !IS_WECHAT &&
 
 const plan = () => CONFIG.plans["default"];
 
-/* Not every reference carries every test. Two filters, both optional:
-     "only":["HK-BRA210B1"]   — this reference and no other
-     "skip_factory":["RHY"]   — everyone except these factories
+/* Not every reference carries every test. Four filters, all optional:
+     "only":["HK-BRA210B1"]        — this reference and no other
+     "skip":["HK-RHO102-BAG"]      — every reference except these
+     "skip_factory":["RHY"]        — everyone except these factories
+     "only_factory":["LES"]        — these factories and nobody else
    They apply to whole tests and to single points alike. Filtering the plan is
    better than asking the operator to mark N/A: a speaker that has no external
-   battery should not carry a row saying its battery was "not applicable". */
+   battery should not carry a row saying its battery was "not applicable".
+
+   `only_factory` is what separates the two plans that now live in this file.
+   It is written as an allow list and not as a longer `skip_factory` on purpose:
+   the day a fifth factory is added, a test that says "this belongs to LESHENG"
+   leaves it out by itself, while a test that says "this is not for LESHENG"
+   would hand it the whole speaker plan without anyone deciding so. */
+   `skip` is what keeps the microphone plan off HK-RHO102-BAG, which is the bag
+   on its own. Written as an exclusion and not as an `only` list of the two
+   microphone references on purpose: the day a RHO103 is added it inherits the
+   microphone plan by itself, while fifteen `only` lists would each have to be
+   edited and the one that was missed would silently drop a whole test. */
 function fits(o){
   if(o.only && o.only.indexOf(S.model) < 0) return false;
+  if(o.skip && o.skip.indexOf(S.model) >= 0) return false;
   if(o.skip_factory && o.skip_factory.indexOf(S.factory) >= 0) return false;
+  if(o.only_factory && o.only_factory.indexOf(S.factory) < 0) return false;
   return true;
 }
 /* Every test this reference carries. This is the whole plan, and it is what
@@ -4638,7 +5353,13 @@ function mediaList(){
      evidence of the test  TEST_01.jpg
    The point-level file carries its verdict because that is the one somebody
    goes looking for months later; the test-level one documents the whole test
-   and needs nothing more than the test name. */
+   and needs nothing more than the test name.
+   The unit token follows the factory, like the word on screen does: a file
+   named speaker2.jpg inside a folder of microphone evidence is the kind of
+   detail that makes somebody doubt the whole pack. It stays in English and
+   unaccented because it is a file name that travels between operating
+   systems, not something the inspector reads. */
+const UNIT_FILE = {LES:"set"};
 function mediaName(v, n){
   const slug = s => String(s||"").replace(/[^A-Za-z0-9]+/g,"_")
                                  .replace(/^_+|_+$/g,"").toUpperCase();
@@ -4646,7 +5367,9 @@ function mediaName(v, n){
   if(v.point){
     bits.push(slug(v.point));
     if(v.verdict === "PASS" || v.verdict === "FAIL") bits.push(v.verdict);
-    if(S.units > 1 && !v.lot) bits.push("speaker" + (v.unit + 1));
+    if(S.units > 1 && !v.lot){
+      bits.push((UNIT_FILE[S.factory] || "speaker") + (v.unit + 1));
+    }
   }
   bits.push(String(n).padStart(2,"0"));
   return bits.join("_");
@@ -5657,11 +6380,22 @@ function mediaBlock(r){
    yet. A point can be added today and its example the week after. */
 function sampleBox(p){
   if(!p.sample) return "";
+  const base = REF_IMG_DIR + encodeURIComponent(p.sample);
   return `<div class="samp">
-    <img src="${REF_IMG_DIR}${encodeURIComponent(p.sample)}.png" alt=""
-      onclick="zoomSample(this)" onerror="this.parentNode.remove()">
+    <img src="${base}.png" data-base="${base}" alt=""
+      onclick="zoomSample(this)" onerror="sampleFallback(this)">
     <span>${tr("sample_hint")}</span>
   </div>`;
+}
+/* Same two-format rule as the reference photos: .png first, then .jpg once.
+   A photo taken with a phone arrives as .jpg and nobody converts it before
+   uploading, so demanding .png would leave the example invisible with the file
+   sitting right there in the folder. If neither exists the block removes
+   itself and the point is answered as usual. */
+function sampleFallback(img){
+  const base = img.getAttribute("data-base") || "";
+  if(base && !img.dataset.tried){ img.dataset.tried = "1"; img.src = base + ".jpg"; return; }
+  if(img.parentNode) img.parentNode.remove();
 }
 function zoomSample(img){
   if(!img || !img.naturalWidth) return;
