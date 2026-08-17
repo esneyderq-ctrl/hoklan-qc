@@ -1,7 +1,19 @@
 {
- "ref": "HK-ARC101",
- "tests": ["RADIO_FM", "DISPLAY"],
- "units": 2,
+ "ref": "HK-BAS115A1",
+ "tests": [
+  "USB",
+  "SD",
+  "BLUETOOTH",
+  "RADIO_FM",
+  "AUX",
+  "DISPLAY",
+  "REMOTE",
+  "EXTERNAL",
+  "ACCESSORIES",
+  "GRAPHICS",
+  "INTERNAL"
+ ],
+ "units": 1,
  "plan": 20,
  "issued": "2026-08-17",
  "note": ""
