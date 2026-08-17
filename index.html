@@ -2192,12 +2192,15 @@ const CONFIG = {
    to be a quiet blank rather than a broken page.
 ------------------------------------------------------------------------- */
 const REF_IMG_DIR = "img/";
-/* PNG first because that is what the catalogue exports. The order matters: the
-   second format is only tried after the first has failed, so getting it wrong
-   costs one wasted request per reference — fifty-three trips to nowhere on a
-   factory connection. */
+/* JPG first, PNG second. It used to be the other way round, on the theory that
+   the catalogue exports PNG — and it does, at three megabytes and sometimes at
+   fifteen. What actually gets published is the resized JPG, sixty kilobytes of
+   it. The order matters because the second format is only tried after the first
+   has failed, so getting it wrong costs one wasted request per reference. It
+   costs far more than that when both files exist: the app would download the
+   fifteen-megabyte PNG and never reach the JPG sitting beside it. */
 const refImgUrl = (model, ext) =>
-  REF_IMG_DIR + encodeURIComponent(String(model || "")) + "." + (ext || "png");
+  REF_IMG_DIR + encodeURIComponent(String(model || "")) + "." + (ext || "jpg");
 
 /* The same photo again, this time as a data URL, because the report has to
    carry it. A report is read from inside the ZIP, on a PC that may never reach
@@ -2246,7 +2249,7 @@ async function ensureRefImg(){
   const m = String(S.model || "");
   if(!m || REF_IMG_DATA.model === m) return;
   REF_IMG_DATA = {model:m, url:""};
-  const exts = ["png", "jpg"];
+  const exts = ["jpg", "png"];
   for(let i = 0; i < exts.length; i++){
     try{
       const res = await fetch(refImgUrl(m, exts[i]));
@@ -5959,11 +5962,13 @@ function refImgOk(){
 }
 
 function refImgFail(img){
-  // One retry as .jpg before giving up: whoever exports the photos should not
-  // have to care which of the two formats came out of the catalogue.
+  // One retry as .png before giving up: whoever exports the photos should not
+  // have to care which of the two formats came out of the catalogue. The order
+  // matches ensureRefImg — jpg first, png second — so a reference that has both
+  // is served the small one on screen and in the report alike.
   if(!img.dataset.retry){
     img.dataset.retry = "1";
-    img.src = refImgUrl(S.model, "jpg");
+    img.src = refImgUrl(S.model, "png");
     return;
   }
   const row = document.getElementById("refimg");
@@ -6383,19 +6388,19 @@ function sampleBox(p){
   if(!p.sample) return "";
   const base = REF_IMG_DIR + encodeURIComponent(p.sample);
   return `<div class="samp">
-    <img src="${base}.png" data-base="${base}" alt=""
+    <img src="${base}.jpg" data-base="${base}" alt=""
       onclick="zoomSample(this)" onerror="sampleFallback(this)">
     <span>${tr("sample_hint")}</span>
   </div>`;
 }
-/* Same two-format rule as the reference photos: .png first, then .jpg once.
-   A photo taken with a phone arrives as .jpg and nobody converts it before
-   uploading, so demanding .png would leave the example invisible with the file
-   sitting right there in the folder. If neither exists the block removes
-   itself and the point is answered as usual. */
+/* Same two-format rule as the reference photos, and the same order: .jpg first,
+   then .png once. A photo taken with a phone arrives as .jpg and nobody
+   converts it before uploading, so asking for .png first spends a request on a
+   file that is almost never there. If neither exists the block removes itself
+   and the point is answered as usual. */
 function sampleFallback(img){
   const base = img.getAttribute("data-base") || "";
-  if(base && !img.dataset.tried){ img.dataset.tried = "1"; img.src = base + ".jpg"; return; }
+  if(base && !img.dataset.tried){ img.dataset.tried = "1"; img.src = base + ".png"; return; }
   if(img.parentNode) img.parentNode.remove();
 }
 function zoomSample(img){
