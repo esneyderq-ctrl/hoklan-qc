@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="6.4">
+<meta name="app-version" content="6.5">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -115,6 +115,15 @@ button:active{transform:scale(.99)}
   font-family:inherit;line-height:1.2}
 .na-test.on{background:var(--amber);border-color:var(--amber);color:#2a2413;
   font-weight:700}
+/* What the assignment code found, right under the field it was typed into. */
+.asg{margin:8px 0 2px;padding:11px 12px;border-radius:9px;background:#0d1f33;
+  border:1px solid #24466b;color:#cfe0f2;font-size:13.5px;line-height:1.5}
+.asg b{display:block;color:var(--accent);font-size:12px;letter-spacing:.5px;
+  margin-bottom:3px}
+.asg span{display:block}
+.asg .w{color:var(--amber);font-size:12.5px;margin-top:4px}
+.asg.bad{background:#2b1614;border-color:#7a3a36;color:#f0c8c4}
+.asg .jump{margin-top:6px}
 .grp-help{margin:0 14px 12px;padding:11px;border-radius:9px;background:#0d1f33;
   border:1px solid #24466b;color:#cfe0f2;font-size:14px;line-height:1.55}
 /* Three Han characters where the other two languages have three letters, so the
@@ -426,7 +435,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "6.4";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "6.5";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -613,7 +622,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 19,
+      "plan_version": 20,
       "tests": [
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -1072,9 +1081,12 @@ const CONFIG = {
            {"section":{"en":"Tuning","zh":"调台"},
             "help":{"en":"Select radio mode and run the auto search to store stations. Step through them with next and back. Then switch the speaker off and on to check it keeps the last station.",
                     "zh":"切换到收音模式并执行自动搜台保存电台，用上/下一台按键切换。之后重新开机，确认是否记忆上次电台。"}},
-           {"id":"search","code":"FM-005","label":{"en":"Searches and stores stations","zh":"搜索并保存电台"},
-            "help":{"en":"Run the auto search and let it finish. It must find several stations and store them; a speaker that finds one or none has an antenna problem.",
-                    "zh":"执行自动搜台并等待完成。应搜到多个电台并保存；只搜到一个或搜不到通常是天线问题。"}},
+           {"id":"search","code":"FM-005",
+            "measure":{"unit":{"en":"stations","zh":"个电台","es":"emisoras"},"step":"1"},
+            "label":{"en":"Searches and stores stations","zh":"搜索并保存电台"},
+            "help":{"en":"Run the auto search and let it finish. It must find several stations and store them; a speaker that finds one or none has an antenna problem. Write in the box how many it stored. The count is what makes this comparable: \"it found stations\" says nothing six months later, and two units of the same batch that store fourteen and three in the same room are telling you about the antenna of the second one.",
+                    "zh":"执行自动搜台并等待完成。应搜到多个电台并保存；只搜到一个或搜不到通常是天线问题。请在方框中填写实际保存的电台数量。有了数量才能比较：半年后“搜到了电台”这句话毫无意义，而同一批的两台在同一个房间里分别存下十四个和三个，说明的是第二台的天线。",
+                    "es":"Ejecute la búsqueda automática y déjela terminar. Debe encontrar varias emisoras y guardarlas; un parlante que encuentra una o ninguna tiene problema de antena. Escriba en el recuadro cuántas guardó. La cantidad es lo que hace esto comparable: «encontró emisoras» no dice nada dentro de seis meses, y dos unidades del mismo lote que guardan catorce y tres en la misma sala están hablando de la antena de la segunda."}},
            {"id":"station_next","code":"FM-007","label":{"en":"Next station button","zh":"下一台按键"},
             "help":{"en":"Press it several times. The frequency must move to the next stored station each time, not scan endlessly.",
                     "zh":"连续按几次。每次应跳到下一个已存电台，而不是一直扫描。"}},
@@ -2877,6 +2889,20 @@ const T = {
   na_title:"Does not apply to this reference",
   na_test:"Does not apply", na_test_undo:"Does not apply · clear",
   chg_secs:"%n s",
+  assign_load:"Reading the assignment…",
+  assign_ok:"ASSIGNED BY HOKLAN",
+  assign_n:"%n test(s)",
+  assign_none:"There is no assignment published, or this phone could not reach it. It needs a connection once. To inspect the whole plan, type your usual test code.",
+  assign_ref:"The assignment names the reference %r, which is not in this catalogue. Ask HOKLAN to publish it again.",
+  assign_tests:"The assignment names no test this reference carries. Ask HOKLAN to publish it again.",
+  assign_gone:"%n test(s) in the assignment no longer exist in the plan and were left out.",
+  assign_cached:"Read from this phone's memory, not from the network: it may not be the latest one.",
+  assign_drop:"Drop the assignment",
+  origin_assigned:"INSPECTION REQUESTED BY HOKLAN",
+  assign_make:"CREATE ASSIGNMENT",
+  assign_file:"Publish this as asignacion.json, next to index.html. Nothing else changes, and index.html is not touched.",
+  assign_copy:"Copy", assign_copied:"Copied",
+  assign_code_is:"The inspector types %d",
   tests_na:"TESTS NOT APPLICABLE",
   tests_na_note:"Marked as not applicable because the reference does not have this function. They were not run, and nothing about them is being certified.",
   a_na_test:"Mark the whole test \"%s\" as N/A?\n\nEvery point in it is answered N/A, on every unit. The test still needs NEXT to be pressed.",
@@ -3046,6 +3072,20 @@ const T = {
   na_title:"No aplica a esta referencia",
   na_test:"No aplica", na_test_undo:"No aplica · quitar",
   chg_secs:"%n s",
+  assign_load:"Leyendo la asignación…",
+  assign_ok:"ASIGNACIÓN DE HOKLAN",
+  assign_n:"%n prueba(s)",
+  assign_none:"No hay asignación publicada, o este teléfono no pudo leerla. Necesita conexión una vez. Para inspeccionar el plan completo, escriba su código de prueba habitual.",
+  assign_ref:"La asignación nombra la referencia %r, que no está en este catálogo. Pida a HOKLAN que la publique de nuevo.",
+  assign_tests:"La asignación no nombra ninguna prueba que esta referencia lleve. Pida a HOKLAN que la publique de nuevo.",
+  assign_gone:"%n prueba(s) de la asignación ya no existen en el plan y quedaron fuera.",
+  assign_cached:"Leída de la memoria de este teléfono, no de la red: puede no ser la última.",
+  assign_drop:"Descartar la asignación",
+  origin_assigned:"INSPECCIÓN SOLICITADA POR HOKLAN",
+  assign_make:"CREAR ASIGNACIÓN",
+  assign_file:"Publique esto como asignacion.json, al lado de index.html. No cambia nada más, y no se toca index.html.",
+  assign_copy:"Copiar", assign_copied:"Copiado",
+  assign_code_is:"El inspector escribe %d",
   tests_na:"PRUEBAS NO APLICABLES",
   tests_na_note:"Marcadas como no aplicables porque la referencia no tiene esa función. No se ejecutaron, y sobre ellas no se certifica nada.",
   a_na_test:"¿Marcar toda la prueba \"%s\" como N/A?\n\nTodos sus puntos quedan respondidos N/A, en todas las unidades. La prueba sigue necesitando que pulse SIGUIENTE.",
@@ -3213,6 +3253,20 @@ const T = {
   na_title:"本型号不适用",
   na_test:"不适用", na_test_undo:"不适用 · 撤销",
   chg_secs:"%n 秒",
+  assign_load:"正在读取指派…",
+  assign_ok:"HOKLAN 指派",
+  assign_n:"%n 项测试",
+  assign_none:"尚未发布指派，或本机无法读取。首次读取需要联网。若要执行完整方案，请输入本厂的测试编号。",
+  assign_ref:"指派中的型号 %r 不在本目录内。请联系 HOKLAN 重新发布。",
+  assign_tests:"指派中没有本型号具备的测试项目。请联系 HOKLAN 重新发布。",
+  assign_gone:"指派中有 %n 项测试在当前方案中已不存在，已略去。",
+  assign_cached:"读取自本机存储而非网络：可能不是最新的指派。",
+  assign_drop:"放弃此指派",
+  origin_assigned:"HOKLAN 委托检验",
+  assign_make:"生成指派",
+  assign_file:"请将以下内容发布为 asignacion.json，与 index.html 同级。其余内容不变，index.html 无需改动。",
+  assign_copy:"复制", assign_copied:"已复制",
+  assign_code_is:"检验员输入 %d",
   tests_na:"不适用的测试项目",
   tests_na_note:"因本型号没有该功能而标记为不适用。这些项目未执行，本报告不对其作出任何判定。",
   a_na_test:"将整项测试“%s”标记为不适用？\n\n该测试的所有检查项在所有单位上都将记为不适用。仍需按“下一项”才算完成。",
@@ -3342,6 +3396,9 @@ const S = {
   // into the report, the spreadsheet and the file name, because the reader has to
   // know that the one who inspected is the one who built it.
   selfCheck:false,
+  // Run against a scope HOKLAN published and the factory typed in: neither a
+  // HOKLAN inspection nor a self-inspection, and the report says which.
+  assigned:false,
   units:1,       // how many speakers are on the bench
   data:[[]],     // data[speaker][testIndex] — every speaker's own answers
   // `finishedAt` is stamped when the inspection is closed, not when the report
@@ -3961,6 +4018,15 @@ function blank(i){
    and a global with the same name is a trap waiting for whoever reads this
    next. */
 const readingOf = (r, pointId) => ((r && r.values) || {})[pointId] || "";
+/* The unit as the operator reads it, and the unit as the spreadsheet stores it.
+   dB, g, cm and V are the same word everywhere and were written as plain
+   strings; "stations" is not, so a unit may also be an {en, zh, es} pair. The
+   screen and the report take the translation; the CSV column always takes the
+   English form, because that column is read by consolidate.py and by the
+   dashboard, and a value that changes with the phone's language would split one
+   measurement into three. */
+const unitText = m => (m && L(m.unit)) || "";
+const unitKey = m => (m && ((m.unit && m.unit.en) || m.unit)) || "";
 function setValue(u, pointId, text){
   const r = row(u);
   r.values = r.values || {};
@@ -4788,8 +4854,14 @@ ${banner}
   <tr><td class="k">${tr("scope")}</td><td class="v" colspan="3">${
     scope ? `<b class="f">${fmt("scope_part",{n:scope.n, tot:scope.tot})}</b>`
           : tr("scope_full")}</td></tr>
+  ${/* Three possible origins now, and they are three different acts. A HOKLAN
+        inspector at the factory; the factory checking its own product; and the
+        factory running a scope HOKLAN chose and published. The third one used
+        to print as "HOKLAN inspection", which is the inaccuracy we found in the
+        factory's own report. */""}
   <tr><td class="k">${tr("origin")}</td><td class="v" colspan="3">${
     S.selfCheck ? `<b class="f">${tr("origin_factory")}</b>`
+    : S.assigned ? `<b>${tr("origin_assigned")}</b>`
                 : tr("origin_hoklan")}</td></tr>
 </table>
 ${refImgForReport()?`<div class="ri"><img src="${refImgForReport()}" alt=""></div>`:""}
@@ -4969,7 +5041,7 @@ ${/* The origin is already stated as a field in the table above; the paragraph
         const rr = unitRows(u)[i];
         const v = rr ? readingOf(rr, p.id).trim() : "";
         if(!v) return;
-        reads.push({label:L(p.label), v, unit:p.measure.unit || "", u});
+        reads.push({label:L(p.label), v, unit:unitText(p.measure), u});
       });
     });
 
@@ -5327,7 +5399,8 @@ function reportCsv(){
   const base = [S.testId, S.model, S.po, S.operator,
                 inspectionDate(S.startedAt), finalVerdict(),
                 sc ? fmt("scope_part",{n:sc.n, tot:sc.tot}) : tr("scope_full"),
-                S.selfCheck ? tr("origin_factory") : tr("origin_hoklan")];
+                S.selfCheck ? tr("origin_factory")
+                  : S.assigned ? tr("origin_assigned") : tr("origin_hoklan")];
   const rows = [head];
 
   allUnits().forEach(u => {
@@ -5376,7 +5449,7 @@ function reportCsv(){
         t.id, p.id, key,
         L(t.label), section, L(p.label), result, code, desc,
         p.measure ? readingOf(r, p.id) : "",
-        p.measure ? (p.measure.unit || "") : "",
+        p.measure ? unitKey(p.measure) : "",
         shownNote, shownEn || "", photos
       ]));
     });
@@ -5795,6 +5868,96 @@ const poPrinted = () => (S.poLetter || "") + (S.po || "");
 
 const ADMIN_ID = {digits:"365", code:"365-H8Q2K7L4"};
 
+/* ---------- assignments ---------------------------------------------------
+   One permanent three-digit code that opens whatever HOKLAN decided the
+   factory should run. The code never changes. What changes is a small file
+   published next to the app, asignacion.json, naming the reference and the
+   tests.
+
+   Why a file and not something carried inside the code the operator types: the
+   selection has to travel from the phone that decided it to the phone that
+   will run it, and those two are in different countries with nothing between
+   them. The repository that already publishes this app is the only storage
+   both sides can reach, so it is the one used. The cost is worth saying out
+   loud rather than hiding: a new assignment means uploading a two-line file.
+
+   Tests are named, never numbered. A list of positions would quietly point at
+   different tests the day one is added to the plan; a list of ids either still
+   matches or is reported as missing, and reporting it is the whole point.
+--------------------------------------------------------------------------- */
+const ASSIGN_ID = {digits:"800", code:"800-T5N9R3W"};
+const ASSIGN_URL = "asignacion.json";
+const ASSIGN_CACHE = "hoklan_qc_assign";
+/* What was read and validated, and how the reading went. The state drives what
+   the start screen says: a code that reached nothing must not look like a code
+   that reached an empty assignment. */
+let ASSIGN = null;
+let ASSIGN_STATE = "";
+
+async function fetchAssignment(){
+  let raw = null, fromCache = false;
+  try{
+    const res = await fetch(ASSIGN_URL + "?nc=" + Date.now(), {cache:"no-store"});
+    if(res.ok){
+      const txt = await res.text();
+      // GitHub Pages answers a missing file with an HTML page and a 200, so
+      // what came back has to parse as JSON before it can be trusted.
+      raw = JSON.parse(txt);
+      try{ localStorage.setItem(ASSIGN_CACHE, txt); }catch(e){}
+    }
+  }catch(e){}
+  if(!raw){
+    // The last one read on this phone. A factory with the network down at eight
+    // in the morning still runs what it was given yesterday.
+    try{
+      raw = JSON.parse(localStorage.getItem(ASSIGN_CACHE) || "null");
+      fromCache = !!raw;
+    }catch(e){}
+  }
+  return raw ? Object.assign({}, raw, {fromCache}) : null;
+}
+
+/* Checked against the plan as it stands now, with the reference in place —
+   exactly the filter the inspection itself will apply. A test the reference
+   does not carry cannot be assigned to it, and a test that no longer exists is
+   named in the message instead of disappearing. */
+function validateAssignment(a){
+  if(!a || typeof a !== "object") return {err:"assign_none"};
+  const ref = String(a.ref || "");
+  if(!CONFIG.models[ref]) return {err:"assign_ref", ref};
+  const keepM = S.model, keepF = S.factory;
+  S.model = ref; S.factory = keyOfModel(ref);
+  const valid = planTests().map(t => t.id);
+  S.model = keepM; S.factory = keepF;
+  const want = Array.isArray(a.tests) ? a.tests.map(String) : [];
+  const ok = want.filter(id => valid.indexOf(id) >= 0);
+  if(!ok.length) return {err:"assign_tests", ref};
+  return {ref, tests:ok, gone: want.filter(id => valid.indexOf(id) < 0),
+          note:String(a.note || ""), issued:String(a.issued || ""),
+          fromCache:!!a.fromCache};
+}
+
+/* The reference and the test list arrive fixed. The order number and the
+   operator do not: those belong to whoever is standing at the bench, and the
+   factory has the order on the papers in front of it. */
+function applyAssignment(a){
+  S.model = a.ref;
+  S.factory = keyOfModel(a.ref);
+  S.idDigits = digitsOfKey(S.factory);
+  S.testId = S.idDigits ? CONFIG.test_ids[S.idDigits].code : "";
+  S.pick = a.tests.slice();
+  S.assigned = true;
+  S.fromAdmin = false;
+  S.selfCheck = false;
+  ASSIGN = a;
+}
+
+function clearAssignment(){
+  S.assigned = false; S.pick = null; ASSIGN = null; ASSIGN_STATE = "";
+  S.idDigits = ""; S.testId = ""; S.factory = ""; S.model = "";
+  render();
+}
+
 /* Factory accounts. Same door as the admin code, less behind it: each one only
    ever sees the references of its own factory, so a supplier cannot browse what
    another one makes or read another one's test ID. They exist so a factory can
@@ -6020,12 +6183,65 @@ function renderAdminPick(){
       <div class="units">${Array.from({length:MAX_UNITS},(_,i)=>
         `<button class="${S.units===i+1?"on":""}"
           onclick="setUnitsAdmin(${i+1})">${i+1}</button>`).join("")}</div>
-    </div>`;
+    </div>
+    ${canAssign() ? `
+    <div class="card">
+      <label style="margin-top:0">${tr("assign_make")}</label>
+      <p class="hint" style="margin:0 0 10px">${
+        fmt("assign_code_is",{d: ASSIGN_ID.digits})}</p>
+      <button onclick="showAssignFile()">${tr("assign_make")}</button>
+      <div id="asgfile" class="hidden">
+        <p class="hint" style="margin:12px 0 6px">${tr("assign_file")}</p>
+        <textarea id="asgtext" readonly rows="7"
+          style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px"
+          >${esc(assignJson())}</textarea>
+        <button id="asgcopy" onclick="copyAssign()">${tr("assign_copy")}</button>
+      </div>
+    </div>` : ""}`;
 
   actions.innerHTML = `
     <button style="flex:0 0 40%" onclick="goAdminTab()">${tr("back")}</button>
     <button class="primary" style="flex:4${picked.length?"":";opacity:.5"}"
       onclick="adminStart()">${tr("admin_start")}</button>`;
+}
+
+/* The same selection, sent instead of run. Only the full admin gets this: what
+   the factory should inspect is HOKLAN's decision, and a factory account
+   writing its own assignment would be deciding its own scope. */
+const canAssign = () => ADMIN_OK && !ADMIN_FACTORY;
+
+function assignJson(){
+  return JSON.stringify({
+    ref: S.model,
+    tests: (S.pick || []).slice(),
+    plan: plan().plan_version,
+    issued: inspectionDate().slice(0, 10),
+    note: ""
+  }, null, 1);
+}
+
+function showAssignFile(){
+  if(!(S.pick || []).length){ alert(tr("a_pick_tests")); return; }
+  const box = document.getElementById("asgfile");
+  if(box){ box.classList.remove("hidden"); box.scrollIntoView({block:"center"}); }
+}
+
+/* Clipboard first, selection as the fallback: the copy API needs a secure
+   context and a real tap, and when it is refused the operator still has to be
+   able to get the text out. Selecting it is what a phone offers next. */
+function copyAssign(){
+  const ta = document.getElementById("asgtext");
+  if(!ta) return;
+  const done = () => {
+    const b = document.getElementById("asgcopy");
+    if(b) b.textContent = tr("assign_copied");
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ta.value).then(done, () => { ta.select(); });
+    return;
+  }
+  ta.select();
+  try{ document.execCommand("copy"); done(); }catch(e){}
 }
 
 /* Never renders: the field would be rebuilt under the operator's fingers. */
@@ -6202,6 +6418,31 @@ function renderSetup(){
     ? `<div class="code ok">${esc(S.testId)}</div>`
     : bad ? `<div class="code bad">${tr("bad_id")}</div>` : "";
 
+  /* What the assignment code found, said in the place where the code was typed.
+     A network that answered nothing and an assignment that is empty are two
+     different problems and get two different messages: the first one is fixed
+     by finding signal, the second one by HOKLAN publishing the file. */
+  const assignBox = !ASSIGN_STATE ? "" :
+    ASSIGN_STATE === "load" ? `<div class="asg">${tr("assign_load")}</div>`
+  : ASSIGN_STATE === "assign_none" ? `<div class="asg bad">${tr("assign_none")}</div>`
+  : ASSIGN_STATE === "assign_ref" ? `<div class="asg bad">${
+      fmt("assign_ref",{r: (ASSIGN && ASSIGN.ref) || "—"})}</div>`
+  : ASSIGN_STATE === "assign_tests" ? `<div class="asg bad">${tr("assign_tests")}</div>`
+  : `<div class="asg ok">
+      <b>${tr("assign_ok")}</b>
+      <span>${esc(ASSIGN.ref)} · ${esc(S.testId)}</span>
+      <span>${fmt("assign_n",{n: ASSIGN.tests.length})}: ${
+        esc(ASSIGN.tests.map(id => {
+          const t = planTests().find(x => x.id === id);
+          return t ? L(t.label) : id;
+        }).join(", "))}</span>
+      ${ASSIGN.note ? `<span>${esc(ASSIGN.note)}</span>` : ""}
+      ${ASSIGN.gone && ASSIGN.gone.length
+        ? `<span class="w">${fmt("assign_gone",{n:ASSIGN.gone.length})}</span>` : ""}
+      ${ASSIGN.fromCache ? `<span class="w">${tr("assign_cached")}</span>` : ""}
+      <button class="jump" onclick="clearAssignment()">${tr("assign_drop")}</button>
+    </div>`;
+
   app.innerHTML = `
     ${langBar()}
     <h1>HOKLAN QC</h1>
@@ -6213,7 +6454,12 @@ function renderSetup(){
         class="${bad?"bad":""}"
         style="letter-spacing:6px;font-size:22px;text-align:center;font-weight:700">
       ${codeLine}
-      ${valid?`
+      ${assignBox}
+      ${/* An assigned inspection shows its reference, it does not offer a list:
+            choosing another one is exactly what the assignment exists to
+            prevent. Dropping the assignment is one tap away, and then the
+            normal flow comes back. */""}
+      ${S.assigned ? refImageRow(S.model) : valid?`
       <label>${tr("reference")}</label>
       <select id="model" onchange="setModel(this.value)">${models}</select>
       ${refImageRow(S.model)}`:""}
@@ -6297,6 +6543,24 @@ function setTestId(value){
     return;
   }
 
+  // The assignment code. Consumed like the admin one — the field is emptied, so
+  // it can never reach a report: what the report carries is the real test ID of
+  // the reference's factory, which is what the office searches by.
+  if(digits === ASSIGN_ID.digits){
+    S.idDigits = ""; S.testId = ""; S.factory = ""; S.model = "";
+    S.assigned = false; S.pick = null;
+    ASSIGN = null; ASSIGN_STATE = "load";
+    render();
+    fetchAssignment().then(raw => {
+      const a = validateAssignment(raw);
+      if(a.err){ ASSIGN_STATE = a.err; ASSIGN = a; render(); return; }
+      applyAssignment(a);
+      ASSIGN_STATE = "ok";
+      render(); save();
+    });
+    return;
+  }
+
   // A factory account: the same Admin screens, restricted to one factory.
   const fa = FACTORY_ADMINS[digits];
   if(fa){
@@ -6336,7 +6600,12 @@ function setTestId(value){
 
 function start(){
   const sel = document.getElementById("model");
-  S.model = sel ? sel.value : "";
+  // An assigned inspection has no reference selector on this screen — the
+  // reference arrived fixed, and reaching it from here is what the assignment
+  // exists to prevent. Reading a select that is not there used to blank the
+  // model and stop the inspection with "select the reference".
+  if(sel) S.model = sel.value;
+  else if(!S.assigned) S.model = "";
   S.po = document.getElementById("po").value.replace(/[^0-9]/g,"").trim();
   S.operator = document.getElementById("operator").value
     .replace(/[^\p{L}\p{M} .'’-]/gu,"").replace(/\s+/g," ").trim();
@@ -6347,8 +6616,10 @@ function start(){
   S.units = un ? Math.min(MAX_UNITS, Math.max(1, parseInt(un.value,10)||1)) : 1;
   // The factory flow always runs the whole plan: any selection left over from
   // an Admin session is dropped here, or a partial plan would leak into a
-  // normal inspection and report as if it were complete.
-  S.pick = null; S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
+  // normal inspection and report as if it were complete. An assignment is the
+  // one exception — its selection is the whole point, and it survives.
+  if(!S.assigned) S.pick = null;
+  S.fromAdmin = false; S.selfCheck = false; S.poLetter = "";
   S.index = 0; S.open = {};
   S.data = Array.from({length:S.units}, () => []);
   S.startedAt = Date.now(); S.finishedAt = null; S.screen = "test";
@@ -6363,6 +6634,11 @@ function start(){
 function goHomeReset(){
   S.idDigits = ""; S.testId = ""; S.factory = ""; S.model = "";
   S.po = ""; S.operator = ""; S.poLetter = "";
+  // The assignment goes with it: the next operator on this phone must type the
+  // code again and get whatever is published then, not what was published when
+  // somebody else opened the app this morning.
+  S.assigned = false; S.pick = null;
+  ASSIGN = null; ASSIGN_STATE = "";
 }
 
 /* ---------- erasing what the phone keeps ----------------------------------
@@ -6584,7 +6860,7 @@ function measureBox(p, u, id){
       value="${esc(val)}" placeholder="0${(p.measure.step||"1")==="1"?"":".0"}"
       oninput="setValue(${u},'${p.id}',this.value);markMeas('${id}',this.value)"
       autocomplete="off">
-    <b>${esc(p.measure.unit || "")}</b>
+    <b>${esc(unitText(p.measure))}</b>
   </div>`;
 }
 /* Repaints the box in place, since `oninput` cannot render. */
