@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="6.3">
+<meta name="app-version" content="6.4">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -105,6 +105,15 @@ button:active{transform:scale(.99)}
 /* Applied. Filled instead of outlined, so the state of the section can be read
    from the button itself and pressing it again is visibly an undo. */
 .na-sec.on{background:var(--amber);border-color:var(--amber);color:#2a2413;
+  font-weight:700}
+/* The same decision one level up: the whole test, marked from its own heading.
+   Inline with the title so it reads as part of it, and never wider than the
+   name it qualifies. */
+.na-test{width:auto;display:inline-block;vertical-align:middle;margin-left:10px;
+  padding:4px 10px;border-radius:8px;font-size:11.5px;letter-spacing:.5px;
+  background:#2a2413;border:1px solid #6b5320;color:var(--amber);
+  font-family:inherit;line-height:1.2}
+.na-test.on{background:var(--amber);border-color:var(--amber);color:#2a2413;
   font-weight:700}
 .grp-help{margin:0 14px 12px;padding:11px;border-radius:9px;background:#0d1f33;
   border:1px solid #24466b;color:#cfe0f2;font-size:14px;line-height:1.55}
@@ -417,7 +426,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "6.3";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "6.4";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -604,7 +613,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 18,
+      "plan_version": 19,
       "tests": [
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -928,8 +937,9 @@ const CONFIG = {
             "help":{"en":"Disconnect the iPhone first, then pair an Android. Both must work: it is common for a speaker to connect with one and fail with the other.",
                     "zh":"先断开 iPhone，再配对安卓手机。两者都必须正常：只连其中一种的情况很常见。"}},
            {"id":"name_match","code":"BT-012","label":{"en":"Bluetooth name matches the product","zh":"蓝牙名称与产品一致"},
-            "help":{"en":"Read the name exactly as the phone lists it and compare it with the logo on the grille, the logo on the panel and the model printed in the manual. All of them must say the same thing: a speaker sold as one model that announces itself as another is a defect the customer sees before switching it on. Photograph the phone's list if it does not match.",
-                    "zh":"按手机列表中显示的名称逐字读取，并与网罩标志、面板标志以及说明书上的型号对照。三者必须一致：以某型号出售却以另一个名称广播的音箱，客户开机之前就会发现。若不一致，请拍摄手机列表。"}},
+            "help":{"en":"Read the name exactly as the phone lists it and confirm it against the name printed in the user manual. They must say the same thing, character by character. The manual is the one source to check against: the logo on the grille and the logo on the panel can disagree with each other, and when they do there is no way to tell which one is right. A speaker sold as one model that announces itself as another is a defect the customer sees before switching it on. Photograph the phone's list if it does not match.",
+                    "zh":"按手机列表中显示的名称逐字读取，并与用户手册上印制的名称核对确认，两者必须逐字一致。以手册为唯一比对依据：网罩标志与面板标志之间也可能不一致，一旦不一致就无从判断哪个才是对的。以某型号出售却以另一个名称广播的音箱，客户开机之前就会发现。若不一致，请拍摄手机列表。",
+                    "es":"Lea el nombre tal como lo lista el teléfono y confírmelo contra el nombre que aparece en el manual de usuario. Deben decir lo mismo, carácter por carácter. El manual es la única fuente contra la cual comparar: el logo de la rejilla y el del panel pueden contradecirse entre sí, y cuando eso pasa no hay forma de saber cuál de los dos tiene razón. Un parlante que se vende como un modelo y se anuncia como otro es un defecto que el cliente ve antes de encenderlo. Fotografíe la lista del teléfono si no coincide."}},
            {"id":"autoconnect","code":"BT-008","label":{"en":"Reconnects automatically on power on","zh":"开机自动回连"},
             "help":{"en":"With the phone paired and nearby, switch the speaker off and on. It must reconnect by itself, without pairing again.",
                     "zh":"手机保持已配对且在附近，关机后再开机。音箱应自动回连，无需重新配对。"}},
@@ -2865,6 +2875,13 @@ const T = {
   a_resume:"There is an unfinished inspection.\n\nContinue where you left off?",
   a_lost:"\n\nNOTE: the photos did not fit in the browser's storage and were NOT kept. Your answers were. Retake the photos from the ☰ menu before generating the report.",
   na_title:"Does not apply to this reference",
+  na_test:"Does not apply", na_test_undo:"Does not apply · clear",
+  chg_secs:"%n s",
+  tests_na:"TESTS NOT APPLICABLE",
+  tests_na_note:"Marked as not applicable because the reference does not have this function. They were not run, and nothing about them is being certified.",
+  a_na_test:"Mark the whole test \"%s\" as N/A?\n\nEvery point in it is answered N/A, on every unit. The test still needs NEXT to be pressed.",
+  a_na_test_undo:"Undo the N/A on the test \"%s\"?\n\nEvery point goes back to unanswered, on every unit, and the test has to be run.",
+  na_test_on:"This test is marked as not applicable. Press NEXT to leave it that way, or clear it in the header to run it.",
   open_report:"VIEW REPORT / SAVE PDF",
   home:"HOME",
   a_home:"Go back to the start screen?\n\nThe current inspection will be discarded. Download the report first if you have not.",
@@ -3027,6 +3044,13 @@ const T = {
   a_resume:"Hay una inspección sin terminar.\n\n¿Continuar donde la dejó?",
   a_lost:"\n\nNOTA: las fotos no cupieron en el almacenamiento del navegador y NO se conservaron. Sus respuestas sí. Vuelva a tomar las fotos desde el menú ☰ antes de generar el informe.",
   na_title:"No aplica a esta referencia",
+  na_test:"No aplica", na_test_undo:"No aplica · quitar",
+  chg_secs:"%n s",
+  tests_na:"PRUEBAS NO APLICABLES",
+  tests_na_note:"Marcadas como no aplicables porque la referencia no tiene esa función. No se ejecutaron, y sobre ellas no se certifica nada.",
+  a_na_test:"¿Marcar toda la prueba \"%s\" como N/A?\n\nTodos sus puntos quedan respondidos N/A, en todas las unidades. La prueba sigue necesitando que pulse SIGUIENTE.",
+  a_na_test_undo:"¿Quitar el N/A de la prueba \"%s\"?\n\nTodos sus puntos vuelven a quedar sin responder, en todas las unidades, y hay que hacer la prueba.",
+  na_test_on:"Esta prueba está marcada como no aplicable. Pulse SIGUIENTE para dejarla así, o quítelo en la cabecera para realizarla.",
   open_report:"VER INFORME / GUARDAR PDF",
   home:"INICIO",
   a_home:"¿Volver a la pantalla inicial?\n\nLa inspección actual se descartará. Descargue el informe primero si aún no lo ha hecho.",
@@ -3187,6 +3211,13 @@ const T = {
   a_resume:"有一次未完成的检验。\n\n是否从上次中断处继续？",
   a_lost:"\n\n注意：照片超出浏览器存储上限，未能保存；回答已保留。生成报告前请从 ☰ 菜单重新拍照。",
   na_title:"本型号不适用",
+  na_test:"不适用", na_test_undo:"不适用 · 撤销",
+  chg_secs:"%n 秒",
+  tests_na:"不适用的测试项目",
+  tests_na_note:"因本型号没有该功能而标记为不适用。这些项目未执行，本报告不对其作出任何判定。",
+  a_na_test:"将整项测试“%s”标记为不适用？\n\n该测试的所有检查项在所有单位上都将记为不适用。仍需按“下一项”才算完成。",
+  a_na_test_undo:"撤销测试“%s”的不适用标记？\n\n所有检查项在所有单位上恢复为未作答，该测试需要实际执行。",
+  na_test_on:"本项测试已标记为不适用。按“下一项”即可保持该状态，或在标题处撤销以实际执行。",
   open_report:"查看报告 / 保存 PDF",
   home:"首页",
   a_home:"返回首页？\n\n当前检验记录将被清除。如果还没有下载报告，请先下载。",
@@ -3574,6 +3605,7 @@ function restore(){
       // and `r.points` from having to guard itself.
       S.data = allUnits().map(u => (S.data[u] || []).map(r => r && Object.assign(
         {media:[], points:{}, notes:{}, notesTr:{}, notesTrFor:{},
+         marked:{}, changes:{},
          comment:"", commentTr:{}, commentTrFor:{}}, r)));
 
       // A draft written before Admin existed has neither field. An empty pick
@@ -3958,9 +3990,33 @@ function row(u, i){
   return unit[idx] || (unit[idx] = blank(idx));
 }
 
+/* When each point was first answered, and every time it was changed afterwards.
+   Only changes made to a test that had already been closed are kept: inside an
+   open test, tapping PASS and then FAIL ten seconds later is not a correction,
+   it is the operator deciding. What deserves a line in the report is going back
+   with ‹ to a test that was already signed off and altering it — and how long
+   passed between the two, because a correction six minutes later and one three
+   days later are different events. */
+function noteChange(r, pointId, from, to){
+  r.marked = r.marked || {};
+  r.changes = r.changes || {};
+  const now = Date.now();
+  if(!r.verdict){
+    // Test still open: this is answering, not correcting. The first mark is
+    // remembered anyway — it is the clock the change will be measured from.
+    if(!r.marked[pointId] && to) r.marked[pointId] = now;
+    return;
+  }
+  if(!from || from === to) return;
+  (r.changes[pointId] = r.changes[pointId] || []).push({
+    from, to, at: now, was: r.marked[pointId] || null
+  });
+}
+
 function setPoint(u, pointId, value){
   const r = row(u);
   const next = (r.points[pointId] === value) ? null : value;
+  noteChange(r, pointId, r.points[pointId], next);
   r.points[pointId] = next;
 
   // Answering a point on the last speaker folds its instructions away: they
@@ -4213,19 +4269,36 @@ function advance(){
   ensureTranslations();
 }
 
-function skipTest(){
+/* A switch, and it does not advance. Marking a test as not applicable and being
+   thrown into the next one gave the operator no chance to see what had just
+   happened, and no way back. Now the header shows the state and the same button
+   clears it, so a test skipped by mistake costs one tap to recover. NEXT is
+   still pressed by hand, which is also what writes the verdict. */
+function toggleTestNA(){
   const t = current();
+  if(!t.optional) return;
+  const undo = allNA(t);
+  if(!confirm(fmt(undo ? "a_na_test_undo" : "a_na_test", {s: L(t.label)}))) return;
   allUnits().forEach(u => {
     const r = row(u);
-    r.verdict = "N/A";
     // Every point of a skipped test is N/A too. Without this the report showed
     // the test as N/A while the spreadsheet listed each of its points as
     // PENDING — the same test, two answers, in two documents that are supposed
     // to agree.
-    realPoints(t).forEach(p => { r.points[p.id] = "NA"; });
-    r.seconds = Math.round((Date.now()-r.startedAt)/1000);
+    realPoints(t).forEach(p => {
+      if(undo) delete r.points[p.id]; else r.points[p.id] = "NA";
+    });
+    if(undo){ r.verdict = null; r.code = null; r.failedPoints = []; }
+    else {
+      r.verdict = "N/A";
+      r.seconds = Math.round((Date.now() - r.startedAt) / 1000);
+    }
   });
-  advance();
+  // Hand the sections back to the automatic fold rule: closed when the test is
+  // N/A, open again the moment it stops being.
+  sectionsOf(t).forEach(s => { delete S.open[secKey(s.name)]; });
+  window.scrollTo(0, 0);
+  render(); save();
 }
 function prevTest(){
   if(S.index > 0){ S.index--; window.scrollTo(0,0); render(); save(); }
@@ -4375,6 +4448,51 @@ function buildFindings(){
    Photo sections document the shipment, not each unit: their pictures live on
    speaker 1 and their row carries one mark for the lot, said out loud rather
    than left looking like four missing answers. */
+/* Every correction recorded on one point, across every unit, in the order they
+   happened. A point that was answered once — which is nearly all of them —
+   returns an empty list and prints nothing. */
+function changesOf(testIndex, pointId){
+  const out = [];
+  allUnits().forEach(u => {
+    const r = unitRows(u)[testIndex];
+    const list = r && r.changes && r.changes[pointId];
+    if(list) list.forEach(c => out.push(Object.assign({unit:u}, c)));
+  });
+  return out.sort((a, b) => a.at - b.at);
+}
+const changeMark = (testIndex, pointId) =>
+  changesOf(testIndex, pointId).length ? `<span class="chg">⟳</span>` : "";
+
+/* How long the first answer stood before it was corrected. Minutes, because
+   nobody goes back inside of one, and hours once the inspection has been left
+   and picked up again. */
+function sinceText(from, to){
+  if(!from || !to || to < from) return "";
+  const mins = Math.round((to - from) / 60000);
+  if(mins < 1) return fmt("chg_secs",{n: Math.max(1, Math.round((to-from)/1000))});
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return h ? fmt("dur_hm",{h, m}) : fmt("dur_m",{m});
+}
+
+/* The line under the point, one per correction. The verdict is translated, the
+   clock is not: a report read in three languages has to show the same hour. */
+function changeLines(testIndex, pointId){
+  const list = changesOf(testIndex, pointId);
+  if(!list.length) return "";
+  const word = v => v === "PASS" ? tr("ok") : v === "FAIL" ? tr("fail")
+              : v === "NA" ? tr("na") : tr("pending");
+  return `<div class="chg-l">${list.map(c => {
+    const gap = sinceText(c.was, c.at);
+    return esc([
+      S.units > 1 ? fmt("speaker_n",{n: c.unit + 1}) : "",
+      word(c.from) + (c.was ? " " + clockOnly(c.was) : ""),
+      "→",
+      word(c.to) + " " + clockOnly(c.at),
+      gap ? "· " + gap : ""
+    ].filter(Boolean).join(" "));
+  }).join("<br>")}</div>`;
+}
+
 function pointsTable(b){
   const t = b.t;
   const secs = sectionsOf(t);
@@ -4408,7 +4526,8 @@ function pointsTable(b){
           cells += `<td class="c">${mark(r ? r.points[p.id] : "")}</td>`;
         }
       }
-      rows += `<tr><td>${esc(L(p.label))}</td>${cells}</tr>`;
+      rows += `<tr><td>${esc(L(p.label))}${changeMark(b.i, p.id)}${
+        changeLines(b.i, p.id)}</td>${cells}</tr>`;
     });
   });
   if(!rows) return "";
@@ -4537,6 +4656,15 @@ td.v{font-weight:400}
 .pts td.g{background:#fbfcfd;color:#5a6b7d;font-weight:700;font-size:7.5pt;
   letter-spacing:.4px}
 .pts-n{font-size:7.5pt;color:#8fa1b3;margin:0 0 6px;font-style:italic}
+/* An answer that was corrected after the test had already been closed. Amber,
+   not red: it is not a defect, it is a record of the inspector changing his
+   mind, and the reader has to be able to tell those two apart at a glance. */
+.chg{color:#b8860b;font-weight:700;margin-left:5px}
+.chg-l{font-size:7pt;color:#8a6a1f;margin-top:1px;line-height:1.35}
+.nal{margin:6px 0 4px}
+.nal td{padding:5px 8px;color:#5a6b7d}
+.nal td.nm{color:#0f3f6b;font-weight:700;width:180px}
+.na-note{font-size:8pt;color:#7a8a99;margin:2px 0 10px;font-style:italic}
 .ncidx{margin:6px 0 4px}
 .ncidx td{padding:5px 8px}
 .ncidx .r{width:34px;color:#e8720c;font-weight:700;text-align:center}
@@ -4924,8 +5052,16 @@ ${/* The origin is already stated as a field in the table above; the paragraph
 
   /* Only the tests that came out clean. The ones that failed are already in
      III and IV, with their evidence, and repeating them here made this section
-     a second copy of the summary table. */
-  const okV = blocksV.filter(b => b.verdict && b.verdict !== "FAIL");
+     a second copy of the summary table.
+
+     N/A is excluded too, and that was a real defect: the filter used to be
+     "anything that did not fail", so a test the reference cannot even perform
+     was printed under the heading TESTS PASSED. A speaker with no SD slot came
+     out of the inspection with its SD test certified. Not applicable is not a
+     result, and it now has a list of its own below. */
+  const okV = blocksV.filter(b =>
+    b.verdict && b.verdict !== "FAIL" && b.verdict !== "N/A");
+  const naV = blocksV.filter(b => b.verdict === "N/A");
 
   if(okV.length){
     h += `<div class="sec brk"><i>V</i><b>${tr("tests_ok")}</b></div>`;
@@ -5032,8 +5168,22 @@ ${/* The origin is already stated as a field in the table above; the paragraph
   }));
   if(vids.length) h += `<p class="note">${fmt("videos_n",{n:vids.length})}</p>`;
 
-  /* ---- VI CONCLUSION ---- */
-  h += `<div class="sec"><i>VI</i><b>${tr("conclusion")}</b></div>
+  /* ---- VI TESTS NOT APPLICABLE ----
+     A short list, on purpose: there is nothing to detail about a test that was
+     not run. What it has to answer is the question a reader of section II asks
+     — why does the plan have fourteen tests and the summary only twelve — and
+     it answers it without letting any of them borrow the word "passed". */
+  if(naV.length){
+    h += `<div class="sec"><i>VI</i><b>${tr("tests_na")}</b></div>
+      <p class="na-note">${tr("tests_na_note")}</p>
+      <table class="nal">${naV.map(b => `<tr>
+        <td class="nm">${esc(L(b.t.label))}</td>
+        <td>${b.note ? esc(b.note) : "—"}</td></tr>`).join("")}</table>`;
+  }
+
+  /* ---- CONCLUSION ---- */
+  h += `<div class="sec"><i>${naV.length ? "VII" : "VI"}</i><b>${
+    tr("conclusion")}</b></div>
     ${S.units>1?`<table style="margin-bottom:10px">
       <tr><th>${tr("speaker")}</th><th class="c" style="width:90px">${tr("th_result")}</th>
         <th style="width:180px">${tr("failures")}</th></tr>
@@ -6347,7 +6497,16 @@ function header(t, done, total){
     <div class="tag">${esc(S.testId)}</div><div class="tag">${esc(S.model)}</div>
     <div class="tag">${esc(inspectionDate(S.startedAt))}</div>
     <div class="bar"><i style="width:${(done/total*100).toFixed(0)}%"></i></div>
-    <h2>${done+1} / ${total} · ${esc(L(t.label))}</h2>
+    <h2>${done+1} / ${total} · ${esc(L(t.label))}${
+      /* The N/A of a whole test used to live at the foot of the screen, beside
+         NEXT, and pressing it jumped straight to the next test. Two problems in
+         one gesture: the operator could not see afterwards that the test had
+         been skipped, and there was no way back — undoing it meant answering
+         thirty-three points by hand. Here it sits with the name it applies to,
+         it says what it did, and it is a switch. */
+      t.optional ? `<button class="na-test${allNA(t) ? " on" : ""}"
+        onclick="toggleTestNA()">${
+        allNA(t) ? tr("na_test_undo") : tr("na_test")}</button>` : ""}</h2>
     <button class="jump" onclick="showIndex()">${tr("go_other")}</button>`;
 }
 
@@ -6623,7 +6782,7 @@ function renderTest(){
     ${done>0?`<button class="skip" style="flex:0 0 52px" onclick="prevTest()">‹</button>`:""}
     <button class="primary" id="btn-next" style="flex:4${ready?"":";opacity:.5"}" onclick="nextTest()">
       ${done+1===total?tr("finish"):tr("next")}</button>
-    ${t.optional?`<button class="skip" style="flex:0 0 66px" onclick="skipTest()">${tr("na")}</button>`:""}`;
+`;
 }
 
 /* Marking a whole section as N/A is a HOKLAN admin tool. It exists because a
@@ -6722,6 +6881,10 @@ function openFailCount(t){
 }
 
 function hintHtml(t){
+  // Said before anything else, because it explains why the checklist below is
+  // already full of N/A and how to get it back.
+  if(t.optional && allNA(t))
+    return `<b style="color:var(--amber)">${tr("na_test_on")}</b>`;
   const pending = pendingCount();
   if(pending) return fmt("remaining",{n:pending});
   const open = openFailCount(t);
@@ -6830,7 +6993,7 @@ function renderPhotoTest(t, r, done, total){
     <button class="primary" id="btn-next" style="flex:4${
       missing?";opacity:.5":""}" onclick="nextTest()">
       ${done+1===total?tr("finish"):tr("next")}</button>
-    ${t.optional?`<button class="skip" style="flex:0 0 66px" onclick="skipTest()">${tr("na")}</button>`:""}`;
+`;
 }
 
 function showIndex(){ S.screen = "index"; render(); }
