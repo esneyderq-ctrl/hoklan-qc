@@ -645,7 +645,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 25,
+      "plan_version": 26,
       "tests": [
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -2280,7 +2280,28 @@ const CONFIG = {
             "label":{"en":"Microphone — back","zh":"麦克风 — 背面","es":"Micrófono — atrás"},
             "help":{"en":"The back, with the charging connector and the label.",
                     "zh":"拍摄背面，需拍到充电接口和标签。",
-                    "es":"El respaldo, con el conector de carga y la etiqueta."}}]},
+                    "es":"El respaldo, con el conector de carga y la etiqueta."}},
+           {"id":"phi_label","code":"WMIC-020","photo":true,
+            "label":{"en":"Label on the underside","zh":"底部标签","es":"Etiqueta en la parte inferior"},
+            "help":{"en":"Turn the unit over and photograph the label underneath, close enough to read it. It is the one that carries the model and the batch, and the one nobody photographs because it is not on any face you look at.",
+                    "zh":"将产品翻过来，拍摄底部标签，距离足够近以便辨认内容。这张标签带有型号和批号，也正是最容易被漏拍的一张——因为它不在任何常看的面上。",
+                    "es":"Voltee la unidad y fotografíe la etiqueta de abajo, lo bastante cerca para leerla. Es la que lleva el modelo y el lote, y la que nadie fotografía porque no está en ninguna de las caras que uno mira."}},
+           {"id":"phi_battery","code":"WMIC-013","photo":true,
+            "label":{"en":"Battery — capacity visible","zh":"电池 — 容量可见","es":"Batería — capacidad a la vista"},
+            "help":{"en":"Photograph the battery with its printing readable: the capacity in mAh, the voltage and the maker. The capacity is the point — it is what a runtime complaint months later gets checked against, and a photograph of a wrapped cell with no printing proves nothing.",
+                    "zh":"拍摄电池，印字需清晰可读：容量（mAh）、电压和厂家。重点在容量——几个月后出现续航投诉时，正是拿它来核对；只拍到没有印字的电芯外观没有任何意义。",
+                    "es":"Fotografíe la batería con su impresión legible: la capacidad en mAh, el voltaje y el fabricante. La capacidad es lo que importa: es contra lo que se verifica un reclamo de duración meses después, y una foto de una celda envuelta sin impresión no prueba nada."}},
+           {"id":"phi_cable","code":"WMIC-016","photo":true,
+            "label":{"en":"Cable","zh":"线材","es":"Cable"},
+            "help":{"en":"Photograph the whole cable with both ends in the frame. A cable is judged by its ends: the wrong plug makes the kit useless on the customer's equipment.",
+                    "zh":"拍摄整条线材，两端接头都要入镜。线材的好坏看两端：插头规格不对，整套产品在客户的设备上就用不了。",
+                    "es":"Fotografíe el cable completo con los dos extremos en el cuadro. Un cable se juzga por sus puntas: un conector equivocado deja el juego inservible en el equipo del cliente."}},
+           {"id":"phi_cable_len","code":"WMIC-016","photo":true,
+            "measure":{"unit":"cm","step":"1"},
+            "label":{"en":"Cable — length","zh":"线材 — 长度","es":"Cable — medición"},
+            "help":{"en":"Stretch the cable out and measure it end to end, connectors included. Photograph the tape with both ends in the frame and write the value in the box. Length is the specification most often cut quietly between one order and the next: a cable thirty centimetres shorter still works on the bench and does not reach the mixer on stage.",
+                    "zh":"将线材拉直，连同接头从一端量到另一端。拍摄卷尺照片，两端都要入镜，并将数值填入方框。长度是最常在订单之间被悄悄缩短的规格：短了三十厘米的线在工位上照样能用，在台上却够不到调音台。",
+                    "es":"Estire el cable y mídalo de punta a punta, conectores incluidos. Fotografíe la cinta con los dos extremos en el cuadro y escriba el valor en el recuadro. El largo es la especificación que con más frecuencia se recorta en silencio de una orden a otra: un cable treinta centímetros más corto sigue funcionando en el puesto y no alcanza la consola en tarima."}}]},
 
         {"id":"PHI_LINK","plan":"PHI","optional":false,"evidence":[],
          "label":{"en":"CONNECTION TO THE RECEIVER","zh":"与接收器连接","es":"CONEXIÓN AL RECEPTOR"},
