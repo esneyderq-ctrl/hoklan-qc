@@ -645,7 +645,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 31,
+      "plan_version": 32,
       "tests": [
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -827,7 +827,10 @@ const CONFIG = {
                     "zh":"U 盘保持插入，关机后再开机。应自动回到 USB 模式并开始播放，无需按任何键。",
                     "es":"Con la memoria aún insertada, apague y encienda el parlante. Debe volver al modo USB y empezar a reproducir sin pulsar nada."}}]},
 
-        {"id":"SD","optional":true,"only_factory":["YIS","RHY","EAG"],
+        {/* RHYME's cabinets carry no SD slot, so the test is filtered out rather
+              than left for the inspector to mark N/A thirty times. */
+         "id":"SD","optional":true,"only_factory":["YIS","RHY","EAG"],
+         "skip_factory":["RHY"],
          "label":{"en":"SD CARD","zh":"SD 卡"},
          "steps":[
            {"en":"Insert the HOKLAN test SD card into the speaker","zh":"将 HOKLAN 测试 SD 卡插入音箱"},
@@ -1598,7 +1601,8 @@ const CONFIG = {
            {"id":"amp_back","label":{"en":"Amplifier — solder side","zh":"功放板 — 焊接面"},
             "help":{"en":"The solder side. Look for cold joints, flux residue, bridges or reworked areas.",
                     "zh":"拍摄焊接面。注意是否有虚焊、助焊剂残留、连锡或补焊痕迹。"}},
-           {"id":"bateria","label":{"en":"Battery","zh":"电池"},
+           {"id":"bateria","skip_factory":["RHY"],
+            "label":{"en":"Battery","zh":"电池"},
             "help":{"en":"Photograph the face that carries the specifications: voltage, capacity in mAh, chemistry and manufacturer. A photo of the wrapped battery without the label proves nothing.",
                     "zh":"拍摄带规格的一面：电压、容量（mAh）、电芯类型和生产厂家。只拍电池外观而看不到标签没有意义。"}},
            {"id":"antena_fm","label":{"en":"FM antenna position","zh":"收音天线位置"}}]},
@@ -3155,7 +3159,7 @@ const T = {
   all_done:"All points answered.", checks:"Checks",
   evidence:"Evidence", required:"— required", optional:"(optional)",
   photo:"Photo", video:"Video",
-  ask_video:"one continuous take, a minute or more, going through the points of this test in the order they appear above. Do not stop the recording between one point and the next: a single take is what proves they were all run on the same speaker, one after another. Frame the speaker and your hands, keep the display in shot when the point depends on it, and let each result be heard or seen before moving on.",
+  ask_video:"one continuous take, no cuts, going through the points in the order above. Frame the speaker, your hands and the display.",
   ask_photo:"the process and the tools used: USB drive, SD card, battery, cables, phone.",
   /* LESHENG builds microphones, and they are read by their LED rather than by a
      screen. Short on purpose: this line is read on a phone, standing up, with the
@@ -3170,8 +3174,8 @@ const T = {
   need_photo:"At least one photo is required, whether the test passes or fails.",
   need_point_photo:"This point needs its own photo, whether it passes or fails.",
   a_point_photos:"%n point(s) are still missing their photo.\n\nThese points are documented whether they pass or fail: the picture is the proof of what was on the display.",
-  need_video:"A video of the test being run is required, whether it passes or fails: one take covering the points above, not a fragment.",
-  need_both:"Both are required, whether the test passes or fails: at least one photo and one video of the test being run.",
+  need_video:"Video missing: one take covering the points above.",
+  need_both:"Photo and video of the test being run are missing.",
   notes:"Notes", notes_fail_ph:"What exactly happened? e.g. sound cuts out after 20 seconds",
   notes_ph:"Observations on this test",
   notes_en:"English", translating:"translating…",
@@ -3357,7 +3361,9 @@ const T = {
   all_done:"Todos los puntos respondidos.", checks:"Verificaciones",
   evidence:"Evidencia", required:"— obligatorio", optional:"(opcional)",
   photo:"Foto", video:"Video",
-  ask_video:"una sola toma continua, de un minuto o más, recorriendo los puntos de esta prueba en el orden en que aparecen arriba. No detenga la grabación entre un punto y el siguiente: la toma única es lo que demuestra que todos se ejecutaron sobre el mismo parlante, uno tras otro. Encuadre el parlante y sus manos, mantenga la pantalla a la vista cuando el punto dependa de ella, y deje que cada resultado se oiga o se vea antes de pasar al siguiente.",
+  /* Corto a propósito: se lee de pie, con el parlante delante. La versión larga
+     explicaba el porqué de cada regla y se saltaba entera. */
+  ask_video:"una sola toma continua, sin cortes, recorriendo los puntos en el orden de arriba. Encuadre el parlante, sus manos y la pantalla.",
   ask_photo:"el proceso y las herramientas usadas: memoria USB, tarjeta SD, batería, cables, teléfono.",
   ask_video_les:"una sola toma continua, sin cortes, recorriendo los puntos en el orden de arriba. Encuadre el micrófono, sus manos y el LED.",
   need_video_les:"Se requiere un video del micrófono, apruebe o falle: una toma que recorra los puntos de arriba.",
@@ -3369,8 +3375,8 @@ const T = {
   need_photo:"Se requiere al menos una foto, apruebe o falle la prueba.",
   need_point_photo:"Este punto necesita su propia foto, apruebe o falle.",
   a_point_photos:"Faltan %n punto(s) por fotografiar.\n\nEstos puntos se documentan aprueben o fallen: la foto es la prueba de lo que mostraba la pantalla.",
-  need_video:"Se requiere un video de la prueba en ejecución, apruebe o falle: una toma que recorra los puntos de arriba, no un fragmento.",
-  need_both:"Se requieren ambos, apruebe o falle la prueba: al menos una foto y un video de la prueba en ejecución.",
+  need_video:"Falta el video: una toma que recorra los puntos de arriba.",
+  need_both:"Faltan la foto y el video de la prueba en ejecución.",
   notes:"Observaciones", notes_fail_ph:"¿Qué pasó exactamente? Ej.: el sonido se corta a los 20 segundos",
   notes_ph:"Observaciones sobre esta prueba",
   notes_en:"Inglés", translating:"traduciendo…",
@@ -3549,7 +3555,7 @@ const T = {
   all_done:"所有项目已完成。", checks:"检查项",
   evidence:"证据照片", required:"— 必填", optional:"（选填）",
   photo:"拍照", video:"录像",
-  ask_video:"一段一分钟以上的连续视频，按上方顺序逐项演示本测试的各个检查项。中途不要停止录制：一镜到底才能证明所有项目是在同一台音箱上连续完成的。画面需拍到音箱和您的双手；检查项与屏幕显示有关时，屏幕要保持在画面内；每一项的结果听到或看到之后再进行下一项。",
+  ask_video:"一镜到底，中途不停，按上方顺序逐项演示。画面需拍到音箱、双手和屏幕。",
   ask_photo:"拍摄操作过程和所用工具：U 盘、SD 卡、电池、线材、手机。",
   ask_video_les:"一镜到底，中途不停，按上方顺序逐项演示。画面需拍到麦克风、双手和指示灯。",
   need_video_les:"无论合格与否，本项需一段麦克风的视频：一镜拍完上方各检查项。",
@@ -3561,8 +3567,8 @@ const T = {
   need_photo:"无论合格与否，本项至少需要一张照片。",
   need_point_photo:"无论合格与否，本检查项都需要单独拍照。",
   a_point_photos:"还有 %n 个检查项未拍照。\n\n这些项目无论合格与否都要留存照片：照片就是显示屏内容的证据。",
-  need_video:"无论合格与否，本项均需一段测试过程的视频：需为涵盖上方各检查项的连续录制，而非片段。",
-  need_both:"无论合格与否，本项均需至少一张照片和一段测试过程的视频。",
+  need_video:"缺少视频：需一镜拍完上方各检查项。",
+  need_both:"缺少测试过程的照片和视频。",
   notes:"备注", notes_fail_ph:"具体发生了什么？例如：播放 20 秒后声音中断",
   notes_ph:"关于本项测试的说明",
   notes_en:"英文", translating:"正在翻译……",
