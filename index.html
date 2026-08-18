@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="7.0">
+<meta name="app-version" content="7.1">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -449,7 +449,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "7.0";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "7.1";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -645,7 +645,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 28,
+      "plan_version": 30,
       "tests": [
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -2287,16 +2287,16 @@ const CONFIG = {
                     "zh":"将产品翻过来，拍摄底部标签，距离足够近以便辨认内容。这张标签带有型号和批号，也正是最容易被漏拍的一张——因为它不在任何常看的面上。",
                     "es":"Voltee la unidad y fotografíe la etiqueta de abajo, lo bastante cerca para leerla. Es la que lleva el modelo y el lote, y la que nadie fotografía porque no está en ninguna de las caras que uno mira."}},
            {"id":"phi_cable","code":"WMIC-016","photo":true,
-            "label":{"en":"Cable","zh":"线材","es":"Cable"},
-            "help":{"en":"Photograph the whole cable with both ends in the frame. A cable is judged by its ends: the wrong plug makes the kit useless on the customer's equipment.",
-                    "zh":"拍摄整条线材，两端接头都要入镜。线材的好坏看两端：插头规格不对，整套产品在客户的设备上就用不了。",
-                    "es":"Fotografíe el cable completo con los dos extremos en el cuadro. Un cable se juzga por sus puntas: un conector equivocado deja el juego inservible en el equipo del cliente."}},
+            "label":{"en":"Connectors","zh":"接头","es":"Conectores"},
+            "help":{"en":"Photograph both connectors of the cable, close enough to tell the size and the type. A cable is judged by its ends, not its middle: the wrong plug makes the kit useless on the customer's equipment, and it is the ends nobody looks at when the cable is coiled in the box.",
+                    "zh":"拍摄线材的两个接头，距离足够近以便辨认规格和类型。线材的好坏看两端而不是中段：插头不对，整套产品在客户的设备上就用不了，而线材盘在盒子里时，恰恰没有人会去看两端。",
+                    "es":"Fotografíe los dos conectores del cable, lo bastante cerca para distinguir la medida y el tipo. Un cable se juzga por sus puntas, no por su mitad: un conector equivocado deja el juego inservible en el equipo del cliente, y las puntas son justo lo que nadie mira cuando el cable viene enrollado en la caja."}},
            {"id":"phi_cable_len","code":"WMIC-016","photo":true,
             "measure":{"unit":"cm","step":"1"},
             "label":{"en":"Cable — length","zh":"线材 — 长度","es":"Cable — medición"},
-            "help":{"en":"Stretch the cable out and measure it end to end, connectors included. Photograph the tape with both ends in the frame and write the value in the box. Length is the specification most often cut quietly between one order and the next: a cable thirty centimetres shorter still works on the bench and does not reach the mixer on stage.",
-                    "zh":"将线材拉直，连同接头从一端量到另一端。拍摄卷尺照片，两端都要入镜，并将数值填入方框。长度是最常在订单之间被悄悄缩短的规格：短了三十厘米的线在工位上照样能用，在台上却够不到调音台。",
-                    "es":"Estire el cable y mídalo de punta a punta, conectores incluidos. Fotografíe la cinta con los dos extremos en el cuadro y escriba el valor en el recuadro. El largo es la especificación que con más frecuencia se recorta en silencio de una orden a otra: un cable treinta centímetros más corto sigue funcionando en el puesto y no alcanza la consola en tarima."}}]},
+            "help":{"en":"Stretch the cable out and measure it end to end, connectors included. Photograph the tape with both ends in the frame and write the value in the box.",
+                    "zh":"将线材拉直，连同接头从一端量到另一端。拍摄卷尺照片，两端都要入镜，并将数值填入方框。",
+                    "es":"Estire el cable y mídalo de punta a punta, conectores incluidos. Fotografíe la cinta con los dos extremos en el cuadro y escriba el valor en el recuadro."}}]},
 
         {"id":"PHI_LINK","plan":"PHI","optional":false,"evidence":["photo","video"],
          "label":{"en":"CONNECTION TO THE RECEIVER","zh":"与接收器连接","es":"CONEXIÓN AL RECEPTOR"},
@@ -2351,9 +2351,9 @@ const CONFIG = {
                     "es":"El mismo botón del símbolo de power. Vuelva a sostenerlo hasta que el LED muestre verde. El verde es la confirmación de que arrancó: un micrófono que enciende con otro color, o sin ninguno, no arrancó bien por más que después suene."}},
            {"id":"phi_vol_up","code":"WMIC-009",
             "label":{"en":"Button + — five presses to maximum","zh":"加号键 — 五次按至最大","es":"Botón + — cinco pulsaciones al máximo"},
-            "help":{"en":"The button marked with the plus symbol. Press it five times, in short presses, and listen. The sound must grow with each press. On reaching the top the green LED must blink red twice: that double blink is how this product says maximum, and it must arrive on the fifth press, not the third.",
-                    "zh":"带加号的按键。短按五次并注意听。每按一次声音都应变大。到达最大时，绿灯应红闪两次：这个双闪就是本产品表示已到最大的方式，且应出现在第五次而不是第三次。",
-                    "es":"El botón que tiene el símbolo más. Púlselo cinco veces, con pulsaciones cortas, y escuche. El sonido debe aumentar con cada pulsación. Al llegar al tope el LED verde debe parpadear en rojo dos veces: ese doble parpadeo es como este producto dice máximo, y debe llegar en la quinta pulsación, no en la tercera."}},
+            "help":{"en":"The button marked with the plus symbol. Press it five times, in short presses, and listen. The sound must grow with each press. On reaching the top the green LED must blink red twice.",
+                    "zh":"带加号的按键。短按五次并注意听。每按一次声音都应变大。到达最大时，绿灯应红闪两次。",
+                    "es":"El botón que tiene el símbolo más. Púlselo cinco veces, con pulsaciones cortas, y escuche. El sonido debe aumentar con cada pulsación. Al llegar al tope el LED verde debe parpadear en rojo dos veces."}},
            {"id":"phi_vol_down","code":"WMIC-009",
             "label":{"en":"Button − — five presses to minimum","zh":"减号键 — 五次按至最小","es":"Botón − — cinco pulsaciones al mínimo"},
             "help":{"en":"The button marked with the minus symbol. Press it five times, in short presses. The LED must blink red once on each press, and the sound must drop each time. At the minimum it must blink red twice, the same double blink that marks the other end of the range.",
@@ -2376,7 +2376,7 @@ const CONFIG = {
                     "zh":"关闭麦克风并观察接收模块。应在几秒内开始红灯闪烁。麦克风已关闭而模块没有转为红灯，会让客户以为系统正常，而实际上并非如此。",
                     "es":"Apague el micrófono y mire el módulo receptor. Debe empezar a parpadear en rojo en pocos segundos. Un módulo que no se pone en rojo sin micrófono encendido le está diciendo al cliente que el sistema funciona cuando no es así."}}]},
 
-        {"id":"PHI_CHARGE","plan":"PHI","optional":false,"evidence":["video"],
+        {"id":"PHI_CHARGE","plan":"PHI","optional":false,"evidence":[],
          "label":{"en":"MICROPHONE CHARGING","zh":"麦克风充电","es":"CARGA DEL MICRÓFONO"},
          "steps":[
            {"en":"Connect the microphone to the charger","zh":"将麦克风接上充电器","es":"Conecte el micrófono al cargador"},
@@ -2392,11 +2392,9 @@ const CONFIG = {
             "help":{"en":"Connect the charger and photograph the lit LED. It must be red, and it must come on within a few seconds of plugging in.",
                     "zh":"接上充电器并拍摄亮起的指示灯。应为红色，且应在接上后几秒内亮起。",
                     "es":"Conecte el cargador y fotografíe el LED encendido. Debe ser rojo, y debe encender pocos segundos después de conectar."}},
-           {"id":"phi_chg_green","code":"LED-002","photo":true,
-            "label":{"en":"LED green when disconnected","zh":"断开后指示灯为绿色","es":"LED en verde al desconectar"},
-            "help":{"en":"Unplug the charger and photograph the LED again. It must change to green. An indicator that stays red with nothing connected is reporting a charge that is not happening.",
-                    "zh":"拔掉充电器并再次拍摄指示灯。应变为绿色。未接任何线却仍显示红色的指示灯，是在报告一个并不存在的充电状态。",
-                    "es":"Desconecte el cargador y vuelva a fotografiar el LED. Debe cambiar a verde. Un indicador que sigue en rojo sin nada conectado está informando una carga que no está ocurriendo."}}]},
+           /* The point about the LED turning green on unplugging was removed at
+              HOKLAN's request. The charging colour above still covers whether the
+              indicator works at all. */]},
 
         {"id":"PHI_RECONNECT","plan":"PHI","optional":false,"evidence":["video"],
          "label":{"en":"AUTOMATIC RECONNECTION","zh":"自动重连","es":"RECONEXIÓN AUTOMÁTICA"},
@@ -2451,10 +2449,10 @@ const CONFIG = {
                     "es":"Se deja de última porque es la única prueba que necesita un corredor. Todo lo demás se hace en el puesto, y el montaje se puede desarmar apenas termine esta."}},
            {"id":"phi_range","code":"WMIC-007","photo":true,
             "measure":{"unit":"m","step":"1"},
-            "label":{"en":"Range at which the audio still holds","zh":"音频仍稳定的最远距离","es":"Alcance al que el audio se mantiene"},
-            "help":{"en":"Walk away speaking continuously and in a straight line, without walls in between, until the sound starts breaking up or the LED goes back to blinking. Write down the last distance where it was still clean, not the one where it failed. Photograph the point you reached with the tape or the marks on the floor visible: the number is what makes one unit comparable with the next, and a number nobody can check is worth as much as no number.",
-                    "zh":"一边持续讲话一边直线走远，中间不隔墙体，直到声音开始断续或指示灯重新闪烁。记录声音仍然干净的最后一个距离，而不是出现异常的那个距离。拍摄所到达位置的照片，需拍到卷尺或地面标记：只有这个数值才能让不同整机之间可以比较，而无法核对的数值等于没有数值。",
-                    "es":"Aléjese hablando de forma continua y en línea recta, sin paredes de por medio, hasta que el sonido empiece a cortarse o el LED vuelva a parpadear. Anote la última distancia en la que se oía limpio, no aquella en la que falló. Fotografíe el punto al que llegó con la cinta o las marcas del piso a la vista: el número es lo que hace comparable una unidad con la siguiente, y un número que nadie puede verificar vale lo mismo que ningún número."}}]},
+            "label":{"en":"Range over 20 metres","zh":"有效距离超过 20 米","es":"Alcance mayor a 20 metros"},
+            "help":{"en":"Walk away speaking continuously and in a straight line, without walls in between, until the sound starts breaking up or the LED goes back to blinking. The last distance where it was still clean must be more than 20 metres — that figure is the criterion, and anything at or below it fails. Write that distance in the box, not the one where it failed, and photograph the point you reached with the tape or the marks on the floor visible.",
+                    "zh":"一边持续讲话一边直线走远，中间不隔墙体，直到声音开始断续或指示灯重新闪烁。声音仍然干净的最后一个距离必须大于 20 米——这个数字就是判定标准，等于或小于即判定为异常。将该距离填入方框（不是出现异常的那个距离），并拍摄所到达位置的照片，需拍到卷尺或地面标记。",
+                    "es":"Aléjese hablando de forma continua y en línea recta, sin paredes de por medio, hasta que el sonido empiece a cortarse o el LED vuelva a parpadear. La última distancia en la que se oía limpio debe ser mayor a 20 metros: esa cifra es el criterio, y cualquier valor igual o menor falla. Escriba esa distancia en el recuadro, no aquella en la que falló, y fotografíe el punto al que llegó con la cinta o las marcas del piso a la vista."}}]},
 
         /* Last, because it is the only test that opens the product. Everything
            that can be judged with it closed has already been judged, and a unit
@@ -2475,10 +2473,10 @@ const CONFIG = {
                     "zh":"四张照片，不作判定。这里不问合格与否：办公室需要的是记录，以便几个月后出现故障时，能追溯到这台机器内部实际装的是什么。",
                     "es":"Cuatro fotos y ningún juicio. Aquí no se pregunta si aprueba o falla: lo que la oficina necesita es el registro, para que una falla reportada meses después se pueda rastrear hasta lo que realmente traía esta unidad por dentro."}},
            {"id":"phi_battery","code":"WMIC-013","photo":true,
-            "label":{"en":"Battery — capacity visible","zh":"电池 — 容量可见","es":"Batería — capacidad a la vista"},
-            "help":{"en":"Photograph the battery with its printing readable: the capacity in mAh, the voltage and the maker. The capacity is the point — it is what a runtime complaint months later gets checked against, and a photograph of a wrapped cell with no printing proves nothing.",
-                    "zh":"拍摄电池，印字需清晰可读：容量（mAh）、电压和厂家。重点在容量——几个月后出现续航投诉时，正是拿它来核对；只拍到没有印字的电芯外观没有任何意义。",
-                    "es":"Fotografíe la batería con su impresión legible: la capacidad en mAh, el voltaje y el fabricante. La capacidad es lo que importa: es contra lo que se verifica un reclamo de duración meses después, y una foto de una celda envuelta sin impresión no prueba nada."}},
+            "label":{"en":"Battery — capacity 500 mAh","zh":"电池 — 容量 500 mAh","es":"Batería — capacidad 500 mAh"},
+            "help":{"en":"Photograph the battery with its printing readable and check the capacity against the specification: it must say 500 mAh. A cell of a different capacity is a fail even if the microphone works on the bench — what changes is how long it lasts at the event, which is not something this inspection can measure. A photograph of a wrapped cell with no printing proves nothing.",
+                    "zh":"拍摄电池，印字需清晰可读，并与规格核对容量：应标称 500 mAh。容量不符的电芯即判定为异常，即使麦克风在工位上正常工作——变化的是演出时能撑多久，而这不是本次检验能测出来的。只拍到没有印字的电芯外观没有任何意义。",
+                    "es":"Fotografíe la batería con su impresión legible y contraste la capacidad con la especificación: debe decir 500 mAh. Una celda de otra capacidad es un fallo aunque el micrófono funcione en el puesto — lo que cambia es cuánto dura en el evento, y eso esta inspección no lo puede medir. Una foto de una celda envuelta sin impresión no prueba nada."}},
            {"id":"phi_pcb_front","code":"WMIC-019","photo":true,
             "label":{"en":"Board — component side","zh":"电路板 — 元件面","es":"Tarjeta — frente"},
             "help":{"en":"The side carrying the chips. The board reference and the main IC markings must be readable in the photograph: that is what says which board this is, and whether it is the one that was approved.",
@@ -3184,6 +3182,8 @@ const T = {
   too_big:"The report is very large. If the phone struggles to generate it, delete duplicate photos from the ☰ menu.",
   download:"⬇ DOWNLOAD",
   save_pdf_dl:"⬇ SAVE AS PDF",
+  save_report_dl:"⬇ DOWNLOAD REPORT",
+  saved_report:"Report downloaded: %f — the same document that travels inside the ZIP. Open it and print it if a PDF is needed.",
   pdf_wait:"Preparing the report…",
   save_pdf:"SAVE AS PDF", back:"BACK",
   review:"☰ Review or correct a test",
@@ -3379,6 +3379,8 @@ const T = {
   too_big:"El informe es muy grande. Si el teléfono se atasca al generarlo, elimine fotos duplicadas desde el menú ☰.",
   download:"⬇ DESCARGAR",
   save_pdf_dl:"⬇ GUARDAR COMO PDF",
+  save_report_dl:"⬇ DESCARGAR INFORME",
+  saved_report:"Informe descargado: %f — el mismo documento que va dentro del ZIP. Ábralo e imprímalo si necesita el PDF.",
   pdf_wait:"Preparando el informe…",
   save_pdf:"GUARDAR COMO PDF", back:"ATRÁS",
   review:"☰ Revisar o corregir una prueba",
@@ -3567,6 +3569,8 @@ const T = {
   too_big:"报告文件很大。如果手机生成时卡顿，请从 ☰ 菜单删除重复照片。",
   download:"⬇ 下载",
   save_pdf_dl:"⬇ 保存为 PDF",
+  save_report_dl:"⬇ 下载报告",
+  saved_report:"报告已下载：%f — 与压缩包内的文件完全相同。如需 PDF，打开该文件后打印即可。",
   pdf_wait:"正在准备报告……",
   save_pdf:"另存为 PDF", back:"返回",
   review:"☰ 检查或修改某项测试",
@@ -5732,7 +5736,23 @@ function dropPrintFrame(){
   PRINT_FRAME = null;
 }
 
+/* One tap, one file. The button used to open the print dialog, which is the only
+   way a browser can write a real PDF — and on a factory phone that dialog is the
+   step where the whole thing falls over: it is slow, it looks nothing like the
+   rest of the app, and on some in-app browsers it does nothing at all.
+
+   What comes down instead is the report itself, byte for byte the same document
+   that travels as REPORT_ES.html inside the ZIP, built from the same function in
+   the same language. Whoever needs a PDF opens that file and prints it, once,
+   on a computer — which is where a signed PDF is wanted anyway. */
 async function savePdfNow(){
+  showSaved(tr("pdf_wait"));
+  try{ await Promise.all([ensureTranslations(), ensureRefImg()]); }catch(e){}
+  saveBlob(new Blob([reportHtml()], {type:"text/html;charset=utf-8"}), fileName());
+  showSaved(fmt("saved_report",{f: fileName()}));
+}
+
+async function printPdfDialog(){
   showSaved(tr("pdf_wait"));
   try{ await Promise.all([ensureTranslations(), ensureRefImg()]); }catch(e){}
 
@@ -7625,9 +7645,13 @@ function renderTest(){
           ? ` <b style="color:var(--amber)">${tr("required")}</b>`
           : naTest ? "" : ` <b style="color:var(--green)">✓</b>`}</li>`:""}
       </ul>` : `<p class="hint" style="margin:0 0 8px">${tr("ev_free")}</p>`}
+      ${/* Only the buttons this test actually asks for. A camera button on a test
+            that wants a clip is an invitation to answer the wrong way, and the
+            operator who takes it leaves the evidence card still demanding the
+            video he thought he had just provided. */""}
       <div class="row">
-        <button onclick="document.getElementById('cam').click()">📷 ${tr("photo")}</button>
-        <button onclick="document.getElementById('vid').click()">🎥 ${tr("video")}</button>
+        ${want.photo?`<button onclick="document.getElementById('cam').click()">📷 ${tr("photo")}</button>`:""}
+        ${want.video?`<button onclick="document.getElementById('vid').click()">🎥 ${tr("video")}</button>`:""}
       </div>
       <input id="cam" class="hidden" type="file" accept="image/*" capture="environment" multiple onchange="addMedia(this,0)">
       <input id="vid" class="hidden" type="file" accept="video/*" capture="environment" multiple onchange="addMedia(this,0)">
@@ -8038,7 +8062,7 @@ function renderDone(){
     </div>`;
 
   actions.innerHTML = `
-    <button class="primary" onclick="savePdfNow()">${tr("save_pdf_dl")}</button>
+    <button class="primary" onclick="savePdfNow()">${tr("save_report_dl")}</button>
     <button style="flex:0 0 44%" onclick="downloadPacket()">${tr("download")}</button>`;
 }
 
