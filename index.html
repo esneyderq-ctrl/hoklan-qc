@@ -645,7 +645,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 30,
+      "plan_version": 31,
       "tests": [
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -2483,10 +2483,10 @@ const CONFIG = {
                     "zh":"拍摄有芯片的一面。板号和主要芯片丝印必须在照片中清晰可读：这才能说明这是哪一版板子，以及是否为承认过的那一版。",
                     "es":"La cara que lleva los chips. El número de tarjeta y las marcas del circuito principal deben quedar legibles en la foto: es lo que dice cuál tarjeta es esta, y si es la que se aprobó."}},
            {"id":"phi_pcb_back","code":"WMIC-019","photo":true,
-            "label":{"en":"Board — solder side","zh":"电路板 — 焊接面","es":"Tarjeta — atrás"},
-            "help":{"en":"The solder side. Both faces are asked for because a reworked joint or a bridge only shows from behind, and that is what a board repaired on the line looks like.",
-                    "zh":"拍摄焊接面。两面都要拍，是因为补焊或连锡只有从背面才看得到，而产线上返修过的板子就是这个样子。",
-                    "es":"La cara de soldadura. Se piden las dos caras porque una soldadura retocada o un puente solo se ven por detrás, y así es como se ve una tarjeta reparada en la línea."}},
+            "label":{"en":"Board — back","zh":"电路板 — 背面","es":"Tarjeta — atrás"},
+            "help":{"en":"The back of the board. Both faces are asked for because what is behind does not show in the photograph of the front.",
+                    "zh":"拍摄电路板背面。两面都要拍，是因为背面的情况在正面照片里看不到。",
+                    "es":"La cara posterior de la tarjeta. Se piden las dos caras porque lo que hay detrás no se ve en la foto del frente."}},
            {"id":"phi_transducer","code":"WMIC-019","photo":true,
             "label":{"en":"Transducer","zh":"换能器","es":"Transductor"},
             "help":{"en":"Photograph the capsule with its markings visible. It is the part that decides how the microphone sounds, the cheapest one to substitute quietly, and the one no external photograph can show.",
@@ -3157,6 +3157,11 @@ const T = {
   photo:"Photo", video:"Video",
   ask_video:"one continuous take, a minute or more, going through the points of this test in the order they appear above. Do not stop the recording between one point and the next: a single take is what proves they were all run on the same speaker, one after another. Frame the speaker and your hands, keep the display in shot when the point depends on it, and let each result be heard or seen before moving on.",
   ask_photo:"the process and the tools used: USB drive, SD card, battery, cables, phone.",
+  /* LESHENG builds microphones, and they are read by their LED rather than by a
+     screen. Short on purpose: this line is read on a phone, standing up, with the
+     unit already in hand — the long version was skipped. */
+  ask_video_les:"one continuous take, no cuts, going through the points in the order above. Frame the microphone, your hands and the LED.",
+  need_video_les:"A video of the microphone is required, pass or fail: one take covering the points above.",
   po_ph:"Order number this shipment belongs to",
   operator_ph:"Who is running the inspection", next_po:"Order no. %p · %o",
   measured:"Reading", a_values:"%n reading(s) still to be written down.\n\nThe photo of the instrument is not enough on its own: the number is what can be compared between one unit and the next.",
@@ -3354,6 +3359,8 @@ const T = {
   photo:"Foto", video:"Video",
   ask_video:"una sola toma continua, de un minuto o más, recorriendo los puntos de esta prueba en el orden en que aparecen arriba. No detenga la grabación entre un punto y el siguiente: la toma única es lo que demuestra que todos se ejecutaron sobre el mismo parlante, uno tras otro. Encuadre el parlante y sus manos, mantenga la pantalla a la vista cuando el punto dependa de ella, y deje que cada resultado se oiga o se vea antes de pasar al siguiente.",
   ask_photo:"el proceso y las herramientas usadas: memoria USB, tarjeta SD, batería, cables, teléfono.",
+  ask_video_les:"una sola toma continua, sin cortes, recorriendo los puntos en el orden de arriba. Encuadre el micrófono, sus manos y el LED.",
+  need_video_les:"Se requiere un video del micrófono, apruebe o falle: una toma que recorra los puntos de arriba.",
   po_ph:"Número de orden al que pertenece el despacho",
   operator_ph:"Quién ejecuta la inspección", next_po:"OC %p · %o",
   measured:"Medición", a_values:"Faltan %n medición(es) por registrar.\n\nLa foto del instrumento no basta por sí sola: el número es lo que se puede comparar de una unidad a otra.",
@@ -3544,6 +3551,8 @@ const T = {
   photo:"拍照", video:"录像",
   ask_video:"一段一分钟以上的连续视频，按上方顺序逐项演示本测试的各个检查项。中途不要停止录制：一镜到底才能证明所有项目是在同一台音箱上连续完成的。画面需拍到音箱和您的双手；检查项与屏幕显示有关时，屏幕要保持在画面内；每一项的结果听到或看到之后再进行下一项。",
   ask_photo:"拍摄操作过程和所用工具：U 盘、SD 卡、电池、线材、手机。",
+  ask_video_les:"一镜到底，中途不停，按上方顺序逐项演示。画面需拍到麦克风、双手和指示灯。",
+  need_video_les:"无论合格与否，本项需一段麦克风的视频：一镜拍完上方各检查项。",
   po_ph:"本批货所属的订单号",
   operator_ph:"由谁执行本次检验", next_po:"订单号 %p · %o",
   measured:"实测值", a_values:"还有 %n 项实测值未填写。\n\n仅有仪器照片还不够：只有数值才能在不同整机之间进行比较。",
@@ -4830,11 +4839,16 @@ function fileName(){
   const clean = s => String(s||"").replace(/[^A-Za-z0-9._-]+/g,"-");
   // A partial inspection says so in its own file name. Six months later nobody
   // opens the report to find out why it only covers two tests.
-  const part = partialScope() ? "_PARTIAL" : "";
+  const part = partialScope() ? "PARTIAL" : "";
   // Same reasoning as _PARTIAL: what the file is has to survive being forwarded
   // on its own, and a self-inspection is a different kind of document.
-  const self = S.selfCheck ? "_FACTORY" : "";
-  return `QC_${clean(S.testId)}_${clean(S.model)}${part}${self}_${stamp()}.html`;
+  const self = S.selfCheck ? "FACTORY" : "";
+  /* Built from the parts that exist, not by pasting fixed separators. A missing
+     test ID used to leave QC__HK-PHI — two underscores where a code should be,
+     which reads as a corrupt file name rather than as the missing field it is.
+     Anything empty simply drops out and the rest still joins cleanly. */
+  return "QC_" + [clean(S.testId), clean(S.model), part, self, stamp()]
+    .filter(Boolean).join("_") + ".html";
 }
 function stamp(){
   const d = new Date(), p = n => String(n).padStart(2,"0");
