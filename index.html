@@ -645,7 +645,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 32,
+      "plan_version": 33,
       "tests": [
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -1271,7 +1271,7 @@ const CONFIG = {
          "steps":[
            {"en":"Switch the speaker on and let the display settle","zh":"开机并等待显示屏稳定"},
            {"en":"Check the colour of the characters against the specification","zh":"对照规格确认字符颜色"},
-           {"en":"Step through USB, Bluetooth, SD and radio","zh":"依次切换 USB、蓝牙、SD 和收音"},
+           {"en":"Step through every mode this reference has","zh":"依次切换本型号具备的所有模式"},
            {"en":"Photograph the display on each mode, close and square","zh":"每个模式都要正对近距离拍摄显示屏"},
            {"en":"Read each word letter by letter before judging it","zh":"逐字母阅读每个词后再判定"}],
          "points":[
@@ -1289,7 +1289,11 @@ const CONFIG = {
             "label":{"en":"Bluetooth — text correct on the display","zh":"蓝牙 — 屏显文字正确"},
             "help":{"en":"Select Bluetooth mode and read what the display shows, letter by letter. Photograph it. Whether it says BLUETOOTH, BT or BLUE, it must be spelled the way the specification requires.",
                     "zh":"切换到蓝牙模式，逐字母阅读显示内容并拍照。无论显示 BLUETOOTH、BT 还是 BLUE，都必须与规格要求的写法一致。"}},
-           {"id":"word_sd","code":"DSP-007","photo":true,
+           {/* No SD slot on a RHYME cabinet, so no SD word to read on its
+                display and no SD key to press on its remote. Filtered out with
+                the test itself rather than left as an N/A the inspector has to
+                answer on every unit. */
+            "id":"word_sd","code":"DSP-007","photo":true,"skip_factory":["RHY"],
             "label":{"en":"SD — text correct on the display","zh":"SD — 屏显文字正确"},
             "help":{"en":"With the card inserted, select SD mode, read the display and photograph it. Mark N/A if this reference has no SD slot.",
                     "zh":"插入 SD 卡后切换到 SD 模式，阅读显示内容并拍照。本型号没有 SD 卡槽时标记为“不适用”。"}},
@@ -1327,7 +1331,8 @@ const CONFIG = {
            {"id":"src_bt","code":"RMT-005","label":{"en":"BLUETOOTH","zh":"蓝牙"},
             "help":{"en":"Press it from another source. The speaker must switch to Bluetooth and become discoverable or reconnect to the phone.",
                     "zh":"在其他音源下按此键，音箱应切到蓝牙并可被搜索或自动回连手机。"}},
-           {"id":"src_sd","code":"RMT-006","label":{"en":"SD","zh":"SD 卡"},
+           {"id":"src_sd","code":"RMT-006","skip_factory":["RHY"],
+            "label":{"en":"SD","zh":"SD 卡"},
             "help":{"en":"With the card inserted, press it from another source. Mark N/A if this reference has no SD slot.",
                     "zh":"插着 SD 卡时从其他音源按此键。本型号没有 SD 卡槽时标记为“不适用”。"}},
            {"id":"src_aux","code":"RMT-007","label":{"en":"AUX","zh":"AUX"},
@@ -2777,7 +2782,7 @@ const ES_PLAN = {
   /* Steps and points of the display test */
   "Switch the speaker on and let the display settle":"Encienda el parlante y deje que la pantalla se estabilice",
   "Check the colour of the characters against the specification":"Verifique el color de los caracteres contra la especificación",
-  "Step through USB, Bluetooth, SD and radio":"Recorra USB, Bluetooth, SD y radio",
+  "Step through every mode this reference has":"Recorra todos los modos que tenga esta referencia",
   "Photograph the display on each mode, close and square":"Fotografíe la pantalla en cada modo, de cerca y de frente",
   "Read each word letter by letter before judging it":"Lea cada palabra letra por letra antes de calificarla",
   "Characters are white":"Los caracteres son blancos",
