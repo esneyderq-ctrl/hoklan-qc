@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="7.3">
+<meta name="app-version" content="7.4">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -3551,6 +3551,7 @@ const T = {
   dur_hms:"%h h %m min %s s", dur_ms:"%m min %s s", dur_s:"%s s",
   test_time_note:"The time is how long the inspector had the test open in the app, from start to finish.",
   browser_hint_t:"Open this app in an external browser of your choice.",
+  a_big_video:"The clip weighs %s.\n\nIt has been kept — evidence is never thrown away. But a long clip makes the packet slow to send and slow to open. For the rest of the inspection, film only what has to be seen: ten to twenty seconds is usually enough.",
   doc_once:"This section documents the shipment, not each speaker: its photographs are taken once for the lot.",
   th_photos:"Photos", n_readings:"%n readings", no_remarks:"No remarks recorded.",
   tap_close:"tap anywhere to close",
@@ -3578,7 +3579,7 @@ const T = {
   a_missing_photos:"Photo missing for:", a_and_more:"… and %n more",
   a_mark_na:"Mark N/A anything this reference does not include.",
   a_resume:"There is an unfinished inspection.\n\nContinue where you left off?",
-  a_lost:"\n\nNOTE: the photos did not fit in the browser's storage and were NOT kept. Your answers were. Retake the photos from the ☰ menu before generating the report.",
+  a_lost:"\n\nNOTE: some photos could not be recovered on this phone. Your answers were. Retake them from the ☰ menu before generating the report.",
   na_title:"Does not apply to this reference",
   na_test:"Does not apply", na_test_undo:"Does not apply · clear",
   chg_secs:"%n s",
@@ -3756,6 +3757,7 @@ const T = {
   dur_hms:"%h h %m min %s s", dur_ms:"%m min %s s", dur_s:"%s s",
   test_time_note:"El tiempo es el que el inspector tuvo la prueba abierta en la app, de principio a fin.",
   browser_hint_t:"Abra esta app en un navegador externo de su preferencia.",
+  a_big_video:"El video pesa %s.\n\nQuedó guardado — la evidencia no se descarta. Pero un video largo hace lento el envío y la apertura del paquete. Para el resto de la inspección, filme sólo lo que hay que ver: de diez a veinte segundos suele bastar.",
   doc_once:"Esta sección documenta el despacho, no cada parlante: sus fotos se toman una sola vez para el lote.",
   th_photos:"Fotos", n_readings:"%n mediciones", no_remarks:"Sin observaciones.",
   tap_close:"toque en cualquier parte para cerrar",
@@ -3776,7 +3778,7 @@ const T = {
   a_missing_photos:"Falta la foto de:", a_and_more:"… y %n más",
   a_mark_na:"Marque N/A todo lo que esta referencia no incluya.",
   a_resume:"Hay una inspección sin terminar.\n\n¿Continuar donde la dejó?",
-  a_lost:"\n\nNOTA: las fotos no cupieron en el almacenamiento del navegador y NO se conservaron. Sus respuestas sí. Vuelva a tomar las fotos desde el menú ☰ antes de generar el informe.",
+  a_lost:"\n\nNOTA: algunas fotos no se pudieron recuperar en este teléfono. Sus respuestas sí. Vuelva a tomarlas desde el menú ☰ antes de generar el informe.",
   na_title:"No aplica a esta referencia",
   na_test:"No aplica", na_test_undo:"No aplica · quitar",
   chg_secs:"%n s",
@@ -3950,6 +3952,7 @@ const T = {
   dur_hms:"%h 小时 %m 分 %s 秒", dur_ms:"%m 分 %s 秒", dur_s:"%s 秒",
   test_time_note:"此时间为检验员在应用中打开该测试至结束所用的时长。",
   browser_hint_t:"请在您习惯使用的外部浏览器中打开本应用。",
+  a_big_video:"该视频大小为 %s。\n\n已保存——证据不会被丢弃。但视频过长会使资料包发送和打开都很慢。本次检验的其余部分，请只拍需要看到的内容：十到二十秒通常就够了。",
   doc_once:"本节记录的是整批货，而非每台音箱：其照片按批次拍摄一次。",
   th_photos:"照片", n_readings:"%n 项实测值", no_remarks:"无备注。",
   tap_close:"点击任意处关闭",
@@ -3970,7 +3973,7 @@ const T = {
   a_missing_photos:"以下项目缺少照片：", a_and_more:"…… 还有 %n 项",
   a_mark_na:"本型号不包含的项目请标记为“不适用”。",
   a_resume:"有一次未完成的检验。\n\n是否从上次中断处继续？",
-  a_lost:"\n\n注意：照片超出浏览器存储上限，未能保存；回答已保留。生成报告前请从 ☰ 菜单重新拍照。",
+  a_lost:"\n\n注意：本机上有部分照片无法恢复；回答已保留。生成报告前请从 ☰ 菜单重新拍照。",
   na_title:"本型号不适用",
   na_test:"不适用", na_test_undo:"不适用 · 撤销",
   chg_secs:"%n 秒",
@@ -4406,6 +4409,145 @@ function toggleSection(name){
 /* ---------- persistence --------------------------------------------------- */
 const DRAFT_KEY = "hoklan_qc_draft";
 
+/* ---------- where the photographs live -------------------------------------
+   localStorage is capped at about 5 MB. A photograph is kept as a data URL, so
+   its own weight plus a third for the encoding, and a RHYME plan asks for
+   around fifty of them per speaker: the draft used to fill up somewhere near
+   the twentieth and the app would drop every picture to save the answers. It
+   said so, which is the only reason this was ever survivable, but an inspector
+   who reloaded the page halfway through lost a morning of photography.
+
+   IndexedDB has room for hundreds of megabytes, so the pictures go there,
+   keyed by the uid the record already carries, and localStorage keeps only the
+   answers and each photograph's description. The pictures never change shape in
+   memory - `m.url` is still a data URL - so the checklist, the report and the
+   packet are untouched by any of this.
+
+   Every failure path here ends at the old behaviour rather than at an error:
+   a browser with no IndexedDB, a private window that blocks it, a store that
+   will not open. The app has always known how to carry on without the
+   photographs; what it must never do is fail to start. */
+const MEDIA_DB = "hoklan_qc_media", MEDIA_STORE = "shots";
+let mediaDb = null, mediaDbTried = false;
+
+function openMediaDb(){
+  if(mediaDbTried) return Promise.resolve(mediaDb);
+  mediaDbTried = true;
+  return new Promise(ok => {
+    let settled = false;
+    const done = v => { if(!settled){ settled = true; mediaDb = v; ok(v); } };
+    /* A store that never answers is the one failure that would hang the start
+       screen, and the start screen is the way in to everything. Three seconds
+       and the app carries on without it. */
+    setTimeout(() => done(mediaDb), 3000);
+    try{
+      if(!self.indexedDB) return done(null);
+      const rq = indexedDB.open(MEDIA_DB, 1);
+      rq.onupgradeneeded = () => {
+        const db = rq.result;
+        if(!db.objectStoreNames.contains(MEDIA_STORE)) db.createObjectStore(MEDIA_STORE);
+      };
+      rq.onsuccess = () => done(rq.result);
+      rq.onerror = () => done(null);
+      rq.onblocked = () => done(null);
+    }catch(e){ done(null); }
+  });
+}
+
+function mediaTx(mode){
+  if(!mediaDb) return null;
+  try{ return mediaDb.transaction(MEDIA_STORE, mode).objectStore(MEDIA_STORE); }
+  catch(e){ return null; }
+}
+
+/* Written after the answers, and never awaited by anything the operator is
+   waiting on: the answers are already safe in localStorage by then, and a
+   picture that has not finished being written is one that is still on screen. */
+function saveShots(){
+  const st = mediaTx("readwrite");
+  if(!st) return;
+  try{
+    const keep = {};
+    allUnits().forEach(u => unitRows(u).forEach(r => {
+      if(!r) return;
+      (r.media || []).forEach(m => {
+        if(m.kind !== "photo" || !m.url) return;
+        keep[m.uid] = true;
+        st.put(m.url, m.uid);
+      });
+    }));
+    /* A photograph the inspector deleted has to leave the store too, or the
+       draft shrinks on screen while the phone fills up regardless. */
+    const all = st.getAllKeys();
+    all.onsuccess = () => {
+      const st2 = mediaTx("readwrite");
+      if(!st2) return;
+      (all.result || []).forEach(k => { if(!keep[k]) st2.delete(k); });
+    };
+  }catch(e){}
+}
+
+/* Reattaches each picture to its description. Anything missing simply stays
+   missing: the record keeps its place in the report and the operator is told
+   which ones have to be taken again. */
+/* True when at least one photograph could not be put back. Asked of the draft
+   itself and not of the store, because the two ways of losing a picture look
+   identical from here: a store that would not open and a store that opened
+   empty both leave a description with nothing attached to it. Reporting only
+   the second would let an inspection resume on a phone that blocks IndexedDB
+   with the operator believing the photographs are still there. */
+const shotsMissing = () => allUnits().some(u => unitRows(u).some(r =>
+  r && (r.media || []).some(m => m.kind === "photo" && !m.url)));
+
+function loadShots(){
+  return new Promise(ok => {
+    const st = mediaTx("readonly");
+    if(!st) return ok(shotsMissing());
+    let missing = false;
+    try{
+      const rq = st.getAll(), rk = st.getAllKeys();
+      let got = 0;
+      const finish = () => {
+        if(++got < 2) return;
+        const byId = {};
+        (rk.result || []).forEach((k, i) => { byId[k] = (rq.result || [])[i]; });
+        allUnits().forEach(u => unitRows(u).forEach(r => {
+          if(!r) return;
+          (r.media || []).forEach(m => {
+            if(m.kind !== "photo" || m.url) return;
+            if(byId[m.uid]) m.url = byId[m.uid]; else missing = true;
+          });
+        }));
+        ok(missing);
+      };
+      rq.onsuccess = finish; rq.onerror = () => ok(shotsMissing());
+      rk.onsuccess = finish; rk.onerror = () => ok(shotsMissing());
+      /* Same reason as opening the store: a read that never answers must not
+         hold the start screen. Whatever came back by now is what there is. */
+      setTimeout(() => ok(shotsMissing()), 4000);
+    }catch(e){ ok(shotsMissing()); }
+  });
+}
+
+function clearShots(){
+  const st = mediaTx("readwrite");
+  if(st) try{ st.clear(); }catch(e){}
+}
+
+/* The draft as it goes into localStorage: every photograph reduced to its
+   description. The video keeps `size` and `name` and loses its object URL,
+   which was never worth anything after a reload anyway. */
+function draftForStorage(state){
+  return Object.assign({}, state, {
+    data: (state.data || []).map(unit => (unit || []).map(r => r
+      ? Object.assign({}, r, {media: (r.media || []).map(m => ({
+          uid:m.uid, kind:m.kind, at:m.at, slot:m.slot,
+          name:m.name, size:m.size
+        }))})
+      : r))
+  });
+}
+
 function withoutMedia(state){
   return Object.assign({}, state, {
     mediaDropped:true,
@@ -4414,8 +4556,17 @@ function withoutMedia(state){
   });
 }
 function save(){
-  try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(S)); return; }catch(e){}
-  try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(withoutMedia(S))); }catch(e){}
+  /* Descriptions first and pictures second, in that order on purpose. The
+     answers are what an inspection is; if the phone is going to fail at
+     anything, it should fail at the part that can be taken again. */
+  let ok = false;
+  try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(draftForStorage(S))); ok = true; }
+  catch(e){}
+  if(!ok){
+    try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(withoutMedia(S))); }catch(e){}
+    return;
+  }
+  if(mediaDb) saveShots();
 }
 function restore(){
   // Taken before anything is touched: `S` is still the small initial literal at
@@ -4469,7 +4620,13 @@ function restore(){
   }
   return false;
 }
-function clearDraft(){ try{ localStorage.removeItem(DRAFT_KEY); }catch(e){} }
+function clearDraft(){
+  try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+  /* The pictures go with it. Left behind they are invisible - no draft names
+     them any more - while still holding the phone's storage, and the inspector
+     has no way to reach them to clear it. */
+  clearShots();
+}
 
 function evidenceBytes(){
   let total = 0;
@@ -4487,8 +4644,22 @@ function evidenceBytes(){
 const humanSize = b => b > 1048576 ? (b/1048576).toFixed(1)+" MB"
                                    : Math.round(b/1024)+" KB";
 
-/* ---------- media --------------------------------------------------------- */
-const MAX_PHOTO_PX = 1280, JPEG_QUALITY = 0.7;
+/* ---------- media ---------------------------------------------------------
+   1280 px stays. Several points are only worth taking because something small
+   has to be read off them - the lot number digit by digit, the barcode under a
+   scanner, the brand and part number on a component label, the words on the
+   display - and for reading small print it is the pixel count that decides,
+   not the JPEG quality. Dropping the long side is what makes those photographs
+   useless; dropping the quality from 0.70 to 0.60 takes about a third of the
+   weight off with nothing visible on a phone screen. It is worth doing because
+   the photographs travel inside the report itself: fifty of them at the old
+   setting made a file too heavy to send by mail. */
+const MAX_PHOTO_PX = 1280, JPEG_QUALITY = 0.6;
+/* A clip past this gets a word of warning, never a refusal. The evidence is
+   the point, and an inspector who filmed the only run of an intermittent fault
+   must not be told to throw it away - but three minutes of a speaker playing is
+   nobody's evidence, and the packet carries it all the way to the customer. */
+const BIG_VIDEO_BYTES = 25 * 1048576;
 
 function shrink(file){
   return new Promise(resolve => {
@@ -4529,16 +4700,24 @@ function shrink(file){
 async function addMedia(input, u, slot){
   const r = row(u || 0);
   const files = Array.prototype.slice.call(input.files);
+  const heavy = [];
   for(let i=0;i<files.length;i++){
     const m = await shrink(files[i]);
     m.uid = String(Date.now())+"-"+i+"-"+Math.random().toString(36).slice(2,7);
     m.at = Date.now();        // stamped on the photo, as inspection reports do
     if(slot) m.slot = slot;
+    /* Said once, after the clip is already in. Warning before accepting it
+       would read as a refusal, and the inspector would delete evidence to make
+       the message go away. A photograph never trips this: it has been through
+       the canvas and comes out at a fraction of the size. */
+    if(m.kind === "video" && (m.size || 0) > BIG_VIDEO_BYTES) heavy.push(m.size);
     r.media.push(m);
   }
   input.value = "";
   if(slot) collapseIfDone(slot);
   render(); save();
+  if(heavy.length)
+    alert(fmt("a_big_video", {s: humanSize(Math.max.apply(null, heavy))}));
 }
 const shotsFor = (r, slot) => r.media.filter(m => m.slot === slot);
 
@@ -8612,15 +8791,41 @@ function updateTopBtn(){
 /* ---------- boot ---------------------------------------------------------- */
 document.documentElement.lang = LANG === "zh" ? "zh-CN" : LANG;
 
+/* The answers come back synchronously, exactly as they always have, and the
+   screen is drawn from them. Only the photographs are waited for, and only
+   after there is something on screen: if the store is slow or unreachable the
+   app is already usable, and the worst case is the message that says which
+   pictures have to be taken again. It is never a blank page. */
 if(restore()){
-  const lost = S.mediaDropped ? tr("a_lost") : "";
-  if(confirm(tr("a_resume") + lost)){ S.mediaDropped = false; }
-  else {
-    clearDraft(); S.screen="setup"; S.data=[[]]; S.units=1;
-    S.index=0; S.mediaDropped=false; goHomeReset();
-  }
+  /* The restored screen is held back until the pictures are in and the question
+     has been answered. Drawing the checklist first would put the operator in
+     front of an inspection nobody has agreed to resume yet, with empty frames
+     where the photographs are still loading. The start screen is what used to
+     be behind that dialog, so that is what stays behind it. */
+  const target = S.screen;
+  S.screen = "setup";
+  render();
+
+  openMediaDb().then(loadShots).then(missing => {
+    S.screen = target;
+    if(missing) S.mediaDropped = true;
+    const lost = S.mediaDropped ? tr("a_lost") : "";
+    if(confirm(tr("a_resume") + lost)){
+      S.mediaDropped = false;
+      /* Rewrites the draft in the new shape. A draft left by the version that
+         kept its pictures inside localStorage moves across here, on its own,
+         the first time it is opened - so publishing this loses nobody's work. */
+      save();
+    } else {
+      clearDraft(); S.screen="setup"; S.data=[[]]; S.units=1;
+      S.index=0; S.mediaDropped=false; goHomeReset();
+    }
+    render();
+  });
+} else {
+  openMediaDb();
+  render();
 }
-render();
 
 /* Warn before leaving with work that has not been downloaded. The finish screen
    counts: that is where an inspection sits complete and still only inside this
