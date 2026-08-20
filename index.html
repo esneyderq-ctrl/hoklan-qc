@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="7.2">
+<meta name="app-version" content="7.3">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -30,6 +30,12 @@ body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);min-height:1
 h1{font-size:22px;margin:4px 0 2px;letter-spacing:1px}
 h2{font-size:19px;margin:0 0 4px;color:var(--accent)}
 .sub{color:var(--muted);font-size:13px;margin:0 0 18px;letter-spacing:2px}
+/* Advice, not an error: amber and quiet, so it does not read as something the
+   operator has done wrong before typing a single digit. */
+.brw{background:rgba(196,132,26,.13);border:1px solid rgba(214,158,60,.42);
+  border-radius:10px;padding:10px 12px;margin:0 0 14px}
+.brw b{display:block;color:#e9b45c;font-size:13px;margin-bottom:3px}
+.brw span{display:block;color:#d8c3a0;font-size:12.5px;line-height:1.5}
 .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;
   padding:14px;margin-bottom:14px}
 label{display:block;font-size:13px;color:var(--muted);margin:12px 0 5px}
@@ -498,6 +504,11 @@ const CONFIG = {
     "PWR-002":{"en":"Unexpected restart","zh":"异常重启","es":"Reinicio inesperado"},
     "PWR-003":{"en":"Unstable power","zh":"供电不稳定","es":"Alimentación inestable"},
     "PWR-004":{"en":"Display does not start","zh":"显示屏无法启动","es":"La pantalla no arranca"},
+    "PWR-005":{"en":"Voltage selector in the wrong position","zh":"电压选择开关位置错误","es":"Selector de voltaje en la posición equivocada"},
+    "PWR-006":{"en":"Fuse missing or holder does not close","zh":"缺少保险丝或保险丝座盖不上","es":"Falta el fusible o el portafusible no cierra"},
+    "PWR-007":{"en":"Power cable missing or wrong","zh":"缺少电源线或规格错误","es":"Falta el cable de alimentación o es el equivocado"},
+    "PWR-008":{"en":"Power switch faulty","zh":"电源开关异常","es":"El interruptor de encendido falla"},
+    "PWR-009":{"en":"AC output does not deliver power","zh":"交流输出无电","es":"La salida de CA no entrega corriente"},
     "USB-001":{"en":"USB not recognised","zh":"无法识别 U 盘","es":"No reconoce la memoria USB"},
     "USB-002":{"en":"Does not play audio","zh":"无法播放音频","es":"No reproduce audio"},
     "USB-003":{"en":"Audio cuts out","zh":"声音中断","es":"El sonido se corta"},
@@ -566,6 +577,12 @@ const CONFIG = {
     "AUD-010":{"en":"X-BASS does not work or distorts","zh":"X-BASS 无效或失真","es":"X-BASS no funciona o distorsiona"},
     "AUD-011":{"en":"Audio settings are not kept after switching off","zh":"关机后不记忆音频设置","es":"No conserva los ajustes de audio al apagar"},
     "AUD-012":{"en":"SPL below the specified level","zh":"声压级低于规格","es":"SPL por debajo del nivel especificado"},
+    "AUD-013":{"en":"No signal on the XLR output","zh":"XLR 输出无信号","es":"Sin señal en la salida XLR"},
+    "AUD-014":{"en":"The 120 Hz output is not filtered","zh":"120 Hz 输出未经滤波","es":"La salida de 120 Hz no está filtrada"},
+    "AUD-015":{"en":"Phase switch does not work","zh":"相位开关无效","es":"El switch de fase no funciona"},
+    "AUD-016":{"en":"Low-pass filter does not work","zh":"低通滤波无效","es":"El filtro pasa-bajos no funciona"},
+    "AUD-017":{"en":"Channel volume does not work","zh":"通道音量无效","es":"El volumen del canal no funciona"},
+    "AUD-018":{"en":"DSP mode does not change the sound","zh":"DSP 模式不改变声音","es":"El modo DSP no cambia el sonido"},
     "DSP-001":{"en":"Missing segment","zh":"显示缺笔段","es":"Segmento faltante en la pantalla"},
     "DSP-002":{"en":"Display flickers","zh":"显示闪烁","es":"La pantalla parpadea"},
     "DSP-004":{"en":"Wrong characters","zh":"显示字符错误","es":"Caracteres incorrectos en la pantalla"},
@@ -579,6 +596,12 @@ const CONFIG = {
     "LED-004":{"en":"Speaker LED abnormal","zh":"音箱灯异常","es":"Luces del parlante anormales"},
     "LED-006":{"en":"Light does not switch on or off","zh":"灯光无法开关","es":"La luz no se enciende o no se apaga"},
     "LED-007":{"en":"Light mode change does not work","zh":"灯光模式切换无效","es":"El cambio de modo de luz no funciona"},
+    "LED-008":{"en":"SIGNAL LED abnormal","zh":"信号指示灯异常","es":"LED SEÑAL anormal"},
+    "LED-009":{"en":"LIMIT LED abnormal","zh":"限幅指示灯异常","es":"LED LÍMITE anormal"},
+    "LED-010":{"en":"DSP mode LED does not follow the button","zh":"DSP 模式指示灯不随按键变化","es":"El LED de modo DSP no sigue a la tecla"},
+    "MEC-001":{"en":"Fan does not turn or is noisy","zh":"风扇不转或有异响","es":"El ventilador no gira o hace ruido"},
+    "MEC-002":{"en":"Combo jack faulty on one connector","zh":"两用接口有一种接头失效","es":"El conector combo falla en uno de los dos"},
+    "MEC-003":{"en":"MIC / LINE switch does not work","zh":"MIC / LINE 开关无效","es":"El switch MIC / LÍNEA no funciona"},
     "CHG-001":{"en":"Does not charge","zh":"无法充电","es":"No carga"},
     "CHG-002":{"en":"Charging indicator incorrect","zh":"充电指示不正确","es":"Indicador de carga incorrecto"},
     "CHG-003":{"en":"Unstable charging","zh":"充电不稳定","es":"Carga inestable"},
@@ -645,9 +668,175 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 35,
+      "plan_version": 37,
       "tests": [
+        /* ------------------------------------------------------------------
+           RHYME: mains-powered cabinets.
+
+           None of these carries a battery. They do not switch on, and nothing
+           else in the plan can be checked, until the cabinet is plugged into
+           the wall - which is why this test runs first and why the voltage
+           selector is read before the cable goes in rather than after.
+
+           The two BAS references are powered subwoofers and share almost
+           nothing else with the rest of the factory: no USB, no Bluetooth, no
+           display, no remote, no input channels. They run this test and their
+           own three, and are excluded by name from everything that assumes a
+           full-range cabinet. Adding a new BAS reference means adding it to
+           those skip lists as well as here; grep for HK-BAS115A1 to find them
+           all.
+           ------------------------------------------------------------------ */
+        {"id":"POWER_AC","optional":false,"only_factory":["RHY"],"evidence":["photo"],
+         "label":{"en":"AC POWER","zh":"交流供电","es":"ALIMENTACIÓN AC"},
+         "steps":[
+           {"en":"Keep the cabinet unplugged until the first two points are done","zh":"完成前两项之前，先不要接电源","es":"Mantenga la cabina desconectada hasta terminar los dos primeros puntos"},
+           {"en":"Read the voltage selector and check the fuse holder","zh":"读取电压选择开关，并检查保险丝座","es":"Lea el selector de voltaje y revise el portafusible"},
+           {"en":"Then connect the power cable and switch it on","zh":"随后接上电源线并开机","es":"Después conecte el cable de alimentación y encienda"},
+           {"en":"The final photo must show the panel with the selector visible","zh":"最后的照片需拍到面板并能看清电压开关","es":"La foto final debe mostrar el panel con el selector a la vista"}],
+         "points":[
+           {"section":{"en":"Before plugging in","zh":"接电之前","es":"Antes de conectar"},
+            "help":{"en":"These two are checked with the cabinet disconnected. Once it is plugged in at the wrong voltage there is nothing left to inspect.",
+                    "zh":"这两项须在断电状态下检查。一旦以错误电压接入市电，就没有什么可检验的了。",
+                    "es":"Estos dos se revisan con la cabina desconectada. Una vez enchufada al voltaje equivocado ya no queda nada que inspeccionar."}},
+           {"id":"volt_select","code":"PWR-005","label":{"en":"Voltage selector set for the destination market","zh":"电压选择开关与目的地市场一致","es":"Selector de voltaje en la posición del mercado de destino"},
+            "help":{"en":"With the cabinet unplugged, read the position of the selector and compare it against the destination on the order. Photograph it. A cabinet set to 115 V plugged into 230 V burns in the first second, and the selector moves on its own in transit.",
+                    "zh":"在断电状态下读取电压开关的位置，并与订单的目的地核对，然后拍照。设在 115 V 的机器接入 230 V 会在一秒内烧毁，而该开关在运输中会自行移位。",
+                    "es":"Con la cabina desconectada, lea la posición del selector y compárela con el destino de la orden. Fotografíela. Una cabina en 115 V enchufada a 230 V se quema en el primer segundo, y el selector se mueve solo en el transporte."}},
+           {"id":"fuse","code":"PWR-006","label":{"en":"Fuse present and holder closed","zh":"保险丝齐全，保险丝座盖好","es":"Fusible puesto y portafusible cerrado"},
+            "help":{"en":"The fuse must be fitted, of the rating printed on the panel, and the holder must close and stay firm. A holder that does not close leaves the live side reachable.",
+                    "zh":"保险丝必须装好，规格与面板标示一致，保险丝座应能盖紧并保持牢固。盖不上的保险丝座会使带电部分外露。",
+                    "es":"El fusible debe estar puesto, del valor impreso en el panel, y la tapa debe cerrar y quedar firme. Un portafusible que no cierra deja el vivo al alcance."}},
+           {"id":"power_cable","code":"PWR-007","label":{"en":"Power cable","zh":"电源线","es":"Cable de alimentación"},
+            "help":{"en":"Present, of the type this panel takes - IEC or POWERCON - with no cuts or splices, and with the plug of the destination country.",
+                    "zh":"电源线齐全，类型与本面板接口一致（IEC 或 POWERCON），无破损、无接驳，插头符合目的地国家标准。",
+                    "es":"Presente, del tipo que recibe este panel —IEC o POWERCON—, sin cortes ni empalmes, y con el enchufe del país de destino."}},
+           {"section":{"en":"Powered on","zh":"通电后","es":"Con la cabina encendida"},
+            "help":{"en":"Now the cabinet can be plugged in and switched on.",
+                    "zh":"此时可以接入市电并开机。",
+                    "es":"Ahora sí se puede conectar y encender la cabina."}},
+           {"id":"power_switch","code":"PWR-008","label":{"en":"POWER switch","zh":"电源开关","es":"Interruptor ENCENDIDO"},
+            "help":{"en":"It must switch on and off firmly, without stopping halfway. If the switch has a pilot lamp, the lamp must light with it.",
+                    "zh":"开关应干脆地开和关，不应停在中间位置。若开关带指示灯，指示灯应随之点亮。",
+                    "es":"Debe encender y apagar con firmeza, sin quedarse a medio camino. Si el interruptor tiene piloto, debe encender con él."}},
+           {"id":"powers_up","code":"PWR-001","label":{"en":"Cabinet starts on mains power","zh":"接入市电后正常开机","es":"La cabina enciende conectada a la red"},
+            "help":{"en":"Connect and switch on. It must start on its own, with no thump or crack from the drivers as it comes up.",
+                    "zh":"接电开机，应自行启动，开机瞬间喇叭不应有砰声或爆音。",
+                    "es":"Conecte y encienda. Debe arrancar sola, sin golpes ni chasquidos en los parlantes al encender."}},
+           {"id":"ac_out","code":"PWR-009","only":["HK-EPS112A1"],
+            "label":{"en":"POWERCON AC output","zh":"POWERCON 交流输出","es":"Salida de CA POWERCON"},
+            "help":{"en":"Connect a second unit to the AC OUT and confirm it receives power. Turn the connector to its lock: it must latch and must not pull out. It is a current path nobody tests, and on stage it carries the whole chain.",
+                    "zh":"将第二台设备接到交流输出，确认其得电。将接头旋至锁定位：应能锁住，拉扯电缆时不应脱落。这是一条无人测试的供电路径，而在舞台上整条链路都挂在它上面。",
+                    "es":"Conecte un segundo equipo a la SALIDA DE CA y confirme que recibe corriente. Gire el conector hasta el bloqueo: debe trabar y no salirse al tirar del cable. Es un camino de corriente que nadie prueba y que en tarima sostiene toda la cadena."}}]},
+
+        /* ---------------- RHYME subwoofers: HK-BAS115A1, HK-BAS118A1 -------
+           A powered sub has no source, no display and no channels. What it does
+           have - and what nobody was checking - is a phase switch, a low-pass
+           filter and a filtered 120 Hz output. A sub wired out of phase passes
+           every test in the old plan without a single mark and then sounds
+           hollow in the assembled system, because it is cancelling the very
+           bass it was bought for.
+           ------------------------------------------------------------------ */
+        {"id":"SUB_IO","optional":false,"only_factory":["RHY"],"evidence":[],
+         "only":["HK-BAS115A1","HK-BAS118A1"],
+         "label":{"en":"INPUTS AND OUTPUTS","zh":"输入与输出","es":"ENTRADAS Y SALIDAS"},
+         "steps":[
+           {"en":"Feed the test source into the XLR inputs, one side at a time","zh":"用测试音源分别接入左右 XLR 输入","es":"Lleve la fuente de prueba a las entradas XLR, un lado a la vez"},
+           {"en":"Connect a full-range cabinet to each output in turn","zh":"依次将全频音箱接到每一路输出","es":"Conecte una cabina de rango completo a cada salida por turnos"},
+           {"en":"Listen to what comes out of the 120 Hz output before judging it","zh":"判定之前先听清 120 Hz 输出的声音","es":"Escuche lo que sale por la salida de 120 Hz antes de juzgarla"}],
+         "points":[
+           {"section":{"en":"Inputs","zh":"输入","es":"Entradas"},
+            "help":{"en":"One side at a time. With both connected a dead input is inaudible, because the other one is covering for it.",
+                    "zh":"一次只接一侧。两侧同时接入时，即使一路已损坏也听不出来，因为另一路把它掩盖了。",
+                    "es":"Un lado a la vez. Con las dos conectadas, una entrada muerta no se oye, porque la otra la está tapando."}},
+           {"id":"in_l","code":"AUX-001","label":{"en":"XLR input L","zh":"XLR 输入 L","es":"Entrada XLR izquierda"},
+            "help":{"en":"Feed the source into the L input only. Audio must come through.",
+                    "zh":"仅将音源接入 L 输入，应有声音传出。",
+                    "es":"Lleve la fuente sólo a la entrada L. Debe entrar audio."}},
+           {"id":"in_r","code":"AUX-001","label":{"en":"XLR input R","zh":"XLR 输入 R","es":"Entrada XLR derecha"},
+            "help":{"en":"Now the R input only. Same result.",
+                    "zh":"改为仅接 R 输入，结果应相同。",
+                    "es":"Ahora sólo la entrada R. El mismo resultado."}},
+           {"section":{"en":"Outputs","zh":"输出","es":"Salidas"},
+            "help":{"en":"Connect a full-range cabinet to each output and listen to what it is actually being sent.",
+                    "zh":"将全频音箱接到每一路输出，听清实际送出的是什么信号。",
+                    "es":"Conecte una cabina de rango completo a cada salida y escuche qué se le está enviando realmente."}},
+           {"id":"out_full","code":"AUD-013","label":{"en":"XLR output L and R carry the full signal","zh":"XLR 输出 L 与 R 送出全频信号","es":"Salida XLR L y R con la señal completa"},
+            "help":{"en":"Connect to a second unit. The whole signal must come out, bass and treble alike.",
+                    "zh":"接入第二台设备，应送出完整信号，低频与高频俱全。",
+                    "es":"Conecte a un segundo equipo. Debe salir la señal completa, con graves y agudos."}},
+           {"id":"out_120","code":"AUD-014","label":{"en":"120 Hz output is filtered","zh":"120 Hz 输出经过滤波","es":"Salida de 120 Hz filtrada"},
+            "help":{"en":"Connect a full-range cabinet to the 120 Hz output and listen. It must come out with no bass - only from 120 Hz upwards. If bass comes through, the filter is not acting, and that output burns the tweeters of the satellites hanging off it. It is the most expensive fault this panel can ship with.",
+                    "zh":"将全频音箱接到 120 Hz 输出并细听。应当没有低频，只有 120 Hz 以上的部分。若低频送了出去，说明滤波未起作用，这一路输出会烧毁挂在其后的卫星箱高音单元。这是本面板可能带出厂的最昂贵的缺陷。",
+                    "es":"Conecte una cabina de rango completo a la salida de 120 Hz y escuche. Debe salir sin graves, sólo de 120 Hz hacia arriba. Si salen los graves, el filtro no está actuando, y esa salida quema los drivers de agudos de los satélites que cuelguen de ella. Es la falla más cara con la que este panel puede salir de fábrica."}},
+           {"id":"out_noise","code":"AUX-003","label":{"en":"Outputs add no noise","zh":"输出不带杂音","es":"Las salidas no meten ruido"},
+            "help":{"en":"With the sub silent, listen at the connected unit: no hum and no hiss.",
+                    "zh":"低音炮静音时，在所接设备上细听：不应有嗡嗡声或嘶声。",
+                    "es":"Con el sub en silencio, escuche en el equipo conectado: sin zumbido ni siseo."}}]},
+
+        {"id":"SUB_CONTROLS","optional":false,"only_factory":["RHY"],"evidence":["video"],
+         "only":["HK-BAS115A1","HK-BAS118A1"],
+         "label":{"en":"CONTROLS","zh":"控制","es":"CONTROLES"},
+         "steps":[
+           {"en":"Run the sub together with a full-range cabinet","zh":"低音炮与全频音箱一同工作","es":"Haga sonar el sub junto con una cabina de rango completo"},
+           {"en":"Move each control and listen for the change","zh":"逐个调节控制件并注意声音变化","es":"Mueva cada control y escuche el cambio"},
+           {"en":"One clip covering the phase switch and the filter is enough","zh":"一段涵盖相位开关和滤波旋钮的视频即可","es":"Basta un video que cubra el switch de fase y el filtro"}],
+         "points":[
+           {"id":"sub_volume","code":"AUD-006","label":{"en":"VOLUME knob","zh":"音量旋钮","es":"Perilla VOLUMEN"},
+            "help":{"en":"From minimum to maximum with programme playing. It must rise smoothly, with no dead spots and no noise as it turns.",
+                    "zh":"在有节目声的情况下从最小转到最大。应平滑上升，无死区，旋转时无杂音。",
+                    "es":"De mínimo a máximo con programa sonando. Debe subir suave, sin zonas muertas ni ruido al girar."}},
+           {"id":"sub_phase","code":"AUD-015","label":{"en":"PHASE switch NORMAL / 180","zh":"相位开关 NORMAL / 180","es":"Switch de FASE NORMAL / 180"},
+            "help":{"en":"With the sub and a full-range cabinet playing together, flip the phase. The bass must change audibly: in one position it reinforces, in the other it thins out. If it sounds the same both ways the switch is not connected - and that is how a system ships that cancels its own bass.",
+                    "zh":"低音炮与全频音箱同时发声时切换相位。低频应有明显变化：一个位置增强，另一个变薄。若两个位置听起来一样，说明开关未接通——整套系统就这样带着自我抵消的低频出厂。",
+                    "es":"Con el sub y una cabina de rango completo sonando juntos, cambie la fase. El bajo debe cambiar de forma audible: en una posición refuerza y en la otra se adelgaza. Si suena igual en ambas, el switch no está conectado, y así sale un sistema que cancela sus propios graves."}},
+           {"id":"sub_lpf_80","code":"AUD-016","label":{"en":"LOW-PASS FILTER at 80 Hz","zh":"低通滤波置于 80 Hz","es":"FILTRO PASA-BAJOS en 80 Hz"},
+            "help":{"en":"Set the knob to 80 and listen: the sub must cover only the lowest part.",
+                    "zh":"将旋钮置于 80 并细听：低音炮应只覆盖最低的一段。",
+                    "es":"Ponga la perilla en 80 y escuche: el sub debe cubrir sólo la parte más baja."}},
+           {"id":"sub_lpf_200","code":"AUD-016","label":{"en":"LOW-PASS FILTER at 200 Hz","zh":"低通滤波置于 200 Hz","es":"FILTRO PASA-BAJOS en 200 Hz"},
+            "help":{"en":"Take it to 200: the sub must clearly cover more range than at 80, and the travel between the two must be continuous, with no jumps.",
+                    "zh":"转到 200：低音炮覆盖的频段应明显宽于 80 时，两点之间的过渡应连续，不应跳变。",
+                    "es":"Llévela a 200: el sub debe cubrir claramente más rango que en 80, y el recorrido entre las dos posiciones debe ser continuo, sin saltos."}},
+           {"id":"sub_led_signal","code":"LED-008","label":{"en":"SIGNAL LED","zh":"信号指示灯","es":"LED SEÑAL"},
+            "help":{"en":"It must light with signal present and follow the programme.",
+                    "zh":"有信号时应点亮，并随节目变化。",
+                    "es":"Debe encender con señal presente y seguir el programa."}},
+           {"id":"sub_led_limit","code":"LED-009","label":{"en":"LIMIT LED","zh":"限幅指示灯","es":"LED LÍMITE"},
+            "help":{"en":"Raise the level until it appears and lower it until it goes out. One that is always on, or that never comes on, tells the operator nothing.",
+                    "zh":"提高电平直至其点亮，再降低直至熄灭。长亮或永不点亮的指示灯，对操作者毫无意义。",
+                    "es":"Suba el nivel hasta que aparezca y bájelo hasta que se apague. Uno siempre encendido, o que nunca enciende, no le dice nada al operador."}}]},
+
+        {"id":"SUB_AUDIO","optional":false,"only_factory":["RHY"],"evidence":["video"],
+         "only":["HK-BAS115A1","HK-BAS118A1"],
+         "label":{"en":"AUDIO","zh":"音频","es":"AUDIO"},
+         "steps":[
+           {"en":"Play a track with real low end at maximum volume","zh":"以最大音量播放低频充分的曲目","es":"Reproduzca una pista con graves reales a volumen máximo"},
+           {"en":"Listen first, then feel the cabinet with your hand","zh":"先听，再用手触摸箱体","es":"Escuche primero y luego palpe el gabinete con la mano"},
+           {"en":"Finish with the fan","zh":"最后检查风扇","es":"Termine con el ventilador"}],
+         "points":[
+           {"id":"sub_woofer","code":"AUD-001","label":{"en":"Woofer sounds","zh":"低音单元出声","es":"El woofer suena"},
+            "help":{"en":"Hold your hand in front of the woofer and feel it move. The low end must be present and clean, not weak or muffled.",
+                    "zh":"手放在低音单元前感受振动。低频应饱满干净，不应无力或发闷。",
+                    "es":"Ponga la mano frente al woofer y sienta el movimiento. El bajo debe estar presente y limpio, no débil ni apagado."}},
+           {"id":"sub_distortion","code":"AUD-003","label":{"en":"No distortion at high volume","zh":"大音量无失真","es":"Sin distorsión a volumen alto"},
+            "help":{"en":"At the maximum already set, the sound must stay clean, without breaking up or going harsh.",
+                    "zh":"在已调到最大的音量下，声音应保持干净，不破音、不刺耳。",
+                    "es":"Al máximo ya puesto, el sonido debe mantenerse limpio, sin quebrarse ni volverse áspero."}},
+           {"id":"sub_vibration","code":"AUD-004","label":{"en":"No abnormal cabinet vibration","zh":"箱体无异常振动","es":"Sin vibración anormal del gabinete"},
+            "help":{"en":"Run your hand over the cabinet, the grille and the back panel. Nothing must rattle or feel loose.",
+                    "zh":"用手抚过箱体、网罩和后面板。不应有松动或异响。",
+                    "es":"Pase la mano por el gabinete, la malla y la tapa trasera. Nada debe traquetear ni sentirse flojo."}},
+           {"id":"sub_noise","code":"AUD-005","label":{"en":"No abnormal noise","zh":"无异响","es":"Sin ruidos anormales"},
+            "help":{"en":"Pause with the sub still on: it must fall silent, with no hiss, hum or clicking.",
+                    "zh":"保持开机并暂停播放：应完全安静，无嘶声、嗡声或咔哒声。",
+                    "es":"Pause con el sub encendido: debe quedar en silencio, sin siseo, zumbido ni chasquidos."}},
+           {"id":"sub_fan","code":"MEC-001","label":{"en":"Fan","zh":"风扇","es":"Ventilador"},
+            "help":{"en":"This panel carries a fan. It must turn with the unit switched on, without rubbing, squealing or rattling, and the grille must be clear.",
+                    "zh":"本面板带风扇。开机后应转动，不应有摩擦声、尖叫声或异响，出风口应无遮挡。",
+                    "es":"El panel lleva ventilador. Debe girar con el equipo encendido, sin roce, chirrido ni traqueteo, y la rejilla debe estar libre."}}]},
+
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
+         "skip":["HK-BAS115A1","HK-BAS118A1"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
          "steps":[
            {"en":"Insert the HOKLAN test USB drive into the speaker","zh":"将 HOKLAN 测试 U 盘插入音箱","es":"Inserte la memoria USB de prueba HOKLAN en el parlante"},
@@ -883,54 +1072,30 @@ const CONFIG = {
                     "zh":"反复按模式键走完一轮回到 SD。显示屏应随每一次切换变化。"}},
            {"section":{"en":"Audio controls","zh":"音频控制"},
             "help":{"en":"Move each control through its full range and listen. If the reference shows the level on screen, the indicator must follow the knob.",
-                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。"}},
+                    "zh":"将每个旋钮从最小转到最大并细听。若本型号在屏幕上显示数值，指示应随旋钮同步变化。"}},
            {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum","zh":"音量调到最大"},
-            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
-                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。"}},
+            "help":{"en":"Take the volume from minimum to maximum slowly. It must rise continuously the whole way, with no jumps, dead spots or scratchy sound, and where there is a number on the display it must follow.",
+                    "zh":"缓慢将音量从最小调到最大。全程应连续上升，不应跳变、无死区、无刮擦杂音；若屏幕显示数值，应同步变化。"}},
            {"id":"treble","code":"AUD-007","label":{"en":"Treble level","zh":"高音调节"},
             "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible across the whole travel, with no dead spots and no scratchy noise as the knob turns. Where there is an on-screen indicator, it must follow.",
-                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+                    "zh":"播放音乐时，将高音从最小调到最大。全程声音变化应清晰可辨，无死区，旋转时无刮擦杂音。若有屏幕指示，应同步变化。"}},
            {"id":"bass","code":"AUD-008","label":{"en":"Bass level","zh":"低音调节"},
             "help":{"en":"Same check on the bass control, across its whole travel. Where there is an on-screen indicator, it must follow.",
-                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+                    "zh":"对低音旋钮做同样的检查，走完全程。若有屏幕指示，应同步变化。"}},
            {"id":"xbass","code":"AUD-010","only":["HK-BRA210B1"],
             "label":{"en":"X-BASS function","zh":"X-BASS 功能"},
             "help":{"en":"Playing from the SD card, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.",
                     "zh":"用 SD 卡播放时，反复开关 X-BASS。开启时低音应明显增强，关闭时恢复原状，屏幕应显示状态变化。随后在开启 X-BASS 的状态下将音量调到最大：低音应保持干净，不失真，低音单元不应有异响。"}},
-           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
-            "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
-                    "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
-           {"id":"mic1_priority","code":"MIC-005","skip_factory":["RHY"],"label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
-            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop to about 10% of its level — a drop of roughly 90%, so the voice is heard over a background that is almost silent — and come back to full level when you stop. A drop you have to strain to notice is a fail: on a live speaker the priority is there so the voice can be understood without turning the music down by hand.",
-                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。音乐应降到原音量的约 10%——即衰减约 90%，人声在几乎无声的背景上清晰可闻——停止说话后恢复原音量。若需要仔细分辨才能察觉衰减，即判定为异常：优先功能的意义在于无需手动调低音乐即可听清人声。"}},
-           {"id":"mic1_volume","code":"MIC-006","skip_factory":["RHY"],"label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
-            "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
-                    "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
-           {"id":"mic1_echo","code":"MIC-007","skip_factory":["RHY"],"label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
-            "help":{"en":"Say short words into MIC1 and turn the echo from minimum to maximum. The repetition must go from none to clearly audible, and the delay must stay within 0 to 280 ms: at maximum the echo must still follow the voice closely, not lag like a separate second voice. Anything longer than that stops sounding like reverberation and starts sounding like a fault.",
-                    "zh":"对麦克风 1 说短词，并将回声从最小调到最大。重复声应从无到明显可闻，延时须在 0～280 毫秒范围内：即使调到最大，回声也应紧跟人声，而不应拖成第二个人声。超过该范围就不再像混响，而像故障。"}},
-           {"id":"mic1_reverb","code":"MIC-008","skip_factory":["RHY"],"label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
-            "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
-                    "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
-           {"id":"mic2_priority","code":"MIC-005","skip_factory":["RHY"],"label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test, and the same criterion: the music must drop to about 10% of its level while you speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
-                    "zh":"拔下 MIC1，将麦克风插入 MIC2。测试方法和判定标准相同：说话时音乐应降到原音量的约 10%。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
-           {"id":"mic2_volume","code":"MIC-006","skip_factory":["RHY"],"label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
-            "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
-                    "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
-           {"id":"mic2_echo","code":"MIC-007","skip_factory":["RHY"],"label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Say short words into MIC2 and turn the echo up. Same range: 0 to 280 ms.",
-                    "zh":"对麦克风 2 说短词并加大回声。范围相同：0～280 毫秒。"}},
-           {"id":"mic2_reverb","code":"MIC-008","skip_factory":["RHY"],"label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
-            "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
-                    "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
-           {"id":"guitar","code":"AUD-009","skip_factory":["RHY"],"label":{"en":"Guitar volume","zh":"吉他音量"},
-            "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
-                    "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
-           {"id":"record","code":"SD-013","label":{"en":"REC button: records and saves to the SD","zh":"REC 录音按键：保存到 SD 卡"},
-            "help":{"en":"With the microphone still connected from the points above. Press REC, speak for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.",
-                    "zh":"麦克风保持上面几项测试的连接状态。按 REC，说几秒后停止。在音箱上回放该录音，确认文件确实已保存。",
-                    "es":"Con el micrófono aún conectado de los puntos anteriores. Pulse REC, hable unos segundos y detenga. Reproduzca la grabación en el parlante para confirmar que el archivo quedó guardado."}},
+           {/* The microphone controls are exercised in USB and in Bluetooth and
+                 nowhere else. They belong to the mixer, not to the source: an echo
+                 knob that works on USB and fails on SD is not a thing the hardware
+                 can do, so asking again here only bought the same answer three more
+                 times. Recording still needs a microphone, so it says so itself
+                 rather than leaning on points that are no longer above it. */
+            "id":"record","code":"SD-013","label":{"en":"REC button: records and saves to the SD","zh":"REC 录音按键：保存到 SD 卡"},
+            "help":{"en":"Plug a microphone in. Press REC, speak for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.",
+                    "zh":"接上麦克风。按 REC，说几秒后停止。在音箱上回放该录音，确认文件确实已保存。",
+                    "es":"Conecte un micrófono. Pulse REC, hable unos segundos y detenga. Reproduzca la grabación en el parlante para confirmar que el archivo quedó guardado."}},
            {"id":"erase","code":"SD-015","label":{"en":"Delete recordings button","zh":"删除录音按键"},
             "help":{"en":"Delete the recording you just made and confirm it no longer plays back. The music tracks must remain untouched.",
                     "zh":"删除刚才的录音并确认无法再回放。音乐曲目不应被一并删除。"}},
@@ -952,6 +1117,7 @@ const CONFIG = {
                     "zh":"SD 卡保持插入，关机后再开机。应自动回到 SD 模式并开始播放，无需按任何键。"}}]},
 
         {"id":"BLUETOOTH","optional":false,"only_factory":["YIS","RHY","EAG"],
+         "skip":["HK-BAS115A1","HK-BAS118A1"],
          "label":{"en":"BLUETOOTH","zh":"蓝牙"},
          "steps":[
            {"en":"Put the speaker in Bluetooth mode and leave it discoverable","zh":"将音箱切换到蓝牙模式并保持可被搜索"},
@@ -998,16 +1164,16 @@ const CONFIG = {
                     "zh":"反复按模式键走完一轮回到蓝牙。切换一圈后连接不应断开。"}},
            {"section":{"en":"Audio controls","zh":"音频控制"},
             "help":{"en":"Move each control through its full range and listen. If the reference shows the level on screen, the indicator must follow the knob.",
-                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。"}},
+                    "zh":"将每个旋钮从最小转到最大并细听。若本型号在屏幕上显示数值，指示应随旋钮同步变化。"}},
            {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum","zh":"音量调到最大"},
-            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
-                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。"}},
+            "help":{"en":"Take the volume from minimum to maximum slowly. It must rise continuously the whole way, with no jumps, dead spots or scratchy sound, and where there is a number on the display it must follow.",
+                    "zh":"缓慢将音量从最小调到最大。全程应连续上升，不应跳变、无死区、无刮擦杂音；若屏幕显示数值，应同步变化。"}},
            {"id":"treble","code":"AUD-007","label":{"en":"Treble level","zh":"高音调节"},
             "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible across the whole travel, with no dead spots and no scratchy noise as the knob turns. Where there is an on-screen indicator, it must follow.",
-                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+                    "zh":"播放音乐时，将高音从最小调到最大。全程声音变化应清晰可辨，无死区，旋转时无刮擦杂音。若有屏幕指示，应同步变化。"}},
            {"id":"bass","code":"AUD-008","label":{"en":"Bass level","zh":"低音调节"},
             "help":{"en":"Same check on the bass control, across its whole travel. Where there is an on-screen indicator, it must follow.",
-                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+                    "zh":"对低音旋钮做同样的检查，走完全程。若有屏幕指示，应同步变化。"}},
            {"id":"xbass","code":"AUD-010","only":["HK-BRA210B1"],
             "label":{"en":"X-BASS function","zh":"X-BASS 功能"},
             "help":{"en":"Playing over Bluetooth, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.",
@@ -1146,46 +1312,16 @@ const CONFIG = {
            {"id":"modes","code":"DSP-005","label":{"en":"Mode button","zh":"模式按键"}},
            {"section":{"en":"Audio controls","zh":"音频控制"},
             "help":{"en":"Move each control through its full range and listen. If the reference shows the level on screen, the indicator must follow the knob.",
-                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。"}},
+                    "zh":"将每个旋钮从最小转到最大并细听。若本型号在屏幕上显示数值，指示应随旋钮同步变化。"}},
            {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum","zh":"音量调到最大"},
-            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
-                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。"}},
+            "help":{"en":"Take the volume from minimum to maximum slowly. It must rise continuously the whole way, with no jumps, dead spots or scratchy sound, and where there is a number on the display it must follow.",
+                    "zh":"缓慢将音量从最小调到最大。全程应连续上升，不应跳变、无死区、无刮擦杂音；若屏幕显示数值，应同步变化。"}},
            {"id":"treble","code":"AUD-007","label":{"en":"Treble level","zh":"高音调节"},
             "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible across the whole travel, with no dead spots and no scratchy noise as the knob turns. Where there is an on-screen indicator, it must follow.",
-                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+                    "zh":"播放音乐时，将高音从最小调到最大。全程声音变化应清晰可辨，无死区，旋转时无刮擦杂音。若有屏幕指示，应同步变化。"}},
            {"id":"bass","code":"AUD-008","label":{"en":"Bass level","zh":"低音调节"},
             "help":{"en":"Same check on the bass control, across its whole travel. Where there is an on-screen indicator, it must follow.",
-                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
-           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
-            "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
-                    "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
-           {"id":"mic1_priority","code":"MIC-005","skip_factory":["RHY"],"label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
-            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop to about 10% of its level — a drop of roughly 90%, so the voice is heard over a background that is almost silent — and come back to full level when you stop. A drop you have to strain to notice is a fail: on a live speaker the priority is there so the voice can be understood without turning the music down by hand.",
-                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。音乐应降到原音量的约 10%——即衰减约 90%，人声在几乎无声的背景上清晰可闻——停止说话后恢复原音量。若需要仔细分辨才能察觉衰减，即判定为异常：优先功能的意义在于无需手动调低音乐即可听清人声。"}},
-           {"id":"mic1_volume","code":"MIC-006","skip_factory":["RHY"],"label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
-            "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
-                    "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
-           {"id":"mic1_echo","code":"MIC-007","skip_factory":["RHY"],"label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
-            "help":{"en":"Say short words into MIC1 and turn the echo from minimum to maximum. The repetition must go from none to clearly audible, and the delay must stay within 0 to 280 ms: at maximum the echo must still follow the voice closely, not lag like a separate second voice. Anything longer than that stops sounding like reverberation and starts sounding like a fault.",
-                    "zh":"对麦克风 1 说短词，并将回声从最小调到最大。重复声应从无到明显可闻，延时须在 0～280 毫秒范围内：即使调到最大，回声也应紧跟人声，而不应拖成第二个人声。超过该范围就不再像混响，而像故障。"}},
-           {"id":"mic1_reverb","code":"MIC-008","skip_factory":["RHY"],"label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
-            "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
-                    "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
-           {"id":"mic2_priority","code":"MIC-005","skip_factory":["RHY"],"label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test, and the same criterion: the music must drop to about 10% of its level while you speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
-                    "zh":"拔下 MIC1，将麦克风插入 MIC2。测试方法和判定标准相同：说话时音乐应降到原音量的约 10%。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
-           {"id":"mic2_volume","code":"MIC-006","skip_factory":["RHY"],"label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
-            "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
-                    "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
-           {"id":"mic2_echo","code":"MIC-007","skip_factory":["RHY"],"label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Say short words into MIC2 and turn the echo up. Same range: 0 to 280 ms.",
-                    "zh":"对麦克风 2 说短词并加大回声。范围相同：0～280 毫秒。"}},
-           {"id":"mic2_reverb","code":"MIC-008","skip_factory":["RHY"],"label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
-            "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
-                    "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
-           {"id":"guitar","code":"AUD-009","skip_factory":["RHY"],"label":{"en":"Guitar volume","zh":"吉他音量"},
-            "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
-                    "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
+                    "zh":"对低音旋钮做同样的检查，走完全程。若有屏幕指示，应同步变化。"}},
            {"section":{"en":"Lights","zh":"灯光"},
             "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
                     "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
@@ -1194,6 +1330,7 @@ const CONFIG = {
                     "zh":"收音模式下灯光应按设计保持关闭：灯板驱动会干扰调频接收。若灯亮起，属于固件缺陷。"}}]},
 
         {"id":"AUX","optional":false,"only_factory":["YIS","RHY","EAG"],
+         "skip":["HK-BAS115A1","HK-BAS118A1"],
          "label":{"en":"AUX LINE","zh":"AUX 音频输入"},
          "steps":[
            {"en":"Select AUX mode on the speaker first","zh":"先在音箱上切换到 AUX 模式"},
@@ -1228,46 +1365,16 @@ const CONFIG = {
                     "zh":"反复按模式键走完一轮回到 AUX。显示屏应随每一次切换变化。"}},
            {"section":{"en":"Audio controls","zh":"音频控制"},
             "help":{"en":"Move each control through its full range and listen. If the reference shows the level on screen, the indicator must follow the knob.",
-                    "zh":"将每个旋钮从最小转到最大，确认屏幕显示同步变化。"}},
+                    "zh":"将每个旋钮从最小转到最大并细听。若本型号在屏幕上显示数值，指示应随旋钮同步变化。"}},
            {"id":"volume_max","code":"AUD-006","label":{"en":"Volume to maximum","zh":"音量调到最大"},
-            "help":{"en":"Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.",
-                    "zh":"缓慢将音量从最小调到最大。屏幕数值应全程同步变化，不应跳数、无死区、无刮擦杂音。"}},
+            "help":{"en":"Take the volume from minimum to maximum slowly. It must rise continuously the whole way, with no jumps, dead spots or scratchy sound, and where there is a number on the display it must follow.",
+                    "zh":"缓慢将音量从最小调到最大。全程应连续上升，不应跳变、无死区、无刮擦杂音；若屏幕显示数值，应同步变化。"}},
            {"id":"treble","code":"AUD-007","label":{"en":"Treble level","zh":"高音调节"},
             "help":{"en":"With music playing, take the treble fully down and fully up. The change must be clearly audible across the whole travel, with no dead spots and no scratchy noise as the knob turns. Where there is an on-screen indicator, it must follow.",
-                    "zh":"播放音乐时，将高音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
+                    "zh":"播放音乐时，将高音从最小调到最大。全程声音变化应清晰可辨，无死区，旋转时无刮擦杂音。若有屏幕指示，应同步变化。"}},
            {"id":"bass","code":"AUD-008","label":{"en":"Bass level","zh":"低音调节"},
             "help":{"en":"Same check on the bass control, across its whole travel. Where there is an on-screen indicator, it must follow.",
-                    "zh":"播放音乐时，将低音从最小调到最大。声音变化应清晰可辨，指示应同步变化。"}},
-           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
-            "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
-                    "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
-           {"id":"mic1_priority","code":"MIC-005","skip_factory":["RHY"],"label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
-            "help":{"en":"With music playing, press priority and speak into MIC1. The music must drop to about 10% of its level — a drop of roughly 90%, so the voice is heard over a background that is almost silent — and come back to full level when you stop. A drop you have to strain to notice is a fail: on a live speaker the priority is there so the voice can be understood without turning the music down by hand.",
-                    "zh":"在播放音乐时按下优先键并对麦克风 1 说话。音乐应降到原音量的约 10%——即衰减约 90%，人声在几乎无声的背景上清晰可闻——停止说话后恢复原音量。若需要仔细分辨才能察觉衰减，即判定为异常：优先功能的意义在于无需手动调低音乐即可听清人声。"}},
-           {"id":"mic1_volume","code":"MIC-006","skip_factory":["RHY"],"label":{"en":"MIC1 volume","zh":"麦克风 1 音量"},
-            "help":{"en":"Speak continuously into MIC1 while turning its volume from minimum to maximum. The level must rise smoothly, without cutting out or crackling.",
-                    "zh":"对麦克风 1 持续说话，同时把音量从最小调到最大。音量应平滑上升，不应中断或有爆音。"}},
-           {"id":"mic1_echo","code":"MIC-007","skip_factory":["RHY"],"label":{"en":"MIC1 echo","zh":"麦克风 1 回声"},
-            "help":{"en":"Say short words into MIC1 and turn the echo from minimum to maximum. The repetition must go from none to clearly audible, and the delay must stay within 0 to 280 ms: at maximum the echo must still follow the voice closely, not lag like a separate second voice. Anything longer than that stops sounding like reverberation and starts sounding like a fault.",
-                    "zh":"对麦克风 1 说短词，并将回声从最小调到最大。重复声应从无到明显可闻，延时须在 0～280 毫秒范围内：即使调到最大，回声也应紧跟人声，而不应拖成第二个人声。超过该范围就不再像混响，而像故障。"}},
-           {"id":"mic1_reverb","code":"MIC-008","skip_factory":["RHY"],"label":{"en":"MIC1 reverb","zh":"麦克风 1 混响"},
-            "help":{"en":"Speak into MIC1 and raise the reverb. The voice must gain body and depth, not repeat like the echo. Both controls must act independently.",
-                    "zh":"对麦克风 1 说话并加大混响。人声应变得更有空间感和厚度，而不是像回声那样重复。两个旋钮应各自独立起作用。"}},
-           {"id":"mic2_priority","code":"MIC-005","skip_factory":["RHY"],"label":{"en":"MIC2 priority button","zh":"麦克风 2 优先键"},
-            "help":{"en":"Unplug MIC1 and plug the microphone into MIC2. Same test, and the same criterion: the music must drop to about 10% of its level while you speak. Mark N/A, here and in the three points below, if this reference has only one microphone input.",
-                    "zh":"拔下 MIC1，将麦克风插入 MIC2。测试方法和判定标准相同：说话时音乐应降到原音量的约 10%。本型号只有一个麦克风接口时，本项及以下三项均标记为“不适用”。"}},
-           {"id":"mic2_volume","code":"MIC-006","skip_factory":["RHY"],"label":{"en":"MIC2 volume","zh":"麦克风 2 音量"},
-            "help":{"en":"Speak continuously into MIC2 while turning its volume from minimum to maximum.",
-                    "zh":"对麦克风 2 持续说话，同时把音量从最小调到最大。"}},
-           {"id":"mic2_echo","code":"MIC-007","skip_factory":["RHY"],"label":{"en":"MIC2 echo","zh":"麦克风 2 回声"},
-            "help":{"en":"Say short words into MIC2 and turn the echo up. Same range: 0 to 280 ms.",
-                    "zh":"对麦克风 2 说短词并加大回声。范围相同：0～280 毫秒。"}},
-           {"id":"mic2_reverb","code":"MIC-008","skip_factory":["RHY"],"label":{"en":"MIC2 reverb","zh":"麦克风 2 混响"},
-            "help":{"en":"Speak into MIC2 and raise the reverb. Echo and reverb must act independently on this input too.",
-                    "zh":"对麦克风 2 说话并加大混响。该接口上回声与混响也应各自独立起作用。"}},
-           {"id":"guitar","code":"AUD-009","skip_factory":["RHY"],"label":{"en":"Guitar volume","zh":"吉他音量"},
-            "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
-                    "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
+                    "zh":"对低音旋钮做同样的检查，走完全程。若有屏幕指示，应同步变化。"}},
            {"section":{"en":"Lights","zh":"灯光"},
             "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
                     "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
@@ -1278,7 +1385,142 @@ const CONFIG = {
             "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
                     "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}}]},
 
+        /* ------------------------------------------------------------------
+           RHYME back-panel tests. They sit here, after the source tests, so
+           that the cabinet already has something playing through it: every one
+           of them needs programme material and none of them is worth setting a
+           source up for on its own.
+           ------------------------------------------------------------------ */
+        {"id":"DSP_MODES","optional":false,"only_factory":["RHY"],"evidence":["video"],
+         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "label":{"en":"DSP MODES","zh":"DSP 模式","es":"MODOS DSP"},
+         "steps":[
+           {"en":"With audio playing, press the DSP MODE button","zh":"在有音频播放时按下 DSP 模式键","es":"Con audio sonando, pulse la tecla MODOS DSP"},
+           {"en":"Step through the whole cycle, listening on each mode","zh":"走完整个循环，逐个模式细听","es":"Recorra el ciclo completo, escuchando en cada modo"},
+           {"en":"Write down the names exactly as this panel prints them","zh":"按本面板的印字原样记录各模式名称","es":"Anote los nombres tal como los imprime este panel"},
+           {"en":"One clip stepping through the four modes is the evidence","zh":"证据为一段依次切换四个模式的视频","es":"La evidencia es un video recorriendo los cuatro modos"}],
+         "points":[
+           {"id":"dsp_names","code":"DSP-007","label":{"en":"Panel mode names match the reference","zh":"面板模式名称与型号一致","es":"Los modos del panel corresponden a la referencia"},
+            "help":{"en":"Read the four names printed on this panel and photograph them. The fourth one changes with the model - BAJO on the HK-DEL115B1, MONITOR on the HK-EPS112A1 - so read the panel in front of you instead of working from a list. Check they match the order.",
+                    "zh":"读取本面板上印的四个模式名称并拍照。第四个随型号而变——HK-DEL115B1 为 BAJO，HK-EPS112A1 为 MONITOR——因此请以眼前的面板为准，不要照搬清单。核对其与订单是否一致。",
+                    "es":"Lea los cuatro nombres impresos en este panel y fotografíelos. El cuarto cambia según el modelo —BAJO en el HK-DEL115B1, MONITOR en el HK-EPS112A1—, así que lea el panel que tiene enfrente en vez de trabajar con una lista. Confirme que coinciden con la orden."}},
+           {"id":"dsp_led_step","code":"LED-010","label":{"en":"The LED advances one per press","zh":"每按一次指示灯前进一格","es":"El LED avanza uno por pulsación"},
+            "help":{"en":"Each press of DSP MODE must move the lit LED one place, skipping none and never lighting two at once.",
+                    "zh":"每按一次 DSP 模式键，点亮的指示灯应前进一格，不得跳过，也不得同时亮起两个。",
+                    "es":"Cada pulsación de MODOS DSP debe mover el LED encendido un puesto, sin saltarse ninguno y sin encender dos a la vez."}},
+           {"id":"dsp_cycle","code":"DSP-005","label":{"en":"The cycle returns to the first mode","zh":"循环可回到第一个模式","es":"El ciclo vuelve al primero"},
+            "help":{"en":"Keep pressing until it comes back to the first mode. It must close the cycle, not stall on the last one.",
+                    "zh":"持续按键直至回到第一个模式。应能完成循环，而不是停在最后一个上。",
+                    "es":"Siga pulsando hasta volver al primer modo. Debe cerrar el ciclo, no quedarse trabado en el último."}},
+           {"id":"dsp_audible","code":"AUD-018","label":{"en":"Each mode sounds different","zh":"各模式声音互不相同","es":"Cada modo suena distinto"},
+            "help":{"en":"With the same track playing, go through the four modes listening. Each one must change the sound audibly. Four modes that sound the same means the firmware was never loaded, and from the outside it looks identical to a good one.",
+                    "zh":"用同一首曲目走完四个模式并细听，每个模式都应使声音发生可闻的变化。四个模式声音一样，说明固件根本没有烧录，而从外观上与正常机器毫无区别。",
+                    "es":"Con la misma pista sonando, recorra los cuatro modos escuchando. Cada uno debe cambiar el sonido de forma audible. Cuatro modos que suenan igual es firmware sin cargar, y por fuera se ve idéntico a uno bueno."}},
+           {"id":"dsp_memory","code":"AUD-011","label":{"en":"The mode is kept after power off","zh":"关机后保留所选模式","es":"El modo queda guardado al apagar"},
+            "help":{"en":"Leave a mode other than the first, switch off and on. It must come back to the same one.",
+                    "zh":"停在第一个以外的模式，关机再开机，应回到同一模式。",
+                    "es":"Deje un modo distinto del primero, apague y encienda. Debe volver al mismo."}}]},
+
+        {"id":"SIGNAL_LIMIT","optional":false,"only_factory":["RHY"],"evidence":["video"],
+         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "label":{"en":"SIGNAL AND LIMIT LEDS","zh":"信号与限幅指示灯","es":"LEDS SEÑAL Y LÍMITE"},
+         "steps":[
+           {"en":"With programme playing, watch the two LEDs on the panel","zh":"在有节目声时观察面板上的两个指示灯","es":"Con programa sonando, observe los dos LED del panel"},
+           {"en":"Raise the level until LIMIT appears, then lower it","zh":"提高电平直到限幅灯点亮，再降低","es":"Suba el nivel hasta que aparezca LÍMITE y luego bájelo"}],
+         "points":[
+           {"id":"led_signal","code":"LED-008","label":{"en":"SIGNAL LED lights with signal present","zh":"有信号时信号灯点亮","es":"LED SEÑAL enciende con señal presente"},
+            "help":{"en":"With audio playing it must light and follow the programme. Dark while signal is present is a fail.",
+                    "zh":"有音频播放时应点亮并随节目变化。有信号却不亮，判定为异常。",
+                    "es":"Con audio sonando debe encender y seguir el programa. Apagado con señal presente es falla."}},
+           {"id":"led_limit","code":"LED-009","label":{"en":"LIMIT LED lights only on clipping","zh":"仅在削波时限幅灯点亮","es":"LED LÍMITE enciende sólo al saturar"},
+            "help":{"en":"Raise the volume until it appears and lower it until it goes out. A LIMIT that is always on, or that never comes on, is no use to the person on stage, who is the only one who looks at it.",
+                    "zh":"提高音量直至其点亮，再降低直至熄灭。长亮或永不点亮的限幅灯，对台上唯一会看它的人毫无用处。",
+                    "es":"Suba el volumen hasta que aparezca y bájelo hasta que se apague. Un LÍMITE siempre encendido, o que nunca enciende, no le sirve a quien está en tarima, que es el único que lo mira."}}]},
+
+        {"id":"XLR_OUT","optional":false,"only_factory":["RHY"],"evidence":[],
+         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "label":{"en":"XLR OUTPUT","zh":"XLR 输出","es":"SALIDA XLR"},
+         "steps":[
+           {"en":"Connect the XLR output to a second unit","zh":"将 XLR 输出接到第二台设备","es":"Conecte la SALIDA XLR a un segundo equipo"},
+           {"en":"Listen at the second unit, first with programme and then in silence","zh":"在第二台设备上先听节目声，再听静音状态","es":"Escuche en el segundo equipo, primero con programa y luego en silencio"}],
+         "points":[
+           {"id":"xlr_signal","code":"AUD-013","label":{"en":"Signal comes out of the XLR output","zh":"XLR 输出有信号送出","es":"Sale señal por la SALIDA XLR"},
+            "help":{"en":"Connect the output to a second unit and confirm audio arrives at working level. It is the output that gets tested least and complained about most in installations.",
+                    "zh":"将输出接到第二台设备，确认音频以可用电平送达。这是最少被测试、却在工程安装中投诉最多的一路输出。",
+                    "es":"Conecte la salida a un segundo equipo y confirme que le llega audio con nivel de uso. Es la salida que menos se prueba y la que más se reclama en instalación."}},
+           {"id":"xlr_noise","code":"AUX-003","label":{"en":"The output adds no noise","zh":"输出不带杂音","es":"La salida no mete ruido"},
+            "help":{"en":"Listen at the second unit with the cabinet silent: no hum and no hiss.",
+                    "zh":"在音箱静音时于第二台设备上细听：不应有嗡嗡声或嘶声。",
+                    "es":"Escuche en el segundo equipo con la cabina en silencio: no debe haber zumbido ni siseo."}}]},
+
+        {"id":"INPUT_CHANNELS","optional":false,"only_factory":["RHY"],"evidence":["video"],
+         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "label":{"en":"INPUT CHANNELS","zh":"输入通道","es":"CANALES DE ENTRADA"},
+         "steps":[
+           {"en":"Microphone on XLR into channel 1, then the same on a 1/4 inch plug","zh":"先用 XLR 将麦克风接入通道 1，再改用 6.35 mm 插头","es":"Micrófono por XLR en el canal 1, y después lo mismo con plug de 1/4\""},
+           {"en":"Repeat the whole thing on channel 2","zh":"在通道 2 上重复全部步骤","es":"Repita todo en el canal 2"},
+           {"en":"Line source into AUX and into the RCA inputs","zh":"将线路音源接入 AUX 及 RCA 输入","es":"Fuente de línea en AUX y en las entradas RCA"},
+           {"en":"One clip covering both channels is enough","zh":"一段涵盖两个通道的视频即可","es":"Basta un video que cubra los dos canales"}],
+         "points":[
+           {"section":{"en":"Channel 1","zh":"通道 1","es":"Canal 1"},
+            "help":{"en":"The XLR and the 1/4 inch share one combo socket. Testing only one of them is how a half-dead socket ships.",
+                    "zh":"XLR 与 6.35 mm 共用一个两用接口。只测其中一种，正是接口半损却照常出厂的原因。",
+                    "es":"El XLR y el plug de 1/4\" comparten un solo conector combo. Probar sólo uno de los dos es como sale un conector medio muerto."}},
+           {"id":"ch1_xlr","code":"MIC-001","label":{"en":"Channel 1 — XLR input","zh":"通道 1 — XLR 输入","es":"CANAL 1 — entrada XLR"},
+            "help":{"en":"Connect the microphone on XLR and speak. It must come through clean, with no hum. Move the connector inside the socket while you speak: it must not break up.",
+                    "zh":"用 XLR 接入麦克风并讲话，声音应干净无嗡声。讲话时晃动接头：不应出现断续。",
+                    "es":"Conecte el micrófono por XLR y hable. Debe oírse limpio, sin zumbido. Mueva el conector dentro del jack mientras habla: no debe entrecortarse."}},
+           {"id":"ch1_ts","code":"MEC-002","label":{"en":"Channel 1 — 1/4 inch input","zh":"通道 1 — 6.35 mm 输入","es":"CANAL 1 — entrada 1/4\""},
+            "help":{"en":"Connect on a 1/4 inch plug in the same combo socket and repeat. A badly soldered combo works on one connector and not the other, and nothing shows from outside.",
+                    "zh":"在同一两用接口上改用 6.35 mm 插头并重复测试。焊接不良的两用接口只有一种接头能用，而外观看不出任何异常。",
+                    "es":"Conecte por plug de 1/4\" en el mismo conector combo y repita. Un combo mal soldado suena por un conector y no por el otro, y por fuera no se ve nada."}},
+           {"id":"ch1_micline","code":"MEC-003","label":{"en":"Channel 1 — MIC / LINE switch","zh":"通道 1 — MIC / LINE 开关","es":"CANAL 1 — switch MIC / LÍNEA"},
+            "help":{"en":"On MIC it must amplify the microphone to working level. Move it to LINE and feed a line source: it must come in without clipping. It is the part that most often arrives stuck or wired the wrong way round.",
+                    "zh":"置于 MIC 时应将麦克风放大到可用电平；拨到 LINE 并接入线路音源时，应无削波地进入。这是最常出现卡死或接反的部件。",
+                    "es":"En MIC debe amplificar el micrófono con nivel de uso. Páselo a LÍNEA y conecte una fuente de línea: debe entrar sin saturar. Es la pieza que más llega pegada o invertida."}},
+           {"id":"ch1_vol","code":"AUD-017","label":{"en":"Channel 1 — volume knob","zh":"通道 1 — 音量旋钮","es":"CANAL 1 — perilla de volumen"},
+            "help":{"en":"Speak continuously while turning the channel volume from minimum to maximum. It must rise smoothly, with no cuts or crackle.",
+                    "zh":"持续讲话，同时将通道音量从最小转到最大。应平滑上升，无中断、无爆音。",
+                    "es":"Hable de forma continua mientras gira el volumen del canal de mínimo a máximo. Debe subir suave, sin cortes ni crujidos."}},
+           {"section":{"en":"Channel 2","zh":"通道 2","es":"Canal 2"},
+            "help":{"en":"The same four checks on the second channel.",
+                    "zh":"在第二个通道上做同样的四项检查。",
+                    "es":"Las mismas cuatro verificaciones en el segundo canal."}},
+           {"id":"ch2_xlr","code":"MIC-001","label":{"en":"Channel 2 — XLR input","zh":"通道 2 — XLR 输入","es":"CANAL 2 — entrada XLR"},
+            "help":{"en":"Same as channel 1.","zh":"与通道 1 相同。","es":"Igual que el canal 1."}},
+           {"id":"ch2_ts","code":"MEC-002","label":{"en":"Channel 2 — 1/4 inch input","zh":"通道 2 — 6.35 mm 输入","es":"CANAL 2 — entrada 1/4\""},
+            "help":{"en":"Same as channel 1.","zh":"与通道 1 相同。","es":"Igual que el canal 1."}},
+           {"id":"ch2_micline","code":"MEC-003","label":{"en":"Channel 2 — MIC / LINE switch","zh":"通道 2 — MIC / LINE 开关","es":"CANAL 2 — switch MIC / LÍNEA"},
+            "help":{"en":"Same as channel 1.","zh":"与通道 1 相同。","es":"Igual que el canal 1."}},
+           {"id":"ch2_vol","code":"AUD-017","label":{"en":"Channel 2 — volume knob","zh":"通道 2 — 音量旋钮","es":"CANAL 2 — perilla de volumen"},
+            "help":{"en":"Same as channel 1.","zh":"与通道 1 相同。","es":"Igual que el canal 1."}},
+           {"id":"ch_both","code":"MIC-004","label":{"en":"Both channels sound together","zh":"两个通道可同时发声","es":"Los dos canales suenan a la vez"},
+            "help":{"en":"With both inputs connected, speak into both. Both must be heard, without one cutting the other and without feedback.",
+                    "zh":"两路输入同时接入并同时讲话。两个声音都应听得到，不应互相切断，也不应啸叫。",
+                    "es":"Con las dos entradas conectadas, hable por las dos. Deben oírse las dos, sin que una corte a la otra y sin acople."}},
+           {"section":{"en":"Channel 3","zh":"通道 3","es":"Canal 3"},
+            "help":{"en":"The line channel: AUX and RCA. The RCA sides are checked one at a time.",
+                    "zh":"线路通道：AUX 与 RCA。RCA 左右两路需分别检查。",
+                    "es":"El canal de línea: AUX y RCA. Los lados del RCA se revisan uno a la vez."}},
+           {"id":"ch3_aux","code":"AUX-001","label":{"en":"Channel 3 — AUX 3.5 mm input","zh":"通道 3 — AUX 3.5 mm 输入","es":"CANAL 3 — entrada AUX 3.5 mm"},
+            "help":{"en":"Connect the test source on AUX. It must play on both sides, with no background noise.",
+                    "zh":"用 AUX 接入测试音源，左右两侧都应出声，且无背景杂音。",
+                    "es":"Conecte la fuente de prueba por AUX. Debe sonar por los dos lados, sin ruido de fondo."}},
+           {"id":"ch3_rca_l","code":"AUX-002","label":{"en":"Channel 3 — RCA left","zh":"通道 3 — RCA 左","es":"CANAL 3 — RCA izquierdo"},
+            "help":{"en":"Connect the left RCA only. Audio must come in, and from the correct side.",
+                    "zh":"仅接入左声道 RCA，应有音频进入，且来自正确的一侧。",
+                    "es":"Conecte sólo el RCA izquierdo. Debe entrar audio y venir del lado correcto."}},
+           {"id":"ch3_rca_r","code":"AUX-002","label":{"en":"Channel 3 — RCA right","zh":"通道 3 — RCA 右","es":"CANAL 3 — RCA derecho"},
+            "help":{"en":"Now the right one only. Tested one at a time it shows up when they arrive crossed or summed to mono, which with both plugged in is invisible.",
+                    "zh":"改为仅接右声道。分开测试才能发现左右接反或被并成单声道的情况，两路同时接入时完全看不出来。",
+                    "es":"Ahora sólo el derecho. Probados por separado se detecta que lleguen cruzados o sumados a mono, cosa que con los dos puestos no se nota."}},
+           {"id":"ch3_vol","code":"AUD-017","label":{"en":"Channel 3 — volume knob","zh":"通道 3 — 音量旋钮","es":"CANAL 3 — perilla de volumen"},
+            "help":{"en":"It must attenuate the music without touching the level of the microphones on channels 1 and 2.",
+                    "zh":"应能衰减音乐，而不影响通道 1、2 上麦克风的音量。",
+                    "es":"Debe atenuar la música sin tocar el nivel de los micrófonos de los canales 1 y 2."}}]},
+
         {"id":"DISPLAY","optional":true,"only_factory":["YIS","RHY","EAG"],
+         "skip":["HK-BAS115A1","HK-BAS118A1"],
          "label":{"en":"DISPLAY","zh":"显示屏"},
          "steps":[
            {"en":"Switch the speaker on and let the display settle","zh":"开机并等待显示屏稳定"},
@@ -1312,9 +1554,21 @@ const CONFIG = {
            {"id":"word_aux","code":"DSP-007","photo":true,
             "label":{"en":"AUX / LINE — text correct on the display","zh":"AUX / LINE — 屏显文字正确"},
             "help":{"en":"With the cable connected, select the auxiliary input, read the display and photograph it. Some references write AUX and others LINE: either is correct as long as it matches the specification for this model and is spelled properly. Mark N/A if this reference has no auxiliary input.",
-                    "zh":"接上音频线后切换到辅助输入，阅读显示内容并拍照。部分型号显示 AUX，部分显示 LINE：只要与本型号规格一致且拼写无误，两者均可。本型号没有辅助输入时标记为“不适用”。"}}]},
+                    "zh":"接上音频线后切换到辅助输入，阅读显示内容并拍照。部分型号显示 AUX，部分显示 LINE：只要与本型号规格一致且拼写无误，两者均可。本型号没有辅助输入时标记为“不适用”。"}},
+           {/* The DSP mode is the one word on a RHYME display that changes from
+                model to model - BAJO on one panel, MONITOR on the next - so it
+                is also the one the artwork is most likely to get wrong. Read on
+                screen, not on the silkscreen: the two are printed by different
+                suppliers and only the screen proves the firmware agrees. */
+            "id":"word_dsp","code":"DSP-007","photo":true,"only_factory":["RHY"],
+            "label":{"en":"DSP mode — text correct on the display","zh":"DSP 模式 — 屏显文字正确",
+                     "es":"Modo DSP — texto correcto en pantalla"},
+            "help":{"en":"Step through the DSP modes and photograph the display on each one. Read every name letter by letter and compare it against the specification for this model.",
+                    "zh":"逐一切换 DSP 模式，每个模式都拍摄显示屏。逐字母阅读每个名称，并与本型号规格核对。",
+                    "es":"Recorra los modos DSP y fotografíe la pantalla en cada uno. Lea cada nombre letra por letra y compárelo con la especificación de este modelo."}}]},
 
         {"id":"REMOTE","optional":true,"only_factory":["YIS","RHY","EAG"],
+         "skip":["HK-BAS115A1","HK-BAS118A1"],
          "label":{"en":"REMOTE CONTROL","zh":"遥控器"},
          "steps":[
            {"en":"Check the remote has a battery; remove the insulator if new","zh":"确认遥控器有电池，新品请抽出绝缘片"},
@@ -1462,7 +1716,24 @@ const CONFIG = {
            {"id":"ruedas","label":{"en":"Wheels","zh":"轮子"}},
            {"id":"num_lote","label":{"en":"Lot number","zh":"批号"},
             "help":{"en":"Close-up of the lot or batch number of the speaker: the code printed or labelled on the product itself, usually next to the specification label. Every digit must be sharp and legible in the photo, and it must match the lot recorded on the inspection paperwork. If this reference carries no lot number, photograph the serial number instead and say so in the notes.",
-                    "zh":"拍摄音箱批号（生产批次号）的特写：即印制或贴在产品本体上的编号，通常在规格标签旁边。照片中每一位数字都必须清晰可读，且必须与检验单上记录的批号一致。若本型号没有批号，则改拍序列号，并在备注中说明。"}}]},
+                    "zh":"拍摄音箱批号（生产批次号）的特写：即印制或贴在产品本体上的编号，通常在规格标签旁边。照片中每一位数字都必须清晰可读，且必须与检验单上记录的批号一致。若本型号没有批号，则改拍序列号，并在备注中说明。"}},
+           {/* RHYME panels carry the barcode silkscreened onto the panel itself
+                rather than on a stuck-on label, so a wrong number cannot be
+                peeled off and replaced: it ships on every unit of the run. The
+                three panels reviewed in August 2026 all carried the same EAN,
+                which is why this asks for the scanner and not for the eye. */
+            "id":"barcode","only_factory":["RHY"],
+            "label":{"en":"Barcode reads and matches the reference","zh":"条码可扫描且与型号一致",
+                     "es":"Código de barras legible y corresponde a la referencia"},
+            "help":{"en":"Pass a scanner over the barcode on the panel and photograph it. It must read on the first pass, and the number it returns must belong to this reference and no other. Two references sharing one code cannot be told apart in the warehouse or at the till.",
+                    "zh":"用扫描枪扫描面板上的条码并拍照。应一次读取成功，且读出的编号必须属于本型号，不能属于其他型号。两个型号共用一个条码，在仓库和收银台都无法区分。",
+                    "es":"Pase un lector sobre el código de barras del panel y fotografíelo. Debe leer al primer intento, y el número que devuelva tiene que pertenecer a esta referencia y no a otra. Dos referencias con el mismo código no se pueden diferenciar ni en bodega ni en caja."}},
+           {"id":"silkscreen","only_factory":["RHY"],
+            "label":{"en":"Panel silkscreen spelled correctly","zh":"面板丝印文字无误",
+                     "es":"Serigrafía del panel sin erratas"},
+            "help":{"en":"Photograph the panel square on, close enough to read every printed word. It is silkscreened in Spanish: read the labels of the knobs, the inputs and the warnings letter by letter. A misspelling is identical on every unit of the run and cannot be corrected afterwards.",
+                    "zh":"正对面板拍照，距离足够近以便看清每一个印字。面板为西班牙文丝印：逐字母阅读旋钮、接口和警告的标注。拼写错误会在整批产品上完全一致，且事后无法修正。",
+                    "es":"Fotografíe el panel de frente, lo bastante cerca para leer cada palabra impresa. Viene serigrafiado en español: lea letra por letra los rótulos de las perillas, las entradas y las advertencias. Una errata sale idéntica en todas las unidades de la corrida y después no se puede corregir."}}]},
 
         {"id":"ACCESSORIES","optional":false,"type":"photos",
          "only_factory":["YIS","RHY","EAG"],
@@ -1533,6 +1804,18 @@ const CONFIG = {
            {"id":"etiqueta_esp","label":{"en":"Technical specification label","zh":"技术规格标签"},
             "help":{"en":"Close-up of the label. Voltage, power, model and serial must all be legible in the photo.",
                     "zh":"标签特写。电压、功率、型号和序列号在照片中都必须清晰可读。"}},
+           {/* The certification marks differ between RHYME panels: the EPS112A1
+                and the BAS115A1 carry NOM, NYCE, cULus and CCC; the DEL115B1
+                shows only CE and WEEE. Which set is required depends on where
+                the order is going, and the marks are silkscreened, so the answer
+                has to be right before the run starts. A cabinet that reaches
+                Mexican customs without NOM does not get a second chance. */
+            "id":"cert_marks","only_factory":["RHY"],
+            "label":{"en":"Certification marks complete for the destination","zh":"认证标志与目的地要求相符",
+                     "es":"Marcas de certificación completas según el destino"},
+            "help":{"en":"Photograph the row of certification marks on the panel, close enough to identify each one. Compare it against the destination on the order: CE and WEEE for Europe, NOM and NYCE for Mexico, cULus for the United States and Canada, CCC for China. A missing mark stops the shipment at customs, and it is silkscreened, so it cannot be added afterwards.",
+                    "zh":"拍摄面板上一排认证标志，距离足够近以便逐个辨认。与订单的目的地核对：欧洲需 CE 和 WEEE，墨西哥需 NOM 和 NYCE，美加需 cULus，中国需 CCC。缺少标志会使货物被海关扣留，而标志为丝印，事后无法补加。",
+                    "es":"Fotografíe la fila de marcas de certificación del panel, lo bastante cerca para identificar cada una. Compárela con el destino de la orden: CE y WEEE para Europa, NOM y NYCE para México, cULus para Estados Unidos y Canadá, CCC para China. Una marca que falte detiene el embarque en aduana, y como va serigrafiada, después no se puede agregar."}},
            {"id":"caja_frente","label":{"en":"Box — front","zh":"彩盒 — 正面"},
             "help":{"en":"The main printed face of the box, the one facing the buyer on the shelf.",
                     "zh":"拍摄彩盒的主展示面，即货架上朝向顾客的一面。"}},
@@ -3017,10 +3300,10 @@ Object.assign(ES_PLAN, {
   "Press the mode button through the full cycle until it returns to SD. The display must follow every change.":"Pulse la tecla de modo un ciclo completo hasta volver a SD. La pantalla debe seguir cada cambio.",
   "Press the mode button through the full cycle until it returns to Bluetooth. The connection must survive the round trip.":"Pulse la tecla de modo un ciclo completo hasta volver a Bluetooth. La conexión debe sobrevivir el recorrido.",
   "Press the mode button through the full cycle until it returns to AUX. The display must follow every change.":"Pulse la tecla de modo un ciclo completo hasta volver a AUX. La pantalla debe seguir cada cambio.",
-  "Move each control through its full range and check the on-screen indicator follows it.":"Mueva cada control en todo su recorrido y verifique que el indicador en pantalla lo siga.",
-  "Take the volume from minimum to maximum slowly. The number on the display must follow the whole way, with no jumps, dead spots or scratchy sound.":"Lleve el volumen del mínimo al máximo lentamente. El número en pantalla debe seguirlo en todo el recorrido, sin saltos, zonas muertas ni sonido rasposo.",
-  "With music playing, take the treble fully down and fully up. The change must be clearly audible and the indicator must follow it.":"Con música sonando, lleve los agudos al mínimo y al máximo. El cambio debe oírse con claridad y el indicador debe seguirlo.",
-  "With music playing, take the bass fully down and fully up. The change must be clearly audible and the indicator must follow it.":"Con música sonando, lleve los graves al mínimo y al máximo. El cambio debe oírse con claridad y el indicador debe seguirlo.",
+  "Move each control through its full range and listen. If the reference shows the level on screen, the indicator must follow the knob.":"Mueva cada control en todo su recorrido y escuche. Si la referencia muestra el nivel en pantalla, el indicador debe seguir a la perilla.",
+  "Take the volume from minimum to maximum slowly. It must rise continuously the whole way, with no jumps, dead spots or scratchy sound, and where there is a number on the display it must follow.":"Lleve el volumen del mínimo al máximo lentamente. Debe crecer de forma continua en todo el recorrido, sin saltos, zonas muertas ni sonido rasposo, y donde haya número en pantalla debe seguirlo.",
+  "With music playing, take the treble fully down and fully up. The change must be clearly audible across the whole travel, with no dead spots and no scratchy noise as the knob turns. Where there is an on-screen indicator, it must follow.":"Con música sonando, lleve los agudos al mínimo y al máximo. El cambio debe oírse con claridad en todo el recorrido, sin zonas muertas ni ruido rasposo al girar. Donde haya indicador en pantalla, debe seguirlo.",
+  "Same check on the bass control, across its whole travel. Where there is an on-screen indicator, it must follow.":"La misma verificación en la perilla de graves, en todo su recorrido. Donde haya indicador en pantalla, debe seguirlo.",
   "Playing from the USB drive, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.":"Reproduciendo desde la memoria USB, active y desactive X-BASS varias veces. El bajo debe aumentar notoriamente al activarlo y volver a su estado al desactivarlo, y la pantalla debe mostrar el cambio. Luego suba el volumen al máximo con X-BASS activo: el bajo debe mantenerse limpio, sin distorsión y sin traqueteo del woofer.",
   "Playing from the SD card, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.":"Reproduciendo desde la tarjeta SD, active y desactive X-BASS varias veces. El bajo debe aumentar notoriamente al activarlo y volver a su estado al desactivarlo, y la pantalla debe mostrar el cambio. Luego suba el volumen al máximo con X-BASS activo: el bajo debe mantenerse limpio, sin distorsión y sin traqueteo del woofer.",
   "Playing over Bluetooth, switch X-BASS on and off several times. The low end must jump noticeably when it is on and go back when it is off, and the display must show the change. Then raise the volume to maximum with X-BASS on: the bass must stay clean, with no distortion and no rattle from the woofer.":"Reproduciendo por Bluetooth, active y desactive X-BASS varias veces. El bajo debe aumentar notoriamente al activarlo y volver a su estado al desactivarlo, y la pantalla debe mostrar el cambio. Luego suba el volumen al máximo con X-BASS activo: el bajo debe mantenerse limpio, sin distorsión y sin traqueteo del woofer.",
@@ -3265,6 +3548,10 @@ const T = {
   speaker_short:"S%n",
   time_start:"Start time", time_end:"End time", duration:"Duration",
   dur_hm:"%h h %m min", dur_m:"%m min",
+  dur_hms:"%h h %m min %s s", dur_ms:"%m min %s s", dur_s:"%s s",
+  test_time_note:"The time is how long the inspector had the test open in the app, from start to finish.",
+  browser_hint_t:"Open this app in Chrome",
+  browser_hint:"Opened from inside WhatsApp, WeChat or Facebook, the camera and the download of the report may not work. Tap the three dots at the top right and choose Open in browser.",
   doc_once:"This section documents the shipment, not each speaker: its photographs are taken once for the lot.",
   th_photos:"Photos", n_readings:"%n readings", no_remarks:"No remarks recorded.",
   tap_close:"tap anywhere to close",
@@ -3467,6 +3754,10 @@ const T = {
   speaker_short:"P%n",
   time_start:"Hora de inicio", time_end:"Hora de finalización", duration:"Duración",
   dur_hm:"%h h %m min", dur_m:"%m min",
+  dur_hms:"%h h %m min %s s", dur_ms:"%m min %s s", dur_s:"%s s",
+  test_time_note:"El tiempo es el que el inspector tuvo la prueba abierta en la app, de principio a fin.",
+  browser_hint_t:"Abra esta app en Chrome",
+  browser_hint:"Abierta desde dentro de WhatsApp, WeChat o Facebook, la cámara y la descarga del informe pueden no funcionar. Toque los tres puntos de arriba a la derecha y elija Abrir en el navegador.",
   doc_once:"Esta sección documenta el despacho, no cada parlante: sus fotos se toman una sola vez para el lote.",
   th_photos:"Fotos", n_readings:"%n mediciones", no_remarks:"Sin observaciones.",
   tap_close:"toque en cualquier parte para cerrar",
@@ -3658,6 +3949,10 @@ const T = {
   speaker_short:"%n 号",
   time_start:"开始时间", time_end:"结束时间", duration:"用时",
   dur_hm:"%h 小时 %m 分", dur_m:"%m 分",
+  dur_hms:"%h 小时 %m 分 %s 秒", dur_ms:"%m 分 %s 秒", dur_s:"%s 秒",
+  test_time_note:"此时间为检验员在应用中打开该测试至结束所用的时长。",
+  browser_hint_t:"请在 Chrome 中打开本应用",
+  browser_hint:"若从微信、WhatsApp 或 Facebook 内部打开，相机和报告下载可能无法使用。请点击右上角的三个点，选择“在浏览器中打开”。",
   doc_once:"本节记录的是整批货，而非每台音箱：其照片按批次拍摄一次。",
   th_photos:"照片", n_readings:"%n 项实测值", no_remarks:"无备注。",
   tap_close:"点击任意处关闭",
@@ -3907,6 +4202,13 @@ const plan = () => CONFIG.plans["default"];
    not. */
 const REF_PLAN = {"HK-PHI":"PHI"};
 const planTagOf = m => REF_PLAN[m] || "";
+/* The RHYME subwoofers are not tagged here on purpose. A tag is exclusive, and
+   the two BAS references still run the photographic sections — external parts,
+   accessories, printed material, internal parts — exactly like every other
+   cabinet. Tagging them would have meant duplicating those four tests under a
+   second tag, and a correction made twice is a correction made once. They are
+   scoped instead by name: `only` on the three tests that are theirs, `skip` on
+   the ones that assume a full-range cabinet. */
 
 function fits(o){
   if(o.only && o.only.indexOf(S.model) < 0) return false;
@@ -3966,6 +4268,36 @@ function durationText(from, to){
   const mins = Math.round((to - from) / 60000);
   const h = Math.floor(mins / 60), m = mins % 60;
   return h ? fmt("dur_hm",{h, m}) : fmt("dur_m",{m});
+}
+/* How long one test took, printed to the second. The app has always recorded
+   this - it is stamped on the row when the test is closed - and never showed it
+   anywhere, so nobody could see where the operator's shift actually goes. To
+   the second and not to the minute because most tests finish inside two, and
+   rounded to minutes half the plan would read the same number. */
+function secondsText(sec){
+  /* Zero and missing print the same: nothing. A record from a build that did
+     not stamp the time has no time, and no test is finished in under a second,
+     so there is no case where the two need telling apart. */
+  if(!sec) return "";
+  const s = Math.max(0, Math.round(sec));
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
+  const pad = n => String(n).padStart(2, "0");
+  if(h) return fmt("dur_hms",{h, m:pad(m), s:pad(r)});
+  if(m) return fmt("dur_ms",{m, s:pad(r)});
+  return fmt("dur_s",{s:r});
+}
+/* The seconds a test took across the inspection. A photographic section is
+   documented once for the whole lot, so its time belongs to the first unit and
+   adding the others would multiply a number nobody measured; every other test
+   is run on each unit in turn, so those do add up. */
+function testSeconds(b){
+  if(b.isDoc){ const r0 = unitRows(0)[b.i]; return (r0 && r0.seconds) || 0; }
+  let s = 0;
+  allUnits().forEach(u => {
+    const r = unitRows(u)[b.i];
+    if(r && r.seconds) s += r.seconds;
+  });
+  return s;
 }
 /* When the inspection was closed. Kept on the record rather than recomputed, so
    a report printed again tomorrow shows the same duration as the first one. */
@@ -5238,6 +5570,10 @@ td.v{font-weight:400}
 .p{color:#17743a;font-weight:700}
 .f{color:#b3261e;font-weight:700}
 .na{color:#7a8a99}
+/* The time a test took, under its name. Quiet on purpose: it is context for
+   the result on the same row, not a result of its own. */
+.ttime{font-size:7.5pt;color:#8fa1b3;font-style:italic;margin-top:2px;
+  font-weight:400}
 .grid{display:flex;flex-wrap:wrap;margin:0 -4px}
 .cell{width:50%;padding:4px;page-break-inside:avoid;break-inside:avoid}
 .cell .ph{position:relative;border:1px solid #c9d6e2}
@@ -5417,7 +5753,13 @@ ${/* The origin is already stated as a field in the table above; the paragraph
                 : r.verdict === "FAIL" ? tr("fail") : (r.verdict || tr("pending"));
     const cls = r.verdict === "FAIL" ? "f" : r.verdict === "PASS" ? "p" : "na";
 
-    h += `<tr><td>${esc(L(t.label))}</td>
+    /* How long this row took, printed under the name of the test. Under it and
+       not in a column of its own: the table is already six columns wide on a
+       portrait page, and a seventh pushes the remark column off the sheet. */
+    const rowTime = r.seconds ? secondsText(r.seconds) : "";
+
+    h += `<tr><td>${esc(L(t.label))}${
+        rowTime ? `<div class="ttime">${esc(rowTime)}</div>` : ""}</td>
       <td class="c">${ok||"—"}</td><td class="c ${bad?"f":""}">${bad||"—"}</td>
       <td class="c">${na||"—"}</td>
       <td class="c ${cls}">${label}</td>
@@ -5431,7 +5773,8 @@ ${/* The origin is already stated as a field in the table above; the paragraph
        carries the R numbers, which is what this table is for. */
   });
   });
-  h += `</table>`;
+  h += `</table>
+    <p class="note">${tr("test_time_note")}</p>`;
 
   /* ---- III WHAT WAS FOUND ----
      One line per finding, before any of them is opened. Until this existed the
@@ -5585,8 +5928,15 @@ ${/* The origin is already stated as a field in the table above; the paragraph
     (b.photos.length || b.videos.length || b.pointShots.length ||
      b.note || b.reads.length));
   badV.forEach(b => {
+    /* The time is worth as much on a test that failed as on one that passed —
+       more, in fact: a test that failed in forty seconds and one that failed
+       after twenty minutes of trying describe different problems, and the
+       report used to read the same either way. */
+    const bt = secondsText(testSeconds(b));
     h += `<div class="sec" style="background:#fdf2ee"><i>&nbsp;</i><b>${
-      esc(L(b.t.label))}</b><em style="margin-left:auto;padding:6px 12px;
+      esc(L(b.t.label))}</b>${bt ? `<span style="padding:6px 0 6px 10px;
+      font-size:8pt;color:#a8887a;font-style:italic">${esc(bt)}</span>` : ""
+      }<em style="margin-left:auto;padding:6px 12px;
       font-style:normal;font-size:8.5pt;color:#8a6a5c">${
       tr("test_evidence")}</em></div>`;
 
@@ -5655,8 +6005,11 @@ ${/* The origin is already stated as a field in the table above; the paragraph
       if(shots) bits.push(fmt("n_photos",{n:shots}));
       if(clips) bits.push(fmt("n_videos",{n:clips}));
 
+      const okTime = secondsText(testSeconds(b));
+
       h += `<table class="okt"><tr>
-        <td class="k">${esc(L(b.t.label))}</td>
+        <td class="k">${esc(L(b.t.label))}${
+          okTime ? `<div class="ttime">${esc(okTime)}</div>` : ""}</td>
         <td class="v">
           <div><span class="${verdictClass(b.verdict === "PASS" ? "PASS" : "N/A")}">${
             verdictText(b.verdict)}</span>${bits.length ? " · " + bits.join(" · ") : ""}</div>
@@ -7098,6 +7451,14 @@ function renderSetup(){
     ${langBar()}
     <h1>HOKLAN QC</h1>
     <p class="sub">${tr("subtitle")}</p>
+    ${/* Shown on the start screen and nowhere else: once an inspection is
+          running the advice is useless, because moving browsers now would throw
+          the work away. It is placed above the code field so it is read before
+          anything is typed rather than after. */""}
+    <div class="brw">
+      <b>${tr("browser_hint_t")}</b>
+      <span>${tr("browser_hint")}</span>
+    </div>
     <div class="card">
       <label>${tr("test_id")}</label>
       <input id="idDigits" inputmode="numeric" maxlength="3" autocomplete="off"
