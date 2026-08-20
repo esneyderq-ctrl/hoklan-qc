@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="7.1">
+<meta name="app-version" content="7.2">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -449,7 +449,7 @@ input.bad{border-color:var(--red)}
    customer see is the plan version, which is the one that says what was
    inspected. */
 const APP_VERSION =
-  (document.querySelector('meta[name="app-version"]') || {}).content || "7.1";
+  (document.querySelector('meta[name="app-version"]') || {}).content || "7.2";
 
 /* ==== BEGIN GENERATED CONFIG ==== */
 const CONFIG = {
@@ -645,7 +645,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 33,
+      "plan_version": 34,
       "tests": [
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
@@ -1423,6 +1423,16 @@ const CONFIG = {
            {"id":"inferior","label":{"en":"Bottom","zh":"底部"}},
            {"id":"pantalla","label":{"en":"Display","zh":"显示屏"}},
            {"id":"panel","label":{"en":"Panel","zh":"面板"}},
+           {/* RHYME only: their cabinets carry a mains selector and the others do
+                not. It gets a photograph of its own rather than being left to the
+                general panel shot, because what matters is the position it was
+                shipped in — a switch left on 120 V arrives in a 240 V country and
+                the first thing the customer does is destroy the power supply. */
+            "id":"switch_voltaje","only_factory":["RHY"],
+            "label":{"en":"120 V / 240 V switch","zh":"120V/240V 电压选择开关","es":"Switch de 120 V / 240 V"},
+            "help":{"en":"Close-up of the voltage selector, close enough to read which side it is set to. The position it leaves the factory in is what this photograph records: a cabinet shipped on 120 V to a 240 V country is destroyed the first time it is plugged in, and afterwards nobody can prove how it was set.",
+                    "zh":"拍摄电压选择开关的特写，距离足够近以便看清当前拨到哪一侧。这张照片记录的是出厂时的档位：以 120V 档发往 240V 国家的音箱，第一次通电就会烧毁，事后谁也无法证明出厂时拨在哪一档。",
+                    "es":"Primer plano del selector de voltaje, lo bastante cerca para leer en qué lado quedó. Lo que esta foto registra es la posición con la que sale de fábrica: una cabina despachada en 120 V a un país de 240 V se destruye la primera vez que se conecta, y después nadie puede demostrar cómo venía puesta."}},
            {"id":"perillas","label":{"en":"Knobs","zh":"旋钮"}},
            {"id":"malla","label":{"en":"Grille","zh":"网罩"}},
            {"id":"logo_malla","label":{"en":"Logo on the grille","zh":"网罩上的标志"},
@@ -4657,13 +4667,41 @@ function nextTest(){
       goToGap(0, missing[0].id, "photos");
       return;
     }
+    /* Every point answered, and every failure described. The photograph alone
+       used to be enough to move on, which is how a picture of a dented corner
+       left the bench filed as documentation and never as a defect. */
+    const unanswered = realPoints(t)
+      .filter(p => ANSWERED.indexOf(r.points[p.id]) < 0);
+    if(unanswered.length){
+      alert(fmt("a_pending",{n:unanswered.length}));
+      goToGap(0, unanswered[0].id, "photos");
+      return;
+    }
+    const noNote = realPoints(t).filter(p => r.points[p.id] === "FAIL" &&
+      !((r.notes && r.notes[p.id] || "").trim()));
+    if(noNote.length){
+      alert(tr("a_fail_evidence") + "\n\n" +
+        noNote.slice(0,6).map(p => "· " + L(p.label)).join("\n"));
+      goToGap(0, noNote[0].id, "photos");
+      return;
+    }
+    const failed = realPoints(t).filter(p => r.points[p.id] === "FAIL");
     const cTr = row(0).commentTr, cFor = row(0).commentTrFor;
     allUnits().forEach(u => {
       const ru = row(u);
       ru.comment = comment;
       ru.commentTr = cTr; ru.commentTrFor = cFor;
       ru.seconds = Math.round((Date.now()-ru.startedAt)/1000);
-      ru.verdict = "DOC"; ru.code = null; ru.failedPoints = [];
+      /* DOCUMENTED only while nothing failed. A photo test that found something
+         is a failed test, and it has to reach sections III and IV of the report
+         like any other — without a code, because these points carry none: the
+         written observation is what describes the defect. */
+      ru.verdict = failed.length ? "FAIL" : "DOC";
+      ru.code = null;
+      ru.failedPoints = failed.map(p => ({
+        code: p.code || null, label: L(p.label),
+        note: (r.notes && r.notes[p.id]) || ""
+      }));
     });
     advance(); return;
   }
@@ -5015,8 +5053,13 @@ function pointsTable(b){
     sec.points.forEach(p => {
       let cells = "";
       if(isDoc){
+        /* The answer, now that these points have one. It used to be inferred
+           from whether a photograph existed, which printed PASS next to a
+           picture of the very defect the inspector had photographed. Older
+           inspections carry no answer, so the old rule stays as the fallback. */
         const r0 = unitRows(0)[b.i];
-        const v = r0 && r0.points[p.id] === "NA" ? "NA"
+        const rec = r0 ? r0.points[p.id] : "";
+        const v = ANSWERED.indexOf(rec) >= 0 ? rec
                 : (r0 && shotsFor(r0, p.id).length) ? "PASS" : "";
         cells = `<td class="c" colspan="${cols}">${mark(v)}</td>`;
       } else {
@@ -5329,7 +5372,10 @@ ${/* The origin is already stated as a field in the table above; the paragraph
     const defs = realPoints(t);
     let ok = 0, bad = 0, na = 0, refs = [];
 
-    if(r.verdict === "DOC"){
+    /* DOC counted photographs because these points had no answer. They have one
+       now, so the counting rule is the same as everywhere else; the old rule
+       stays only for an inspection recorded before they did. */
+    if(r.verdict === "DOC" && !defs.some(p => ANSWERED.indexOf(r.points[p.id]) >= 0)){
       ok = defs.filter(p => shotsFor(r,p.id).length).length;
       na = defs.filter(p => r.points[p.id] === "NA").length;
     } else {
@@ -5380,7 +5426,10 @@ ${/* The origin is already stated as a field in the table above; the paragraph
         <td class="r">R${k+1}</td>
         ${S.units>1?`<td class="u">${fmt("speaker_n",{n:f.unit+1})}</td>`:""}
         <td><b>${esc(f.test)}</b> — ${esc(f.point)}</td>
-        <td class="cd">${esc(f.code)}</td></tr>`).join("")}</table>`;
+        ${/* Photographic points carry no code by design: their description is the
+              observation the inspector wrote. An empty cell says that plainly;
+              printing "undefined" said something else entirely. */""}
+        <td class="cd">${esc(f.code || "—")}</td></tr>`).join("")}</table>`;
   }
 
   /* ---- IV THE FINDINGS IN FULL ---- */
@@ -5391,9 +5440,9 @@ ${/* The origin is already stated as a field in the table above; the paragraph
         <div class="find-h"><i>R${k+1}</i>
           <span>${S.units>1?`<b style="color:#0f3f6b">${
             fmt("speaker_n",{n:f.unit+1})}</b> · `:""}<b>${esc(f.test)}</b> — ${esc(f.point)}</span>
-          <em>${esc(f.code)}</em></div>
+          <em>${esc(f.code || "")}</em></div>
         <div class="find-b">
-          <div>${esc(f.desc)}</div>
+          ${f.desc?`<div>${esc(f.desc)}</div>`:""}
           ${f.note?`<div class="note"><b>${tr("notes")}:</b> ${esc(f.note)}${
             f.noteTr}</div>`:""}
           ${f.videos && f.videos.length?`<div class="att">🎥 <b>${
@@ -7872,28 +7921,53 @@ function renderPhotoTest(t, r, done, total){
   const items = realPoints(t);
   const missing = items.filter(p =>
     shotsFor(r,p.id).length === 0 && (t.no_na || r.points[p.id] !== "NA")).length
-    + items.filter(p => valueMissing(r, p)).length;
+    + items.filter(p => valueMissing(r, p)).length
+    // Unanswered points and failures without their description block NEXT here
+    // too, exactly as they do on an ordinary test.
+    + items.filter(p => ANSWERED.indexOf(r.points[p.id]) < 0).length
+    + items.filter(p => r.points[p.id] === "FAIL" &&
+        !((r.notes && r.notes[p.id] || "").trim())).length;
 
   const allowNA = !t.no_na;
 
+  /* These points used to record only that a photograph existed. A switch left in
+     the wrong position, a dented corner, a logo printed crooked — the picture
+     showed all of it and the report said nothing, because there was nowhere to
+     say it. Now each one is answered as well as photographed, and a NO CONFORME
+     here behaves like one anywhere else: it demands the written description and
+     it carries the whole test to FAIL.
+
+     No failure code on these, by decision: the observation carries the meaning.
+     The dashboard will not be able to group them, and that is the trade accepted
+     — a code invented per point would be a list nobody maintains. */
   const rows = items.map(p => {
     const shots = shotsFor(r,p.id);
-    const na = allowNA && r.points[p.id] === "NA";
+    const v = r.points[p.id];
+    const na = allowNA && v === "NA";
     const ph = L(p.help);
     const pOpen = pointHelpOpen(p.id);
-    return `<div class="shot ${shots.length||na?"ok":""}" id="sb_${p.id}">
+    const note = (r.notes && r.notes[p.id]) || "";
+    const noteEn = appTrLine(r, "note", p.id);
+    const evOk = shots.length > 0 && note.trim() !== "";
+    const done = ANSWERED.indexOf(v) >= 0 && (na || shots.length > 0);
+    return `<div class="shot ${done?"ok":""}" id="sb_${p.id}">
       <div class="shot-head"><b>${esc(L(p.label))}</b>
         ${shots.length?`<em>${shots.length}</em>`:
-          na?`<em class="na">N/A</em>`:`<em class="miss">${tr("required").replace("— ","")}</em>`}
+          na?`<em class="na">${tr("na")}</em>`:`<em class="miss">${tr("required").replace("— ","")}</em>`}
       </div>
       ${ph?`<button class="p-help ${pOpen?"on":""}"
         onclick="togglePointHelp('${p.id}')">${pOpen?"−":"+"} ${tr("how_to")}</button>`:""}
       ${pOpen&&ph?`<div class="pt-help">${esc(ph)}</div>`:""}
-      <div class="row">
-        <button onclick="document.getElementById('s_${p.id}').click()">📷 ${tr("photo")}</button>
-        ${allowNA?`<button class="${na?"on-n":""}" style="flex:0 0 66px"
-          onclick="setPoint(0,'${p.id}','${na?"":"NA"}')">${tr("na")}</button>`:""}
+      <div class="pt" style="padding:0;border:none;background:none">
+        <span>${tr("th_result")}</span>
+        <button class="${v==="PASS"?"on-p":""}" onclick="setPoint(0,'${p.id}','PASS')">✓</button>
+        <button class="${v==="FAIL"?"on-f":""}" onclick="setPoint(0,'${p.id}','FAIL')">✗</button>
+        ${allowNA?`<button class="na-btn ${na?"on-n":""}"
+          onclick="setPoint(0,'${p.id}','NA')" title="${tr("na_title")}">${tr("na")}</button>`:""}
       </div>
+      ${na?"":`<div class="row">
+        <button onclick="document.getElementById('s_${p.id}').click()">📷 ${tr("photo")}</button>
+      </div>`}
       <input id="s_${p.id}" class="hidden" type="file" accept="image/*"
         capture="environment" multiple onchange="addMedia(this,0,'${p.id}')">
       <div class="media">${shots.map(m=>`
@@ -7902,6 +7976,15 @@ function renderPhotoTest(t, r, done, total){
         </div>`).join("")}</div>
       ${sampleBox(p)}
       ${p.measure && !na ? measureBox(p, 0, "0_" + p.id) : ""}
+      ${v==="FAIL"?`<div class="pf" id="pf_0_${p.id}">
+        <div class="pf-h">${tr("fail_evidence")}</div>
+        <textarea placeholder="${tr("notes_fail_ph")}"
+          oninput="noteTyped(0,'${p.id}', this.value)">${esc(note)}</textarea>
+        <div id="en_0_${p.id}" class="en-line${noteEn?"":" hidden"}">${
+          noteEn?esc(noteEn):""}</div>
+        <div class="${evOk?"pf-ok":"pf-w"}">${
+          evOk?tr("fail_ready"):tr("fail_required")}</div>
+      </div>`:""}
     </div>`;
   }).join("");
 
