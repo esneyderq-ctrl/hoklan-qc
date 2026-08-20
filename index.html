@@ -34,8 +34,8 @@ h2{font-size:19px;margin:0 0 4px;color:var(--accent)}
    operator has done wrong before typing a single digit. */
 .brw{background:rgba(196,132,26,.13);border:1px solid rgba(214,158,60,.42);
   border-radius:10px;padding:10px 12px;margin:0 0 14px}
-.brw b{display:block;color:#e9b45c;font-size:13px;margin-bottom:3px}
-.brw span{display:block;color:#d8c3a0;font-size:12.5px;line-height:1.5}
+.brw b{display:block;color:#e9b45c;font-size:13px;line-height:1.45;
+  font-weight:600}
 .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;
   padding:14px;margin-bottom:14px}
 label{display:block;font-size:13px;color:var(--muted);margin:12px 0 5px}
@@ -3550,8 +3550,7 @@ const T = {
   dur_hm:"%h h %m min", dur_m:"%m min",
   dur_hms:"%h h %m min %s s", dur_ms:"%m min %s s", dur_s:"%s s",
   test_time_note:"The time is how long the inspector had the test open in the app, from start to finish.",
-  browser_hint_t:"Open this app in Chrome",
-  browser_hint:"Opened from inside WhatsApp, WeChat or Facebook, the camera and the download of the report may not work. Tap the three dots at the top right and choose Open in browser.",
+  browser_hint_t:"Open this app in an external browser of your choice.",
   doc_once:"This section documents the shipment, not each speaker: its photographs are taken once for the lot.",
   th_photos:"Photos", n_readings:"%n readings", no_remarks:"No remarks recorded.",
   tap_close:"tap anywhere to close",
@@ -3756,8 +3755,7 @@ const T = {
   dur_hm:"%h h %m min", dur_m:"%m min",
   dur_hms:"%h h %m min %s s", dur_ms:"%m min %s s", dur_s:"%s s",
   test_time_note:"El tiempo es el que el inspector tuvo la prueba abierta en la app, de principio a fin.",
-  browser_hint_t:"Abra esta app en Chrome",
-  browser_hint:"Abierta desde dentro de WhatsApp, WeChat o Facebook, la cámara y la descarga del informe pueden no funcionar. Toque los tres puntos de arriba a la derecha y elija Abrir en el navegador.",
+  browser_hint_t:"Abra esta app en un navegador externo de su preferencia.",
   doc_once:"Esta sección documenta el despacho, no cada parlante: sus fotos se toman una sola vez para el lote.",
   th_photos:"Fotos", n_readings:"%n mediciones", no_remarks:"Sin observaciones.",
   tap_close:"toque en cualquier parte para cerrar",
@@ -3951,8 +3949,7 @@ const T = {
   dur_hm:"%h 小时 %m 分", dur_m:"%m 分",
   dur_hms:"%h 小时 %m 分 %s 秒", dur_ms:"%m 分 %s 秒", dur_s:"%s 秒",
   test_time_note:"此时间为检验员在应用中打开该测试至结束所用的时长。",
-  browser_hint_t:"请在 Chrome 中打开本应用",
-  browser_hint:"若从微信、WhatsApp 或 Facebook 内部打开，相机和报告下载可能无法使用。请点击右上角的三个点，选择“在浏览器中打开”。",
+  browser_hint_t:"请在您习惯使用的外部浏览器中打开本应用。",
   doc_once:"本节记录的是整批货，而非每台音箱：其照片按批次拍摄一次。",
   th_photos:"照片", n_readings:"%n 项实测值", no_remarks:"无备注。",
   tap_close:"点击任意处关闭",
@@ -7455,10 +7452,7 @@ function renderSetup(){
           running the advice is useless, because moving browsers now would throw
           the work away. It is placed above the code field so it is read before
           anything is typed rather than after. */""}
-    <div class="brw">
-      <b>${tr("browser_hint_t")}</b>
-      <span>${tr("browser_hint")}</span>
-    </div>
+    <div class="brw"><b>${tr("browser_hint_t")}</b></div>
     <div class="card">
       <label>${tr("test_id")}</label>
       <input id="idDigits" inputmode="numeric" maxlength="3" autocomplete="off"
