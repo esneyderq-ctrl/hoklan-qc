@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="7.4">
+<meta name="app-version" content="7.5">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -36,6 +36,16 @@ h2{font-size:19px;margin:0 0 4px;color:var(--accent)}
   border-radius:10px;padding:10px 12px;margin:0 0 14px}
 .brw b{display:block;color:#e9b45c;font-size:13px;line-height:1.45;
   font-weight:600}
+/* Storage trouble, on the checklist. Amber for the photographs, red for the
+   answers: they are not the same size of problem and must not look alike. */
+.swarn{background:rgba(196,132,26,.15);border:1px solid rgba(214,158,60,.5);
+  border-radius:9px;padding:8px 11px;margin:8px 0 2px}
+.swarn.bad{background:rgba(190,40,40,.16);border-color:rgba(230,90,90,.55)}
+.swarn b{display:block;color:#e9b45c;font-size:12.5px;font-weight:600}
+.swarn.bad b{color:#ff9b9b}
+.swarn span{display:block;color:#d8c3a0;font-size:12px;line-height:1.45;
+  margin-top:2px}
+.swarn.bad span{color:#f0c4c4}
 .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;
   padding:14px;margin-bottom:14px}
 label{display:block;font-size:13px;color:var(--muted);margin:12px 0 5px}
@@ -124,6 +134,14 @@ button:active{transform:scale(.99)}
 .asg span{display:block}
 .asg .w{color:var(--amber);font-size:12.5px;margin-top:4px}
 .asg.bad{background:#2b1614;border-color:#7a3a36;color:#f0c8c4}
+/* An assignment that arrived. The markup has carried this class all along and
+   nothing was ever styled for it, so the one box that means "HOKLAN has told
+   you what to inspect" looked exactly like the neutral one — while its three
+   failure states were all clearly red. Green, because the answer to the code
+   is either an instruction or a problem, and the operator should be able to
+   tell which from across the bench. */
+.asg.ok{background:#0e2a1c;border-color:#2c6b46;color:#cdeddb}
+.asg.ok b{color:var(--green)}
 .asg .req{color:var(--amber);font-size:12.5px;margin-top:6px}
 /* The unit count when it arrived fixed: the same chip, with nothing next to it
    to press. Reads as a value, not as a control left disabled. */
@@ -398,11 +416,6 @@ input.bad{border-color:var(--red)}
   border-radius:7px}
 
 #report{background:#fff;color:#16212e;padding:10px;border-radius:10px}
-/* The report, rendered for the printer but never for the screen. Off-screen at a
-   real page size rather than display:none or 1px: a browser does not paginate
-   what it has not laid out, and the first pages came out blank. */
-#printframe{position:absolute;left:-10000px;top:0;width:210mm;height:297mm;
-  border:0;visibility:hidden}
 @media print{
   /* Browsers drop background colours when printing unless told otherwise, and
      the watermark is a background: without this it prints blank. */
@@ -411,9 +424,6 @@ input.bad{border-color:var(--red)}
   .wrap{max-width:none;padding:0}
   .actions,.noprint{display:none !important}
   #report{padding:0;border-radius:0}
-  /* The frame is never what gets printed — its own window is — so it must not
-     take a page of its own if this page is printed too. */
-  #printframe{display:none !important}
 }
 </style>
 </head>
@@ -668,7 +678,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 37,
+      "plan_version": 39,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -866,10 +876,14 @@ const CONFIG = {
             "help":{"en":"Listen close to the grille at medium volume. Behind the music there must be no hum, hiss or crackle.",
                     "zh":"中等音量下靠近网罩细听，音乐背景不应有嗡嗡声、嘶声或爆音。",
                     "es":"Escuche cerca de la malla a volumen medio. Detrás de la música no debe haber zumbido, siseo ni crujidos."}},
-           {"section":{"en":"Playback controls","zh":"播放控制","es":"Controles de reproducción"},
-            "help":{"en":"With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat, record and mode.",
-                    "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环、录音和模式。",
-                    "es":"Con el audio sonando, pulse cada tecla del parlante y confirme que responde: pista, carpeta, reproducir/pausar, repetición, grabación y modo."}},
+           {/* The list used to end "…repeat, record and mode". Recording is not
+                in this group — it is two sections further down, and on RHYME it
+                is not in the plan at all — so the operator was told to press a
+                key that has no line to answer on. */
+            "section":{"en":"Playback controls","zh":"播放控制","es":"Controles de reproducción"},
+            "help":{"en":"With audio playing, press each button on the speaker and confirm it reacts: track, folder, play/pause, repeat and mode.",
+                    "zh":"在播放状态下逐个按下音箱按键并确认反应：切歌、切文件夹、播放/暂停、循环和模式。",
+                    "es":"Con el audio sonando, pulse cada tecla del parlante y confirme que responde: pista, carpeta, reproducir/pausar, repetición y modo."}},
            {"id":"song_next","code":"USB-006","label":{"en":"Next track button","zh":"下一曲按键","es":"Tecla de pista siguiente"},
             "help":{"en":"Press it three times. The track number must advance one at a time and the music must change with each press.",
                     "zh":"连续按三次。曲目编号应逐一递增，每按一次音乐都要随之切换。",
@@ -943,7 +957,8 @@ const CONFIG = {
             "help":{"en":"Pause the track with the speaker still on. The speakers must be silent: no hiss, hum or clicking.",
                     "zh":"保持开机并暂停播放。喇叭应完全安静，无嘶声、嗡声或咔哒声。",
                     "es":"Pause la pista con el parlante encendido. Los altavoces deben quedar en silencio: sin siseo, zumbido ni chasquidos."}},
-           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他","es":"Micrófonos y guitarra"},
+           {"skip_factory":["RHY"],
+            "section":{"en":"Microphones and guitar","zh":"麦克风与吉他","es":"Micrófonos y guitarra"},
             "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
                     "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。",
                     "es":"Conecte un micrófono en MIC1 y hable mientras ajusta volumen, eco y prioridad. Repita con MIC2 y luego conecte la guitarra. Marque N/A lo que esta referencia no tenga."}},
@@ -987,7 +1002,8 @@ const CONFIG = {
             "help":{"en":"With the microphone still connected from the points above. Press REC, speak for a few seconds, then stop. Play the recording back on the speaker to confirm the file was really saved.",
                     "zh":"麦克风保持上面几项测试的连接状态。按 REC，说几秒后停止。在音箱上回放该录音，确认文件确实已保存。",
                     "es":"Con el micrófono aún conectado de los puntos anteriores. Pulse REC, hable unos segundos y detenga. Reproduzca la grabación en el parlante para confirmar que el archivo quedó guardado."}},
-           {"section":{"en":"Lights","zh":"灯光","es":"Luces"},
+           {"skip_factory":["RHY"],
+            "section":{"en":"Lights","zh":"灯光","es":"Luces"},
             "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
                     "zh":"开关灯光，如有多种灯光模式请逐一切换确认。",
                     "es":"Encienda y apague la luz, y recorra los modos de luz si el parlante los tiene."}},
@@ -999,7 +1015,8 @@ const CONFIG = {
             "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
                     "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。",
                     "es":"Recorra todos los patrones de luz y vuelva al primero. Cada uno debe ser visiblemente distinto, sin LED apagados en ningún patrón."}},
-           {"section":{"en":"AC charging","zh":"AC 充电","es":"Carga AC"},
+           {"skip_factory":["RHY"],
+            "section":{"en":"AC charging","zh":"AC 充电","es":"Carga AC"},
             "help":{"en":"Connect the AC charging cable with the speaker switched on and watch the display.",
                     "zh":"在开机状态下接上 AC 充电线，观察显示屏。",
                     "es":"Conecte el cable de carga AC con el parlante encendido y observe la pantalla."}},
@@ -1099,7 +1116,8 @@ const CONFIG = {
            {"id":"erase","code":"SD-015","label":{"en":"Delete recordings button","zh":"删除录音按键"},
             "help":{"en":"Delete the recording you just made and confirm it no longer plays back. The music tracks must remain untouched.",
                     "zh":"删除刚才的录音并确认无法再回放。音乐曲目不应被一并删除。"}},
-           {"section":{"en":"Lights","zh":"灯光"},
+           {"skip_factory":["RHY"],
+            "section":{"en":"Lights","zh":"灯光"},
             "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
                     "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
            {"id":"light","code":"LED-006","skip_factory":["RHY"],"label":{"en":"Light on / off","zh":"灯光开关"},
@@ -1187,7 +1205,8 @@ const CONFIG = {
             "label":{"en":"SPL at 1 kHz, one metre","zh":"1 kHz 声压级（1 米）"},
             "help":{"en":"Everything at maximum before measuring: bass, treble, the volume on the speaker and the volume on the phone. What is being measured is what this unit can deliver, and a single control left halfway makes the reading worthless and impossible to compare with the next speaker. Then take the sound level meter and set it to PEAK and SLOW. Place it one metre from the speaker, at the same height as the woofer and pointing at it. From the phone, over Bluetooth, play a 1 kHz tone with a signal generator app. Photograph the meter with the reading visible and write the value in the box.",
                     "zh":"测量前全部调到最大：低音、高音、音箱音量和手机音量。所测的是本机能达到的水平，任何一个旋钮停在中间，这个数据就失去意义，也无法与下一台比较。然后取声级计，设置为峰值（PEAK）和慢档（SLOW），置于距音箱一米处，与低音单元同高并正对。用手机通过蓝牙，以信号发生器 App 播放 1 kHz 正弦音。拍摄声级计读数清晰可见的照片，并将数值填入方框。"}},
-           {"section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
+           {"skip_factory":["RHY"],
+            "section":{"en":"Microphones and guitar","zh":"麦克风与吉他"},
             "help":{"en":"Plug a microphone into MIC1 and speak while you adjust volume, echo and priority. Repeat with MIC2, then connect the guitar. Mark N/A for whatever this reference does not have.",
                     "zh":"将麦克风插入 MIC1，一边说话一边调节音量、混响和优先键；MIC2 重复同样操作，最后接上吉他。本型号没有的功能标记为“不适用”。"}},
            {"id":"mic1_priority","code":"MIC-005","skip_factory":["RHY"],"label":{"en":"MIC1 priority button","zh":"麦克风 1 优先键"},
@@ -1217,7 +1236,8 @@ const CONFIG = {
            {"id":"guitar","code":"AUD-009","skip_factory":["RHY"],"label":{"en":"Guitar volume","zh":"吉他音量"},
             "help":{"en":"Plug the guitar into its input and play while moving its volume control from minimum to maximum. Mark N/A if this reference has no guitar input.",
                     "zh":"将吉他插入专用接口，一边弹奏一边把吉他音量从最小调到最大。本型号没有吉他接口时标记为“不适用”。"}},
-           {"section":{"en":"Lights","zh":"灯光"},
+           {"skip_factory":["RHY"],
+            "section":{"en":"Lights","zh":"灯光"},
             "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
                     "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
            {"id":"light","code":"LED-006","skip_factory":["RHY"],"label":{"en":"Light on / off","zh":"灯光开关"},
@@ -1226,7 +1246,8 @@ const CONFIG = {
            {"id":"light_pattern","code":"LED-007","skip_factory":["RHY"],"label":{"en":"Light pattern change","zh":"灯光模式切换"},
             "help":{"en":"Step through every light pattern and back to the first. Each one must be visibly different, with no dead LEDs in any pattern.",
                     "zh":"逐一切换所有灯光模式并回到第一个。每种模式应有明显区别，且任何模式下都不应有不亮的灯珠。"}},
-           {"section":{"en":"AC charging","zh":"AC 充电"},
+           {"skip_factory":["RHY"],
+            "section":{"en":"AC charging","zh":"AC 充电"},
             "help":{"en":"Connect the AC charging cable with the speaker switched on and watch the display.",
                     "zh":"在开机状态下接上 AC 充电线，观察显示屏。"}},
            {"id":"ac_charge","code":"CHG-002","skip_factory":["RHY"],"label":{"en":"Charging indicator","zh":"充电指示"},
@@ -1238,7 +1259,8 @@ const CONFIG = {
            {"id":"tws","code":"BT-010","label":{"en":"TWS mode: link with a second speaker","zh":"TWS 模式：与第二台音箱串联"},
             "help":{"en":"Enable TWS on both speakers and wait for them to pair with each other. Play music: both must sound together and in sync. Mark N/A if this reference has no TWS.",
                     "zh":"在两台音箱上都开启 TWS，等待互相配对。播放音乐：两台应同时出声且同步。本型号没有 TWS 时标记为“不适用”。"}},
-           {"section":{"en":"Settings memory","zh":"设置记忆"},
+           {"skip_factory":["RHY"],
+            "section":{"en":"Settings memory","zh":"设置记忆"},
             "help":{"en":"Move every level to a position that is easy to recognise — not centred, not at the end — and write down where you left each one. Switch the speaker off, wait ten seconds, switch it on and check them one by one. A speaker that returns to factory levels on every power cycle is one the customer has to set up again every single time.",
                     "zh":"将每个音效调到容易辨认的位置——不要居中，也不要到底——并记下各自的位置。关机，等待十秒后开机，逐项核对。若每次开机都恢复出厂设置，客户每次使用都得重新调一遍。"}},
            {/* On RHYME's panels BASS and TREBLE are analogue pots: the knob
@@ -1322,7 +1344,8 @@ const CONFIG = {
            {"id":"bass","code":"AUD-008","label":{"en":"Bass level","zh":"低音调节"},
             "help":{"en":"Same check on the bass control, across its whole travel. Where there is an on-screen indicator, it must follow.",
                     "zh":"对低音旋钮做同样的检查，走完全程。若有屏幕指示，应同步变化。"}},
-           {"section":{"en":"Lights","zh":"灯光"},
+           {"skip_factory":["RHY"],
+            "section":{"en":"Lights","zh":"灯光"},
             "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
                     "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
            {"id":"lights_off","code":"FM-009","label":{"en":"Lights stay off in radio mode","zh":"收音模式下灯光保持关闭"},
@@ -1375,7 +1398,8 @@ const CONFIG = {
            {"id":"bass","code":"AUD-008","label":{"en":"Bass level","zh":"低音调节"},
             "help":{"en":"Same check on the bass control, across its whole travel. Where there is an on-screen indicator, it must follow.",
                     "zh":"对低音旋钮做同样的检查，走完全程。若有屏幕指示，应同步变化。"}},
-           {"section":{"en":"Lights","zh":"灯光"},
+           {"skip_factory":["RHY"],
+            "section":{"en":"Lights","zh":"灯光"},
             "help":{"en":"Switch the light on and off, and step through the light modes if the speaker has them.",
                     "zh":"开关灯光，如有多种灯光模式请逐一切换确认。"}},
            {"id":"light","code":"LED-006","skip_factory":["RHY"],"label":{"en":"Light on / off","zh":"灯光开关"},
@@ -1649,9 +1673,20 @@ const CONFIG = {
            {"id":"eq","code":"RMT-023","label":{"en":"EQ button","zh":"EQ 键"},
             "help":{"en":"Press it through every preset. The display must show the name change and the sound must be audibly different between presets.",
                     "zh":"逐一切换所有音效预设。屏幕应显示名称变化，且不同预设之间声音应有明显差异。"}},
-           {"section":{"en":"Microphone and recording","zh":"麦克风与录音"},
+           {/* Two headings for one group, because on RHYME the group is not the
+                same group: priority, REC and REC PLAY are all filtered out
+                there and only VOICE OUT survives. The old heading told the
+                RHYME inspector to record a few seconds and play them back on a
+                cabinet with no REC key and nowhere to store a recording. */
+            "skip_factory":["RHY"],
+            "section":{"en":"Microphone and recording","zh":"麦克风与录音"},
             "help":{"en":"Record a few seconds with REC, play it back with REC PLAY. Retest some keys at an angle, not only straight on.",
                     "zh":"用 REC 键录几秒，再用 REC PLAY 播放。部分按键需侧向角度再测一次，不只正对。"}},
+           {"only_factory":["RHY"],
+            "section":{"en":"Microphone","zh":"麦克风","es":"Micrófono"},
+            "help":{"en":"With a microphone connected, press the key and listen to the voice. Retest it at an angle, not only straight on.",
+                    "zh":"接上麦克风后按下该键并注意人声变化。需侧向角度再测一次，不只正对。",
+                    "es":"Con un micrófono conectado, pulse la tecla y escuche la voz. Pruébela también en ángulo, no sólo de frente."}},
            {/* The three keys below act on functions RHYME's panels do not have:
                  there is no priority key, no REC and nowhere to store a
                  recording. A remote key that the cabinet cannot obey is not a
@@ -1891,7 +1926,8 @@ const CONFIG = {
            {"en":"Remove the screws and open the speaker carefully","zh":"拆下螺丝，小心打开箱体"},
            {"en":"Photograph each component from several angles","zh":"每个部件从多个角度拍摄"},
            {"en":"Take a close-up of each component's label: brand, model and part number","zh":"拍摄每个部件标签特写：品牌、型号和料号"},
-           {"en":"For the FM antenna, show its full routing and fixing point","zh":"收音天线需拍出完整走线和固定位置"},
+           {"skip_factory":["RHY"],
+            "en":"For the FM antenna, show its full routing and fixing point","zh":"收音天线需拍出完整走线和固定位置"},
            {"en":"Mark N/A anything this reference does not include","zh":"本型号不包含的项目请标记为 N/A"}],
          "points":[
            {"id":"woofer_front","label":{"en":"Woofer — front","zh":"低音单元 — 正面"},
@@ -2113,8 +2149,12 @@ const CONFIG = {
                     "zh":"用一段视频拍摄两支麦克风和接收器。在光线下将每件产品倾斜到不同角度，不要平拍：划痕和凹陷正对看不见，斜四十五度就一目了然——这正是正面静态照片说明不了问题的原因。拍摄过程中需涵盖网罩、按键、显示屏和充电接口。",
                     "es":"Un solo video que cubra los dos micrófonos y el receptor. Incline cada uno en varios ángulos bajo la luz en vez de filmarlo de frente: un rayón y un golpe son invisibles de frente y evidentes a cuarenta y cinco grados, y por eso una foto fija del frente demuestra tan poco. En el recorrido cubra la rejilla, los botones, la pantalla y el conector de carga."}}]},
 
-        {"id":"MIC_POWER_LIGHT","optional":false,"only_factory":["LES"],"evidence":[],"per_mic":true,
-         "evidence":["video"],
+        {/* `evidence` was declared twice here — once empty and once asking for a
+              video. JavaScript keeps the last one, so the behaviour was right by
+              accident, but the object was ambiguous to read and would be
+              rejected outright by any JSON validator. */
+         "id":"MIC_POWER_LIGHT","optional":false,"only_factory":["LES"],
+         "evidence":["video"],"per_mic":true,
          "label":{"en":"POWER ON AND LIGHTS","zh":"开机与灯光","es":"ENCENDIDO Y LUCES"},
          "steps":[
            {"en":"Hold button 1 for 2 to 3 seconds to switch the microphone on","zh":"长按按键 1 约 2 至 3 秒开机","es":"Mantenga el botón 1 durante 2 a 3 segundos para encender el micrófono"},
@@ -2207,59 +2247,6 @@ const CONFIG = {
             "help":{"en":"Connect both microphones and film them in one clip. While the cable is in, the three lines must cycle to show they are charging. Then unplug and keep filming: the level must stop moving and stand at a fixed figure. A microphone whose lines keep rotating with nothing connected is reporting a charge it is not receiving.",
                     "zh":"同时接上两支麦克风，用一段视频录下。接线状态下，三格电量条应循环滚动表示正在充电。随后拔掉线并继续录制：电量显示应停止滚动并停在一个固定数值。未接线却仍在滚动的麦克风，是在显示一个它并没有在接收的充电状态。",
                     "es":"Conecte los dos micrófonos y fílmelos en un solo video. Con el cable puesto, las tres rayas deben ir rotando para indicar que están cargando. Luego desconecte y siga filmando: el nivel debe dejar de moverse y quedarse estático en una cifra fija. Un micrófono cuyas rayas siguen girando sin nada conectado está informando una carga que no está recibiendo."}}]},
-
-        /* Last, because it is the only test that opens the product: everything
-           that can be judged with it closed has already been judged, and nothing
-           after this would work if a unit came back together wrong. Not per_mic —
-           it covers the whole set, batteries and boards, in one pass with the
-           screwdriver already in hand. */
-        {"id":"MIC_BATTERY","optional":false,"only_factory":["LES"],"evidence":[],
-         "label":{"en":"INTERNAL PARTS","zh":"内部部件","es":"PARTES INTERNAS"},
-         "steps":[
-           {"en":"Open the microphones and the receiver","zh":"拆开麦克风和接收器","es":"Abra los micrófonos y el receptor"},
-           {"en":"Photograph each battery and each board","zh":"拍摄每块电池和每块电路板","es":"Fotografíe cada batería y cada placa"},
-           {"en":"The boards go on both faces: components and solder","zh":"电路板需拍两面：元件面和焊接面","es":"Las placas por las dos caras: componentes y soldadura"},
-           {"en":"Put everything back exactly as it was","zh":"完全按原样装回","es":"Vuelva a montar todo exactamente como estaba"}],
-         "points":[
-           {"section":{"en":"Internal parts","zh":"内部部件","es":"Partes internas"},
-            "help":{"en":"Photographs, not verdicts. What is inside cannot be judged from the bench in the time available, but it can be recorded: the day a batch fails in the field, these are the pictures that say whether the cell or the board changed halfway through the order.",
-                    "zh":"这里要的是照片，不是判定。内部状况无法在工位上以现有时间做出判断，但可以留存记录：将来某批货在市场上出问题时，正是这些照片能说明电芯或电路板是否在订单中途被换过。",
-                    "es":"Fotografías, no veredictos. Lo que hay dentro no se puede juzgar en el puesto con el tiempo disponible, pero sí se puede registrar: el día que un lote falle en el mercado, estas son las fotos que dicen si la celda o la placa cambiaron a mitad de la orden."}},
-           {"id":"bat_mic1","code":"WMIC-013","photo":true,
-            "label":{"en":"Microphone 1 — battery","zh":"麦克风 1 — 电池","es":"Micrófono 1 — batería"},
-            "help":{"en":"Photograph the cell out of its compartment, on the face that carries the specification: voltage, capacity in mAh and manufacturer. Look for swelling, a torn wrap or marks of heat while it is out.",
-                    "zh":"将电芯取出电池仓后拍摄带规格的一面：电压、容量（mAh）和生产厂家。取出时注意是否鼓包、外皮破损或过热痕迹。",
-                    "es":"Fotografíe la celda fuera de su compartimento, por la cara que trae la especificación: voltaje, capacidad en mAh y fabricante. Con ella afuera, busque abombamiento, envoltura rota o marcas de calor."}},
-           {"id":"bat_mic2","code":"WMIC-013","photo":true,"skip":["HK-RHO101"],
-            "label":{"en":"Microphone 2 — battery","zh":"麦克风 2 — 电池","es":"Micrófono 2 — batería"},
-            "help":{"en":"The same photograph on the second microphone. Two cells from different makers inside one box is the thing this pair of photographs exists to catch.",
-                    "zh":"对第二支麦克风拍同样的照片。同一箱内装入两个不同厂家的电芯，正是这两张照片要发现的问题。",
-                    "es":"La misma foto en el segundo micrófono. Dos celdas de fabricantes distintos dentro de una misma caja es justo lo que este par de fotos existe para detectar."}},
-           {"id":"bat_rcv","code":"WMIC-013","photo":true,
-            "label":{"en":"Receiver — battery","zh":"接收器 — 电池","es":"Receptor — batería"},
-            "help":{"en":"The receiver's cell, out of its compartment and with its printing readable.",
-                    "zh":"接收器的电芯，取出电池仓后拍摄，印字需清晰可读。",
-                    "es":"La celda del receptor, fuera de su compartimento y con su impresión legible."}},
-           {"id":"pcb_mic_front","code":"WMIC-019","photo":true,
-            "label":{"en":"Microphone board — component side","zh":"麦克风电路板 — 元件面","es":"Placa del micrófono — cara de componentes"},
-            "help":{"en":"The side carrying the chips. The board reference and the main IC markings must be readable in the photograph.",
-                    "zh":"拍摄有芯片的一面。板号和主要芯片丝印必须在照片中清晰可读。",
-                    "es":"La cara que lleva los chips. El número de placa y las marcas del circuito principal deben quedar legibles en la foto."}},
-           {"id":"pcb_mic_back","code":"WMIC-019","photo":true,
-            "label":{"en":"Microphone board — solder side","zh":"麦克风电路板 — 焊接面","es":"Placa del micrófono — cara de soldadura"},
-            "help":{"en":"The solder side. Both faces are asked for because a reworked joint or a bridge only shows from behind, and that is what a board repaired on the line looks like.",
-                    "zh":"拍摄焊接面。两面都要拍，是因为补焊或连锡只有从背面才看得到，而产线上返修过的板子就是这个样子。",
-                    "es":"La cara de soldadura. Se piden las dos caras porque una soldadura retocada o un puente solo se ven por detrás, y así es como se ve una placa reparada en la línea."}},
-           {"id":"pcb_rcv_front","code":"WMIC-019","photo":true,
-            "label":{"en":"Receiver board — component side","zh":"接收器电路板 — 元件面","es":"Placa del receptor — cara de componentes"},
-            "help":{"en":"The side carrying the chips, with the board reference readable.",
-                    "zh":"拍摄有芯片的一面，板号需清晰可读。",
-                    "es":"La cara de los chips, con el número de placa legible."}},
-           {"id":"pcb_rcv_back","code":"WMIC-019","photo":true,
-            "label":{"en":"Receiver board — solder side","zh":"接收器电路板 — 焊接面","es":"Placa del receptor — cara de soldadura"},
-            "help":{"en":"The solder side of the receiver board.",
-                    "zh":"接收器电路板的焊接面。",
-                    "es":"La cara de soldadura de la placa del receptor."}}]},
 
         /* HK-RHO101 is one microphone, HK-RHO102 is two, and HK-RHO102-BAG is
            that same pair sold with its bag. So the bag reference runs the whole
@@ -2558,6 +2545,68 @@ const CONFIG = {
                     "zh":"逐支重新开机并说话。应正常启动并有声音：只有能正常唤醒，自动关机才算正确。",
                     "es":"Vuelva a encender cada uno y hable. Deben arrancar con normalidad y oírse: apagarse solo está bien si también sabe volver."}}]},
 
+        /* Genuinely last now. It is the only test that opens the product, and
+           everything that can be judged with it closed has been judged by the
+           time it runs — which is the whole point of putting it here.
+
+           It used to sit eighth of fifteen, carrying this same justification
+           while audio, channels, range, distortion and the twenty-minute idle
+           shutdown all ran after it. Every one of those was measured on a set
+           that had just been taken apart and screwed back together: a pinched
+           antenna lead or a battery connector left half seated does not look
+           like a defect in the unit, it looks like a defect in the design, and
+           it would have been reported as one.
+
+           Not per_mic — it covers the whole set, batteries and boards, in one
+           pass with the screwdriver already in hand. */
+        {"id":"MIC_BATTERY","optional":false,"only_factory":["LES"],"evidence":[],
+         "label":{"en":"INTERNAL PARTS","zh":"内部部件","es":"PARTES INTERNAS"},
+         "steps":[
+           {"en":"Open the microphones and the receiver","zh":"拆开麦克风和接收器","es":"Abra los micrófonos y el receptor"},
+           {"en":"Photograph each battery and each board","zh":"拍摄每块电池和每块电路板","es":"Fotografíe cada batería y cada placa"},
+           {"en":"The boards go on both faces: components and solder","zh":"电路板需拍两面：元件面和焊接面","es":"Las placas por las dos caras: componentes y soldadura"},
+           {"en":"Put everything back exactly as it was","zh":"完全按原样装回","es":"Vuelva a montar todo exactamente como estaba"}],
+         "points":[
+           {"section":{"en":"Internal parts","zh":"内部部件","es":"Partes internas"},
+            "help":{"en":"Photographs, not verdicts. What is inside cannot be judged from the bench in the time available, but it can be recorded: the day a batch fails in the field, these are the pictures that say whether the cell or the board changed halfway through the order.",
+                    "zh":"这里要的是照片，不是判定。内部状况无法在工位上以现有时间做出判断，但可以留存记录：将来某批货在市场上出问题时，正是这些照片能说明电芯或电路板是否在订单中途被换过。",
+                    "es":"Fotografías, no veredictos. Lo que hay dentro no se puede juzgar en el puesto con el tiempo disponible, pero sí se puede registrar: el día que un lote falle en el mercado, estas son las fotos que dicen si la celda o la placa cambiaron a mitad de la orden."}},
+           {"id":"bat_mic1","code":"WMIC-013","photo":true,
+            "label":{"en":"Microphone 1 — battery","zh":"麦克风 1 — 电池","es":"Micrófono 1 — batería"},
+            "help":{"en":"Photograph the cell out of its compartment, on the face that carries the specification: voltage, capacity in mAh and manufacturer. Look for swelling, a torn wrap or marks of heat while it is out.",
+                    "zh":"将电芯取出电池仓后拍摄带规格的一面：电压、容量（mAh）和生产厂家。取出时注意是否鼓包、外皮破损或过热痕迹。",
+                    "es":"Fotografíe la celda fuera de su compartimento, por la cara que trae la especificación: voltaje, capacidad en mAh y fabricante. Con ella afuera, busque abombamiento, envoltura rota o marcas de calor."}},
+           {"id":"bat_mic2","code":"WMIC-013","photo":true,"skip":["HK-RHO101"],
+            "label":{"en":"Microphone 2 — battery","zh":"麦克风 2 — 电池","es":"Micrófono 2 — batería"},
+            "help":{"en":"The same photograph on the second microphone. Two cells from different makers inside one box is the thing this pair of photographs exists to catch.",
+                    "zh":"对第二支麦克风拍同样的照片。同一箱内装入两个不同厂家的电芯，正是这两张照片要发现的问题。",
+                    "es":"La misma foto en el segundo micrófono. Dos celdas de fabricantes distintos dentro de una misma caja es justo lo que este par de fotos existe para detectar."}},
+           {"id":"bat_rcv","code":"WMIC-013","photo":true,
+            "label":{"en":"Receiver — battery","zh":"接收器 — 电池","es":"Receptor — batería"},
+            "help":{"en":"The receiver's cell, out of its compartment and with its printing readable.",
+                    "zh":"接收器的电芯，取出电池仓后拍摄，印字需清晰可读。",
+                    "es":"La celda del receptor, fuera de su compartimento y con su impresión legible."}},
+           {"id":"pcb_mic_front","code":"WMIC-019","photo":true,
+            "label":{"en":"Microphone board — component side","zh":"麦克风电路板 — 元件面","es":"Placa del micrófono — cara de componentes"},
+            "help":{"en":"The side carrying the chips. The board reference and the main IC markings must be readable in the photograph.",
+                    "zh":"拍摄有芯片的一面。板号和主要芯片丝印必须在照片中清晰可读。",
+                    "es":"La cara que lleva los chips. El número de placa y las marcas del circuito principal deben quedar legibles en la foto."}},
+           {"id":"pcb_mic_back","code":"WMIC-019","photo":true,
+            "label":{"en":"Microphone board — solder side","zh":"麦克风电路板 — 焊接面","es":"Placa del micrófono — cara de soldadura"},
+            "help":{"en":"The solder side. Both faces are asked for because a reworked joint or a bridge only shows from behind, and that is what a board repaired on the line looks like.",
+                    "zh":"拍摄焊接面。两面都要拍，是因为补焊或连锡只有从背面才看得到，而产线上返修过的板子就是这个样子。",
+                    "es":"La cara de soldadura. Se piden las dos caras porque una soldadura retocada o un puente solo se ven por detrás, y así es como se ve una placa reparada en la línea."}},
+           {"id":"pcb_rcv_front","code":"WMIC-019","photo":true,
+            "label":{"en":"Receiver board — component side","zh":"接收器电路板 — 元件面","es":"Placa del receptor — cara de componentes"},
+            "help":{"en":"The side carrying the chips, with the board reference readable.",
+                    "zh":"拍摄有芯片的一面，板号需清晰可读。",
+                    "es":"La cara de los chips, con el número de placa legible."}},
+           {"id":"pcb_rcv_back","code":"WMIC-019","photo":true,
+            "label":{"en":"Receiver board — solder side","zh":"接收器电路板 — 焊接面","es":"Placa del receptor — cara de soldadura"},
+            "help":{"en":"The solder side of the receiver board.",
+                    "zh":"接收器电路板的焊接面。",
+                    "es":"La cara de soldadura de la placa del receptor."}}]},
+
         /* ===== HK-PHI — microphone and receiver module ======================
            A LESHENG product, and nothing like the RHO: one microphone, one
            receiver module, and no screen at all. Everything it has to say it
@@ -2701,13 +2750,19 @@ const CONFIG = {
          "label":{"en":"MICROPHONE CHARGING","zh":"麦克风充电","es":"CARGA DEL MICRÓFONO"},
          "steps":[
            {"en":"Connect the microphone to the charger","zh":"将麦克风接上充电器","es":"Conecte el micrófono al cargador"},
-           {"en":"Check the LED goes red","zh":"确认指示灯变为红色","es":"Verifique que el LED se pone rojo"},
-           {"en":"Unplug it and check the LED goes green","zh":"拔掉充电线，确认指示灯变为绿色","es":"Desconéctelo y verifique que el LED se pone verde"}],
+           {"en":"Photograph the LED once it lights: it must be red","zh":"待指示灯亮起后拍照：应为红色","es":"Fotografíe el LED cuando encienda: debe ser rojo"}],
          "points":[
-           {"section":{"en":"Charging","zh":"充电","es":"Carga"},
-            "help":{"en":"One colour while charging and another when it stops. The whole test is whether the LED tells those two states apart — a light that shows the same colour either way leaves the customer unable to know whether the microphone is charged before an event.",
-                    "zh":"充电时一种颜色，停止充电时另一种。本项测试的全部内容就是指示灯能否区分这两种状态——两种情况下颜色相同，客户在演出前就无法知道麦克风是否已充满。",
-                    "es":"Un color mientras carga y otro cuando deja de cargar. Toda la prueba consiste en si el LED distingue esos dos estados: una luz que muestra el mismo color en ambos casos deja al cliente sin saber si el micrófono está cargado antes de un evento."}},
+           {/* The step and the section help used to run on past the end of the
+                test: both told the operator to unplug the charger and confirm the
+                LED turned green, and the help called that comparison "the whole
+                test" — when the point that recorded it had already been removed
+                at HOKLAN's request. There was no box on screen to answer it in.
+                An instruction with nowhere to land teaches the inspector to read
+                past the instructions. */
+            "section":{"en":"Charging","zh":"充电","es":"Carga"},
+            "help":{"en":"The indicator must come on red while the microphone is charging. A charging light that never lights, or that shows the same colour charging and charged, leaves the customer unable to tell whether the microphone is ready before an event.",
+                    "zh":"充电过程中指示灯应亮红色。若指示灯始终不亮，或充电中与充满后颜色相同，客户在演出前就无法判断麦克风是否可用。",
+                    "es":"El indicador debe encender en rojo mientras el micrófono carga. Una luz de carga que nunca enciende, o que muestra el mismo color cargando y cargado, deja al cliente sin saber si el micrófono está listo antes de un evento."}},
            {"id":"phi_chg_red","code":"LED-002","photo":true,
             "label":{"en":"LED red while charging","zh":"充电时指示灯为红色","es":"LED en rojo durante la carga"},
             "help":{"en":"Connect the charger and photograph the lit LED. It must be red, and it must come on within a few seconds of plugging in.",
@@ -3471,7 +3526,7 @@ const T = {
   need_photo_n_les:"At least one photo of the sets is required, whether they pass or fail. Photos of a defect go in the red box of the point that failed.",
   by_unit_les:"Result by set",
   report_note:"A report with the photos is generated at the end.",
-  how_test:"How to perform the test", how_photos:"How to take the photos",
+  how_photos:"How to take the photos",
   remaining:"<b>%n</b> point(s) remaining. Tap a section to open it.",
   all_done:"All points answered.", checks:"Checks",
   evidence:"Evidence", required:"— required", optional:"(optional)",
@@ -3485,6 +3540,7 @@ const T = {
   need_video_les:"A video of the microphone is required, pass or fail: one take covering the points above.",
   po_ph:"Order number this shipment belongs to",
   operator_ph:"Who is running the inspection", next_po:"Order no. %p · %o",
+  acct_factory:"FACTORY %f", acct_admin:"HOKLAN ADMIN",
   measured:"Reading", a_values:"%n reading(s) still to be written down.\n\nThe photo of the instrument is not enough on its own: the number is what can be compared between one unit and the next.",
   ev_na:"Every point of this test is marked N/A: the reference does not have this function, so no photo or video is required. You can still attach one if it helps explain why.",
   ev_free:"Nothing is required here. Attach a photo or a clip if something is worth showing.",
@@ -3515,7 +3571,7 @@ const T = {
   review:"☰ Review or correct a test",
   packet:"What gets sent",
   rm_report_en:"— the full report in English, with the photos.",
-  rm_report_zh:"— the same report in Chinese. All three are always included.",
+  rm_report_zh:"— the same report in Chinese.",
   rm_csv:"— one row per point checked, in Spanish, opens in Excel.",
   rm_photos:"— %n photo(s), named by test.",
   rm_naming:"File names: evidence of a defect reads TEST_point_FAIL_speakerN; general evidence of a test reads TEST only.",
@@ -3545,14 +3601,19 @@ const T = {
   concl_fail:"%n point(s) failed. See sections III and IV.",
   nc_found:"NONCONFORMITIES FOUND", tests_done:"TESTS PERFORMED",
   tests_ok:"TESTS PASSED", test_evidence:"evidence of the test",
-  speaker_short:"S%n",
+  speaker_short:"S%n", speaker_short_les:"Set %n",
   time_start:"Start time", time_end:"End time", duration:"Duration",
   dur_hm:"%h h %m min", dur_m:"%m min",
   dur_hms:"%h h %m min %s s", dur_ms:"%m min %s s", dur_s:"%s s",
   test_time_note:"The time is how long the inspector had the test open in the app, from start to finish.",
   browser_hint_t:"Open this app in an external browser of your choice.",
+  sto_shots_t:"The photos are not being saved on this phone",
+  sto_shots:"They are still on screen, but they would not survive closing the tab. Finish and download the packet before closing anything.",
+  sto_draft_t:"This phone is not saving the inspection",
+  sto_draft:"Storage is full or blocked. Everything you have answered exists only in this tab. Do not close it: finish and download the packet now.",
   a_big_video:"The clip weighs %s.\n\nIt has been kept — evidence is never thrown away. But a long clip makes the packet slow to send and slow to open. For the rest of the inspection, film only what has to be seen: ten to twenty seconds is usually enough.",
   doc_once:"This section documents the shipment, not each speaker: its photographs are taken once for the lot.",
+  doc_once_les:"This section documents the shipment, not each set: its photographs are taken once for the lot.",
   th_photos:"Photos", n_readings:"%n readings", no_remarks:"No remarks recorded.",
   tap_close:"tap anywhere to close",
   sample_hint:"Example — take the photo like this. Tap to enlarge.",
@@ -3620,6 +3681,7 @@ const T = {
   po_auto:"Assigned automatically when the inspection starts.",
   po_factory:"Write the order number this shipment belongs to. Left empty, the inspection goes out as %p.",
   a_na_section:"Mark the whole section \"%s\" as N/A?\n\nEvery point in it, on every speaker, including any already answered.",
+  a_na_section_les:"Mark the whole section \"%s\" as N/A?\n\nEvery point in it, on every set, including any already answered.",
   a_na_section_undo:"Undo the N/A on the whole section \"%s\"?\n\nEvery point in it goes back to unanswered, on every speaker.",
   na_undo_title:"The whole section is marked N/A — press to undo",
   tests_pick:"Tests to run", all_on:"Select all", all_off:"Clear all",
@@ -3651,7 +3713,7 @@ const T = {
   a_wipe:"Erase all app data?\n\nThe unfinished inspection, the order numbers of every account and the language preference. Reports you already downloaded are not affected.",
   a_wiped:"Data cleared. Ready for a new inspection.",
   notes_es:"Spanish", notes_zh:"Chinese",
-  rm_report_es:"— the same report in Spanish."
+  rm_report_es:"— the same report in Spanish. All three are always included."
  },
  es:{
   subtitle:"CONTROL DE CALIDAD", test_id:"Código de prueba", bad_id:"Código inválido",
@@ -3677,7 +3739,7 @@ const T = {
   need_photo_n_les:"Se requiere al menos una foto de los juegos, aprueben o no. Las fotos de un defecto van en el recuadro rojo del punto que falló.",
   by_unit_les:"Resultado por juego",
   report_note:"Al final se genera un informe con las fotos.",
-  how_test:"Cómo ejecutar la prueba", how_photos:"Cómo tomar las fotos",
+  how_photos:"Cómo tomar las fotos",
   remaining:"Quedan <b>%n</b> punto(s). Toque una sección para abrirla.",
   all_done:"Todos los puntos respondidos.", checks:"Verificaciones",
   evidence:"Evidencia", required:"— obligatorio", optional:"(opcional)",
@@ -3690,6 +3752,7 @@ const T = {
   need_video_les:"Se requiere un video del micrófono, apruebe o falle: una toma que recorra los puntos de arriba.",
   po_ph:"Número de orden al que pertenece el despacho",
   operator_ph:"Quién ejecuta la inspección", next_po:"OC %p · %o",
+  acct_factory:"FÁBRICA %f", acct_admin:"ADMIN HOKLAN",
   measured:"Medición", a_values:"Faltan %n medición(es) por registrar.\n\nLa foto del instrumento no basta por sí sola: el número es lo que se puede comparar de una unidad a otra.",
   ev_na:"Todos los puntos de esta prueba están en N/A: la referencia no tiene esta función, así que no se requiere foto ni video. Puede adjuntar uno de todos modos si ayuda a explicar por qué.",
   ev_free:"Aquí no se requiere nada. Adjunte una foto o un video si hay algo que valga la pena mostrar.",
@@ -3751,14 +3814,19 @@ const T = {
   concl_fail:"%n punto(s) fallaron. Véanse las secciones III y IV.",
   nc_found:"NO CONFORMIDADES ENCONTRADAS", tests_done:"PRUEBAS REALIZADAS",
   tests_ok:"PRUEBAS APROBADAS", test_evidence:"evidencia de la prueba",
-  speaker_short:"P%n",
+  speaker_short:"P%n", speaker_short_les:"Juego %n",
   time_start:"Hora de inicio", time_end:"Hora de finalización", duration:"Duración",
   dur_hm:"%h h %m min", dur_m:"%m min",
   dur_hms:"%h h %m min %s s", dur_ms:"%m min %s s", dur_s:"%s s",
   test_time_note:"El tiempo es el que el inspector tuvo la prueba abierta en la app, de principio a fin.",
   browser_hint_t:"Abra esta app en un navegador externo de su preferencia.",
+  sto_shots_t:"Las fotos no se están guardando en este teléfono",
+  sto_shots:"Siguen en pantalla, pero no sobrevivirían al cerrar la pestaña. Termine y descargue el paquete antes de cerrar nada.",
+  sto_draft_t:"Este teléfono no está guardando la inspección",
+  sto_draft:"El almacenamiento está lleno o bloqueado. Todo lo que ha respondido existe sólo en esta pestaña. No la cierre: termine y descargue el paquete ahora.",
   a_big_video:"El video pesa %s.\n\nQuedó guardado — la evidencia no se descarta. Pero un video largo hace lento el envío y la apertura del paquete. Para el resto de la inspección, filme sólo lo que hay que ver: de diez a veinte segundos suele bastar.",
   doc_once:"Esta sección documenta el despacho, no cada parlante: sus fotos se toman una sola vez para el lote.",
+  doc_once_les:"Esta sección documenta el despacho, no cada juego: sus fotos se toman una sola vez para el lote.",
   th_photos:"Fotos", n_readings:"%n mediciones", no_remarks:"Sin observaciones.",
   tap_close:"toque en cualquier parte para cerrar",
   sample_hint:"Ejemplo — tome la foto así. Toque para ampliar.",
@@ -3819,6 +3887,7 @@ const T = {
   po_auto:"Se asigna automáticamente al iniciar la inspección.",
   po_factory:"Escriba el número de orden al que pertenece el despacho. Si lo deja vacío, la inspección sale como %p.",
   a_na_section:"¿Marcar toda la sección \"%s\" como N/A?\n\nTodos sus puntos, en todos los parlantes, incluidos los que ya haya respondido.",
+  a_na_section_les:"¿Marcar toda la sección \"%s\" como N/A?\n\nTodos sus puntos, en todos los juegos, incluidos los que ya haya respondido.",
   a_na_section_undo:"¿Deshacer el N/A de toda la sección \"%s\"?\n\nTodos sus puntos vuelven a quedar sin responder, en todos los parlantes.",
   na_undo_title:"La sección completa está en N/A — pulse para deshacer",
   tests_pick:"Pruebas a ejecutar", all_on:"Seleccionar todas", all_off:"Quitar todas",
@@ -3875,7 +3944,7 @@ const T = {
   need_photo_n_les:"无论合格与否，本项至少需要一张整套产品的照片。具体异常的照片请放在该异常项的红色方框内。",
   by_unit_les:"各套结果",
   report_note:"检验结束后将生成含照片的报告。",
-  how_test:"测试步骤", how_photos:"拍照要求",
+  how_photos:"拍照要求",
   remaining:"还有 <b>%n</b> 项未完成。点击分组展开。",
   all_done:"所有项目已完成。", checks:"检查项",
   evidence:"证据照片", required:"— 必填", optional:"（选填）",
@@ -3886,6 +3955,7 @@ const T = {
   need_video_les:"无论合格与否，本项需一段麦克风的视频：一镜拍完上方各检查项。",
   po_ph:"本批货所属的订单号",
   operator_ph:"由谁执行本次检验", next_po:"订单号 %p · %o",
+  acct_factory:"工厂 %f", acct_admin:"HOKLAN 管理端",
   measured:"实测值", a_values:"还有 %n 项实测值未填写。\n\n仅有仪器照片还不够：只有数值才能在不同整机之间进行比较。",
   ev_na:"本测试所有检查项均为不适用：本型号没有该功能，因此无需照片或录像。如有助于说明原因，仍可自行上传。",
   ev_free:"本项无强制要求。若有值得记录的内容，可自行上传照片或视频。",
@@ -3916,7 +3986,7 @@ const T = {
   review:"☰ 检查或修改某项测试",
   packet:"发送内容",
   rm_report_en:"— 英文版完整报告，含照片。",
-  rm_report_zh:"— 同一份报告的中文版。三个版本始终同时提供。",
+  rm_report_zh:"— 同一份报告的中文版。",
   rm_csv:"— 每个检查项一行，西班牙文，可用 Excel 打开。",
   rm_photos:"— %n 张照片，按测试项命名。",
   rm_naming:"命名规则：异常项为 测试_检查项_FAIL；测试的整体证据仅用 测试 名称。",
@@ -3946,14 +4016,19 @@ const T = {
   concl_fail:"共 %n 项异常，详见第 III、IV 节。",
   nc_found:"发现的异常项", tests_done:"已执行的测试",
   tests_ok:"合格的测试", test_evidence:"该测试的证据",
-  speaker_short:"%n 号",
+  speaker_short:"%n 号", speaker_short_les:"第 %n 套",
   time_start:"开始时间", time_end:"结束时间", duration:"用时",
   dur_hm:"%h 小时 %m 分", dur_m:"%m 分",
   dur_hms:"%h 小时 %m 分 %s 秒", dur_ms:"%m 分 %s 秒", dur_s:"%s 秒",
   test_time_note:"此时间为检验员在应用中打开该测试至结束所用的时长。",
   browser_hint_t:"请在您习惯使用的外部浏览器中打开本应用。",
+  sto_shots_t:"本机未能保存照片",
+  sto_shots:"照片仍显示在屏幕上，但关闭页面后将无法恢复。请先完成检验并下载资料包，再关闭页面。",
+  sto_draft_t:"本机未能保存本次检验",
+  sto_draft:"存储空间已满或被禁用。您填写的全部内容仅存在于当前页面。请勿关闭：立即完成并下载资料包。",
   a_big_video:"该视频大小为 %s。\n\n已保存——证据不会被丢弃。但视频过长会使资料包发送和打开都很慢。本次检验的其余部分，请只拍需要看到的内容：十到二十秒通常就够了。",
   doc_once:"本节记录的是整批货，而非每台音箱：其照片按批次拍摄一次。",
+  doc_once_les:"本节记录的是整批货，而非每一套：其照片按批次拍摄一次。",
   th_photos:"照片", n_readings:"%n 项实测值", no_remarks:"无备注。",
   tap_close:"点击任意处关闭",
   sample_hint:"示例 — 请照此拍摄。点击可放大。",
@@ -4014,6 +4089,7 @@ const T = {
   po_auto:"开始检验时自动分配。",
   po_factory:"请填写本批货所属的订单号。留空时，本次检验将以 %p 出具。",
   a_na_section:"将整个“%s”分组标记为不适用？\n\n该分组的所有检查项、所有音箱都会被标记，包括已经作答的项目。",
+  a_na_section_les:"将整个“%s”分组标记为不适用？\n\n该分组的所有检查项、每一套都会被标记，包括已经作答的项目。",
   a_na_section_undo:"撤销整个“%s”分组的不适用标记？\n\n该分组的所有检查项将在所有音箱上恢复为未作答。",
   na_undo_title:"整个分组已标记为不适用 — 点击可撤销",
   tests_pick:"要执行的测试", all_on:"全选", all_off:"全部取消",
@@ -4229,7 +4305,21 @@ const tests = () => {
   if(!S.pick || !S.pick.length) return all;
   return all.filter(t => S.pick.indexOf(t.id) >= 0);
 };
-const current = () => tests()[S.index];
+/* The test being answered. It clamps rather than trusting `S.index`, because
+   the index is restored from a draft written against a plan that may since have
+   been republished: a reference that lost two tests came back with the index
+   pointing past the end, `current()` returned undefined, and the checklist
+   threw on `t.type` before drawing anything. A blank page with the work still
+   on the phone and no way to reach it. Null is returned only when the reference
+   has no tests at all, which the checklist handles by going back to the start
+   screen and saying so. */
+const current = () => {
+  const all = tests();
+  if(!all.length) return null;
+  if(S.index < 0 || S.index >= all.length)
+    S.index = Math.min(Math.max(0, S.index | 0), all.length - 1);
+  return all[S.index];
+};
 /* Null on a complete inspection; otherwise how much of the plan was covered.
    Read by the report and the spreadsheet: a PASS on two tests out of fourteen
    must never be filed as if the speaker had passed everything. */
@@ -4239,7 +4329,11 @@ function partialScope(){
 }
 const modelsOf = f => Object.keys(CONFIG.models)
   .filter(m => CONFIG.models[m] === f).sort();
-const pointsOf = t => (t.points || []).filter(fits);
+/* Tolerates a missing test on purpose. Half a dozen callers reach for the
+   points of `current()`, and `current()` can be null on a draft whose reference
+   was left without a plan; every one of them wants an empty list there, not a
+   thrown error in the middle of drawing the screen. */
+const pointsOf = t => ((t && t.points) || []).filter(fits);
 const realPoints = t => pointsOf(t).filter(p => p.id);
 const ANSWERED = ["PASS","FAIL","NA"];
 
@@ -4429,6 +4523,14 @@ const DRAFT_KEY = "hoklan_qc_draft";
    photographs; what it must never do is fail to start. */
 const MEDIA_DB = "hoklan_qc_media", MEDIA_STORE = "shots";
 let mediaDb = null, mediaDbTried = false;
+/* Set when a write of the photographs failed, cleared when one succeeds. The
+   only reason it exists is that this failure is otherwise invisible until the
+   next reload. */
+let SHOTS_FAILED = false;
+/* Set when even the answers could not be written. This is the last line: past
+   here the inspection exists only in this tab, and closing it loses everything.
+   Both are shown on the checklist, where the operator can still act on them. */
+let DRAFT_FAILED = false;
 
 function openMediaDb(){
   if(mediaDbTried) return Promise.resolve(mediaDb);
@@ -4465,7 +4567,7 @@ function mediaTx(mode){
    picture that has not finished being written is one that is still on screen. */
 function saveShots(){
   const st = mediaTx("readwrite");
-  if(!st) return;
+  if(!st){ SHOTS_FAILED = true; return; }
   try{
     const keep = {};
     allUnits().forEach(u => unitRows(u).forEach(r => {
@@ -4476,6 +4578,18 @@ function saveShots(){
         st.put(m.url, m.uid);
       });
     }));
+    /* This is the only place photographs are written, so a failure here is a
+       failure nobody sees: the pictures stay on screen because they are in
+       memory, the answers save normally, and the loss only surfaces hours
+       later, on the reload, as a list of photographs to take again. The store
+       fills up or the transaction aborts and the app used to say nothing at
+       all. It says it now, and the finish screen refuses to call the packet
+       complete while it is set. */
+    st.transaction.onabort = () => { SHOTS_FAILED = true; render(); };
+    st.transaction.onerror = () => { SHOTS_FAILED = true; render(); };
+    st.transaction.oncomplete = () => {
+      if(SHOTS_FAILED){ SHOTS_FAILED = false; render(); }
+    };
     /* A photograph the inspector deleted has to leave the store too, or the
        draft shrinks on screen while the phone fills up regardless. */
     const all = st.getAllKeys();
@@ -4484,7 +4598,7 @@ function saveShots(){
       if(!st2) return;
       (all.result || []).forEach(k => { if(!keep[k]) st2.delete(k); });
     };
-  }catch(e){}
+  }catch(e){ SHOTS_FAILED = true; }
 }
 
 /* Reattaches each picture to its description. Anything missing simply stays
@@ -4563,11 +4677,25 @@ function save(){
   try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(draftForStorage(S))); ok = true; }
   catch(e){}
   if(!ok){
-    try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(withoutMedia(S))); }catch(e){}
+    /* The last line. If this one fails too, the inspection exists only in this
+       tab: closing it, or the phone reclaiming the page, takes the whole thing.
+       It used to fail exactly as silently as it succeeded — the function
+       returned either way and no screen ever said a word. */
+    try{
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(withoutMedia(S)));
+      DRAFT_FAILED = false;
+    }catch(e){ DRAFT_FAILED = true; }
     return;
   }
+  DRAFT_FAILED = false;
+  /* Only complains when there is something to lose. Before the store has
+     finished opening, and on an inspection that has not been photographed yet,
+     "the pictures could not be saved" would be a warning about nothing. */
   if(mediaDb) saveShots();
+  else if(hasShots()) SHOTS_FAILED = true;
 }
+const hasShots = () => allUnits().some(u => unitRows(u).some(r =>
+  r && (r.media || []).some(m => m.kind === "photo" && m.url)));
 function restore(){
   // Taken before anything is touched: `S` is still the small initial literal at
   // this point, so the copy is cheap and it is the only way back if the draft
@@ -5169,6 +5297,7 @@ function goToEvidence(){
 
 function nextTest(){
   const t = current();
+  if(!t){ render(); return; }   // no plan left to advance through; renderTest says so
   const comment = (document.getElementById("comment")||{}).value || "";
 
   if(t.type === "photos"){
@@ -5476,7 +5605,15 @@ function buildFindings(){
   const out = [];
   allUnits().forEach(u => unitRows(u).forEach((r,i)=>{
     if(!r || r.verdict !== "FAIL") return;
+    /* A row can outlive the test it was written against: the draft is kept on
+       the phone and the plan is republished from here. When that happens the
+       row has no test to read its points from, and reaching for `t.points`
+       threw before a single finding was printed — the whole report died on the
+       one inspection that had something to report. Skipping the row loses that
+       test's findings and keeps every other one, which is the better half of a
+       bad choice. `mediaList` already worked this way. */
     const t = tests()[i];
+    if(!t) return;
     realPoints(t).forEach(p => {
       if(r.points[p.id] !== "FAIL") return;
       // Only the evidence captured on the point itself. Falling back to the
@@ -5790,11 +5927,6 @@ td.v{font-weight:400}
 /* The note is printed as the inspector wrote it, with its English line under
    it. Same size, slightly darker: it is a translation, not a footnote. */
 .note .en{display:block;margin-top:3px;color:#33475b}
-/* The inspector's note, tucked under its row in the summary. Indented and quiet
-   so the table still reads as a column of results. */
-tr.cmt td{font-size:8.5pt;color:#5a6b7d;padding:4px 8px 7px 18px;
-  border-left:2px solid #c9d6e2;background:#fbfcfd}
-tr.cmt .en{display:block;margin-top:2px;color:#33475b}
 /* Videos cannot be embedded in a printed page, so the section that has one says
    so and names the file, which is what makes it findable in the packet. */
 .att{font-size:8.5pt;color:#0f3f6b;margin-top:6px;padding:5px 8px;
@@ -5898,7 +6030,10 @@ ${/* The origin is already stated as a field in the table above; the paragraph
   }
   unitRows(u).forEach((r,i)=>{
     if(!r) return;
+    // A row left behind by a plan that has since changed. Same rule as in
+    // buildFindings: no test, no row, rather than no report at all.
     const t = tests()[i];
+    if(!t) return;
     if(t.type === "photos" && u > 0) return;   // documented once for the lot
     const defs = realPoints(t);
     let ok = 0, bad = 0, na = 0, refs = [];
@@ -6334,30 +6469,6 @@ function showReport(){
     .then(() => { if(S.screen === "report") render(); });
 }
 
-/* PDF in one tap, from the finish screen. No browser can write a PDF file on its
-   own — what exists is the print dialog with "Save as PDF" as the destination —
-   so this calls it straight away instead of making the operator find it. The
-   English lines are filled in first: printing a report and then translating it
-   would issue the wrong document.
-
-   The report is no longer shown on screen on the way. It used to switch to the
-   report view, print from there, and leave the operator on a document he did not
-   ask to read, having to find his way back. Printing does need the pages to exist
-   somewhere, so they go into an iframe: its own document, its own stylesheet, its
-   own title. That is what makes it invisible — not a CSS trick. Injecting the
-   report's stylesheet into this page would have restyled the app underneath,
-   because it sets rules for `table`, `td` and `body`, and the operator would have
-   watched the finish screen come apart for half a second.
-
-   Viewing the report is still one tap away on that same screen, for whoever does
-   want to read it. */
-let PRINT_FRAME = null;
-
-function dropPrintFrame(){
-  if(PRINT_FRAME && PRINT_FRAME.parentNode) PRINT_FRAME.parentNode.removeChild(PRINT_FRAME);
-  PRINT_FRAME = null;
-}
-
 /* One tap, one file. The button used to open the print dialog, which is the only
    way a browser can write a real PDF — and on a factory phone that dialog is the
    step where the whole thing falls over: it is slow, it looks nothing like the
@@ -6366,73 +6477,22 @@ function dropPrintFrame(){
    What comes down instead is the report itself, byte for byte the same document
    that travels as REPORT_ES.html inside the ZIP, built from the same function in
    the same language. Whoever needs a PDF opens that file and prints it, once,
-   on a computer — which is where a signed PDF is wanted anyway. */
+   on a computer — which is where a signed PDF is wanted anyway.
+
+   The dialog version — an off-screen iframe holding its own copy of the report,
+   printed from there so the operator never saw the document — was removed once
+   nothing called it. It had grown two fallbacks of its own for the browsers that
+   refuse to write into an iframe, and all of it was dead weight behind a button
+   that goes straight to this function. */
 async function savePdfNow(){
   showSaved(tr("pdf_wait"));
   try{ await Promise.all([ensureTranslations(), ensureRefImg()]); }catch(e){}
-  saveBlob(new Blob([reportHtml()], {type:"text/html;charset=utf-8"}), fileName());
-  showSaved(fmt("saved_report",{f: fileName()}));
-}
-
-async function printPdfDialog(){
-  showSaved(tr("pdf_wait"));
-  try{ await Promise.all([ensureTranslations(), ensureRefImg()]); }catch(e){}
-
-  dropPrintFrame();
-  const fr = document.createElement("iframe");
-  fr.id = "printframe";
-  fr.setAttribute("aria-hidden", "true");
-  document.body.appendChild(fr);
-  PRINT_FRAME = fr;
-
-  let doc = null;
-  try{
-    doc = fr.contentWindow.document;
-    doc.open();
-    doc.write(reportHtml());
-    doc.close();
-    /* The suggested PDF name comes from the title of the document being printed,
-       and here that is the iframe's — so the packet name is set on it and this
-       page's own title is left alone. That title also names the home-screen
-       shortcut, which the old approach had to borrow and give back. */
-    doc.title = packetName();
-  }catch(e){ doc = null; }
-
-  showSaved("");
-
-  if(!doc){
-    // Some in-app browsers refuse to write into an iframe. Rather than fail
-    // silently, fall back to what this used to do: show the report and print it.
-    dropPrintFrame();
-    S.screen = "report";
-    render();
-    window.scrollTo(0, 0);
-    setTimeout(() => { if(S.screen === "report") printReport(); }, 600);
-    return;
-  }
-
-  // The report is hundreds of images; give the browser a frame to lay them out
-  // before the print dialog freezes the page, or the first pages come out blank.
-  setTimeout(() => {
-    try{
-      fr.contentWindow.addEventListener("afterprint",
-        () => setTimeout(dropPrintFrame, 400), {once:true});
-    }catch(e){}
-    try{
-      fr.contentWindow.focus();
-      fr.contentWindow.print();
-    }catch(e){
-      // Printing the frame was refused. Same fallback as above.
-      dropPrintFrame();
-      S.screen = "report";
-      render();
-      setTimeout(() => { if(S.screen === "report") printReport(); }, 600);
-      return;
-    }
-    // afterprint does not fire in every mobile browser; the frame must not be
-    // left behind holding every photograph in the inspection.
-    setTimeout(dropPrintFrame, 120000);
-  }, 600);
+  /* Named once and reused. Calling fileName() twice stamped the clock twice,
+     and a minute boundary between them meant the message on screen quoted a
+     file the operator would not find. */
+  const name = fileName();
+  saveBlob(new Blob([reportHtml()], {type:"text/html;charset=utf-8"}), name);
+  showSaved(fmt("saved_report",{f: name}));
 }
 
 /* The PDF has to arrive with the same name as the ZIP, so that a report sent on
@@ -6445,7 +6505,17 @@ async function printPdfDialog(){
    timeout: that event never fires in some mobile browsers, and leaving the tab
    titled with the packet name would also rename the home-screen shortcut. */
 function printReport(){
-  const prev = document.title;
+  /* The real title, captured once and kept. Reading `document.title` on every
+     press was the bug: `afterprint` does not fire on several mobile browsers,
+     so a second press while the first was still waiting captured the packet
+     name as though it were the app's title and put that back — permanently,
+     including on the home-screen shortcut. And each press left another
+     `afterprint` listener on window, since {once:true} only removes one that
+     actually fires. Both go away by remembering the title the first time and
+     keeping a single listener. */
+  if(!printReport.title) printReport.title = document.title;
+  if(printReport.timer) clearTimeout(printReport.timer);
+  const prev = printReport.title;
   let restored = false;
   const restore = () => {
     if(restored) return;
@@ -6453,8 +6523,11 @@ function printReport(){
     document.title = prev;
   };
   document.title = packetName();
-  window.addEventListener("afterprint", restore, {once:true});
-  setTimeout(restore, 120000);
+  if(!printReport.bound){
+    printReport.bound = true;
+    window.addEventListener("afterprint", () => { document.title = printReport.title; });
+  }
+  printReport.timer = setTimeout(restore, 120000);
   try{ window.print(); }
   finally{
     // On desktop print() blocks until the dialog closes, so by here the name has
@@ -6522,6 +6595,7 @@ function reportCsv(){
   unitRows(u).forEach((r,i)=>{
     if(!r) return;
     const t = tests()[i];
+    if(!t) return;   // row from a plan that has changed since; see buildFindings
     // Photo tests document the shipment, not each speaker: the pictures live
     // on speaker 1 only, so emitting them again for 2..N would write rows that
     // look pending when the documentation is in fact complete.
@@ -6927,12 +7001,7 @@ function downloadPacket(){
 /* ---------- screens ------------------------------------------------------- */
 function render(){
   if(S.screen === "setup")  renderSetup();
-  // "adminPick" was the second Admin screen; there is only one now. A draft
-  // saved by an older build can still name it, and landing on nothing would be
-  // a blank page.
-  else if(S.screen === "admin" || S.screen === "adminPick"){
-    S.screen = "admin"; renderAdmin();
-  }
+  else if(S.screen === "admin") renderAdmin();
   else if(S.screen === "test")   renderTest();
   else if(S.screen === "index")  renderIndex();
   else if(S.screen === "report") renderReport();
@@ -7011,6 +7080,10 @@ const ASSIGN_CACHE = "hoklan_qc_assign";
    that reached an empty assignment. */
 let ASSIGN = null;
 let ASSIGN_STATE = "";
+/* Counts the times the assignment code has been typed. A reply carrying an old
+   number is a reply to a question the operator has already moved on from, and
+   is dropped instead of being applied. */
+let ASSIGN_SEQ = 0;
 
 async function fetchAssignment(){
   let raw = null, fromCache = false;
@@ -7112,7 +7185,7 @@ let ADMIN_OK = false;      // per session on purpose: never remembered on disk
 let ADMIN_FACTORY = "";
 const isFactoryUser = () => !!ADMIN_FACTORY;
 
-const inAdmin = () => S.screen === "admin" || S.screen === "adminPick";
+const inAdmin = () => S.screen === "admin";
 
 /* Inside Admin only. The start screen has to be the same screen it is when the
    app is opened — nothing added, nothing highlighted — so the tabs live here,
@@ -7145,15 +7218,6 @@ function exitAdmin(){
   S.pick = null; S.fromAdmin = false;
   goHomeReset();
   S.screen = "setup";
-  window.scrollTo(0,0);
-  render();
-}
-/* Back to Admin. There is one Admin screen now, so this only matters as the way
-   home from anywhere that still calls it. Without the session flag there is no
-   Admin to go back to, so it lands on the start screen instead. */
-function goAdminTab(){
-  if(!ADMIN_OK){ exitAdmin(); return; }
-  S.screen = "admin";
   window.scrollTo(0,0);
   render();
 }
@@ -7192,8 +7256,14 @@ function renderAdmin(){
       <div class="tag">${esc(fmt("next_po",{
         p: isFactoryUser() ? ADMIN_FACTORY.charAt(0) + poDigits(peekPo())
                            : "HK" + poDigits(peekPo()),
-        o: isFactoryUser() ? "FÁBRICA " + ADMIN_FACTORY.charAt(0)
-                           : "ADMIN HOKLAN"}))}</div>
+        ${/* The name of the account, translated. It used to be built here in
+              Spanish whatever language the app was in, so a Chinese operator
+              read "ADMIN HOKLAN" and "FÁBRICA Y" on his own screen. What goes
+              into `S.operator`, and from there into the report, stays Spanish
+              on purpose: that is a record, and a record that changes wording
+              with the phone's language cannot be searched. */""}
+        o: isFactoryUser() ? fmt("acct_factory",{f: ADMIN_FACTORY.charAt(0)})
+                           : tr("acct_admin")}))}</div>
       <label>${tr("reference")}</label>
       <select id="aref" onchange="setAdminModel(this.value)">${refOptions()}</select>
       <p class="hint" style="margin-top:6px">${
@@ -7276,10 +7346,6 @@ const keyOfModel = m => CONFIG.models[m] || "";
 function digitsOfKey(key){
   return Object.keys(CONFIG.test_ids)
     .find(d => CONFIG.test_ids[d].key === key) || "";
-}
-function codeOfModel(m){
-  const d = digitsOfKey(keyOfModel(m));
-  return d ? CONFIG.test_ids[d].code : "—";
 }
 
 /* Choosing the reference no longer changes screen. Admin used to be two: a list
@@ -7464,8 +7530,17 @@ function abortTest(){
     S.pick = ASSIGN.tests.slice();
     S.units = ASSIGN.units;
   } else {
+    /* `assigned` has to come down with them. It used to survive on its own here,
+       and after a reload it always reached this branch: `ASSIGN` is a plain
+       global, it is not part of the draft, and nothing rebuilds it — so a phone
+       that had been closed and reopened aborted into `pick = null` with
+       `assigned` still standing. The reference stayed locked, START ran the
+       entire plan because start() leaves `pick` alone while assigned, and the
+       report came out headed INSPECTION REQUESTED BY HOKLAN with full scope.
+       An inspection nobody ordered, signed as if HOKLAN had ordered it. */
     S.pick = null;
     S.units = 1;
+    S.assigned = false;
   }
   S.screen = ADMIN_OK ? "admin" : "setup";
   window.scrollTo(0,0);
@@ -7746,12 +7821,26 @@ function setTestId(value){
     S.assigned = false; S.pick = null;
     ASSIGN = null; ASSIGN_STATE = "load";
     render();
+    /* The fetch is stamped, and only the newest stamp is allowed to land. On a
+       factory network this call can take a long time, and what the operator does
+       meanwhile is type another code — a test ID to get on with the work, or the
+       admin one. Without this the late answer walked in over whatever screen he
+       had reached and overwrote the reference, the factory, the test ID and the
+       unit count, then saved it. */
+    const ticket = ++ASSIGN_SEQ;
     fetchAssignment().then(raw => {
+      if(ticket !== ASSIGN_SEQ) return;
       const a = validateAssignment(raw);
       if(a.err){ ASSIGN_STATE = a.err; ASSIGN = a; render(); return; }
       applyAssignment(a);
       ASSIGN_STATE = "ok";
       render(); save();
+    }).catch(() => {
+      /* fetchAssignment resolves rather than rejects on a dead network, so this
+         only catches a fault in the handling above. Reported as an unreadable
+         assignment instead of leaving the screen spinning on "loading". */
+      if(ticket !== ASSIGN_SEQ) return;
+      ASSIGN_STATE = "assign_none"; ASSIGN = null; render();
     });
     return;
   }
@@ -7999,7 +8088,20 @@ function header(t, done, total){
       t.optional ? `<button class="na-test${allNA(t) ? " on" : ""}"
         onclick="toggleTestNA()">${
         allNA(t) ? tr("na_test_undo") : tr("na_test")}</button>` : ""}</h2>
-    <button class="jump" onclick="showIndex()">${tr("go_other")}</button>`;
+    <button class="jump" onclick="showIndex()">${tr("go_other")}</button>
+    ${storageWarning()}`;
+}
+
+/* Both storage failures, said where the operator is working rather than
+   discovered on the reload tomorrow. The draft one comes first and outranks the
+   other: if the answers are not being written, the photographs are the smaller
+   half of the problem. */
+function storageWarning(){
+  if(DRAFT_FAILED) return `<div class="swarn bad"><b>${tr("sto_draft_t")}</b>
+    <span>${tr("sto_draft")}</span></div>`;
+  if(SHOTS_FAILED) return `<div class="swarn"><b>${tr("sto_shots_t")}</b>
+    <span>${tr("sto_shots")}</span></div>`;
+  return "";
 }
 
 /* Only a targeted inspection launched from Admin can be walked out of. In the
@@ -8182,6 +8284,14 @@ function pointRow(p, u, showTag){
 
 function renderTest(){
   const t = current();
+  /* No tests at all for this reference. Only reachable from a draft whose
+     reference was left without a plan by a later publication. Saying so and
+     going back beats drawing a checklist of nothing. */
+  if(!t){
+    S.screen = "setup";
+    alert(tr("a_no_plan"));
+    return renderSetup();
+  }
   const done = S.index, total = tests().length;
 
   if(t.type === "photos") return renderPhotoTest(t, row(0), done, total);
@@ -8457,10 +8567,18 @@ function syncReady(){
   if(!t || !btn) return;
   let ready;
   if(t.type === "photos"){
+    /* The same four conditions nextTest enforces, in the same order. This used
+       to check only the photograph and the reading, so on a photographic test
+       the button went bright the moment a measurement was typed — and then
+       refused to advance, because the point had not been answered or a failure
+       had no description. A control that looks ready and is not teaches the
+       operator that the button lies. */
     const r = row(0);
     ready = realPoints(t).every(p =>
       (shotsFor(r, p.id).length > 0 || (!t.no_na && r.points[p.id] === "NA"))
-      && !valueMissing(r, p));
+      && !valueMissing(r, p)
+      && ANSWERED.indexOf(r.points[p.id]) >= 0
+      && !(r.points[p.id] === "FAIL" && !((r.notes && r.notes[p.id] || "").trim())));
   } else {
     ready = pendingCount() === 0 && evidenceComplete() &&
       openFailCount(t) === 0 && pointShotsMissing(t) === 0 &&
@@ -8545,7 +8663,11 @@ function renderPhotoTest(t, r, done, total){
     ${header(t, done, total)}
     <div class="card">
       <label style="margin-top:0">${tr("how_photos")}</label>
-      <ol class="steps">${t.steps.map(s=>`<li>${esc(L(s))}</li>`).join("")}</ol>
+      ${/* Steps are filtered like points. Without this a step could ask for
+             something no point on the screen records — INTERNAL told RHYME to
+             photograph the routing of an FM antenna these cabinets do not have,
+             because the point had been filtered out and the step had not. */""}
+      <ol class="steps">${t.steps.filter(fits).map(s=>`<li>${esc(L(s))}</li>`).join("")}</ol>
     </div>
     <p class="hint" style="margin:0 0 10px">${missing?
       fmt("remaining",{n:missing}) :
@@ -8631,8 +8753,13 @@ function renderIndex(){
         <b>${i+1}</b>
         <span>${fmt("speaker_n",{n:i+1})}
           <i>${doneN}/${tests().length}</i></span>
+        ${/* The class keeps the raw verdict, because that is what the colours
+               are keyed on; only the word the operator reads is translated.
+               Printing `v` did both jobs with one value and left PASS and FAIL
+               in English on a screen that is otherwise entirely in his own
+               language. */""}
         <em class="${v==="INCOMPLETE"?"":v}">${
-          v === "INCOMPLETE" ? "—" : v}</em></div>`;
+          v === "INCOMPLETE" ? "—" : esc(verdictText(v))}</em></div>`;
     }).join("")}</div>`;
 
   app.innerHTML = `${langBar(true)}
@@ -8691,7 +8818,13 @@ function renderDone(){
 
   app.innerHTML = `
     ${langBar(true)}
-    <div class="big" style="color:${colour};border:2px solid ${colour}">${v}</div>
+    ${/* The verdict of the whole inspection, and the largest thing on the
+           screen. It was the last place still saying PASS or INCOMPLETE in
+           English to an operator working in Chinese. The colour comes from
+           `colour`, computed from the raw value, so translating the word
+           changes nothing else. */""}
+    <div class="big" style="color:${colour};border:2px solid ${colour}">${
+      esc(verdictText(v))}</div>
     <div class="card">
       <div class="tag">${esc(S.testId)}</div><div class="tag">${esc(S.model)}</div>
       <div class="tag">${esc(inspectionDate(S.startedAt))}</div>
