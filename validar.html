@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Validar HOKLAN QC</title>
+<!-- Herramienta de mantenimiento, no de inspección. Vive junto a la app sólo
+     porque la extensión de Chrome no puede leer páginas locales, y para poder
+     revisar un archivo antes de publicarlo hace falta que la página sea web.
+     No recibe nada, no envía nada y no toca el archivo: lo lee en memoria,
+     comprueba que compile y lo arranca en un marco aislado. -->
+<style>
+:root{--bg:#0b1622;--panel:#0f2136;--ink:#e8f0f8;--muted:#8ba3bd;
+  --line:#1e3a5a;--ok:#2fbf71;--bad:#ff6b6b;--warn:#f5b942;--accent:#4da3ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding:26px}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:21px;margin:0 0 4px;letter-spacing:.5px}
+.sub{color:var(--muted);font-size:13.5px;margin:0 0 20px}
+#drop{border:2px dashed var(--line);border-radius:14px;padding:38px 20px;
+  text-align:center;background:var(--panel);cursor:pointer;transition:.15s}
+#drop.hot{border-color:var(--accent);background:#12283f}
+#drop b{display:block;font-size:16px;margin-bottom:5px}
+#drop span{color:var(--muted);font-size:13px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:15px 17px;margin-top:16px}
+.hd{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
+.dot{width:11px;height:11px;border-radius:50%;flex:none}
+.ok .dot{background:var(--ok)} .bad .dot{background:var(--bad)}
+.warn .dot{background:var(--warn)}
+.ok .hd{color:var(--ok)} .bad .hd{color:var(--bad)} .warn .hd{color:var(--warn)}
+pre{background:#08111c;border:1px solid var(--line);border-radius:9px;
+  padding:11px 13px;overflow:auto;font-size:12.5px;color:#cfe0f2;margin:10px 0 0;
+  white-space:pre-wrap;word-break:break-word}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px}
+td{padding:5px 2px;border-bottom:1px solid var(--line)}
+td:last-child{text-align:right;color:var(--muted)}
+.big{font-size:17px;font-weight:600;margin:18px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Validar HOKLAN QC</h1>
+<p class="sub">Comprueba el archivo <b>antes</b> de subirlo a GitHub. No modifica nada
+y no envía nada a internet: todo ocurre dentro de este navegador.</p>
+
+<div id="drop">
+  <b>Arrastre aquí index.html</b>
+  <span>o toque para buscarlo</span>
+  <input id="file" type="file" accept=".html" style="display:none">
+</div>
+
+<div id="out"></div>
+</div>
+
+<script>
+/* Pre-flight for the QC app. Three questions, in the order that matters:
+
+   1. Does the script parse? A syntax error anywhere kills the whole file — the
+      browser abandons it and the inspector gets a blank page with no message.
+      This has shipped to the factory twice, and it is invisible on a read:
+      a comment written as ${/* … *​/""} looks right everywhere except inside a
+      plain object, where it is not a template literal at all.
+   2. Does it boot? Parsing is not running. The file is loaded into an isolated
+      frame and any error thrown on the way up is captured.
+   3. Is the plan intact? Version, references, and the number of tests each
+      factory ends up with — the numbers that say a filter has not silently
+      emptied somebody's plan.
+
+   Results are also left on window.RESULT so they can be read from the console
+   or by a tool driving this page. */
+const drop = document.getElementById("drop");
+const file = document.getElementById("file");
+const out  = document.getElementById("out");
+
+drop.onclick = () => file.click();
+drop.ondragover = e => { e.preventDefault(); drop.classList.add("hot"); };
+drop.ondragleave = () => drop.classList.remove("hot");
+drop.ondrop = e => {
+  e.preventDefault(); drop.classList.remove("hot");
+  if(e.dataTransfer.files[0]) read(e.dataTransfer.files[0]);
+};
+file.onchange = () => { if(file.files[0]) read(file.files[0]); };
+
+function card(state, title, body){
+  const d = document.createElement("div");
+  d.className = "card " + state;
+  d.innerHTML = '<div class="hd"><i class="dot"></i>' + title + "</div>" + (body || "");
+  out.appendChild(d);
+  return d;
+}
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+function read(f){
+  out.innerHTML = "";
+  window.RESULT = {file: f.name, size: f.size, done: false};
+  const fr = new FileReader();
+  fr.onload = () => run(fr.result, f);
+  fr.readAsText(f);
+}
+
+function run(src, f){
+  const R = window.RESULT;
+
+  /* ---- 1. syntax ------------------------------------------------------ */
+  const m = src.match(/<script>([\s\S]*)<\/script>/);
+  if(!m){
+    R.syntax = "no encontré el bloque <script>";
+    card("bad", "No pude leer el archivo",
+      "<pre>No encontré un bloque &lt;script&gt; dentro del HTML.</pre>");
+    R.done = true; return;
+  }
+  const js = m[1];
+  try{
+    /* Parsed, never called. new Function compiles the body and throws on a
+       syntax error without running a line of it. */
+    new Function(js);
+    R.syntax = "ok";
+    card("ok", "La sintaxis es correcta");
+  }catch(e){
+    R.syntax = String(e.message);
+    /* The message alone does not say where. Narrowing by bisection over the
+       lines gives the first line at which the file stops parsing, which is
+       close enough to find it by eye. */
+    const lines = js.split("\n");
+    let lo = 1, hi = lines.length, at = 0;
+    while(lo <= hi){
+      const mid = (lo + hi) >> 1;
+      let bad = false;
+      try{ new Function(lines.slice(0, mid).join("\n")); }catch(err){ bad = true; }
+      if(bad){ at = mid; hi = mid - 1; } else lo = mid + 1;
+    }
+    const offset = src.slice(0, m.index).split("\n").length - 1;
+    R.syntaxLine = at ? at + offset : null;
+    card("bad", "Error de sintaxis — la app NO va a arrancar",
+      "<pre>" + esc(e.message) +
+      (at ? "\n\nAlrededor de la línea " + (at + offset) + " del archivo:\n\n" +
+            esc(lines.slice(Math.max(0, at - 3), at + 1).join("\n")) : "") +
+      "</pre><p style='margin:10px 0 0;color:#8ba3bd;font-size:13px'>" +
+      "No suba este archivo. El navegador abandona el script entero en el primer " +
+      "error y el inspector ve una pantalla en blanco sin ningún mensaje.</p>");
+    R.done = true; return;
+  }
+
+  /* ---- 2. boot -------------------------------------------------------- */
+  const fr = document.createElement("iframe");
+  fr.style.cssText = "position:absolute;left:-10000px;width:400px;height:800px;border:0";
+  document.body.appendChild(fr);
+
+  const errs = [];
+  fr.srcdoc = src;
+  fr.onload = () => {
+    const w = fr.contentWindow;
+    w.onerror = (msg, u, l) => { errs.push(msg + " (línea " + l + ")"); };
+    /* One turn of the event loop so anything the app schedules at boot has run
+       before the state is read. */
+    setTimeout(() => finish(w, fr, errs, R), 900);
+  };
+}
+
+function finish(w, fr, errs, R){
+  let arranca = false, info = null;
+  try{
+    arranca = typeof w.CONFIG !== "undefined" && typeof w.plan === "function";
+    if(arranca){
+      const S = w.S, mods = w.CONFIG.models;
+      const count = (fac, mod) => {
+        S.factory = fac; S.model = mod; S.pick = null;
+        const ts = w.planTests();
+        return {pruebas: ts.length,
+                puntos: ts.reduce((n,t)=>n+(t.points||[]).filter(p=>w.fits(p)&&p.id).length,0)};
+      };
+      const byFactory = {};
+      Object.keys(mods).forEach(k => { byFactory[mods[k]] = (byFactory[mods[k]]||0)+1; });
+      /* One reference per factory is enough to prove the plan is not empty;
+         the empty-plan sweep below covers every one of them. */
+      const vacias = [];
+      Object.keys(mods).forEach(mo => {
+        S.factory = mods[mo]; S.model = mo; S.pick = null;
+        if(!w.planTests().length) vacias.push(mo);
+      });
+      info = {
+        app: w.APP_VERSION,
+        plan: w.plan().plan_version,
+        referencias: Object.keys(mods).length,
+        porFabrica: byFactory,
+        sinPruebas: vacias,
+        muestra: {
+          "RHY · HK-DEL115B1": count("RHY","HK-DEL115B1"),
+          "RHY · HK-BAS115A1": count("RHY","HK-BAS115A1"),
+          "YIS · HK-ARC101":   count("YIS","HK-ARC101"),
+          "LES · HK-RHO102":   count("LES","HK-RHO102"),
+          "LES · HK-PHI":      count("LES","HK-PHI")
+        }
+      };
+    }
+  }catch(e){ errs.push("al leer el estado: " + e.message); }
+
+  R.arranca = arranca; R.errores = errs; R.info = info; R.done = true;
+
+  if(!arranca){
+    card("bad", "La app NO arranca",
+      "<pre>" + (errs.length ? esc(errs.join("\n"))
+        : "El script parsea pero no llegó a definir CONFIG.") + "</pre>");
+  } else if(errs.length){
+    card("warn", "Arranca, pero lanzó errores",
+      "<pre>" + esc(errs.join("\n")) + "</pre>");
+  } else {
+    card("ok", "Arranca sin errores");
+  }
+
+  if(info){
+    const rows = [];
+    rows.push(["Versión de la app", info.app]);
+    rows.push(["Versión del plan", info.plan]);
+    rows.push(["Referencias en el catálogo", info.referencias]);
+    Object.keys(info.porFabrica).forEach(k =>
+      rows.push(["&nbsp;&nbsp;· " + k, info.porFabrica[k]]));
+    Object.keys(info.muestra).forEach(k => rows.push([k,
+      info.muestra[k].pruebas + " pruebas · " + info.muestra[k].puntos + " puntos"]));
+    card("ok", "El plan",
+      "<table>" + rows.map(r =>
+        "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td></tr>").join("") + "</table>");
+
+    if(info.sinPruebas.length)
+      card("bad", "Referencias que se quedaron SIN pruebas",
+        "<pre>" + esc(info.sinPruebas.join("\n")) +
+        "</pre><p style='margin:10px 0 0;color:#8ba3bd;font-size:13px'>" +
+        "Un filtro las dejó vacías. El inspector puede escogerlas y no tendría " +
+        "nada que responder.</p>");
+    else
+      card("ok", "Todas las referencias tienen pruebas");
+  }
+
+  const bien = R.syntax === "ok" && arranca && !errs.length &&
+               info && !info.sinPruebas.length;
+  const d = document.createElement("p");
+  d.className = "big";
+  d.style.color = bien ? "var(--ok)" : "var(--bad)";
+  d.textContent = bien ? "Listo para subir." : "No lo suba todavía.";
+  out.appendChild(d);
+
+  fr.remove();
+}
+</script>
+</body>
+</html>
