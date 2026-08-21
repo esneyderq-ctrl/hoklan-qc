@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="7.9">
+<meta name="app-version" content="8.0">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -8054,9 +8054,14 @@ const CONN_IMG  = REF_IMG_DIR + "Conectores.jpg";
 function refShotsFor(t){
   const tags = realPoints(t).map(p => String(p.tag || ""));
   const out = [];
-  if(tags.some(x => /(^|\s)[BPS]\d/.test(x)))
+  /* B1 to B8 and the knob P1 are on the top panel. S1 is not: the on/off
+     switch sits on the connector plate, down beside the sockets, and that is
+     the picture that shows it. Grouping it with the buttons because its name
+     starts with a letter sent the operator of the POWER test to a photograph
+     that does not contain the only control that test is about. */
+  if(tags.some(x => /(^|\s)(B\d|P\d)/.test(x)))
     out.push({src: PANEL_IMG, label: tr("panel_ref")});
-  if(tags.some(x => /(^|\s)C\d/.test(x)))
+  if(tags.some(x => /(^|\s)(C\d|S\d)/.test(x)))
     out.push({src: CONN_IMG, label: tr("conn_ref")});
   return out;
 }
