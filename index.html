@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="7.8">
+<meta name="app-version" content="7.9">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -689,7 +689,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 40,
+      "plan_version": 41,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -2018,18 +2018,18 @@ const CONFIG = {
             "help":{"en":"Press B8 with a microphone connected. The display must name the function it has switched to, so the operator can see which of the two the knob is now moving.",
                     "zh":"在已接麦克风的状态下按 B8。显示屏应显示切换后的功能名称，以便操作员知道旋钮当前调节的是哪一个。",
                     "es":"Pulse B8 con un micrófono conectado. La pantalla debe nombrar la función a la que pasó, para que el operador vea cuál de las dos está moviendo la perilla."}},
-           {"id":"kap_mic_vol","code":"MIC-006",
-            "label":{"en":"P1 moves the mic level across 01 to 14","zh":"P1 可在 01 至 14 之间调节麦克风音量","es":"P1 mueve el nivel de micrófono de 01 a 14"},
+           {"id":"kap_mic_vol","code":"MIC-006","tag":"P1",
+            "label":{"en":"Moves the mic level across 01 to 14","zh":"可在 01 至 14 之间调节麦克风音量","es":"Mueve el nivel de micrófono de 01 a 14"},
             "help":{"en":"Speak continuously and turn P1 from one end to the other. The number on the display must run the whole way from 01 to 14, and the voice must follow it, without cutting out or crackling.",
                     "zh":"持续对麦克风说话，同时将 P1 从一端旋到另一端。显示屏数值应完整地从 01 走到 14，人声应随之变化，不应中断或有爆音。",
                     "es":"Hable de forma continua y gire P1 de un extremo al otro. El número en pantalla debe recorrer todo el rango de 01 a 14, y la voz seguirlo, sin cortes ni crujidos."}},
-           {"id":"kap_p1_return","code":"AUD-019",
-            "label":{"en":"The knob returns to master volume on its own","zh":"旋钮三秒后自动回到主音量","es":"La perilla vuelve sola a volumen maestro"},
+           {"id":"kap_p1_return","code":"AUD-019","tag":"P1",
+            "label":{"en":"Returns to master volume on its own","zh":"三秒后自动回到主音量","es":"Vuelve sola a volumen maestro"},
             "help":{"en":"With B8 leave the knob on mic volume, adjust it, and then touch nothing. After three seconds the display must go back to the main view and the knob to master volume. Without this, the next person to turn it thinks they are raising the music and is raising the microphone.",
                     "zh":"用 B8 将旋钮切到麦克风音量，调节后不再做任何操作。三秒后显示屏应回到主界面，旋钮应回到主音量。否则，下一个转动旋钮的人以为自己在调音乐，实际调的是麦克风。",
                     "es":"Con B8 deje la perilla en volumen de micrófono, ajústelo, y no toque nada más. A los tres segundos la pantalla debe volver a la vista principal y la perilla al volumen maestro. Sin esto, el siguiente que la gire cree que sube la música y le está subiendo el micrófono."}},
-           {"id":"kap_priority","code":"MIC-005",
-            "label":{"en":"B7 long press turns microphone priority on and off","zh":"B7 长按开关麦克风优先","es":"B7 pulsación larga activa y desactiva la prioridad de micrófono"},
+           {"id":"kap_priority","code":"MIC-005","tag":"B7",
+            "label":{"en":"Long press turns microphone priority on and off","zh":"长按开关麦克风优先","es":"Pulsación larga activa y desactiva la prioridad de micrófono"},
             "help":{"en":"With music playing and a microphone connected, hold B7. The display must show that priority is on. Speak: the music must drop while you speak and come back when you stop. With no microphone connected the function has no effect, and that is by design, not a fault.",
                     "zh":"在播放音乐且已接麦克风的状态下长按 B7。显示屏应显示优先功能已开启。说话时音乐应降低，停止后恢复。未接麦克风时该功能无效，这是设计如此，并非故障。",
                     "es":"Con música sonando y un micrófono conectado, mantenga B7. La pantalla debe indicar que la prioridad quedó activa. Hable: la música debe bajar mientras habla y volver al parar. Sin micrófono conectado la función no tiene efecto, y eso es por diseño, no una falla."}}]},
@@ -2045,8 +2045,8 @@ const CONFIG = {
             "help":{"en":"Two voicings, one for a room and one for the open air. The point is not which is better but that they are different: two settings that sound the same mean the firmware has one and is pretending to have two.",
                     "zh":"两种音效，一种适用于室内，一种适用于室外。要点不在于哪个更好，而在于两者确有区别：听起来完全相同的两种设置，说明固件只有一种，却假装有两种。",
                     "es":"Dos afinaciones, una para sala y otra para exteriores. La cuestión no es cuál es mejor sino que sean distintas: dos ajustes que suenan igual significan que el firmware tiene uno y aparenta tener dos."}},
-           {"id":"kap_eq_swap","code":"EQ-001",
-            "label":{"en":"B8 long press changes between indoor and outdoor","zh":"B8 长按可在室内与室外之间切换","es":"B8 pulsación larga cambia entre interior y exterior"},
+           {"id":"kap_eq_swap","code":"EQ-001","tag":"B8",
+            "label":{"en":"Long press changes between indoor and outdoor","zh":"长按可在室内与室外之间切换","es":"Pulsación larga cambia entre interior y exterior"},
             "help":{"en":"Hold B8 and watch the display: it must say which of the two it moved to. Hold again and it must go back.",
                     "zh":"长按 B8 并观察显示屏：应显示切换到了哪一种。再次长按应切回。",
                     "es":"Mantenga B8 y mire la pantalla: debe decir a cuál de los dos pasó. Manténgalo otra vez y debe volver."}},
@@ -2068,13 +2068,13 @@ const CONFIG = {
             "help":{"en":"The display is what the customer reads to know what the cabinet is doing, and a misspelled mode ships on every unit of the run. The photograph is what lets the office check the spelling without the cabinet in front of them.",
                     "zh":"显示屏是客户了解音箱状态的唯一途径，而拼写错误的模式名会出现在整批产品上。有了照片，办公室无需拿到实机也能核对拼写。",
                     "es":"La pantalla es lo que el cliente lee para saber qué hace la cabina, y un modo mal escrito sale en todas las unidades del lote. La foto es lo que permite a la oficina revisar la escritura sin tener la cabina delante."}},
-           {"id":"kap_screen_modes","code":"DSP-006","photo":true,
+           {"id":"kap_screen_modes","code":"DSP-006","photo":true,"tag":"B2",
             "label":{"en":"Every mode is named and spelled correctly","zh":"各模式名称显示正确、拼写无误","es":"Cada modo aparece nombrado y bien escrito"},
             "help":{"en":"Walk the modes with B2 and photograph the display on each one. Read every word letter by letter against the specification. BLUE is not BLUF, and a batch does not get corrected once it is printed in firmware.",
                     "zh":"用 B2 走一轮模式，在每种模式下拍摄显示屏。逐字母对照规格核对每个词。BLUE 不是 BLUF，固件一旦烧录，整批货无法更正。",
                     "es":"Recorra los modos con B2 y fotografíe la pantalla en cada uno. Lea cada palabra letra por letra contra la especificación. BLUE no es BLUF, y un lote no se corrige una vez que está escrito en el firmware."}},
-           {"id":"kap_batt_pct","code":"DSP-007",
-            "label":{"en":"B7 short press shows the battery percentage","zh":"B7 短按显示电量百分比","es":"B7 pulsación corta muestra el porcentaje de batería"},
+           {"id":"kap_batt_pct","code":"DSP-007","tag":"B7",
+            "label":{"en":"Short press shows the battery percentage","zh":"短按显示电量百分比","es":"Pulsación corta muestra el porcentaje de batería"},
             "help":{"en":"Press B7 briefly. A percentage must appear on the display, and it must go back to the main view on its own after a few seconds.",
                     "zh":"短按 B7。显示屏应出现电量百分比，并在几秒后自行回到主界面。",
                     "es":"Pulse B7 brevemente. Debe aparecer un porcentaje en la pantalla, y volver sola a la vista principal a los pocos segundos."}},
@@ -2105,27 +2105,33 @@ const CONFIG = {
             "help":{"en":"A socket that is present and does not work looks exactly like one that works. Each of these is photographed and tried, in that order, and the photograph is what the office holds against the specification.",
                     "zh":"外观完好但不通的接口，和正常接口看起来毫无区别。每个接口都要先拍照再实测，照片是办公室与规格核对的依据。",
                     "es":"Un conector que está y no funciona se ve exactamente igual que uno que funciona. Cada uno se fotografía y se prueba, en ese orden, y la foto es lo que la oficina contrasta con la especificación."}},
-           {"id":"kap_c1","label":{"en":"C1 — 3.5 mm audio input","zh":"C1 — 3.5 mm 音频输入","es":"C1 — entrada de audio de 3.5 mm"},
+           {"id":"kap_c1","tag":"C1",
+            "label":{"en":"3.5 mm audio input","zh":"3.5 mm 音频输入","es":"Entrada de audio de 3.5 mm"},
             "help":{"en":"Photograph it, then connect a source and confirm it plays through the cabinet without hum.",
                     "zh":"先拍照，再接入音源，确认可正常出声且无杂音。",
                     "es":"Fotografíelo, luego conecte una fuente y confirme que suena por la cabina sin zumbido."}},
-           {"id":"kap_c2","label":{"en":"C2 — USB type A","zh":"C2 — USB A 型口","es":"C2 — USB tipo A"},
+           {"id":"kap_c2","tag":"C2",
+            "label":{"en":"USB type A","zh":"USB A 型口","es":"USB tipo A"},
             "help":{"en":"Photograph it. It was already used in the USB test; here what is recorded is the socket itself, straight and firm in the panel.",
                     "zh":"拍照。该接口在 U 盘测试中已使用过；此处记录的是接口本身，应端正、牢固地固定在面板上。",
                     "es":"Fotografíelo. Ya se usó en la prueba de USB; aquí lo que se registra es el conector en sí, derecho y firme en el panel."}},
-           {"id":"kap_c3","label":{"en":"C3 — micro SD","zh":"C3 — micro SD 卡槽","es":"C3 — micro SD"},
+           {"id":"kap_c3","tag":"C3",
+            "label":{"en":"Micro SD","zh":"micro SD 卡槽","es":"Micro SD"},
             "help":{"en":"Photograph it. Check the card goes in and comes out without forcing and stays latched.",
                     "zh":"拍照。确认存储卡可顺畅插拔、无需用力，且能卡紧。",
                     "es":"Fotografíelo. Compruebe que la tarjeta entra y sale sin forzar y que queda retenida."}},
-           {"id":"kap_c4_photo","label":{"en":"C4 — 6.3 mm jack, printed AUX 2","zh":"C4 — 6.3 mm 插孔，印字 AUX 2","es":"C4 — jack de 6.3 mm, impreso AUX 2"},
+           {"id":"kap_c4_photo","tag":"C4 · AUX 2",
+            "label":{"en":"6.3 mm jack, printed AUX 2","zh":"6.3 mm 插孔，印字 AUX 2","es":"Jack de 6.3 mm, impreso AUX 2"},
             "help":{"en":"Photograph the socket with its printing legible. The scheme calls it C4 and the cabinet says AUX 2; the photograph is what ties the two together for whoever reads the report.",
                     "zh":"拍摄接口，印字需清晰可读。功能表称其为 C4，机身印的是 AUX 2；照片是让阅读报告的人把两者对应起来的依据。",
                     "es":"Fotografíe el conector con su impresión legible. El esquema lo llama C4 y la cabina dice AUX 2; la foto es lo que ata las dos cosas para quien lea el informe."}},
-           {"id":"kap_c5_photo","label":{"en":"C5 — 6.3 mm jack, printed AUX 3","zh":"C5 — 6.3 mm 插孔，印字 AUX 3","es":"C5 — jack de 6.3 mm, impreso AUX 3"},
+           {"id":"kap_c5_photo","tag":"C5 · AUX 3",
+            "label":{"en":"6.3 mm jack, printed AUX 3","zh":"6.3 mm 插孔，印字 AUX 3","es":"Jack de 6.3 mm, impreso AUX 3"},
             "help":{"en":"The same photograph on the second jack.",
                     "zh":"对第二个插孔拍同样的照片。",
                     "es":"La misma foto en el segundo jack."}},
-           {"id":"kap_c6","label":{"en":"C6 — DC barrel jack","zh":"C6 — DC 圆头电源输入","es":"C6 — entrada de alimentación DC"},
+           {"id":"kap_c6","tag":"C6",
+            "label":{"en":"DC barrel jack","zh":"DC 圆头电源输入","es":"Entrada de alimentación DC"},
             "help":{"en":"Photograph it, then connect the supply and confirm it charges. Wiggle the plug in the socket while it charges: it must not cut out. This is the socket the whole cabinet depends on.",
                     "zh":"先拍照，再接上电源确认可充电。充电时轻微活动插头：不应断电。整台音箱都依赖这个接口。",
                     "es":"Fotografíelo, luego conecte la fuente y confirme que carga. Mueva el plug dentro del jack mientras carga: no debe cortarse. Es el conector del que depende toda la cabina."}}]},
@@ -3964,6 +3970,7 @@ const T = {
   dev_group:"IN DEVELOPMENT · not in production",
   dev_tag:"IN DEVELOPMENT",
   panel_ref:"Control panel · tap to enlarge",
+  conn_ref:"Connectors · tap to enlarge",
   dev_note:"This reference has not been released. The factory cannot see it: it is inspected from here only.",
   measured:"Reading", a_values:"%n reading(s) still to be written down.\n\nThe photo of the instrument is not enough on its own: the number is what can be compared between one unit and the next.",
   ev_na:"Every point of this test is marked N/A: the reference does not have this function, so no photo or video is required. You can still attach one if it helps explain why.",
@@ -4173,6 +4180,7 @@ const T = {
   dev_group:"EN DESARROLLO · sin producción",
   dev_tag:"EN DESARROLLO",
   panel_ref:"Panel de mandos · toque para ampliar",
+  conn_ref:"Conectores · toque para ampliar",
   dev_note:"Esta referencia aún no se ha liberado. La fábrica no la ve: se inspecciona sólo desde aquí.",
   measured:"Medición", a_values:"Faltan %n medición(es) por registrar.\n\nLa foto del instrumento no basta por sí sola: el número es lo que se puede comparar de una unidad a otra.",
   ev_na:"Todos los puntos de esta prueba están en N/A: la referencia no tiene esta función, así que no se requiere foto ni video. Puede adjuntar uno de todos modos si ayuda a explicar por qué.",
@@ -4373,6 +4381,7 @@ const T = {
   dev_group:"开发中 · 尚未量产",
   dev_tag:"开发中",
   panel_ref:"控制面板 · 点击放大",
+  conn_ref:"接口 · 点击放大",
   dev_note:"本型号尚未发布。工厂端不可见：仅可从此处检验。",
   measured:"实测值", a_values:"还有 %n 项实测值未填写。\n\n仅有仪器照片还不够：只有数值才能在不同整机之间进行比较。",
   ev_na:"本测试所有检查项均为不适用：本型号没有该功能，因此无需照片或录像。如有助于说明原因，仍可自行上传。",
@@ -8029,23 +8038,44 @@ function refImageRow(model){
    a panel, so a copy per reference would be the same picture twice and two
    places to forget when a button moves. The day a development reference turns
    up with a different panel, this is where the exception goes. */
-const PANEL_IMG = "img/panel.jpg";
+const PANEL_IMG = REF_IMG_DIR + "panel.jpg";
+const CONN_IMG  = REF_IMG_DIR + "Conectores.jpg";
 
-function panelRow(){
-  return `<div class="card panel-ref">
-      <label style="margin-top:0">${tr("panel_ref")}</label>
-      <div class="pr-box" onclick="zoomPanel()">
-        <img src="${PANEL_IMG}" alt="" onerror="panelFail(this)">
-      </div>
-    </div>`;
+/* Which map a test needs, worked out from the test itself rather than declared
+   twice. Every point already carries the control it is about — B1 to B8, P1,
+   S1 for the top panel, C1 to C6 for the connector plate — so the tags say
+   which picture the operator has to be looking at, and they stay right on their
+   own when a point moves from one test to another.
+
+   A test can want both: USB and SD name the buttons that drive playback and the
+   two sockets the media goes into, and the microphone test names the knob and
+   the two jacks. Those get both pictures, in the order the operator uses them —
+   the panel first, because that is where the hands are. */
+function refShotsFor(t){
+  const tags = realPoints(t).map(p => String(p.tag || ""));
+  const out = [];
+  if(tags.some(x => /(^|\s)[BPS]\d/.test(x)))
+    out.push({src: PANEL_IMG, label: tr("panel_ref")});
+  if(tags.some(x => /(^|\s)C\d/.test(x)))
+    out.push({src: CONN_IMG, label: tr("conn_ref")});
+  return out;
 }
-/* Removes the whole card rather than leaving an empty frame. A picture that is
-   not there yet must not take up the top of the checklist. */
+
+function panelRow(t){
+  return refShotsFor(t).map(s => `<div class="card panel-ref">
+      <label style="margin-top:0">${esc(s.label)}</label>
+      <div class="pr-box" onclick="zoomUrl('${esc(s.src)}','${esc(s.label)}')">
+        <img src="${esc(s.src)}" alt="" onerror="panelFail(this)">
+      </div>
+    </div>`).join("");
+}
+/* Removes its own card rather than leaving an empty frame. A picture that is
+   not there yet must not take up the top of the checklist, and the other one
+   must still show. */
 function panelFail(img){
   const card = img.closest(".panel-ref");
   if(card) card.remove();
 }
-function zoomPanel(){ zoomUrl(PANEL_IMG); }
 
 function refImgOk(){
   const row = document.getElementById("refimg");
@@ -8856,7 +8886,7 @@ function renderTest(){
           for development references because those are the ones whose points are
           written that way; if a released reference ever needs it, this is the
           line to widen. */""}
-    ${isDevRef(S.model) ? panelRow() : ""}
+    ${isDevRef(S.model) ? panelRow(t) : ""}
     ${groups}
     ${/* The whole card disappears on a test that asks for nothing. It used to
           stay, saying "nothing is required here" over two buttons — a box that
@@ -9169,6 +9199,11 @@ function renderPhotoTest(t, r, done, total){
              because the point had been filtered out and the step had not. */""}
       <ol class="steps">${t.steps.filter(fits).map(s=>`<li>${esc(L(s))}</li>`).join("")}</ol>
     </div>
+    ${/* Here too. A photographic test on a development reference names the
+           connectors C1 to C6, and those numbers are printed nowhere on the
+           cabinet either — the operator needs the same map he has on every
+           other test of the plan. */""}
+    ${isDevRef(S.model) ? panelRow(t) : ""}
     <p class="hint" style="margin:0 0 10px">${missing?
       fmt("remaining",{n:missing}) :
       `<b style="color:var(--green)">${tr("all_done")}</b>`}</p>
