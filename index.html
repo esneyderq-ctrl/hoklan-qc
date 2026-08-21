@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="7.7">
+<meta name="app-version" content="7.8">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -8019,22 +8019,33 @@ function refImageRow(model){
     </div>`;
 }
 
-/* The reference photograph again, sized to be looked at rather than glanced at,
-   with its own heading and inside the checklist. `refImageRow` is a thumbnail
-   beside a line of text — right for the start screen, where it confirms you
-   picked the correct product; wrong here, where the picture is the thing being
-   read. Same file, same zoom, same graceful failure when it is not there yet. */
+/* The control panel with its buttons named, on the checklist itself. Not the
+   reference photograph: that one is per reference and shows the product from
+   the outside, which confirms you picked the right box and nothing more. This
+   is the map the points are written against — a plan that says B1 is unreadable
+   without it, because the number is printed nowhere on the cabinet.
+
+   One file for every development reference, on purpose. The KAPPA models share
+   a panel, so a copy per reference would be the same picture twice and two
+   places to forget when a button moves. The day a development reference turns
+   up with a different panel, this is where the exception goes. */
+const PANEL_IMG = "img/panel.jpg";
+
 function panelRow(){
-  if(!S.model) return "";
   return `<div class="card panel-ref">
       <label style="margin-top:0">${tr("panel_ref")}</label>
-      <div class="pr-box" onclick="zoomRef()">
-        <img id="riImg" src="${refImgUrl(S.model)}" alt=""
-          onload="refImgOk()" onerror="refImgFail(this)">
+      <div class="pr-box" onclick="zoomPanel()">
+        <img src="${PANEL_IMG}" alt="" onerror="panelFail(this)">
       </div>
-      <p class="hint" id="riMsg" style="margin:6px 0 0">${tr("ref_img_loading")}</p>
     </div>`;
 }
+/* Removes the whole card rather than leaving an empty frame. A picture that is
+   not there yet must not take up the top of the checklist. */
+function panelFail(img){
+  const card = img.closest(".panel-ref");
+  if(card) card.remove();
+}
+function zoomPanel(){ zoomUrl(PANEL_IMG); }
 
 function refImgOk(){
   const row = document.getElementById("refimg");
@@ -8102,11 +8113,17 @@ function zoomMedia(uid){
 function zoomRef(){
   const img = document.getElementById("riImg");
   if(!img || !img.complete || !img.naturalWidth) return;   // nothing loaded yet
+  zoomUrl(img.src, S.model + " · " + tr("ref_img"));
+}
+/* The full-screen view, shared by the reference photograph and the panel. Both
+   want the same thing — the picture as large as the phone allows, and a tap
+   anywhere to close — and they had two copies of it. */
+function zoomUrl(src, caption){
   const box = document.createElement("div");
   box.className = "ri-zoom";
   box.onclick = () => box.remove();
-  box.innerHTML = `<img src="${esc(img.src)}" alt="">
-    <span>${esc(S.model)} · ${esc(tr("ref_img"))}</span>`;
+  box.innerHTML = `<img src="${esc(src)}" alt="">
+    <span>${esc(caption || tr("panel_ref"))}</span>`;
   document.body.appendChild(box);
 }
 
