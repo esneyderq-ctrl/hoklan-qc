@@ -7256,12 +7256,12 @@ function renderAdmin(){
       <div class="tag">${esc(fmt("next_po",{
         p: isFactoryUser() ? ADMIN_FACTORY.charAt(0) + poDigits(peekPo())
                            : "HK" + poDigits(peekPo()),
-        ${/* The name of the account, translated. It used to be built here in
-              Spanish whatever language the app was in, so a Chinese operator
-              read "ADMIN HOKLAN" and "FÁBRICA Y" on his own screen. What goes
-              into `S.operator`, and from there into the report, stays Spanish
-              on purpose: that is a record, and a record that changes wording
-              with the phone's language cannot be searched. */""}
+        /* The name of the account, translated. It used to be built here in
+           Spanish whatever language the app was in, so a Chinese operator read
+           "ADMIN HOKLAN" and "FÁBRICA Y" on his own screen. What goes into
+           `S.operator`, and from there into the report, stays Spanish on
+           purpose: that is a record, and a record that changes wording with the
+           phone's language cannot be searched. */
         o: isFactoryUser() ? fmt("acct_factory",{f: ADMIN_FACTORY.charAt(0)})
                            : tr("acct_admin")}))}</div>
       <label>${tr("reference")}</label>
