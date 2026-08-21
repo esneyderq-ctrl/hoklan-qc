@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="7.6">
+<meta name="app-version" content="7.7">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -240,6 +240,19 @@ button:active{transform:scale(.99)}
 .shot.ok{border-color:#2b6b46}
 .shot-head{display:flex;align-items:center;margin-bottom:9px}
 .shot-head b{flex:1;font-size:15px}
+/* The marking of the control a point belongs to — B1, P1, C4 — as it is printed
+   on the cabinet. A colour of its own so the eye finds it before the sentence:
+   the operator is looking at the panel, not at the phone. */
+.ctl{flex:none;font-style:normal;font-weight:700;font-size:11.5px;
+  letter-spacing:.5px;padding:2px 8px;border-radius:6px;margin-right:9px;
+  background:rgba(214,60,168,.18);border:1px solid rgba(232,96,190,.5);
+  color:#f08ad4}
+/* The panel photograph on the checklist. Wide and tall enough to pick a button
+   out of it at arm's length, which a thumbnail is not. */
+.panel-ref{padding:12px}
+.pr-box{background:#050b14;border:1px solid var(--border);border-radius:9px;
+  padding:8px;display:flex;justify-content:center;cursor:zoom-in}
+.pr-box img{max-width:100%;max-height:260px;display:block;border-radius:5px}
 .shot-head em{font-style:normal;font-size:11px;font-weight:700;padding:3px 8px;
   border-radius:6px;background:rgba(46,204,113,.18);color:var(--green)}
 .shot-head em.miss{background:rgba(245,185,66,.18);color:var(--amber)}
@@ -1742,18 +1755,18 @@ const CONFIG = {
             "help":{"en":"The greeting is the first thing the customer hears out of the box, and the last thing anybody checks. It is also the cheapest way to tell whether the firmware loaded at all.",
                     "zh":"开机提示音是客户拆箱后听到的第一个声音，却往往是最后才有人去检查的。它同时也是判断固件是否正常加载最省事的办法。",
                     "es":"El saludo es lo primero que el cliente oye al sacarla de la caja, y lo último que alguien revisa. Es además la forma más barata de saber si el firmware cargó."}},
-           {"id":"kap_on","code":"PWR-001",
-            "label":{"en":"S1 switches the cabinet on","zh":"S1 可正常开机","es":"S1 enciende la cabina"},
+           {"id":"kap_on","code":"PWR-001","tag":"S1",
+            "label":{"en":"Switches the cabinet on","zh":"可正常开机","es":"Enciende la cabina"},
             "help":{"en":"Move S1 to ON. The cabinet must come up on its own, with no thump from the driver.",
                     "zh":"将 S1 拨到开。应能自行启动，喇叭不应有砰声。",
                     "es":"Lleve S1 a encendido. Debe arrancar sola, sin golpe en el parlante."}},
-           {"id":"kap_intro","code":"PWR-010",
+           {"id":"kap_intro","code":"PWR-010","tag":"S1",
             "label":{"en":"Brand tone and HOLA greeting","zh":"品牌开机音与 HOLA 问候语","es":"Sonido de marca y saludo HOLA"},
             "help":{"en":"On start-up it must play the brand tone and then say HOLA. Both, in that order. A cabinet that starts silent has either the wrong firmware or no prompt file, and it ships sounding like nobody's product.",
                     "zh":"开机时应先播放品牌音效，再播报 HOLA。两者都要有，且顺序正确。开机无声的机器，要么固件不对，要么缺少提示音文件，出厂后听起来不像任何品牌的产品。",
                     "es":"Al arrancar debe sonar el tono de marca y luego decir HOLA. Los dos, y en ese orden. Una cabina que arranca muda tiene el firmware equivocado o le falta el archivo de voz, y sale sonando como el producto de nadie."}},
-           {"id":"kap_off","code":"PWR-001",
-            "label":{"en":"S1 switches it off","zh":"S1 可正常关机","es":"S1 la apaga"},
+           {"id":"kap_off","code":"PWR-001","tag":"S1",
+            "label":{"en":"Switches it off","zh":"可正常关机","es":"La apaga"},
             "help":{"en":"Move S1 to OFF. It must go off cleanly, with no lights left on and no noise from the driver.",
                     "zh":"将 S1 拨到关。应干净关机，不应有指示灯残亮或喇叭异响。",
                     "es":"Lleve S1 a apagado. Debe apagar limpio, sin luces encendidas ni ruido en el parlante."}},
@@ -1775,8 +1788,8 @@ const CONFIG = {
             "help":{"en":"The cabinet has four modes and one key to reach them. What is checked here is not that the key works, but that the cycle closes and that the display says where you are.",
                     "zh":"本机有四种模式，只用一个按键切换。这里检查的不是按键是否有反应，而是循环能否走完一圈，以及显示屏是否指明当前所在模式。",
                     "es":"La cabina tiene cuatro modos y una sola tecla para llegar a ellos. Lo que se comprueba aquí no es que la tecla responda, sino que el ciclo cierre y que la pantalla diga dónde está."}},
-           {"id":"kap_b2_cycle","code":"MOD-001",
-            "label":{"en":"B2 short press changes mode and closes the cycle","zh":"B2 短按可切换模式并完成循环","es":"B2 pulsación corta cambia de modo y cierra el ciclo"},
+           {"id":"kap_b2_cycle","code":"MOD-001","tag":"B2",
+            "label":{"en":"Short press changes mode and closes the cycle","zh":"短按可切换模式并完成循环","es":"Pulsación corta cambia de modo y cierra el ciclo"},
             "help":{"en":"Press B2 repeatedly until you are back where you started. Every mode the cabinet has must appear, in a stable order, and the display must name each one. Stopping at the third because the first three worked is how a batch ships with one mode unreachable.",
                     "zh":"反复按 B2 直到回到起点。本机具备的每种模式都应出现，顺序稳定，且显示屏应显示各模式名称。因为前三个正常就停在第三个，正是整批货中某个模式无法进入却照常出厂的原因。",
                     "es":"Pulse B2 hasta volver al punto de partida. Deben aparecer todos los modos que la cabina tenga, en un orden estable, y la pantalla debe nombrar cada uno. Detenerse en el tercero porque los tres primeros funcionaron es como sale un lote con un modo inalcanzable."}},
@@ -1821,8 +1834,8 @@ const CONFIG = {
             "help":{"en":"B1 does three different things depending on how long it is held. All three are checked, because a key that only answers to one of them is half a key.",
                     "zh":"B1 按压时长不同，功能也不同，共三种。三种都要检查：只响应其中一种的按键等于只有一半功能。",
                     "es":"B1 hace tres cosas distintas según cuánto se mantenga pulsado. Se comprueban las tres, porque una tecla que sólo responde a una de ellas es media tecla."}},
-           {"id":"kap_b1_short","code":"BT-012",
-            "label":{"en":"B1 short press enters Bluetooth mode","zh":"B1 短按进入蓝牙模式","es":"B1 pulsación corta entra en modo BT"},
+           {"id":"kap_b1_short","code":"BT-012","tag":"B1",
+            "label":{"en":"Short press enters Bluetooth mode","zh":"短按进入蓝牙模式","es":"Pulsación corta entra en modo BT"},
             "help":{"en":"From USB or from radio, one short press must jump straight to Bluetooth. From Bluetooth it does nothing, which is correct.",
                     "zh":"在 USB 或收音模式下，短按一次应直接跳到蓝牙。已在蓝牙模式时无动作，属正常。",
                     "es":"Desde USB o desde radio, una pulsación corta debe saltar directo a Bluetooth. Estando ya en Bluetooth no hace nada, y eso es correcto."}},
@@ -1836,8 +1849,8 @@ const CONFIG = {
             "help":{"en":"A connected phone does not prove sound. Play music and confirm it comes out of this cabinet and not the phone.",
                     "zh":"连接成功不等于有声音。播放音乐并确认声音来自本机而非手机。",
                     "es":"Un teléfono conectado no demuestra sonido. Reproduzca música y confirme que sale de esta cabina y no del teléfono."}},
-           {"id":"kap_b1_long","code":"BT-012",
-            "label":{"en":"B1 long press unpairs","zh":"B1 长按断开配对","es":"B1 pulsación larga desempareja"},
+           {"id":"kap_b1_long","code":"BT-012","tag":"B1",
+            "label":{"en":"Long press unpairs","zh":"长按断开配对","es":"Pulsación larga desempareja"},
             "help":{"en":"Hold B1. The phone must drop the connection and the cabinet must go back to searching. This is the only way out for a customer whose cabinet keeps grabbing the neighbour's phone.",
                     "zh":"长按 B1。手机应断开连接，音箱应回到搜索状态。对于总是被邻居手机连上的客户来说，这是唯一的解决办法。",
                     "es":"Mantenga B1. El teléfono debe perder la conexión y la cabina volver a buscar. Es la única salida para un cliente cuya cabina se queda enganchada al teléfono del vecino."}},
@@ -1845,13 +1858,13 @@ const CONFIG = {
             "help":{"en":"Two cabinets playing as a pair. Needs a second unit on the bench: without it these two points cannot be answered and must be marked N/A rather than guessed.",
                     "zh":"两台音箱串联播放，需要工位上有第二台。没有第二台时这两项无法作答，应标记为“不适用”，不要凭推测填写。",
                     "es":"Dos cabinas sonando en pareja. Hace falta una segunda unidad en el puesto: sin ella estos dos puntos no se pueden responder y se marcan N/A en vez de adivinarlos."}},
-           {"id":"kap_tws_on","code":"BT-010",
-            "label":{"en":"B1 double press links a second cabinet","zh":"B1 双击可串联第二台音箱","es":"B1 pulsación doble enlaza una segunda cabina"},
+           {"id":"kap_tws_on","code":"BT-010","tag":"B1",
+            "label":{"en":"Double press links a second cabinet","zh":"双击可串联第二台音箱","es":"Pulsación doble enlaza una segunda cabina"},
             "help":{"en":"Double-press B1 on both cabinets and wait for them to find each other. Play music: both must sound together and in step. One lagging behind the other is a fail.",
                     "zh":"在两台音箱上都双击 B1，等待互相连接。播放音乐：两台应同时出声且同步。一台明显滞后即判定为异常。",
                     "es":"Pulse dos veces B1 en las dos cabinas y espere a que se encuentren. Reproduzca música: deben sonar juntas y acompasadas. Una que va detrás de la otra es un fallo."}},
-           {"id":"kap_tws_off","code":"BT-010",
-            "label":{"en":"B1 double press again breaks the pair","zh":"再次双击 B1 可解除串联","es":"B1 pulsación doble otra vez deshace la pareja"},
+           {"id":"kap_tws_off","code":"BT-010","tag":"B1",
+            "label":{"en":"Double press again breaks the pair","zh":"再次双击可解除串联","es":"Pulsación doble otra vez deshace la pareja"},
             "help":{"en":"Double-press again. The two must separate and each go back to playing on its own. A pair that cannot be undone is a pair the customer has to switch off to escape.",
                     "zh":"再次双击。两台应分开，各自恢复独立播放。无法解除的串联，客户只能靠关机摆脱。",
                     "es":"Pulse dos veces otra vez. Deben separarse y cada una volver a sonar por su cuenta. Una pareja que no se puede deshacer es una pareja de la que el cliente sólo sale apagando."}}]},
@@ -1868,13 +1881,13 @@ const CONFIG = {
             "help":{"en":"Both slots carry the same points because they are two ways into the same player, and a firmware that reads one and not the other is common enough to be worth the extra minute.",
                     "zh":"两个插槽的检查项目相同，因为它们是进入同一播放器的两条路径；固件只认其中一个的情况相当常见，值得多花这一分钟。",
                     "es":"Las dos ranuras llevan los mismos puntos porque son dos caminos al mismo reproductor, y un firmware que lee una y no la otra es bastante común como para justificar el minuto extra."}},
-           {"id":"kap_usb_read","code":"USB-001",
-            "label":{"en":"Reads the USB drive in C2","zh":"可识别 C2 的 U 盘","es":"Lee la memoria USB en C2"},
+           {"id":"kap_usb_read","code":"USB-001","tag":"C2",
+            "label":{"en":"Reads the USB drive","zh":"可识别 U 盘","es":"Lee la memoria USB"},
             "help":{"en":"Insert the drive. Within a few seconds the display must show USB and a track number.",
                     "zh":"插入 U 盘。几秒内显示屏应显示 USB 和曲目编号。",
                     "es":"Inserte la memoria. En pocos segundos la pantalla debe mostrar USB y un número de pista."}},
-           {"id":"kap_sd_read","code":"SD-001",
-            "label":{"en":"Reads the micro SD card in C3","zh":"可识别 C3 的 micro SD 卡","es":"Lee la micro SD en C3"},
+           {"id":"kap_sd_read","code":"SD-001","tag":"C3",
+            "label":{"en":"Reads the micro SD card","zh":"可识别 micro SD 卡","es":"Lee la micro SD"},
             "help":{"en":"Same check with the card. Mind the slot: C3 is the card and C2 is the drive, and they sit next to each other on the panel.",
                     "zh":"用存储卡做同样的检查。注意插槽：C3 是卡槽，C2 是 U 盘口，两者在面板上相邻。",
                     "es":"La misma comprobación con la tarjeta. Ojo con la ranura: C3 es la tarjeta y C2 la memoria, y están una al lado de la otra en el panel."}},
@@ -1892,23 +1905,23 @@ const CONFIG = {
             "help":{"en":"Short press and long press do different things on B4 and B6: short moves a track, long moves a folder. Both are checked, because the long press is the one nobody tries.",
                     "zh":"B4 和 B6 的短按与长按功能不同：短按切歌，长按切文件夹。两者都要检查，因为长按是没人会去试的那个。",
                     "es":"En B4 y B6 la pulsación corta y la larga hacen cosas distintas: corta cambia de canción, larga cambia de carpeta. Se comprueban las dos, porque la larga es la que nadie prueba."}},
-           {"id":"kap_next","code":"USB-006",
-            "label":{"en":"B6 short press — next track","zh":"B6 短按 — 下一曲","es":"B6 pulsación corta — canción siguiente"},
+           {"id":"kap_next","code":"USB-006","tag":"B6",
+            "label":{"en":"Short press — next track","zh":"短按 — 下一曲","es":"Pulsación corta — canción siguiente"},
             "help":{"en":"Press three times. The track number must advance one at a time and the music must change with each press.",
                     "zh":"连续按三次。曲目编号应逐一递增，每按一次音乐都要随之切换。",
                     "es":"Púlselo tres veces. El número de pista debe avanzar de uno en uno y la música cambiar con cada pulsación."}},
-           {"id":"kap_prev","code":"USB-006",
-            "label":{"en":"B4 short press — previous track","zh":"B4 短按 — 上一曲","es":"B4 pulsación corta — canción anterior"},
+           {"id":"kap_prev","code":"USB-006","tag":"B4",
+            "label":{"en":"Short press — previous track","zh":"短按 — 上一曲","es":"Pulsación corta — canción anterior"},
             "help":{"en":"Press three times. It must step back one at a time, not jump to the beginning.",
                     "zh":"连续按三次。应逐一后退，而不是跳回第一首。",
                     "es":"Púlselo tres veces. Debe retroceder de uno en uno, no saltar al principio."}},
-           {"id":"kap_folder","code":"USB-011",
-            "label":{"en":"B6 and B4 long press — next and previous folder","zh":"B6 与 B4 长按 — 切换文件夹","es":"B6 y B4 pulsación larga — carpeta siguiente y anterior"},
+           {"id":"kap_folder","code":"USB-011","tag":"B4 · B6",
+            "label":{"en":"Long press — next and previous folder","zh":"长按 — 切换文件夹","es":"Pulsación larga — carpeta siguiente y anterior"},
             "help":{"en":"Hold B6: the folder number must change and playback must jump to another folder on the drive. Hold B4: it must come back to the previous one, not to the start of the drive.",
                     "zh":"长按 B6：文件夹编号应变化，并跳到 U 盘上的另一个文件夹播放。长按 B4：应回到上一个文件夹，而不是回到 U 盘开头。",
                     "es":"Mantenga B6: el número de carpeta debe cambiar y la reproducción saltar a otra carpeta de la memoria. Mantenga B4: debe volver a la anterior, no al inicio de la memoria."}},
-           {"id":"kap_pause","code":"USB-010",
-            "label":{"en":"B5 short press — play and pause","zh":"B5 短按 — 播放/暂停","es":"B5 pulsación corta — reproducir y pausar"},
+           {"id":"kap_pause","code":"USB-010","tag":"B5",
+            "label":{"en":"Short press — play and pause","zh":"短按 — 播放/暂停","es":"Pulsación corta — reproducir y pausar"},
             "help":{"en":"Press once: the sound stops and the display shows pause. Press again: it resumes from the same point, not from the start.",
                     "zh":"按一次：声音停止，显示屏显示暂停。再按一次：应从原位置继续，而不是从头开始。",
                     "es":"Pulse una vez: el sonido se detiene y la pantalla muestra pausa. Pulse otra vez: continúa desde el mismo punto, no desde el inicio."}}]},
@@ -1926,17 +1939,18 @@ const CONFIG = {
                     "es":"Este es el único sitio de todo el esquema donde una tecla hace algo que su impresión no dice: B5 está marcado como reproducir y pausar, y en radio dispara la búsqueda de emisoras. Por eso se comprueba aparte."}},
            {"id":"kap_scan","code":"FM-005",
             "measure":{"unit":{"en":"stations","zh":"个电台","es":"emisoras"},"step":"1"},
-            "label":{"en":"B5 short press searches and stores stations","zh":"B5 短按可搜索并保存电台","es":"B5 pulsación corta busca y guarda emisoras"},
+            "tag":"B5",
+            "label":{"en":"Short press searches and stores stations","zh":"短按可搜索并保存电台","es":"Pulsación corta busca y guarda emisoras"},
             "help":{"en":"Press once and let the search finish. It must find and store several. Write in the box how many it stored: a cabinet that stores fourteen and another that stores three, in the same room, are telling you about the aerial of the second one.",
                     "zh":"按一次并等待搜索完成。应搜到并保存多个电台。请在方框中填写实际保存的数量：同一房间内，一台存下十四个而另一台只存下三个，说明的是第二台的天线问题。",
                     "es":"Pulse una vez y deje terminar la búsqueda. Debe encontrar y guardar varias. Escriba en el recuadro cuántas guardó: una cabina que guarda catorce y otra que guarda tres, en la misma sala, están hablando de la antena de la segunda."}},
-           {"id":"kap_ch_next","code":"FM-007",
-            "label":{"en":"B6 short press — next station","zh":"B6 短按 — 下一台","es":"B6 pulsación corta — emisora siguiente"},
+           {"id":"kap_ch_next","code":"FM-007","tag":"B6",
+            "label":{"en":"Short press — next station","zh":"短按 — 下一台","es":"Pulsación corta — emisora siguiente"},
             "help":{"en":"Press several times. It must move to the next stored station each time, not scan endlessly.",
                     "zh":"连续按几次。每次应跳到下一个已存电台，而不是持续扫描。",
                     "es":"Púlselo varias veces. Debe pasar a la siguiente emisora guardada cada vez, no escanear sin parar."}},
-           {"id":"kap_ch_prev","code":"FM-007",
-            "label":{"en":"B4 short press — previous station","zh":"B4 短按 — 上一台","es":"B4 pulsación corta — emisora anterior"},
+           {"id":"kap_ch_prev","code":"FM-007","tag":"B4",
+            "label":{"en":"Short press — previous station","zh":"短按 — 上一台","es":"Pulsación corta — emisora anterior"},
             "help":{"en":"Press several times. It must step back through the stored stations one at a time.",
                     "zh":"连续按几次。应逐一退回上一个已存电台。",
                     "es":"Púlselo varias veces. Debe retroceder una a una por las emisoras guardadas."}},
@@ -1957,18 +1971,18 @@ const CONFIG = {
             "help":{"en":"Three presses, three jobs. The ring around the knob is the first thing anybody notices about this cabinet, so a dead LED in one pattern is a defect the customer finds on the first night.",
                     "zh":"三种按压，三种功能。旋钮周围的灯环是这台音箱最先被注意到的地方，因此某个灯效中有一颗灯珠不亮，客户第一晚就会发现。",
                     "es":"Tres pulsaciones, tres trabajos. El aro alrededor de la perilla es lo primero que se nota de esta cabina, así que un LED muerto en un patrón es un defecto que el cliente encuentra la primera noche."}},
-           {"id":"kap_fx","code":"LED-007",
-            "label":{"en":"B3 short press — next effect","zh":"B3 短按 — 下一个灯效","es":"B3 pulsación corta — efecto siguiente"},
+           {"id":"kap_fx","code":"LED-007","tag":"B3",
+            "label":{"en":"Short press — next effect","zh":"短按 — 下一个灯效","es":"Pulsación corta — efecto siguiente"},
             "help":{"en":"Step through every effect and back to the first. Each must be visibly different, with no dead LEDs in any of them.",
                     "zh":"逐一切换所有灯效并回到第一个。每种应有明显区别，任何一种中都不应有不亮的灯珠。",
                     "es":"Recorra todos los efectos y vuelva al primero. Cada uno debe verse distinto, y en ninguno debe haber LED apagados."}},
-           {"id":"kap_light_off","code":"LED-006",
-            "label":{"en":"B3 long press — on and off","zh":"B3 长按 — 开关灯光","es":"B3 pulsación larga — activa y desactiva"},
+           {"id":"kap_light_off","code":"LED-006","tag":"B3",
+            "label":{"en":"Long press — on and off","zh":"长按 — 开关灯光","es":"Pulsación larga — activa y desactiva"},
             "help":{"en":"Hold B3 and confirm the light goes out completely, then hold again and confirm it comes back. Some customers use these indoors and want them off.",
                     "zh":"长按 B3，确认灯光完全熄灭；再次长按，确认恢复。部分客户在室内使用，需要关闭灯光。",
                     "es":"Mantenga B3 y confirme que la luz se apaga del todo; mantenga otra vez y confirme que vuelve. Hay clientes que la usan en interiores y las quieren apagadas."}},
-           {"id":"kap_colour","code":"LED-010",
-            "label":{"en":"B3 double press — next colour","zh":"B3 双击 — 下一个颜色","es":"B3 pulsación doble — color siguiente"},
+           {"id":"kap_colour","code":"LED-010","tag":"B3",
+            "label":{"en":"Double press — next colour","zh":"双击 — 下一个颜色","es":"Pulsación doble — color siguiente"},
             "help":{"en":"Double-press through the colours and back to the first. Each must be a colour of its own, not the same one at another brightness.",
                     "zh":"双击逐一切换颜色并回到第一个。每种应是不同的颜色，而不是同一颜色的不同亮度。",
                     "es":"Recorra los colores a doble pulsación y vuelva al primero. Cada uno debe ser un color propio, no el mismo con otro brillo."}}]},
@@ -1985,13 +1999,13 @@ const CONFIG = {
             "help":{"en":"They are printed AUX 2 and AUX 3 on the cabinet, which is what the operator reads, and they are C4 and C5 on the scheme. Same two sockets. Both are checked because a cabinet with one working input ships looking complete.",
                     "zh":"面板上印的是 AUX 2 和 AUX 3，这是操作员看到的；功能表上称为 C4 和 C5。指的是同两个插孔。两个都要检查，因为只有一个输入口能用的音箱，外观上看不出任何问题。",
                     "es":"En la cabina están impresas AUX 2 y AUX 3, que es lo que lee el operador, y en el esquema son C4 y C5. Son los mismos dos jacks. Se comprueban los dos porque una cabina con una sola entrada buena sale de fábrica pareciendo completa."}},
-           {"id":"kap_mic_c4","code":"MIC-001",
-            "label":{"en":"C4 / AUX 2 — microphone is heard","zh":"C4 / AUX 2 — 麦克风有声","es":"C4 / AUX 2 — se oye el micrófono"},
+           {"id":"kap_mic_c4","code":"MIC-001","tag":"C4 · AUX 2",
+            "label":{"en":"The microphone is heard","zh":"麦克风有声","es":"Se oye el micrófono"},
             "help":{"en":"Plug a microphone in and speak. It must be heard clearly, with no hum and no cutting in and out when you move the plug in the socket.",
                     "zh":"插入麦克风并说话。应清晰可闻，无嗡嗡声；在插孔中轻微活动插头时不应断续。",
                     "es":"Conecte un micrófono y hable. Debe oírse con claridad, sin zumbido y sin cortarse al mover el plug dentro del jack."}},
-           {"id":"kap_mic_c5","code":"MIC-001",
-            "label":{"en":"C5 / AUX 3 — microphone is heard","zh":"C5 / AUX 3 — 麦克风有声","es":"C5 / AUX 3 — se oye el micrófono"},
+           {"id":"kap_mic_c5","code":"MIC-001","tag":"C5 · AUX 3",
+            "label":{"en":"The microphone is heard","zh":"麦克风有声","es":"Se oye el micrófono"},
             "help":{"en":"The same check on the second socket.",
                     "zh":"对第二个插孔做同样的检查。",
                     "es":"La misma comprobación en el segundo jack."}},
@@ -1999,8 +2013,8 @@ const CONFIG = {
             "help":{"en":"One knob doing two jobs, and a three-second timer deciding which. It is the cleverest thing on the panel and the easiest to get wrong in firmware.",
                     "zh":"一个旋钮承担两种功能，由一个三秒计时器决定当前是哪一种。这是面板上最巧妙的设计，也是固件中最容易出错的地方。",
                     "es":"Una perilla que hace dos trabajos, y un temporizador de tres segundos que decide cuál. Es lo más ingenioso del panel y lo más fácil de equivocar en el firmware."}},
-           {"id":"kap_b8_toggle","code":"AUD-019",
-            "label":{"en":"B8 short press swaps master volume for mic volume","zh":"B8 短按在主音量与麦克风音量之间切换","es":"B8 pulsación corta alterna volumen maestro y volumen de micrófono"},
+           {"id":"kap_b8_toggle","code":"AUD-019","tag":"B8",
+            "label":{"en":"Short press swaps master volume for mic volume","zh":"短按在主音量与麦克风音量之间切换","es":"Pulsación corta alterna volumen maestro y volumen de micrófono"},
             "help":{"en":"Press B8 with a microphone connected. The display must name the function it has switched to, so the operator can see which of the two the knob is now moving.",
                     "zh":"在已接麦克风的状态下按 B8。显示屏应显示切换后的功能名称，以便操作员知道旋钮当前调节的是哪一个。",
                     "es":"Pulse B8 con un micrófono conectado. La pantalla debe nombrar la función a la que pasó, para que el operador vea cuál de las dos está moviendo la perilla."}},
@@ -2118,6 +2132,11 @@ const CONFIG = {
 
         {"id":"EXTERNAL","optional":false,"type":"photos","no_na":true,
          "only_factory":["YIS","RHY","EAG"],
+         /* The KAPPA plan is exactly what its function scheme covers and
+            nothing else. Photographs are not in that document, so they are not
+            in the plan yet — a development reference is inspected against what
+            has been specified, not against what a released product needs. */
+         "skip":["HK-KAP103","HK-KAP330"],
          "label":{"en":"EXTERNAL PARTS","zh":"外观部件"},
          "steps":[
            {"en":"Place the speaker in good light, avoiding direct reflections","zh":"将音箱置于光线充足处，避免反光"},
@@ -2181,6 +2200,7 @@ const CONFIG = {
 
         {"id":"ACCESSORIES","optional":false,"type":"photos",
          "only_factory":["YIS","RHY","EAG"],
+         "skip":["HK-KAP103","HK-KAP330"],   // see EXTERNAL above
          "label":{"en":"ACCESSORIES","zh":"配件"},
          "steps":[
            {"en":"Take the accessories out of the box onto a clear surface","zh":"将配件从箱中取出，放在干净台面上"},
@@ -2213,6 +2233,7 @@ const CONFIG = {
 
         {"id":"GRAPHICS","optional":false,"type":"photos","no_na":true,
          "only_factory":["YIS","RHY","EAG"],
+         "skip":["HK-KAP103","HK-KAP330"],   // see EXTERNAL above
          "label":{"en":"PRINTED MATERIAL","zh":"印刷品"},
          "steps":[
            {"en":"Take a photo of each item on the list","zh":"逐项拍摄下列物品"},
@@ -2331,6 +2352,7 @@ const CONFIG = {
 
         {"id":"INTERNAL","optional":false,"type":"photos","no_na":true,
          "only_factory":["YIS","RHY","EAG"],
+         "skip":["HK-KAP103","HK-KAP330"],   // see EXTERNAL above
          "label":{"en":"INTERNAL PARTS","zh":"内部部件"},
          "steps":[
            {"en":"Remove the screws and open the speaker carefully","zh":"拆下螺丝，小心打开箱体"},
@@ -3941,6 +3963,7 @@ const T = {
   acct_factory:"FACTORY %f", acct_admin:"HOKLAN ADMIN",
   dev_group:"IN DEVELOPMENT · not in production",
   dev_tag:"IN DEVELOPMENT",
+  panel_ref:"Control panel · tap to enlarge",
   dev_note:"This reference has not been released. The factory cannot see it: it is inspected from here only.",
   measured:"Reading", a_values:"%n reading(s) still to be written down.\n\nThe photo of the instrument is not enough on its own: the number is what can be compared between one unit and the next.",
   ev_na:"Every point of this test is marked N/A: the reference does not have this function, so no photo or video is required. You can still attach one if it helps explain why.",
@@ -4149,6 +4172,7 @@ const T = {
   acct_factory:"FÁBRICA %f", acct_admin:"ADMIN HOKLAN",
   dev_group:"EN DESARROLLO · sin producción",
   dev_tag:"EN DESARROLLO",
+  panel_ref:"Panel de mandos · toque para ampliar",
   dev_note:"Esta referencia aún no se ha liberado. La fábrica no la ve: se inspecciona sólo desde aquí.",
   measured:"Medición", a_values:"Faltan %n medición(es) por registrar.\n\nLa foto del instrumento no basta por sí sola: el número es lo que se puede comparar de una unidad a otra.",
   ev_na:"Todos los puntos de esta prueba están en N/A: la referencia no tiene esta función, así que no se requiere foto ni video. Puede adjuntar uno de todos modos si ayuda a explicar por qué.",
@@ -4348,6 +4372,7 @@ const T = {
   acct_factory:"工厂 %f", acct_admin:"HOKLAN 管理端",
   dev_group:"开发中 · 尚未量产",
   dev_tag:"开发中",
+  panel_ref:"控制面板 · 点击放大",
   dev_note:"本型号尚未发布。工厂端不可见：仅可从此处检验。",
   measured:"实测值", a_values:"还有 %n 项实测值未填写。\n\n仅有仪器照片还不够：只有数值才能在不同整机之间进行比较。",
   ev_na:"本测试所有检查项均为不适用：本型号没有该功能，因此无需照片或录像。如有助于说明原因，仍可自行上传。",
@@ -4734,6 +4759,13 @@ const modelsOf = f => Object.keys(CONFIG.models)
    thrown error in the middle of drawing the screen. */
 const pointsOf = t => ((t && t.points) || []).filter(fits);
 const realPoints = t => pointsOf(t).filter(p => p.id);
+/* A point can name the control it belongs to — B1, P1, C4. On screen that name
+   is drawn as a badge beside the label, because an operator standing at the
+   panel looks for the marking before he reads the sentence. Everywhere else —
+   report, spreadsheet, alerts, photo captions — it has to travel inside the
+   text, or a finding filed against "pulsación corta entra en modo BT" would not
+   say which of eight buttons that was. */
+const pLab = p => (p && p.tag ? p.tag + " · " : "") + L(p && p.label);
 const ANSWERED = ["PASS","FAIL","NA"];
 
 function codeText(code){
@@ -5716,7 +5748,7 @@ function nextTest(){
       shotsFor(r,p.id).length === 0 && (t.no_na || r.points[p.id] !== "NA"));
     if(missing.length){
       alert(tr("a_missing_photos") + "\n\n" +
-        missing.slice(0,6).map(p => "· " + L(p.label)).join("\n") +
+        missing.slice(0,6).map(p => "· " + pLab(p)).join("\n") +
         (missing.length>6 ? "\n"+fmt("a_and_more",{n:missing.length-6}) : "") +
         "\n\n" + tr("a_mark_na"));
       goToGap(0, missing[0].id, "photos");
@@ -5736,7 +5768,7 @@ function nextTest(){
       !((r.notes && r.notes[p.id] || "").trim()));
     if(noNote.length){
       alert(tr("a_fail_evidence") + "\n\n" +
-        noNote.slice(0,6).map(p => "· " + L(p.label)).join("\n"));
+        noNote.slice(0,6).map(p => "· " + pLab(p)).join("\n"));
       goToGap(0, noNote[0].id, "photos");
       return;
     }
@@ -5754,7 +5786,7 @@ function nextTest(){
       ru.verdict = failed.length ? "FAIL" : "DOC";
       ru.code = null;
       ru.failedPoints = failed.map(p => ({
-        code: p.code || null, label: L(p.label),
+        code: p.code || null, label: pLab(p),
         note: (r.notes && r.notes[p.id]) || ""
       }));
     });
@@ -5780,7 +5812,7 @@ function nextTest(){
   let firstGap = null;
   realPoints(t).forEach(p => allUnits().forEach(u => {
     if(!failOpen(row(u), p)) return;
-    gaps.push((S.units>1 ? fmt("speaker_n",{n:u+1}) + " · " : "") + L(p.label));
+    gaps.push((S.units>1 ? fmt("speaker_n",{n:u+1}) + " · " : "") + pLab(p));
     if(!firstGap) firstGap = {u, id:p.id};
   }));
   if(gaps.length){
@@ -5838,7 +5870,7 @@ function nextTest(){
     r.verdict = failed.length ? "FAIL" : applicable.length ? "PASS" : "N/A";
     r.code = failed.length ? failed[0].code : null;
     r.failedPoints = failed.map(p => ({
-      code: p.code, label: L(p.label),
+      code: p.code, label: pLab(p),
       note: (r.notes && r.notes[p.id]) || ""
     }));
   });
@@ -6026,7 +6058,7 @@ function buildFindings(){
         // The plan's label, not the one stored when the operator answered:
         // the report is issued in both languages, and a stored label would
         // print the answering language inside the other one's report.
-        unit: u, test: L(t.label), point: L(p.label), code: p.code,
+        unit: u, test: L(t.label), point: pLab(p), code: p.code,
         desc: codeText(p.code), note: note || r.comment, noteTr: noteTr,
         media: shotsFor(r, p.id).filter(m => m.kind === "photo"),
         videos: shotsFor(r, p.id).filter(m => m.kind === "video")
@@ -6131,7 +6163,7 @@ function pointsTable(b){
           cells += `<td class="c">${mark(r ? r.points[p.id] : "")}</td>`;
         }
       }
-      rows += `<tr><td>${esc(L(p.label))}${changeMark(b.i, p.id)}${
+      rows += `<tr><td>${esc(pLab(p))}${changeMark(b.i, p.id)}${
         changeLines(b.i, p.id)}</td>${cells}</tr>`;
     });
   });
@@ -6595,7 +6627,7 @@ ${/* The origin is already stated as a field in the table above; the paragraph
         const rr = unitRows(u)[i];
         const v = rr ? readingOf(rr, p.id).trim() : "";
         if(!v) return;
-        reads.push({label:L(p.label), v, unit:unitText(p.measure), u});
+        reads.push({label:pLab(p), v, unit:unitText(p.measure), u});
       });
     });
 
@@ -6666,7 +6698,7 @@ ${/* The origin is already stated as a field in the table above; the paragraph
         b.videos.map(v => {
           const p = v.m.slot ? realPoints(b.t).find(x => x.id === v.m.slot) : null;
           return esc([videoFiles[v.m.uid] || v.m.name || "video",
-                      p ? L(p.label) : "",
+                      p ? pLab(p) : "",
                       S.units > 1 && !b.isDoc ? fmt("speaker_n",{n:v.u+1}) : ""]
                      .filter(Boolean).join("  ·  "));
         }).join("<br>")}</div>`;
@@ -6752,7 +6784,7 @@ ${/* The origin is already stated as a field in the table above; the paragraph
           b.videos.map(v => {
             const p = v.m.slot ? realPoints(b.t).find(x => x.id === v.m.slot) : null;
             return esc([videoFiles[v.m.uid] || v.m.name || "video",
-                        p ? L(p.label) : "",
+                        p ? pLab(p) : "",
                         S.units > 1 && !b.isDoc ? fmt("speaker_n",{n:v.u+1}) : ""]
                        .filter(Boolean).join("  ·  "));
           }).join("<br>")}</div>`;
@@ -6775,7 +6807,7 @@ ${/* The origin is already stated as a field in the table above; the paragraph
               shot++;
               h += `<div class="cell"><div class="ph"><img src="${s.url}">
                 <span class="ts">${shotStamp(s.at)}</span></div>
-                <div class="cap">#${shot} ${esc(L(p.label))}</div></div>`;
+                <div class="cap">#${shot} ${esc(pLab(p))}</div></div>`;
             });
           });
         } else {
@@ -7034,7 +7066,7 @@ function reportCsv(){
       // inside: "96.4" in a cell can be added up and charted, "96.4 dB" is text.
       rows.push(lead.concat([
         t.id, p.id, key,
-        L(t.label), section, L(p.label), result, code, desc,
+        L(t.label), section, pLab(p), result, code, desc,
         p.measure ? readingOf(r, p.id) : "",
         p.measure ? unitKey(p.measure) : "",
         shownNote, shownEn || "", photos
@@ -7987,6 +8019,23 @@ function refImageRow(model){
     </div>`;
 }
 
+/* The reference photograph again, sized to be looked at rather than glanced at,
+   with its own heading and inside the checklist. `refImageRow` is a thumbnail
+   beside a line of text — right for the start screen, where it confirms you
+   picked the correct product; wrong here, where the picture is the thing being
+   read. Same file, same zoom, same graceful failure when it is not there yet. */
+function panelRow(){
+  if(!S.model) return "";
+  return `<div class="card panel-ref">
+      <label style="margin-top:0">${tr("panel_ref")}</label>
+      <div class="pr-box" onclick="zoomRef()">
+        <img id="riImg" src="${refImgUrl(S.model)}" alt=""
+          onload="refImgOk()" onerror="refImgFail(this)">
+      </div>
+      <p class="hint" id="riMsg" style="margin:6px 0 0">${tr("ref_img_loading")}</p>
+    </div>`;
+}
+
 function refImgOk(){
   const row = document.getElementById("refimg");
   const msg = document.getElementById("riMsg");
@@ -8494,6 +8543,12 @@ function header(t, done, total){
     ${S.units > 1 ? `<div class="unit-tag">${
       fmt("units_tag",{n:S.units})}</div>` : ""}
     <div class="tag">${esc(S.testId)}</div><div class="tag">${esc(S.model)}</div>
+    ${/* Carried through the whole inspection, not just shown once in Admin. An
+          inspector who picks up the phone mid-shift has no other way of knowing
+          this is a prototype, and a report filed against a product that has not
+          been released must not look like any other report six months later. */""}
+    ${isDevRef(S.model) ? `<div class="tag" style="background:rgba(245,185,66,.16);
+      border-color:var(--amber);color:var(--amber)">${tr("dev_tag")}</div>` : ""}
     <div class="tag">${esc(inspectionDate(S.startedAt))}</div>
     <div class="bar"><i style="width:${(done/total*100).toFixed(0)}%"></i></div>
     <h2>${done+1} / ${total} · ${esc(L(t.label))}${
@@ -8692,6 +8747,7 @@ function pointRow(p, u, showTag){
 
   return `<div class="pt" id="pt_${id}">
       ${showTag?`<u>${fmt("speaker_n",{n:u+1})}</u>`:""}
+      ${p.tag?`<b class="ctl">${esc(p.tag)}</b>`:""}
       <span>${esc(L(p.label))}</span>
       <button class="${v==="PASS"?"on-p":""}" onclick="setPoint(${u},'${p.id}','PASS')">✓</button>
       <button class="${v==="FAIL"?"on-f":""}" onclick="setPoint(${u},'${p.id}','FAIL')">✗</button>
@@ -8747,7 +8803,7 @@ function renderTest(){
       const pOpen = pointHelpOpen(p.id);
       // The question is written once; the speakers hang underneath it.
       return `<div class="q">
-        ${many?`<div class="q-h">${esc(L(p.label))}</div>`:""}
+        ${many?`<div class="q-h">${esc(pLab(p))}</div>`:""}
         ${allUnits().map(u => pointRow(p, u, many)).join("")}
         ${ph?`<button class="p-help ${pOpen?"on":""}"
           onclick="togglePointHelp('${p.id}')">${pOpen?"−":"+"} ${tr("how_to")}</button>`:""}
@@ -8776,6 +8832,14 @@ function renderTest(){
   app.innerHTML = `
     ${header(t, done, total)}
     <p class="hint" id="hint" style="margin:0 0 10px">${hintHtml(t)}</p>
+    ${/* The picture of the panel, on the checklist itself and not only on the
+          start screen. A plan written against B1 to B8 is unreadable without
+          it: the operator is holding the cabinet, the points name a button by
+          number, and the number is printed nowhere on the product. It is shown
+          for development references because those are the ones whose points are
+          written that way; if a released reference ever needs it, this is the
+          line to widen. */""}
+    ${isDevRef(S.model) ? panelRow() : ""}
     ${groups}
     ${/* The whole card disappears on a test that asks for nothing. It used to
           stay, saying "nothing is required here" over two buttons — a box that
@@ -9040,7 +9104,8 @@ function renderPhotoTest(t, r, done, total){
     const evOk = shots.length > 0 && note.trim() !== "";
     const done = ANSWERED.indexOf(v) >= 0 && (na || shots.length > 0);
     return `<div class="shot ${done?"ok":""}" id="sb_${p.id}">
-      <div class="shot-head"><b>${esc(L(p.label))}</b>
+      <div class="shot-head">${p.tag?`<i class="ctl">${esc(p.tag)}</i>`:""}<b>${
+        esc(L(p.label))}</b>
         ${shots.length?`<em>${shots.length}</em>`:
           na?`<em class="na">${tr("na")}</em>`:`<em class="miss">${tr("required").replace("— ","")}</em>`}
       </div>
@@ -9223,7 +9288,7 @@ function renderDone(){
       <table>${table}</table>
       ${fails.length?`<div class="warn"><b>${tr("failures")}</b><br>${fails.map(f=>
         realPoints(f.t).filter(p => f.r.points[p.id] === "FAIL")
-          .map(p => esc(p.code) + " — " + esc(L(p.label))).join("<br>")
+          .map(p => esc(p.code) + " — " + esc(pLab(p))).join("<br>")
       ).join("<br>")}</div>`:""}
     </div>`;
   }).join("");
