@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="7.5">
+<meta name="app-version" content="7.6">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -506,7 +506,10 @@ const CONFIG = {
     "HK-RHO102":"LES","HK-RHO102-BAG":"LES","HK-RNW101":"YIS",
     "HK-RNW102":"YIS","HK-RNW103":"YIS","HK-RNW105":"YIS",
     "HK-RNW212A2":"YIS","HK-SKA108A1":"YIS","HK-SKA108B1":"YIS",
-    "HK-STB103":"EAG"
+    "HK-STB103":"EAG",
+    /* In development, not in production. They are YISION, they carry the KAP
+       plan, and DEV_REFS keeps them off the factory's list — see below. */
+    "HK-KAP103":"YIS","HK-KAP330":"YIS"
   },
 
   "failure_codes": {
@@ -587,6 +590,15 @@ const CONFIG = {
     "AUD-016":{"en":"Low-pass filter does not work","zh":"低通滤波无效","es":"El filtro pasa-bajos no funciona"},
     "AUD-017":{"en":"Channel volume does not work","zh":"通道音量无效","es":"El volumen del canal no funciona"},
     "AUD-018":{"en":"DSP mode does not change the sound","zh":"DSP 模式不改变声音","es":"El modo DSP no cambia el sonido"},
+    "PWR-010":{"en":"No start-up tone or greeting","zh":"无开机音或问候语","es":"Sin sonido de arranque ni saludo"},
+    "MOD-001":{"en":"Mode button does not change mode","zh":"模式键无法切换模式","es":"La tecla de modo no cambia de modo"},
+    "MOD-002":{"en":"Does not switch to USB when the drive is connected","zh":"插入 U 盘后未切换到 USB","es":"No pasa a USB al conectar la memoria"},
+    "MOD-003":{"en":"Does not leave the mode when the source is removed","zh":"移除信号源后未退出该模式","es":"No sale del modo al retirar la fuente"},
+    "MOD-004":{"en":"Does not remember the last mode used","zh":"不记忆上次使用的模式","es":"No recuerda el último modo usado"},
+    "MOD-005":{"en":"Bluetooth sounds outside Bluetooth mode","zh":"非蓝牙模式下蓝牙仍出声","es":"El Bluetooth suena fuera del modo Bluetooth"},
+    "EQ-001":{"en":"EQ setting does not change the sound","zh":"均衡设置对音质无影响","es":"El ajuste de EQ no cambia el sonido"},
+    "AUD-019":{"en":"Knob does not swap function or does not return","zh":"旋钮功能无法切换或不自动恢复","es":"La perilla no cambia de función o no regresa"},
+    "BAT-008":{"en":"No low battery warning or no automatic shutdown","zh":"无低电量提示或不自动关机","es":"Sin aviso de batería baja o sin apagado automático"},
     "DSP-005":{"en":"Mode change does not work","zh":"模式切换无效","es":"El cambio de modo no funciona"},
     "DSP-006":{"en":"Display colour is not the specified one","zh":"显示颜色与规定不符","es":"El color de la pantalla no es el especificado"},
     "DSP-007":{"en":"Mode name misspelled on the display","zh":"显示屏上的模式名称拼写错误","es":"Nombre de modo mal escrito en la pantalla"},
@@ -664,7 +676,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 39,
+      "plan_version": 40,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -832,7 +844,7 @@ const CONFIG = {
                     "es":"El panel lleva ventilador. Debe girar con el equipo encendido, sin roce, chirrido ni traqueteo, y la rejilla debe estar libre."}}]},
 
         {"id":"USB","optional":false,"only_factory":["YIS","RHY","EAG"],
-         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "skip":["HK-BAS115A1","HK-BAS118A1","HK-KAP103","HK-KAP330"],
          "label":{"en":"USB","zh":"USB","es":"USB"},
          "steps":[
            {"en":"Insert the HOKLAN test USB drive into the speaker","zh":"将 HOKLAN 测试 U 盘插入音箱","es":"Inserte la memoria USB de prueba HOKLAN en el parlante"},
@@ -1022,7 +1034,7 @@ const CONFIG = {
         {/* RHYME's cabinets carry no SD slot, so the test is filtered out rather
               than left for the inspector to mark N/A thirty times. */
          "id":"SD","optional":true,"only_factory":["YIS","RHY","EAG"],
-         "skip_factory":["RHY"],
+         "skip_factory":["RHY"],"skip":["HK-KAP103","HK-KAP330"],
          "label":{"en":"SD CARD","zh":"SD 卡"},
          "steps":[
            {"en":"Insert the HOKLAN test SD card into the speaker","zh":"将 HOKLAN 测试 SD 卡插入音箱"},
@@ -1121,7 +1133,7 @@ const CONFIG = {
                     "zh":"SD 卡保持插入，关机后再开机。应自动回到 SD 模式并开始播放，无需按任何键。"}}]},
 
         {"id":"BLUETOOTH","optional":false,"only_factory":["YIS","RHY","EAG"],
-         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "skip":["HK-BAS115A1","HK-BAS118A1","HK-KAP103","HK-KAP330"],
          "label":{"en":"BLUETOOTH","zh":"蓝牙"},
          "steps":[
            {"en":"Put the speaker in Bluetooth mode and leave it discoverable","zh":"将音箱切换到蓝牙模式并保持可被搜索"},
@@ -1280,7 +1292,7 @@ const CONFIG = {
               received - which is also why INTERNAL asked for a photograph of the
               FM antenna routing. Both come out together. */
          "id":"RADIO_FM","optional":true,"only_factory":["YIS","RHY","EAG"],
-         "skip_factory":["RHY"],
+         "skip_factory":["RHY"],"skip":["HK-KAP103","HK-KAP330"],
          "label":{"en":"FM RADIO","zh":"调频收音"},
          "steps":[
            {"en":"Select radio mode on the speaker","zh":"将音箱切换到收音模式"},
@@ -1339,7 +1351,7 @@ const CONFIG = {
                     "zh":"收音模式下灯光应按设计保持关闭：灯板驱动会干扰调频接收。若灯亮起，属于固件缺陷。"}}]},
 
         {"id":"AUX","optional":false,"only_factory":["YIS","RHY","EAG"],
-         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "skip":["HK-BAS115A1","HK-BAS118A1","HK-KAP103","HK-KAP330"],
          "label":{"en":"AUX LINE","zh":"AUX 音频输入"},
          "steps":[
            {"en":"Select AUX mode on the speaker first","zh":"先在音箱上切换到 AUX 模式"},
@@ -1402,7 +1414,7 @@ const CONFIG = {
            source up for on its own.
            ------------------------------------------------------------------ */
         {"id":"DSP_MODES","optional":false,"only_factory":["RHY"],"evidence":["video"],
-         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "skip":["HK-BAS115A1","HK-BAS118A1","HK-KAP103","HK-KAP330"],
          "label":{"en":"DSP MODES","zh":"DSP 模式","es":"MODOS DSP"},
          "steps":[
            {"en":"With audio playing, press the DSP MODE button","zh":"在有音频播放时按下 DSP 模式键","es":"Con audio sonando, pulse la tecla MODOS DSP"},
@@ -1432,7 +1444,7 @@ const CONFIG = {
                     "es":"Deje un modo distinto del primero, apague y encienda. Debe volver al mismo."}}]},
 
         {"id":"SIGNAL_LIMIT","optional":false,"only_factory":["RHY"],"evidence":["video"],
-         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "skip":["HK-BAS115A1","HK-BAS118A1","HK-KAP103","HK-KAP330"],
          "label":{"en":"SIGNAL AND LIMIT LEDS","zh":"信号与限幅指示灯","es":"LEDS SEÑAL Y LÍMITE"},
          "steps":[
            {"en":"With programme playing, watch the two LEDs on the panel","zh":"在有节目声时观察面板上的两个指示灯","es":"Con programa sonando, observe los dos LED del panel"},
@@ -1448,7 +1460,7 @@ const CONFIG = {
                     "es":"Suba el volumen hasta que aparezca y bájelo hasta que se apague. Un LÍMITE siempre encendido, o que nunca enciende, no le sirve a quien está en tarima, que es el único que lo mira."}}]},
 
         {"id":"XLR_OUT","optional":false,"only_factory":["RHY"],"evidence":[],
-         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "skip":["HK-BAS115A1","HK-BAS118A1","HK-KAP103","HK-KAP330"],
          "label":{"en":"XLR OUTPUT","zh":"XLR 输出","es":"SALIDA XLR"},
          "steps":[
            {"en":"Connect the XLR output to a second unit","zh":"将 XLR 输出接到第二台设备","es":"Conecte la SALIDA XLR a un segundo equipo"},
@@ -1464,7 +1476,7 @@ const CONFIG = {
                     "es":"Escuche en el segundo equipo con la cabina en silencio: no debe haber zumbido ni siseo."}}]},
 
         {"id":"INPUT_CHANNELS","optional":false,"only_factory":["RHY"],"evidence":["video"],
-         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "skip":["HK-BAS115A1","HK-BAS118A1","HK-KAP103","HK-KAP330"],
          "label":{"en":"INPUT CHANNELS","zh":"输入通道","es":"CANALES DE ENTRADA"},
          "steps":[
            {"en":"Microphone on XLR into channel 1, then the same on a 1/4 inch plug","zh":"先用 XLR 将麦克风接入通道 1，再改用 6.35 mm 插头","es":"Micrófono por XLR en el canal 1, y después lo mismo con plug de 1/4\""},
@@ -1530,7 +1542,7 @@ const CONFIG = {
                     "es":"Debe atenuar la música sin tocar el nivel de los micrófonos de los canales 1 y 2."}}]},
 
         {"id":"DISPLAY","optional":true,"only_factory":["YIS","RHY","EAG"],
-         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "skip":["HK-BAS115A1","HK-BAS118A1","HK-KAP103","HK-KAP330"],
          "label":{"en":"DISPLAY","zh":"显示屏"},
          "steps":[
            {"en":"Switch the speaker on and let the display settle","zh":"开机并等待显示屏稳定"},
@@ -1578,7 +1590,7 @@ const CONFIG = {
                     "es":"Recorra los modos DSP y fotografíe la pantalla en cada uno. Lea cada nombre letra por letra y compárelo con la especificación de este modelo."}}]},
 
         {"id":"REMOTE","optional":true,"only_factory":["YIS","RHY","EAG"],
-         "skip":["HK-BAS115A1","HK-BAS118A1"],
+         "skip":["HK-BAS115A1","HK-BAS118A1","HK-KAP103","HK-KAP330"],
          "label":{"en":"REMOTE CONTROL","zh":"遥控器"},
          "steps":[
            {"en":"Check the remote has a battery; remove the insulator if new","zh":"确认遥控器有电池，新品请抽出绝缘片"},
@@ -1692,6 +1704,417 @@ const CONFIG = {
             "label":{"en":"VOICE OUT","zh":"VOICE OUT（消原音）"},
             "help":{"en":"Press it while speaking into the microphone and listen for the change in the voice effect. Mark N/A if this reference has no VOICE OUT.",
                     "zh":"对麦克风说话时按下此键，注意人声效果的变化（该键用于消去原唱人声）。遥控器上仍印英文 VOICE OUT。本型号没有此键时标记为“不适用”。"}}]},
+
+        /* ===== KAPPA — HK-KAP103 y HK-KAP330 ================================
+           Producto en desarrollo. Las dos referencias comparten esquema de
+           funciones, así que comparten plan: `only` las nombra a las dos y no
+           hay una sola diferencia entre ellas.
+
+           El esquema es una matriz de ocho botones por tres pulsaciones por
+           cuatro modos: noventa y seis combinaciones. Casi todas hacen lo mismo
+           en los cuatro modos — B3 recorre efectos igual en Bluetooth que en
+           radio — así que probarlas todas serían noventa y seis puntos para
+           descubrir tres cosas. Cada botón se prueba una vez, y sólo se repite
+           donde el propio esquema dice que el comportamiento cambia: B1 en
+           pulsación corta, y B4, B5 y B6, que en radio son canales y en USB son
+           canciones.
+
+           Los conectores se nombran como están impresos en la cabina — C4 es
+           AUX 2 y C5 es AUX 3 — y no como los llama el esquema, porque el
+           operador lee la serigrafía y no el documento. La consideración 7 del
+           esquema dice que el micrófono alámbrico entra por C3; C3 es la ranura
+           micro SD. Se escribió contra C4 y C5, que es donde entra de verdad.
+
+           Las pruebas fotográficas no se repiten aquí: PARTES EXTERNAS,
+           ACCESORIOS, MATERIAL IMPRESO y PARTES INTERNAS son las mismas de
+           siempre y estas referencias las heredan por no llevar etiqueta de
+           plan propia.
+           ------------------------------------------------------------------ */
+        {"id":"KAP_POWER","optional":false,"only_factory":["YIS"],"evidence":[],
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"POWER ON","zh":"开机","es":"ENCENDIDO"},
+         "steps":[
+           {"en":"Switch S1 on and listen","zh":"打开 S1 开关并注意声音","es":"Ponga el switch S1 en encendido y escuche"},
+           {"en":"Note which mode it comes up in","zh":"记下开机后进入的模式","es":"Anote en qué modo arranca"},
+           {"en":"Switch off and on again to check it remembers","zh":"关机后再开机，确认是否记忆","es":"Apague y vuelva a encender para comprobar que recuerda"}],
+         "points":[
+           {"section":{"en":"Switch S1","zh":"S1 开关","es":"Switch S1"},
+            "help":{"en":"The greeting is the first thing the customer hears out of the box, and the last thing anybody checks. It is also the cheapest way to tell whether the firmware loaded at all.",
+                    "zh":"开机提示音是客户拆箱后听到的第一个声音，却往往是最后才有人去检查的。它同时也是判断固件是否正常加载最省事的办法。",
+                    "es":"El saludo es lo primero que el cliente oye al sacarla de la caja, y lo último que alguien revisa. Es además la forma más barata de saber si el firmware cargó."}},
+           {"id":"kap_on","code":"PWR-001",
+            "label":{"en":"S1 switches the cabinet on","zh":"S1 可正常开机","es":"S1 enciende la cabina"},
+            "help":{"en":"Move S1 to ON. The cabinet must come up on its own, with no thump from the driver.",
+                    "zh":"将 S1 拨到开。应能自行启动，喇叭不应有砰声。",
+                    "es":"Lleve S1 a encendido. Debe arrancar sola, sin golpe en el parlante."}},
+           {"id":"kap_intro","code":"PWR-010",
+            "label":{"en":"Brand tone and HOLA greeting","zh":"品牌开机音与 HOLA 问候语","es":"Sonido de marca y saludo HOLA"},
+            "help":{"en":"On start-up it must play the brand tone and then say HOLA. Both, in that order. A cabinet that starts silent has either the wrong firmware or no prompt file, and it ships sounding like nobody's product.",
+                    "zh":"开机时应先播放品牌音效，再播报 HOLA。两者都要有，且顺序正确。开机无声的机器，要么固件不对，要么缺少提示音文件，出厂后听起来不像任何品牌的产品。",
+                    "es":"Al arrancar debe sonar el tono de marca y luego decir HOLA. Los dos, y en ese orden. Una cabina que arranca muda tiene el firmware equivocado o le falta el archivo de voz, y sale sonando como el producto de nadie."}},
+           {"id":"kap_off","code":"PWR-001",
+            "label":{"en":"S1 switches it off","zh":"S1 可正常关机","es":"S1 la apaga"},
+            "help":{"en":"Move S1 to OFF. It must go off cleanly, with no lights left on and no noise from the driver.",
+                    "zh":"将 S1 拨到关。应干净关机，不应有指示灯残亮或喇叭异响。",
+                    "es":"Lleve S1 a apagado. Debe apagar limpio, sin luces encendidas ni ruido en el parlante."}},
+           {"id":"kap_recall","code":"MOD-004",
+            "label":{"en":"It comes back on the last mode used","zh":"开机恢复上次使用的模式","es":"Vuelve al último modo usado"},
+            "help":{"en":"Leave it in a mode that is not the default, switch off, wait a few seconds and switch on. It must return to the same mode. If that mode was radio or USB/SD and the source is no longer there, it must fall back to Bluetooth — not to silence and not to a mode nobody chose.",
+                    "zh":"停在一个非默认模式，关机，等待几秒后开机。应回到同一模式。若该模式为收音或 USB/SD 而信号源已不在，应退回蓝牙——而不是无声，也不是进入一个没人选择的模式。",
+                    "es":"Déjela en un modo que no sea el de arranque, apague, espere unos segundos y encienda. Debe volver al mismo modo. Si ese modo era radio o USB/SD y la fuente ya no está, debe caer en Bluetooth — no en silencio ni en un modo que nadie escogió."}}]},
+
+        {"id":"KAP_MODES","optional":false,"only_factory":["YIS"],"evidence":["video"],
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"MODES AND SWITCHING","zh":"模式与切换","es":"MODOS Y CONMUTACIÓN"},
+         "steps":[
+           {"en":"Press B2 to walk the full cycle of modes","zh":"按 B2 走完一轮模式","es":"Pulse B2 para recorrer el ciclo completo de modos"},
+           {"en":"Plug and unplug the USB drive while watching the display","zh":"插拔 U 盘，同时观察显示屏","es":"Conecte y desconecte la memoria USB mirando la pantalla"},
+           {"en":"Record one clip covering the whole sequence","zh":"用一段视频录下整个过程","es":"Grabe un video que cubra toda la secuencia"}],
+         "points":[
+           {"section":{"en":"Mode button B2","zh":"模式键 B2","es":"Botón de modo B2"},
+            "help":{"en":"The cabinet has four modes and one key to reach them. What is checked here is not that the key works, but that the cycle closes and that the display says where you are.",
+                    "zh":"本机有四种模式，只用一个按键切换。这里检查的不是按键是否有反应，而是循环能否走完一圈，以及显示屏是否指明当前所在模式。",
+                    "es":"La cabina tiene cuatro modos y una sola tecla para llegar a ellos. Lo que se comprueba aquí no es que la tecla responda, sino que el ciclo cierre y que la pantalla diga dónde está."}},
+           {"id":"kap_b2_cycle","code":"MOD-001",
+            "label":{"en":"B2 short press changes mode and closes the cycle","zh":"B2 短按可切换模式并完成循环","es":"B2 pulsación corta cambia de modo y cierra el ciclo"},
+            "help":{"en":"Press B2 repeatedly until you are back where you started. Every mode the cabinet has must appear, in a stable order, and the display must name each one. Stopping at the third because the first three worked is how a batch ships with one mode unreachable.",
+                    "zh":"反复按 B2 直到回到起点。本机具备的每种模式都应出现，顺序稳定，且显示屏应显示各模式名称。因为前三个正常就停在第三个，正是整批货中某个模式无法进入却照常出厂的原因。",
+                    "es":"Pulse B2 hasta volver al punto de partida. Deben aparecer todos los modos que la cabina tenga, en un orden estable, y la pantalla debe nombrar cada uno. Detenerse en el tercero porque los tres primeros funcionaron es como sale un lote con un modo inalcanzable."}},
+           {"section":{"en":"USB and SD in and out","zh":"U 盘与 SD 卡的插入与拔出","es":"Entrada y salida de USB y SD"},
+            "help":{"en":"Four of the ten notes on the scheme are about what happens when a source appears or disappears. They are the fiddly part of the firmware and the part a bench test never reaches.",
+                    "zh":"功能表十条备注中有四条讲的是信号源出现或消失时的行为。这部分是固件中最琐碎的地方，也是普通台面测试永远碰不到的地方。",
+                    "es":"Cuatro de las diez consideraciones del esquema tratan de qué pasa cuando una fuente aparece o desaparece. Es la parte enredada del firmware y la que una prueba de banco nunca alcanza."}},
+           {"id":"kap_usb_only","code":"MOD-002",
+            "label":{"en":"USB mode does not exist without a drive","zh":"未插 U 盘时无 USB 模式","es":"Sin memoria no existe el modo USB"},
+            "help":{"en":"With nothing plugged in, walk the modes with B2. USB must not appear as an empty mode you can land on. A mode that can be selected and plays nothing reads as a fault to the customer.",
+                    "zh":"不插任何存储介质，用 B2 走一轮模式。USB 不应作为一个可进入的空模式出现。能选中却没有声音的模式，在客户看来就是故障。",
+                    "es":"Sin nada conectado, recorra los modos con B2. USB no debe aparecer como un modo vacío al que se pueda entrar. Un modo que se selecciona y no suena, para el cliente es una falla."}},
+           {"id":"kap_usb_auto","code":"MOD-002",
+            "label":{"en":"Plugging the drive in switches to USB on its own","zh":"插入 U 盘后自动切换到 USB","es":"Al conectar la memoria entra sola en modo USB"},
+            "help":{"en":"With the cabinet playing something else, plug the drive in. It must switch to USB by itself, without pressing anything.",
+                    "zh":"在播放其他音源的状态下插入 U 盘。应自动切换到 USB，无需按任何键。",
+                    "es":"Con la cabina sonando en otra fuente, conecte la memoria. Debe pasar sola a USB, sin pulsar nada."}},
+           {"id":"kap_usb_out","code":"MOD-003",
+            "label":{"en":"Removing it falls back to Bluetooth, or to radio","zh":"拔出后退回蓝牙，或退回收音","es":"Al retirarla cae en Bluetooth, o en radio"},
+            "help":{"en":"Pull the drive out while it is playing. It must leave USB at once and land on Bluetooth if a phone is connected, and on radio if none is. It must not sit silent on a mode whose source is gone.",
+                    "zh":"在播放中拔出 U 盘。应立即退出 USB：若已连接手机则进入蓝牙，否则进入收音。不应停留在信号源已消失的模式上无声。",
+                    "es":"Retire la memoria mientras reproduce. Debe salir de USB en el acto y caer en Bluetooth si hay un teléfono conectado, y en radio si no lo hay. No debe quedarse muda en un modo cuya fuente ya no está."}},
+           {"id":"kap_bt_bg","code":"MOD-005",
+            "label":{"en":"Bluetooth stays paired but silent in other modes","zh":"其他模式下蓝牙保持连接但不出声","es":"El Bluetooth sigue emparejado pero mudo en otros modos"},
+            "help":{"en":"With a phone paired, switch to USB and play from the phone. Nothing must come out of the cabinet. Then go back to Bluetooth with B2: it must sound again without pairing a second time. Two sources at once is the failure this catches.",
+                    "zh":"在手机已连接的状态下切换到 USB，并用手机播放。音箱不应出声。随后用 B2 切回蓝牙：应无需重新配对即可出声。本项要发现的问题是两个音源同时出声。",
+                    "es":"Con un teléfono emparejado, pase a USB y reproduzca desde el teléfono. No debe salir nada por la cabina. Luego vuelva a Bluetooth con B2: debe sonar de nuevo sin volver a emparejar. Lo que este punto atrapa es que suenen dos fuentes a la vez."}},
+           {"id":"kap_bt_repair","code":"MOD-005",
+            "label":{"en":"Unpairing puts it back in pairing mode","zh":"断开连接后自动进入配对模式","es":"Al desemparejar vuelve a modo de emparejamiento"},
+            "help":{"en":"Disconnect the phone from the phone's side. The cabinet must go back to looking for a device on its own, so the next one can find it without touching anything.",
+                    "zh":"从手机端断开连接。音箱应自行回到搜索设备的状态，以便下一台设备无需任何操作即可找到它。",
+                    "es":"Desconecte el teléfono desde el teléfono. La cabina debe volver sola a buscar dispositivo, para que el siguiente la encuentre sin tocar nada."}}]},
+
+        {"id":"KAP_BT","optional":false,"only_factory":["YIS"],"evidence":[],
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"BLUETOOTH AND TWS","zh":"蓝牙与 TWS","es":"BLUETOOTH Y TWS"},
+         "steps":[
+           {"en":"Use B1 for everything in this test","zh":"本测试全部使用 B1 键","es":"Use B1 para todo en esta prueba"},
+           {"en":"You need a second cabinet for the TWS points","zh":"TWS 项目需要第二台音箱","es":"Para los puntos de TWS necesita una segunda cabina"}],
+         "points":[
+           {"section":{"en":"Pairing","zh":"配对","es":"Emparejamiento"},
+            "help":{"en":"B1 does three different things depending on how long it is held. All three are checked, because a key that only answers to one of them is half a key.",
+                    "zh":"B1 按压时长不同，功能也不同，共三种。三种都要检查：只响应其中一种的按键等于只有一半功能。",
+                    "es":"B1 hace tres cosas distintas según cuánto se mantenga pulsado. Se comprueban las tres, porque una tecla que sólo responde a una de ellas es media tecla."}},
+           {"id":"kap_b1_short","code":"BT-012",
+            "label":{"en":"B1 short press enters Bluetooth mode","zh":"B1 短按进入蓝牙模式","es":"B1 pulsación corta entra en modo BT"},
+            "help":{"en":"From USB or from radio, one short press must jump straight to Bluetooth. From Bluetooth it does nothing, which is correct.",
+                    "zh":"在 USB 或收音模式下，短按一次应直接跳到蓝牙。已在蓝牙模式时无动作，属正常。",
+                    "es":"Desde USB o desde radio, una pulsación corta debe saltar directo a Bluetooth. Estando ya en Bluetooth no hace nada, y eso es correcto."}},
+           {"id":"kap_pair","code":"BT-006",
+            "label":{"en":"Pairs with a phone and says LINK","zh":"可与手机配对并播报 LINK","es":"Empareja con un teléfono y dice LINK"},
+            "help":{"en":"Pair a phone. The voice prompt LINK must play on connecting, and the display must show the Bluetooth mode. Read the name the phone lists and check it against the specification, character by character.",
+                    "zh":"与手机配对。连接成功时应播报语音提示 LINK，显示屏应显示蓝牙模式。逐字读取手机列表中显示的名称，并与规格核对。",
+                    "es":"Empareje un teléfono. Al conectar debe sonar el aviso de voz LINK y la pantalla debe mostrar el modo Bluetooth. Lea el nombre que lista el teléfono y contrástelo con la especificación, carácter por carácter."}},
+           {"id":"kap_audio","code":"BT-004",
+            "label":{"en":"Audio comes out of the cabinet","zh":"音箱正常出声","es":"El audio sale por la cabina"},
+            "help":{"en":"A connected phone does not prove sound. Play music and confirm it comes out of this cabinet and not the phone.",
+                    "zh":"连接成功不等于有声音。播放音乐并确认声音来自本机而非手机。",
+                    "es":"Un teléfono conectado no demuestra sonido. Reproduzca música y confirme que sale de esta cabina y no del teléfono."}},
+           {"id":"kap_b1_long","code":"BT-012",
+            "label":{"en":"B1 long press unpairs","zh":"B1 长按断开配对","es":"B1 pulsación larga desempareja"},
+            "help":{"en":"Hold B1. The phone must drop the connection and the cabinet must go back to searching. This is the only way out for a customer whose cabinet keeps grabbing the neighbour's phone.",
+                    "zh":"长按 B1。手机应断开连接，音箱应回到搜索状态。对于总是被邻居手机连上的客户来说，这是唯一的解决办法。",
+                    "es":"Mantenga B1. El teléfono debe perder la conexión y la cabina volver a buscar. Es la única salida para un cliente cuya cabina se queda enganchada al teléfono del vecino."}},
+           {"section":{"en":"TWS","zh":"TWS 串联","es":"TWS"},
+            "help":{"en":"Two cabinets playing as a pair. Needs a second unit on the bench: without it these two points cannot be answered and must be marked N/A rather than guessed.",
+                    "zh":"两台音箱串联播放，需要工位上有第二台。没有第二台时这两项无法作答，应标记为“不适用”，不要凭推测填写。",
+                    "es":"Dos cabinas sonando en pareja. Hace falta una segunda unidad en el puesto: sin ella estos dos puntos no se pueden responder y se marcan N/A en vez de adivinarlos."}},
+           {"id":"kap_tws_on","code":"BT-010",
+            "label":{"en":"B1 double press links a second cabinet","zh":"B1 双击可串联第二台音箱","es":"B1 pulsación doble enlaza una segunda cabina"},
+            "help":{"en":"Double-press B1 on both cabinets and wait for them to find each other. Play music: both must sound together and in step. One lagging behind the other is a fail.",
+                    "zh":"在两台音箱上都双击 B1，等待互相连接。播放音乐：两台应同时出声且同步。一台明显滞后即判定为异常。",
+                    "es":"Pulse dos veces B1 en las dos cabinas y espere a que se encuentren. Reproduzca música: deben sonar juntas y acompasadas. Una que va detrás de la otra es un fallo."}},
+           {"id":"kap_tws_off","code":"BT-010",
+            "label":{"en":"B1 double press again breaks the pair","zh":"再次双击 B1 可解除串联","es":"B1 pulsación doble otra vez deshace la pareja"},
+            "help":{"en":"Double-press again. The two must separate and each go back to playing on its own. A pair that cannot be undone is a pair the customer has to switch off to escape.",
+                    "zh":"再次双击。两台应分开，各自恢复独立播放。无法解除的串联，客户只能靠关机摆脱。",
+                    "es":"Pulse dos veces otra vez. Deben separarse y cada una volver a sonar por su cuenta. Una pareja que no se puede deshacer es una pareja de la que el cliente sólo sale apagando."}}]},
+
+        {"id":"KAP_USB","optional":false,"only_factory":["YIS"],"evidence":[],
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"USB AND SD","zh":"U 盘与 SD 卡","es":"USB Y SD"},
+         "steps":[
+           {"en":"Insert the HOKLAN test USB drive in C2","zh":"将 HOKLAN 测试 U 盘插入 C2","es":"Inserte la memoria USB de prueba HOKLAN en C2"},
+           {"en":"Repeat the reading points with the micro SD card in C3","zh":"用 C3 的 micro SD 卡重复识别相关项目","es":"Repita los puntos de lectura con la micro SD en C3"},
+           {"en":"Buttons B4, B5 and B6 are the ones under test","zh":"本测试针对 B4、B5、B6 三个按键","es":"Los botones bajo prueba son B4, B5 y B6"}],
+         "points":[
+           {"section":{"en":"Reading and playback","zh":"识别与播放","es":"Lectura y reproducción"},
+            "help":{"en":"Both slots carry the same points because they are two ways into the same player, and a firmware that reads one and not the other is common enough to be worth the extra minute.",
+                    "zh":"两个插槽的检查项目相同，因为它们是进入同一播放器的两条路径；固件只认其中一个的情况相当常见，值得多花这一分钟。",
+                    "es":"Las dos ranuras llevan los mismos puntos porque son dos caminos al mismo reproductor, y un firmware que lee una y no la otra es bastante común como para justificar el minuto extra."}},
+           {"id":"kap_usb_read","code":"USB-001",
+            "label":{"en":"Reads the USB drive in C2","zh":"可识别 C2 的 U 盘","es":"Lee la memoria USB en C2"},
+            "help":{"en":"Insert the drive. Within a few seconds the display must show USB and a track number.",
+                    "zh":"插入 U 盘。几秒内显示屏应显示 USB 和曲目编号。",
+                    "es":"Inserte la memoria. En pocos segundos la pantalla debe mostrar USB y un número de pista."}},
+           {"id":"kap_sd_read","code":"SD-001",
+            "label":{"en":"Reads the micro SD card in C3","zh":"可识别 C3 的 micro SD 卡","es":"Lee la micro SD en C3"},
+            "help":{"en":"Same check with the card. Mind the slot: C3 is the card and C2 is the drive, and they sit next to each other on the panel.",
+                    "zh":"用存储卡做同样的检查。注意插槽：C3 是卡槽，C2 是 U 盘口，两者在面板上相邻。",
+                    "es":"La misma comprobación con la tarjeta. Ojo con la ranura: C3 es la tarjeta y C2 la memoria, y están una al lado de la otra en el panel."}},
+           {"id":"kap_play","code":"USB-002",
+            "label":{"en":"Plays the audio","zh":"可播放音频","es":"Reproduce el audio"},
+            "help":{"en":"Sound must start on its own or after B5. Confirm it comes from this cabinet.",
+                    "zh":"应自动开始播放，或按 B5 后出声。确认声音来自本机。",
+                    "es":"El sonido debe iniciar solo o al pulsar B5. Confirme que sale de esta cabina."}},
+           {"id":"kap_clean","code":"USB-007",
+            "label":{"en":"No hum or interference","zh":"无杂音或干扰","es":"Sin zumbido ni interferencia"},
+            "help":{"en":"Listen close to the grille at medium volume. Behind the music there must be no hum, hiss or crackle.",
+                    "zh":"中等音量下靠近网罩细听，音乐背景不应有嗡嗡声、嘶声或爆音。",
+                    "es":"Escuche cerca de la malla a volumen medio. Detrás de la música no debe haber zumbido, siseo ni crujidos."}},
+           {"section":{"en":"Buttons B4, B5 and B6","zh":"B4、B5、B6 按键","es":"Botones B4, B5 y B6"},
+            "help":{"en":"Short press and long press do different things on B4 and B6: short moves a track, long moves a folder. Both are checked, because the long press is the one nobody tries.",
+                    "zh":"B4 和 B6 的短按与长按功能不同：短按切歌，长按切文件夹。两者都要检查，因为长按是没人会去试的那个。",
+                    "es":"En B4 y B6 la pulsación corta y la larga hacen cosas distintas: corta cambia de canción, larga cambia de carpeta. Se comprueban las dos, porque la larga es la que nadie prueba."}},
+           {"id":"kap_next","code":"USB-006",
+            "label":{"en":"B6 short press — next track","zh":"B6 短按 — 下一曲","es":"B6 pulsación corta — canción siguiente"},
+            "help":{"en":"Press three times. The track number must advance one at a time and the music must change with each press.",
+                    "zh":"连续按三次。曲目编号应逐一递增，每按一次音乐都要随之切换。",
+                    "es":"Púlselo tres veces. El número de pista debe avanzar de uno en uno y la música cambiar con cada pulsación."}},
+           {"id":"kap_prev","code":"USB-006",
+            "label":{"en":"B4 short press — previous track","zh":"B4 短按 — 上一曲","es":"B4 pulsación corta — canción anterior"},
+            "help":{"en":"Press three times. It must step back one at a time, not jump to the beginning.",
+                    "zh":"连续按三次。应逐一后退，而不是跳回第一首。",
+                    "es":"Púlselo tres veces. Debe retroceder de uno en uno, no saltar al principio."}},
+           {"id":"kap_folder","code":"USB-011",
+            "label":{"en":"B6 and B4 long press — next and previous folder","zh":"B6 与 B4 长按 — 切换文件夹","es":"B6 y B4 pulsación larga — carpeta siguiente y anterior"},
+            "help":{"en":"Hold B6: the folder number must change and playback must jump to another folder on the drive. Hold B4: it must come back to the previous one, not to the start of the drive.",
+                    "zh":"长按 B6：文件夹编号应变化，并跳到 U 盘上的另一个文件夹播放。长按 B4：应回到上一个文件夹，而不是回到 U 盘开头。",
+                    "es":"Mantenga B6: el número de carpeta debe cambiar y la reproducción saltar a otra carpeta de la memoria. Mantenga B4: debe volver a la anterior, no al inicio de la memoria."}},
+           {"id":"kap_pause","code":"USB-010",
+            "label":{"en":"B5 short press — play and pause","zh":"B5 短按 — 播放/暂停","es":"B5 pulsación corta — reproducir y pausar"},
+            "help":{"en":"Press once: the sound stops and the display shows pause. Press again: it resumes from the same point, not from the start.",
+                    "zh":"按一次：声音停止，显示屏显示暂停。再按一次：应从原位置继续，而不是从头开始。",
+                    "es":"Pulse una vez: el sonido se detiene y la pantalla muestra pausa. Pulse otra vez: continúa desde el mismo punto, no desde el inicio."}}]},
+
+        {"id":"KAP_RADIO","optional":false,"only_factory":["YIS"],"evidence":[],
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"RADIO","zh":"收音","es":"RADIO"},
+         "steps":[
+           {"en":"Switch to radio with B2","zh":"用 B2 切换到收音模式","es":"Pase a radio con B2"},
+           {"en":"B4, B5 and B6 do something else here","zh":"此模式下 B4、B5、B6 功能不同","es":"Aquí B4, B5 y B6 hacen otra cosa"}],
+         "points":[
+           {"section":{"en":"The same three buttons, other jobs","zh":"同样三个按键，不同功能","es":"Los mismos tres botones, otro trabajo"},
+            "help":{"en":"This is the one place in the whole scheme where a key does something its printing does not say: B5 is marked play and pause, and in radio it runs the channel search. It is checked separately for that reason.",
+                    "zh":"这是整份功能表中唯一一处按键功能与其印字不符的地方：B5 印的是播放/暂停，在收音模式下却是自动搜台。因此单独设项检查。",
+                    "es":"Este es el único sitio de todo el esquema donde una tecla hace algo que su impresión no dice: B5 está marcado como reproducir y pausar, y en radio dispara la búsqueda de emisoras. Por eso se comprueba aparte."}},
+           {"id":"kap_scan","code":"FM-005",
+            "measure":{"unit":{"en":"stations","zh":"个电台","es":"emisoras"},"step":"1"},
+            "label":{"en":"B5 short press searches and stores stations","zh":"B5 短按可搜索并保存电台","es":"B5 pulsación corta busca y guarda emisoras"},
+            "help":{"en":"Press once and let the search finish. It must find and store several. Write in the box how many it stored: a cabinet that stores fourteen and another that stores three, in the same room, are telling you about the aerial of the second one.",
+                    "zh":"按一次并等待搜索完成。应搜到并保存多个电台。请在方框中填写实际保存的数量：同一房间内，一台存下十四个而另一台只存下三个，说明的是第二台的天线问题。",
+                    "es":"Pulse una vez y deje terminar la búsqueda. Debe encontrar y guardar varias. Escriba en el recuadro cuántas guardó: una cabina que guarda catorce y otra que guarda tres, en la misma sala, están hablando de la antena de la segunda."}},
+           {"id":"kap_ch_next","code":"FM-007",
+            "label":{"en":"B6 short press — next station","zh":"B6 短按 — 下一台","es":"B6 pulsación corta — emisora siguiente"},
+            "help":{"en":"Press several times. It must move to the next stored station each time, not scan endlessly.",
+                    "zh":"连续按几次。每次应跳到下一个已存电台，而不是持续扫描。",
+                    "es":"Púlselo varias veces. Debe pasar a la siguiente emisora guardada cada vez, no escanear sin parar."}},
+           {"id":"kap_ch_prev","code":"FM-007",
+            "label":{"en":"B4 short press — previous station","zh":"B4 短按 — 上一台","es":"B4 pulsación corta — emisora anterior"},
+            "help":{"en":"Press several times. It must step back through the stored stations one at a time.",
+                    "zh":"连续按几次。应逐一退回上一个已存电台。",
+                    "es":"Púlselo varias veces. Debe retroceder una a una por las emisoras guardadas."}},
+           {"id":"kap_fm_audio","code":"FM-002",
+            "label":{"en":"Reception and audio are clean","zh":"接收与音质正常","es":"Recepción y audio limpios"},
+            "help":{"en":"Listen to a stored station for half a minute. The voice must be understandable and the signal steady, without drifting into hiss.",
+                    "zh":"收听某个已存电台半分钟。人声应清晰可辨，信号稳定，不应逐渐变为嘶声。",
+                    "es":"Escuche media emisora guardada durante medio minuto. La voz debe entenderse y la señal mantenerse estable, sin irse en siseo."}}]},
+
+        {"id":"KAP_LIGHT","optional":false,"only_factory":["YIS"],"evidence":["video"],
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"LIGHTING","zh":"灯光","es":"ILUMINACIÓN"},
+         "steps":[
+           {"en":"B3 is the only button in this test","zh":"本测试只使用 B3 键","es":"B3 es el único botón de esta prueba"},
+           {"en":"Film the three presses in one clip","zh":"用一段视频录下三种按压","es":"Filme las tres pulsaciones en un solo video"}],
+         "points":[
+           {"section":{"en":"Button B3","zh":"B3 按键","es":"Botón B3"},
+            "help":{"en":"Three presses, three jobs. The ring around the knob is the first thing anybody notices about this cabinet, so a dead LED in one pattern is a defect the customer finds on the first night.",
+                    "zh":"三种按压，三种功能。旋钮周围的灯环是这台音箱最先被注意到的地方，因此某个灯效中有一颗灯珠不亮，客户第一晚就会发现。",
+                    "es":"Tres pulsaciones, tres trabajos. El aro alrededor de la perilla es lo primero que se nota de esta cabina, así que un LED muerto en un patrón es un defecto que el cliente encuentra la primera noche."}},
+           {"id":"kap_fx","code":"LED-007",
+            "label":{"en":"B3 short press — next effect","zh":"B3 短按 — 下一个灯效","es":"B3 pulsación corta — efecto siguiente"},
+            "help":{"en":"Step through every effect and back to the first. Each must be visibly different, with no dead LEDs in any of them.",
+                    "zh":"逐一切换所有灯效并回到第一个。每种应有明显区别，任何一种中都不应有不亮的灯珠。",
+                    "es":"Recorra todos los efectos y vuelva al primero. Cada uno debe verse distinto, y en ninguno debe haber LED apagados."}},
+           {"id":"kap_light_off","code":"LED-006",
+            "label":{"en":"B3 long press — on and off","zh":"B3 长按 — 开关灯光","es":"B3 pulsación larga — activa y desactiva"},
+            "help":{"en":"Hold B3 and confirm the light goes out completely, then hold again and confirm it comes back. Some customers use these indoors and want them off.",
+                    "zh":"长按 B3，确认灯光完全熄灭；再次长按，确认恢复。部分客户在室内使用，需要关闭灯光。",
+                    "es":"Mantenga B3 y confirme que la luz se apaga del todo; mantenga otra vez y confirme que vuelve. Hay clientes que la usan en interiores y las quieren apagadas."}},
+           {"id":"kap_colour","code":"LED-010",
+            "label":{"en":"B3 double press — next colour","zh":"B3 双击 — 下一个颜色","es":"B3 pulsación doble — color siguiente"},
+            "help":{"en":"Double-press through the colours and back to the first. Each must be a colour of its own, not the same one at another brightness.",
+                    "zh":"双击逐一切换颜色并回到第一个。每种应是不同的颜色，而不是同一颜色的不同亮度。",
+                    "es":"Recorra los colores a doble pulsación y vuelva al primero. Cada uno debe ser un color propio, no el mismo con otro brillo."}}]},
+
+        {"id":"KAP_MIC","optional":false,"only_factory":["YIS"],"evidence":[],
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"MICROPHONE AND PRIORITY","zh":"麦克风与优先","es":"MICRÓFONO Y PRIORIDAD"},
+         "steps":[
+           {"en":"Plug a microphone into C4, printed AUX 2","zh":"将麦克风插入 C4（面板印字 AUX 2）","es":"Conecte un micrófono en C4, impreso AUX 2"},
+           {"en":"Repeat on C5, printed AUX 3","zh":"在 C5（面板印字 AUX 3）上重复","es":"Repita en C5, impreso AUX 3"},
+           {"en":"B8 changes what the P1 knob does","zh":"B8 用于切换 P1 旋钮的功能","es":"B8 cambia lo que hace la perilla P1"}],
+         "points":[
+           {"section":{"en":"The two inputs","zh":"两个输入口","es":"Las dos entradas"},
+            "help":{"en":"They are printed AUX 2 and AUX 3 on the cabinet, which is what the operator reads, and they are C4 and C5 on the scheme. Same two sockets. Both are checked because a cabinet with one working input ships looking complete.",
+                    "zh":"面板上印的是 AUX 2 和 AUX 3，这是操作员看到的；功能表上称为 C4 和 C5。指的是同两个插孔。两个都要检查，因为只有一个输入口能用的音箱，外观上看不出任何问题。",
+                    "es":"En la cabina están impresas AUX 2 y AUX 3, que es lo que lee el operador, y en el esquema son C4 y C5. Son los mismos dos jacks. Se comprueban los dos porque una cabina con una sola entrada buena sale de fábrica pareciendo completa."}},
+           {"id":"kap_mic_c4","code":"MIC-001",
+            "label":{"en":"C4 / AUX 2 — microphone is heard","zh":"C4 / AUX 2 — 麦克风有声","es":"C4 / AUX 2 — se oye el micrófono"},
+            "help":{"en":"Plug a microphone in and speak. It must be heard clearly, with no hum and no cutting in and out when you move the plug in the socket.",
+                    "zh":"插入麦克风并说话。应清晰可闻，无嗡嗡声；在插孔中轻微活动插头时不应断续。",
+                    "es":"Conecte un micrófono y hable. Debe oírse con claridad, sin zumbido y sin cortarse al mover el plug dentro del jack."}},
+           {"id":"kap_mic_c5","code":"MIC-001",
+            "label":{"en":"C5 / AUX 3 — microphone is heard","zh":"C5 / AUX 3 — 麦克风有声","es":"C5 / AUX 3 — se oye el micrófono"},
+            "help":{"en":"The same check on the second socket.",
+                    "zh":"对第二个插孔做同样的检查。",
+                    "es":"La misma comprobación en el segundo jack."}},
+           {"section":{"en":"Knob P1 and button B8","zh":"P1 旋钮与 B8 按键","es":"Perilla P1 y botón B8"},
+            "help":{"en":"One knob doing two jobs, and a three-second timer deciding which. It is the cleverest thing on the panel and the easiest to get wrong in firmware.",
+                    "zh":"一个旋钮承担两种功能，由一个三秒计时器决定当前是哪一种。这是面板上最巧妙的设计，也是固件中最容易出错的地方。",
+                    "es":"Una perilla que hace dos trabajos, y un temporizador de tres segundos que decide cuál. Es lo más ingenioso del panel y lo más fácil de equivocar en el firmware."}},
+           {"id":"kap_b8_toggle","code":"AUD-019",
+            "label":{"en":"B8 short press swaps master volume for mic volume","zh":"B8 短按在主音量与麦克风音量之间切换","es":"B8 pulsación corta alterna volumen maestro y volumen de micrófono"},
+            "help":{"en":"Press B8 with a microphone connected. The display must name the function it has switched to, so the operator can see which of the two the knob is now moving.",
+                    "zh":"在已接麦克风的状态下按 B8。显示屏应显示切换后的功能名称，以便操作员知道旋钮当前调节的是哪一个。",
+                    "es":"Pulse B8 con un micrófono conectado. La pantalla debe nombrar la función a la que pasó, para que el operador vea cuál de las dos está moviendo la perilla."}},
+           {"id":"kap_mic_vol","code":"MIC-006",
+            "label":{"en":"P1 moves the mic level across 01 to 14","zh":"P1 可在 01 至 14 之间调节麦克风音量","es":"P1 mueve el nivel de micrófono de 01 a 14"},
+            "help":{"en":"Speak continuously and turn P1 from one end to the other. The number on the display must run the whole way from 01 to 14, and the voice must follow it, without cutting out or crackling.",
+                    "zh":"持续对麦克风说话，同时将 P1 从一端旋到另一端。显示屏数值应完整地从 01 走到 14，人声应随之变化，不应中断或有爆音。",
+                    "es":"Hable de forma continua y gire P1 de un extremo al otro. El número en pantalla debe recorrer todo el rango de 01 a 14, y la voz seguirlo, sin cortes ni crujidos."}},
+           {"id":"kap_p1_return","code":"AUD-019",
+            "label":{"en":"The knob returns to master volume on its own","zh":"旋钮三秒后自动回到主音量","es":"La perilla vuelve sola a volumen maestro"},
+            "help":{"en":"With B8 leave the knob on mic volume, adjust it, and then touch nothing. After three seconds the display must go back to the main view and the knob to master volume. Without this, the next person to turn it thinks they are raising the music and is raising the microphone.",
+                    "zh":"用 B8 将旋钮切到麦克风音量，调节后不再做任何操作。三秒后显示屏应回到主界面，旋钮应回到主音量。否则，下一个转动旋钮的人以为自己在调音乐，实际调的是麦克风。",
+                    "es":"Con B8 deje la perilla en volumen de micrófono, ajústelo, y no toque nada más. A los tres segundos la pantalla debe volver a la vista principal y la perilla al volumen maestro. Sin esto, el siguiente que la gire cree que sube la música y le está subiendo el micrófono."}},
+           {"id":"kap_priority","code":"MIC-005",
+            "label":{"en":"B7 long press turns microphone priority on and off","zh":"B7 长按开关麦克风优先","es":"B7 pulsación larga activa y desactiva la prioridad de micrófono"},
+            "help":{"en":"With music playing and a microphone connected, hold B7. The display must show that priority is on. Speak: the music must drop while you speak and come back when you stop. With no microphone connected the function has no effect, and that is by design, not a fault.",
+                    "zh":"在播放音乐且已接麦克风的状态下长按 B7。显示屏应显示优先功能已开启。说话时音乐应降低，停止后恢复。未接麦克风时该功能无效，这是设计如此，并非故障。",
+                    "es":"Con música sonando y un micrófono conectado, mantenga B7. La pantalla debe indicar que la prioridad quedó activa. Hable: la música debe bajar mientras habla y volver al parar. Sin micrófono conectado la función no tiene efecto, y eso es por diseño, no una falla."}}]},
+
+        {"id":"KAP_EQ","optional":false,"only_factory":["YIS"],"evidence":[],
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"EQUALISATION","zh":"均衡","es":"ECUALIZACIÓN"},
+         "steps":[
+           {"en":"Play the HOKLAN test track","zh":"播放 HOKLAN 测试音频","es":"Reproduzca la pista de prueba HOKLAN"},
+           {"en":"Hold B8 to change between the two settings","zh":"长按 B8 在两种设置之间切换","es":"Mantenga B8 para cambiar entre los dos ajustes"}],
+         "points":[
+           {"section":{"en":"Indoor and outdoor","zh":"室内与室外","es":"Interior y exterior"},
+            "help":{"en":"Two voicings, one for a room and one for the open air. The point is not which is better but that they are different: two settings that sound the same mean the firmware has one and is pretending to have two.",
+                    "zh":"两种音效，一种适用于室内，一种适用于室外。要点不在于哪个更好，而在于两者确有区别：听起来完全相同的两种设置，说明固件只有一种，却假装有两种。",
+                    "es":"Dos afinaciones, una para sala y otra para exteriores. La cuestión no es cuál es mejor sino que sean distintas: dos ajustes que suenan igual significan que el firmware tiene uno y aparenta tener dos."}},
+           {"id":"kap_eq_swap","code":"EQ-001",
+            "label":{"en":"B8 long press changes between indoor and outdoor","zh":"B8 长按可在室内与室外之间切换","es":"B8 pulsación larga cambia entre interior y exterior"},
+            "help":{"en":"Hold B8 and watch the display: it must say which of the two it moved to. Hold again and it must go back.",
+                    "zh":"长按 B8 并观察显示屏：应显示切换到了哪一种。再次长按应切回。",
+                    "es":"Mantenga B8 y mire la pantalla: debe decir a cuál de los dos pasó. Manténgalo otra vez y debe volver."}},
+           {"id":"kap_eq_audible","code":"EQ-001",
+            "label":{"en":"The two settings sound different","zh":"两种设置听感不同","es":"Los dos ajustes suenan distinto"},
+            "help":{"en":"With the same track playing, switch between them while listening. The change must be plain — usually more low end outdoors. If you have to strain to hear a difference, it is a fail.",
+                    "zh":"播放同一首曲目，一边切换一边细听。变化应清晰可辨——通常室外模式低音更多。若需要仔细分辨才能察觉差别，即判定为异常。",
+                    "es":"Con la misma pista sonando, cambie entre los dos escuchando. El cambio debe ser evidente — normalmente más graves en exterior. Si hay que esforzarse para notar la diferencia, es un fallo."}}]},
+
+        {"id":"KAP_SCREEN","optional":false,"only_factory":["YIS"],"evidence":["photo"],
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"DISPLAY AND BATTERY","zh":"显示屏与电池","es":"PANTALLA Y BATERÍA"},
+         "steps":[
+           {"en":"Photograph the display in each mode","zh":"在每种模式下拍摄显示屏","es":"Fotografíe la pantalla en cada modo"},
+           {"en":"Read each word letter by letter before judging it","zh":"逐字母阅读每个词后再判定","es":"Lea cada palabra letra por letra antes de juzgarla"},
+           {"en":"The battery points need a nearly flat unit","zh":"电池相关项目需要一台电量将尽的样机","es":"Los puntos de batería necesitan una unidad casi descargada"}],
+         "points":[
+           {"section":{"en":"What the display says","zh":"显示内容","es":"Lo que dice la pantalla"},
+            "help":{"en":"The display is what the customer reads to know what the cabinet is doing, and a misspelled mode ships on every unit of the run. The photograph is what lets the office check the spelling without the cabinet in front of them.",
+                    "zh":"显示屏是客户了解音箱状态的唯一途径，而拼写错误的模式名会出现在整批产品上。有了照片，办公室无需拿到实机也能核对拼写。",
+                    "es":"La pantalla es lo que el cliente lee para saber qué hace la cabina, y un modo mal escrito sale en todas las unidades del lote. La foto es lo que permite a la oficina revisar la escritura sin tener la cabina delante."}},
+           {"id":"kap_screen_modes","code":"DSP-006","photo":true,
+            "label":{"en":"Every mode is named and spelled correctly","zh":"各模式名称显示正确、拼写无误","es":"Cada modo aparece nombrado y bien escrito"},
+            "help":{"en":"Walk the modes with B2 and photograph the display on each one. Read every word letter by letter against the specification. BLUE is not BLUF, and a batch does not get corrected once it is printed in firmware.",
+                    "zh":"用 B2 走一轮模式，在每种模式下拍摄显示屏。逐字母对照规格核对每个词。BLUE 不是 BLUF，固件一旦烧录，整批货无法更正。",
+                    "es":"Recorra los modos con B2 y fotografíe la pantalla en cada uno. Lea cada palabra letra por letra contra la especificación. BLUE no es BLUF, y un lote no se corrige una vez que está escrito en el firmware."}},
+           {"id":"kap_batt_pct","code":"DSP-007",
+            "label":{"en":"B7 short press shows the battery percentage","zh":"B7 短按显示电量百分比","es":"B7 pulsación corta muestra el porcentaje de batería"},
+            "help":{"en":"Press B7 briefly. A percentage must appear on the display, and it must go back to the main view on its own after a few seconds.",
+                    "zh":"短按 B7。显示屏应出现电量百分比，并在几秒后自行回到主界面。",
+                    "es":"Pulse B7 brevemente. Debe aparecer un porcentaje en la pantalla, y volver sola a la vista principal a los pocos segundos."}},
+           {"section":{"en":"Running out of charge","zh":"电量耗尽","es":"Quedarse sin carga"},
+            "help":{"en":"Two points that need a cabinet close to flat. If the unit on the bench is charged, mark them N/A and say so: this is a check for a sample run, not for every unit.",
+                    "zh":"这两项需要一台电量接近耗尽的机器。若工位上的样机电量充足，请标记为“不适用”并在备注中说明：本项属抽检项目，并非每台必测。",
+                    "es":"Dos puntos que necesitan una cabina casi descargada. Si la unidad del puesto está cargada, márquelos N/A y dígalo: es una comprobación de muestreo, no de cada unidad."}},
+           {"id":"kap_low_batt","code":"BAT-008",
+            "label":{"en":"At 15% it warns and counts down","zh":"电量 15% 时报警并开始倒计时","es":"Al 15% avisa e inicia el conteo"},
+            "help":{"en":"When the charge reaches fifteen percent the indicator must start blinking and a countdown must begin. A cabinet that dies without warning in the middle of an event is the complaint this point exists to prevent.",
+                    "zh":"电量降至百分之十五时，指示应开始闪烁并启动倒计时。活动进行中毫无预兆地关机，正是本项要预防的投诉。",
+                    "es":"Al llegar al quince por ciento el indicador debe empezar a parpadear y arrancar un conteo. Una cabina que se muere sin avisar en mitad de un evento es el reclamo que este punto existe para evitar."}},
+           {"id":"kap_auto_off","code":"BAT-008",
+            "label":{"en":"At 1% it switches itself off","zh":"电量 1% 时自动关机","es":"Al 1% se apaga sola"},
+            "help":{"en":"The countdown must end in the cabinet switching off on its own, not in it running the cell flat. A lithium cell taken to zero does not come back the same.",
+                    "zh":"倒计时结束时应自动关机，而不是把电芯彻底耗尽。锂电芯一旦放到零电压，性能将无法恢复。",
+                    "es":"El conteo debe terminar con la cabina apagándose sola, no con la celda vaciada del todo. Una celda de litio llevada a cero no vuelve igual."}}]},
+
+        {"id":"KAP_CONN","optional":false,"only_factory":["YIS"],"type":"photos","no_na":true,
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"CONNECTORS","zh":"接口","es":"CONECTORES"},
+         "steps":[
+           {"en":"One photo of the connector panel with all six visible","zh":"拍摄接口面板，六个接口需全部入镜","es":"Una foto del panel de conectores con los seis a la vista"},
+           {"en":"Then one close-up of each one","zh":"随后逐个拍摄特写","es":"Luego un primer plano de cada uno"},
+           {"en":"Check each one with something plugged in, not by eye","zh":"每个接口都要插上设备实测，不能只看外观","es":"Compruebe cada uno con algo conectado, no a ojo"}],
+         "points":[
+           {"section":{"en":"The six sockets","zh":"六个接口","es":"Los seis conectores"},
+            "help":{"en":"A socket that is present and does not work looks exactly like one that works. Each of these is photographed and tried, in that order, and the photograph is what the office holds against the specification.",
+                    "zh":"外观完好但不通的接口，和正常接口看起来毫无区别。每个接口都要先拍照再实测，照片是办公室与规格核对的依据。",
+                    "es":"Un conector que está y no funciona se ve exactamente igual que uno que funciona. Cada uno se fotografía y se prueba, en ese orden, y la foto es lo que la oficina contrasta con la especificación."}},
+           {"id":"kap_c1","label":{"en":"C1 — 3.5 mm audio input","zh":"C1 — 3.5 mm 音频输入","es":"C1 — entrada de audio de 3.5 mm"},
+            "help":{"en":"Photograph it, then connect a source and confirm it plays through the cabinet without hum.",
+                    "zh":"先拍照，再接入音源，确认可正常出声且无杂音。",
+                    "es":"Fotografíelo, luego conecte una fuente y confirme que suena por la cabina sin zumbido."}},
+           {"id":"kap_c2","label":{"en":"C2 — USB type A","zh":"C2 — USB A 型口","es":"C2 — USB tipo A"},
+            "help":{"en":"Photograph it. It was already used in the USB test; here what is recorded is the socket itself, straight and firm in the panel.",
+                    "zh":"拍照。该接口在 U 盘测试中已使用过；此处记录的是接口本身，应端正、牢固地固定在面板上。",
+                    "es":"Fotografíelo. Ya se usó en la prueba de USB; aquí lo que se registra es el conector en sí, derecho y firme en el panel."}},
+           {"id":"kap_c3","label":{"en":"C3 — micro SD","zh":"C3 — micro SD 卡槽","es":"C3 — micro SD"},
+            "help":{"en":"Photograph it. Check the card goes in and comes out without forcing and stays latched.",
+                    "zh":"拍照。确认存储卡可顺畅插拔、无需用力，且能卡紧。",
+                    "es":"Fotografíelo. Compruebe que la tarjeta entra y sale sin forzar y que queda retenida."}},
+           {"id":"kap_c4_photo","label":{"en":"C4 — 6.3 mm jack, printed AUX 2","zh":"C4 — 6.3 mm 插孔，印字 AUX 2","es":"C4 — jack de 6.3 mm, impreso AUX 2"},
+            "help":{"en":"Photograph the socket with its printing legible. The scheme calls it C4 and the cabinet says AUX 2; the photograph is what ties the two together for whoever reads the report.",
+                    "zh":"拍摄接口，印字需清晰可读。功能表称其为 C4，机身印的是 AUX 2；照片是让阅读报告的人把两者对应起来的依据。",
+                    "es":"Fotografíe el conector con su impresión legible. El esquema lo llama C4 y la cabina dice AUX 2; la foto es lo que ata las dos cosas para quien lea el informe."}},
+           {"id":"kap_c5_photo","label":{"en":"C5 — 6.3 mm jack, printed AUX 3","zh":"C5 — 6.3 mm 插孔，印字 AUX 3","es":"C5 — jack de 6.3 mm, impreso AUX 3"},
+            "help":{"en":"The same photograph on the second jack.",
+                    "zh":"对第二个插孔拍同样的照片。",
+                    "es":"La misma foto en el segundo jack."}},
+           {"id":"kap_c6","label":{"en":"C6 — DC barrel jack","zh":"C6 — DC 圆头电源输入","es":"C6 — entrada de alimentación DC"},
+            "help":{"en":"Photograph it, then connect the supply and confirm it charges. Wiggle the plug in the socket while it charges: it must not cut out. This is the socket the whole cabinet depends on.",
+                    "zh":"先拍照，再接上电源确认可充电。充电时轻微活动插头：不应断电。整台音箱都依赖这个接口。",
+                    "es":"Fotografíelo, luego conecte la fuente y confirme que carga. Mueva el plug dentro del jack mientras carga: no debe cortarse. Es el conector del que depende toda la cabina."}}]},
 
         {"id":"EXTERNAL","optional":false,"type":"photos","no_na":true,
          "only_factory":["YIS","RHY","EAG"],
@@ -1873,6 +2296,7 @@ const CONFIG = {
 
         {"id":"EXT_BATTERY","optional":true,"skip_factory":["RHY"],
          "only_factory":["YIS","RHY","EAG"],
+         "skip":["HK-KAP103","HK-KAP330"],
          "label":{"en":"EXTERNAL BATTERY","zh":"外置电池"},
          "steps":[
            {"en":"Switch the speaker off and disconnect it from the mains","zh":"关机并断开市电"},
@@ -3515,6 +3939,9 @@ const T = {
   po_ph:"Order number this shipment belongs to",
   operator_ph:"Who is running the inspection", next_po:"Order no. %p · %o",
   acct_factory:"FACTORY %f", acct_admin:"HOKLAN ADMIN",
+  dev_group:"IN DEVELOPMENT · not in production",
+  dev_tag:"IN DEVELOPMENT",
+  dev_note:"This reference has not been released. The factory cannot see it: it is inspected from here only.",
   measured:"Reading", a_values:"%n reading(s) still to be written down.\n\nThe photo of the instrument is not enough on its own: the number is what can be compared between one unit and the next.",
   ev_na:"Every point of this test is marked N/A: the reference does not have this function, so no photo or video is required. You can still attach one if it helps explain why.",
   ev_free:"Nothing is required here. Attach a photo or a clip if something is worth showing.",
@@ -3720,6 +4147,9 @@ const T = {
   po_ph:"Número de orden al que pertenece el despacho",
   operator_ph:"Quién ejecuta la inspección", next_po:"OC %p · %o",
   acct_factory:"FÁBRICA %f", acct_admin:"ADMIN HOKLAN",
+  dev_group:"EN DESARROLLO · sin producción",
+  dev_tag:"EN DESARROLLO",
+  dev_note:"Esta referencia aún no se ha liberado. La fábrica no la ve: se inspecciona sólo desde aquí.",
   measured:"Medición", a_values:"Faltan %n medición(es) por registrar.\n\nLa foto del instrumento no basta por sí sola: el número es lo que se puede comparar de una unidad a otra.",
   ev_na:"Todos los puntos de esta prueba están en N/A: la referencia no tiene esta función, así que no se requiere foto ni video. Puede adjuntar uno de todos modos si ayuda a explicar por qué.",
   ev_free:"Aquí no se requiere nada. Adjunte una foto o un video si hay algo que valga la pena mostrar.",
@@ -3916,6 +4346,9 @@ const T = {
   po_ph:"本批货所属的订单号",
   operator_ph:"由谁执行本次检验", next_po:"订单号 %p · %o",
   acct_factory:"工厂 %f", acct_admin:"HOKLAN 管理端",
+  dev_group:"开发中 · 尚未量产",
+  dev_tag:"开发中",
+  dev_note:"本型号尚未发布。工厂端不可见：仅可从此处检验。",
   measured:"实测值", a_values:"还有 %n 项实测值未填写。\n\n仅有仪器照片还不够：只有数值才能在不同整机之间进行比较。",
   ev_na:"本测试所有检查项均为不适用：本型号没有该功能，因此无需照片或录像。如有助于说明原因，仍可自行上传。",
   ev_free:"本项无强制要求。若有值得记录的内容，可自行上传照片或视频。",
@@ -4280,8 +4713,21 @@ function partialScope(){
   const tot = planTests().length, n = tests().length;
   return n < tot ? {n, tot} : null;
 }
+/* References that exist in the catalogue but are not in production. HOKLAN's own
+   Admin sees them, flagged; the factory does not see them at all — neither on
+   the start screen nor from a factory Admin account. The point is that a
+   development reference must not be inspectable by mistake: an inspection filed
+   against a product that has not been released is a record of nothing, and it
+   would sit in the dashboard next to real ones.
+
+   Taking a reference out of here is what releases it. Nothing else changes. */
+const DEV_REFS = ["HK-KAP103","HK-KAP330"];
+const isDevRef = m => DEV_REFS.indexOf(m) >= 0;
+
+/* What the factory can choose on the start screen. Development references are
+   filtered out here, which is the single place that decides it. */
 const modelsOf = f => Object.keys(CONFIG.models)
-  .filter(m => CONFIG.models[m] === f).sort();
+  .filter(m => CONFIG.models[m] === f && !isDevRef(m)).sort();
 /* Tolerates a missing test on purpose. Half a dozen callers reach for the
    points of `current()`, and `current()` can be null on a draft whose reference
    was left without a plan; every one of them wants an empty list there, not a
@@ -7221,6 +7667,12 @@ function renderAdmin(){
       <select id="aref" onchange="setAdminModel(this.value)">${refOptions()}</select>
       <p class="hint" style="margin-top:6px">${
         S.model ? esc(S.testId) : fmt("admin_refs_pick",{n:list.length})}</p>
+      ${/* Said again once the reference is chosen, because the group label in
+            the dropdown is gone from view by then and an inspection filed
+            against a product that does not exist yet is worth one more line. */""}
+      ${isDevRef(S.model) ? `<div class="tag" style="background:rgba(245,185,66,.16);
+        border-color:var(--amber);color:var(--amber)">${tr("dev_tag")}</div>
+        <p class="hint" style="margin-top:6px;color:var(--amber)">${tr("dev_note")}</p>` : ""}
       ${S.model ? refImageRow(S.model) : ""}
 
       ${!S.model ? "" : `
@@ -7283,7 +7735,10 @@ function renderAdmin(){
    can reach a reference that belongs to somebody else. */
 function refList(){
   let all = Object.keys(CONFIG.models).sort();
-  if(ADMIN_FACTORY) all = all.filter(m => keyOfModel(m) === ADMIN_FACTORY);
+  /* A factory Admin account is still the factory. Development references are
+     HOKLAN's to inspect until they are released, so they come out here too —
+     the only list that shows them is HOKLAN's own Admin. */
+  if(ADMIN_FACTORY) all = all.filter(m => keyOfModel(m) === ADMIN_FACTORY && !isDevRef(m));
   return all;
 }
 /* The search box and the list of buttons are gone with the second screen. The
@@ -7346,16 +7801,26 @@ function toggleAdminTests(){
 function refOptions(){
   const byKey = {};
   refList().forEach(m => {
-    const k = keyOfModel(m) || "—";
+    /* A development reference is grouped by that and not by its factory. It is
+       what matters about it: which factory will build it is settled, but it is
+       not being built yet, and mixing it into YISION's list is how somebody
+       picks it by mistake looking for the reference above it. */
+    const k = isDevRef(m) ? "__DEV__" : (keyOfModel(m) || "—");
     (byKey[k] = byKey[k] || []).push(m);
   });
-  const keys = Object.keys(byKey).sort();
+  /* Development last, whatever it sorts as. It is the group nobody is looking
+     for, and putting it under the factories keeps the list reading the way it
+     always has. */
+  const keys = Object.keys(byKey).sort()
+    .filter(k => k !== "__DEV__")
+    .concat(byKey.__DEV__ ? ["__DEV__"] : []);
   const opt = m => `<option value="${esc(m)}"${
     m === S.model ? " selected" : ""}>${esc(m)}</option>`;
   const head = `<option value="">${tr("select")}</option>`;
   if(keys.length <= 1) return head + (byKey[keys[0]] || []).map(opt).join("");
   return head + keys.map(k =>
-    `<optgroup label="${esc(FACTORY_NAMES[k] || k)}">${
+    `<optgroup label="${esc(k === "__DEV__" ? tr("dev_group")
+                                            : (FACTORY_NAMES[k] || k))}">${
       byKey[k].map(opt).join("")}</optgroup>`).join("");
 }
 
