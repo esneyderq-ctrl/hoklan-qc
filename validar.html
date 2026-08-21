@@ -144,57 +144,86 @@ function run(src, f){
     R.done = true; return;
   }
 
-  /* ---- 2. boot -------------------------------------------------------- */
+  /* ---- 2. boot --------------------------------------------------------
+     The error catcher is injected at the top of the document rather than
+     attached on load: by the time the frame reports itself loaded the app has
+     already booted, and anything it threw on the way up has been and gone. */
+  const probe = "<script>window.__errs=[];" +
+    "window.onerror=function(m,u,l){window.__errs.push(m+' (linea '+l+')');};" +
+    "<\/script>";
+  const seeded = src.replace(/<head[^>]*>/i, mm => mm + probe);
+
   const fr = document.createElement("iframe");
   fr.style.cssText = "position:absolute;left:-10000px;width:400px;height:800px;border:0";
   document.body.appendChild(fr);
+  fr.srcdoc = seeded;
 
-  const errs = [];
-  fr.srcdoc = src;
   fr.onload = () => {
-    const w = fr.contentWindow;
-    w.onerror = (msg, u, l) => { errs.push(msg + " (línea " + l + ")"); };
-    /* One turn of the event loop so anything the app schedules at boot has run
-       before the state is read. */
-    setTimeout(() => finish(w, fr, errs, R), 900);
+    /* Polled, not timed. A 630 KB document with a plan of forty tests takes as
+       long as it takes on the machine it happens to be running on, and a fixed
+       wait either reports a working file as broken or makes every check slow. */
+    let waited = 0;
+    const tick = () => {
+      const up = ask(fr, "typeof CONFIG !== 'undefined' && typeof plan === 'function'");
+      if(up === true || waited > 8000) return finish(fr, R);
+      waited += 150;
+      setTimeout(tick, 150);
+    };
+    tick();
   };
 }
 
-function finish(w, fr, errs, R){
+/* Reads a value from inside the frame.
+
+   `w.CONFIG` does not work here and that is the whole reason this function
+   exists. The app declares everything with const and let at the top level of a
+   classic script, and those bindings live in the script's own scope — they
+   never become properties of window. Reaching in from the parent for
+   `w.CONFIG` finds nothing on a file that boots perfectly, which is exactly
+   what this checker reported the first time it was pointed at a working app.
+   Evaluating inside the frame runs in that scope and sees them. */
+function ask(fr, expr){
+  try{ return fr.contentWindow.eval("(" + expr + ")"); }
+  catch(e){ return undefined; }
+}
+
+function finish(fr, R){
+  // Copied out as text, same reason as `info` below.
+  const errs = JSON.parse(ask(fr, "JSON.stringify(window.__errs||[])") || "[]");
   let arranca = false, info = null;
   try{
-    arranca = typeof w.CONFIG !== "undefined" && typeof w.plan === "function";
+    arranca = ask(fr, "typeof CONFIG !== 'undefined' && typeof plan === 'function'") === true;
     if(arranca){
-      const S = w.S, mods = w.CONFIG.models;
-      const count = (fac, mod) => {
-        S.factory = fac; S.model = mod; S.pick = null;
-        const ts = w.planTests();
-        return {pruebas: ts.length,
-                puntos: ts.reduce((n,t)=>n+(t.points||[]).filter(p=>w.fits(p)&&p.id).length,0)};
-      };
-      const byFactory = {};
-      Object.keys(mods).forEach(k => { byFactory[mods[k]] = (byFactory[mods[k]]||0)+1; });
-      /* One reference per factory is enough to prove the plan is not empty;
-         the empty-plan sweep below covers every one of them. */
-      const vacias = [];
-      Object.keys(mods).forEach(mo => {
-        S.factory = mods[mo]; S.model = mo; S.pick = null;
-        if(!w.planTests().length) vacias.push(mo);
-      });
-      info = {
-        app: w.APP_VERSION,
-        plan: w.plan().plan_version,
-        referencias: Object.keys(mods).length,
-        porFabrica: byFactory,
-        sinPruebas: vacias,
-        muestra: {
-          "RHY · HK-DEL115B1": count("RHY","HK-DEL115B1"),
-          "RHY · HK-BAS115A1": count("RHY","HK-BAS115A1"),
-          "YIS · HK-ARC101":   count("YIS","HK-ARC101"),
-          "LES · HK-RHO102":   count("LES","HK-RHO102"),
-          "LES · HK-PHI":      count("LES","HK-PHI")
+      /* Everything is asked for in one expression so the whole sweep happens
+         inside the frame's own scope, where the app's bindings are. */
+      /* Brought across as text and parsed here. An object handed straight over
+         belongs to the frame's realm, and the frame is removed a few lines
+         later — the report would then be reading from a window that no longer
+         exists. */
+      info = JSON.parse(ask(fr, `JSON.stringify((function(){
+        var mods = CONFIG.models, by = {}, vacias = [], out = {};
+        Object.keys(mods).forEach(function(k){ by[mods[k]] = (by[mods[k]]||0)+1; });
+        Object.keys(mods).forEach(function(mo){
+          S.factory = mods[mo]; S.model = mo; S.pick = null;
+          if(!planTests().length) vacias.push(mo);
+        });
+        function count(fac, mod){
+          S.factory = fac; S.model = mod; S.pick = null;
+          var ts = planTests();
+          return {pruebas: ts.length, puntos: ts.reduce(function(n,t){
+            return n + (t.points||[]).filter(function(p){ return fits(p) && p.id; }).length;
+          }, 0)};
         }
-      };
+        var muestra = {};
+        [["RHY","HK-DEL115B1"],["RHY","HK-BAS115A1"],["YIS","HK-ARC101"],
+         ["LES","HK-RHO102"],["LES","HK-PHI"]].forEach(function(p){
+          if(mods[p[1]]) muestra[p[0] + " \\u00b7 " + p[1]] = count(p[0], p[1]);
+        });
+        return {app: APP_VERSION, plan: plan().plan_version,
+                referencias: Object.keys(mods).length, porFabrica: by,
+                sinPruebas: vacias, muestra: muestra};
+      })())`) || "null");
+      if(!info) errs.push("arrancó, pero no pude leer el estado del plan");
     }
   }catch(e){ errs.push("al leer el estado: " + e.message); }
 
