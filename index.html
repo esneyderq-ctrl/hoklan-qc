@@ -611,6 +611,7 @@ const CONFIG = {
     "MOD-005":{"en":"Bluetooth sounds outside Bluetooth mode","zh":"非蓝牙模式下蓝牙仍出声","es":"El Bluetooth suena fuera del modo Bluetooth"},
     "EQ-001":{"en":"EQ setting does not change the sound","zh":"均衡设置对音质无影响","es":"El ajuste de EQ no cambia el sonido"},
     "AUD-019":{"en":"Knob does not swap function or does not return","zh":"旋钮功能无法切换或不自动恢复","es":"La perilla no cambia de función o no regresa"},
+    "BAT-009":{"en":"Capacity test not set up or not completed","zh":"容量测试未正确设置或未完成","es":"Prueba de capacidad mal montada o sin completar"},
     "BAT-008":{"en":"No low battery warning or no automatic shutdown","zh":"无低电量提示或不自动关机","es":"Sin aviso de batería baja o sin apagado automático"},
     "DSP-005":{"en":"Mode change does not work","zh":"模式切换无效","es":"El cambio de modo no funciona"},
     "DSP-006":{"en":"Display colour is not the specified one","zh":"显示颜色与规定不符","es":"El color de la pantalla no es el especificado"},
@@ -689,7 +690,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 41,
+      "plan_version": 42,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -2397,6 +2398,104 @@ const CONFIG = {
                     "zh":"拍摄带规格的一面：电压、容量（mAh）、电芯类型和生产厂家。只拍电池外观而看不到标签没有意义。"}},
            {"id":"antena_fm","skip_factory":["RHY"],
             "label":{"en":"FM antenna position","zh":"收音天线位置"}}]},
+
+        /* ===== Real battery capacity ========================================
+           Last in the plan, and it has to be: a 3600 mAh pack at a quarter of
+           its own rating takes about four hours to empty. Nothing else can be
+           waiting on it, and the operator is not meant to stand there — he sets
+           the load up, answers the points down to the start, walks away, and
+           comes back to write the three numbers down.
+
+           Optional, because it is a sampling test. One pack out of a lot
+           answers the question the whole lot is asking; running it on every
+           unit would cost four hours each and tell nobody anything new.
+
+           No photograph is asked for at the end. That was deliberate and it is
+           being reviewed separately — the numbers are what this test produces,
+           and a picture of the screen is not the same as the reading typed into
+           a box that can be compared, summed and put in a column. */
+        {"id":"BAT_CAPACITY","optional":true,"only_factory":["YIS"],
+         "skip":["HK-KAP103","HK-KAP330"],"evidence":[],
+         "label":{"en":"REAL BATTERY CAPACITY","zh":"电池实际容量","es":"CAPACIDAD REAL DE LA BATERÍA"},
+         "steps":[
+           {"en":"Charge one production pack to full with the speaker's own charger","zh":"用音箱原装充电器将一只量产电池组充满","es":"Cargue al máximo un pack de producción con el cargador del propio parlante"},
+           {"en":"Connect it to CH1 of the RK8510D electronic load","zh":"将其接到 RK8510D 电子负载的 CH1","es":"Conéctelo al CH1 de la carga electrónica RK8510D"},
+           {"en":"Set the mode, the current and the cut-off voltage","zh":"设置模式、电流和截止电压","es":"Ajuste el modo, la corriente y el voltaje de corte"},
+           {"en":"Start the discharge and come back when it has finished","zh":"启动放电，结束后再回来","es":"Inicie la descarga y vuelva cuando haya terminado"}],
+         "points":[
+           {"section":{"en":"Preparation","zh":"准备","es":"Preparación"},
+            "help":{"en":"The pack has to be one that came off the line, assembled as it ships, and it has to be genuinely full. A pack charged for half an hour measures short and blames the cell for what the charger did.",
+                    "zh":"必须使用产线下线、按出厂状态装配好的电池组，并且确实充满。只充了半小时的电池组测出来容量偏低，把充电器的问题算在了电芯头上。",
+                    "es":"El pack tiene que ser uno salido de la línea, ensamblado como se despacha, y tiene que estar de verdad lleno. Un pack cargado media hora mide corto y le echa a la celda la culpa de lo que hizo el cargador."}},
+           {"id":"bat_pack","code":"BAT-009",
+            "label":{"en":"Assembled production pack","zh":"量产已装配电池组","es":"Pack de producción, ensamblado"},
+            "help":{"en":"Taken from current production, with its wiring and connector as it ships. Not a loose cell and not a sample built by hand for the test.",
+                    "zh":"取自当前量产，连同出厂状态的线束和接头。不得使用散装电芯，也不得使用为测试专门手工装配的样品。",
+                    "es":"Tomado de la producción corriente, con su cableado y su conector tal como se despacha. Ni una celda suelta ni una muestra armada a mano para la prueba."}},
+           {"id":"bat_full","code":"CHG-001",
+            "label":{"en":"Charged to full with the speaker's charger","zh":"用音箱充电器充满","es":"Cargado al máximo con el cargador del parlante"},
+            "help":{"en":"With the charger the product ships with, not a bench supply, and until the charger itself says it has finished. What is being measured is the pack as the customer will have it.",
+                    "zh":"使用随机出厂的充电器，而非实验室电源，并且要充到充电器自身显示已完成。所测的是客户拿到手时的电池组状态。",
+                    "es":"Con el cargador con el que sale el producto, no con una fuente de banco, y hasta que el propio cargador diga que terminó. Lo que se mide es el pack tal como lo va a tener el cliente."}},
+           {"section":{"en":"Setting the load up","zh":"设置电子负载","es":"Ajuste del instrumento"},
+            "help":{"en":"Four settings, and the cut-off voltage is the one that matters most: it is what stops the load before the pack is ruined. The example photographs show each screen on the RK8510D.",
+                    "zh":"四项设置，其中截止电压最为关键：它决定负载在电池组被损坏之前停止。示例照片展示了 RK8510D 上的每个界面。",
+                    "es":"Cuatro ajustes, y el voltaje de corte es el que más pesa: es lo que detiene la carga antes de arruinar el pack. Las fotos de ejemplo muestran cada pantalla del RK8510D."}},
+           {"id":"bat_conn","code":"BAT-009","sample":"bat_conexion",
+            "label":{"en":"Pack connected to CH1","zh":"电池组已接入 CH1","es":"Pack conectado a CH1"},
+            "help":{"en":"Red to the red terminal, black to the black one, on channel one. Reversed polarity on an electronic load is not a mistake that announces itself gently.",
+                    "zh":"红线接红端子，黑线接黑端子，接在通道一。电子负载上接反极性，后果不会温和地提示你。",
+                    "es":"Rojo al borne rojo, negro al negro, en el canal uno. La polaridad invertida en una carga electrónica no es un error que avise con suavidad."}},
+           {"id":"bat_mode","code":"BAT-009","sample":"bat_menu",
+            "label":{"en":"Mode 07 Bat Cap selected","zh":"已选择 07 Bat Cap 模式","es":"Modo 07 Bat Cap seleccionado"},
+            "help":{"en":"Press Mode, turn the knob to 07 Bat Cap and press OK. The header must read [BatCap] and the channel must say CH1. In any other mode the load discharges but does not count the capacity, and four hours are lost with nothing to show.",
+                    "zh":"按 Mode，旋转旋钮选到 07 Bat Cap，按 OK。顶部应显示 [BatCap]，通道应为 CH1。在其他模式下负载会放电但不累计容量，四个小时白白浪费。",
+                    "es":"Pulse Mode, gire la perilla hasta 07 Bat Cap y pulse OK. La cabecera debe decir [BatCap] y el canal CH1. En cualquier otro modo la carga descarga pero no cuenta la capacidad, y se pierden cuatro horas sin nada que mostrar."}},
+           {"id":"bat_current","code":"BAT-009","sample":"bat_corriente",
+            "measure":{"unit":"mA","step":"1"},
+            "label":{"en":"Discharge current — a quarter of the rated capacity","zh":"放电电流 — 标称容量的四分之一","es":"Corriente de descarga — la cuarta parte de la capacidad nominal"},
+            "help":{"en":"Divide the capacity printed on the pack by four and set that in LoadVal. A 3600 mAh pack discharges at 900 mA; a 4400 mAh pack at 1100 mA. Write the value you set in the box.",
+                    "zh":"将电池组上标示的容量除以四，填入 LoadVal。3600 mAh 的电池组按 900 mA 放电；4400 mAh 的按 1100 mA。请将所设数值填入方框。",
+                    "es":"Divida entre cuatro la capacidad impresa en el pack y póngala en LoadVal. Un pack de 3600 mAh descarga a 900 mA; uno de 4400 mAh, a 1100 mA. Escriba en el recuadro el valor que dejó puesto."}},
+           {"id":"bat_cutoff","code":"BAT-009","sample":"bat_corte",
+            "measure":{"unit":"V","step":"0.1"},
+            "label":{"en":"Cut-off voltage","zh":"截止电压","es":"Voltaje de corte"},
+            "help":{"en":"Set it in StopVolt and write it in the box. For a 7.4 V pack it is 5.8 V; for a 4.2 V pack, 2.9 V; for a 12.6 V pack, 8.7 V. This is what makes the load stop on its own: without it the pack is discharged past the point where it comes back.",
+                    "zh":"在 StopVolt 中设定并填入方框。7.4 V 电池组为 5.8 V；4.2 V 电池组为 2.9 V；12.6 V 电池组为 8.7 V。正是它让负载自动停止：否则电池组会被过放到无法恢复的程度。",
+                    "es":"Póngalo en StopVolt y escríbalo en el recuadro. Para un pack de 7,4 V son 5,8 V; para uno de 4,2 V, 2,9 V; para uno de 12,6 V, 8,7 V. Es lo que hace que la carga se detenga sola: sin eso el pack se descarga más allá del punto del que vuelve."}},
+           {"section":{"en":"Discharge","zh":"放电","es":"Descarga"},
+            "help":{"en":"About four hours on a 3600 mAh pack. Start it, leave it, and come back — there is nothing to watch and nothing to hold.",
+                    "zh":"3600 mAh 的电池组约需四小时。启动后即可离开，稍后再回来——期间无需盯守，也无需手持任何东西。",
+                    "es":"Unas cuatro horas en un pack de 3600 mAh. Arránquela, déjela y vuelva — no hay nada que mirar ni nada que sostener."}},
+           {"id":"bat_start","code":"BAT-009","sample":"bat_iniciar",
+            "label":{"en":"Discharge started with ON1","zh":"已用 ON1 启动放电","es":"Descarga iniciada con ON1"},
+            "help":{"en":"Press ON1. The box under CH1 must change from Load Off to Load On, the timer must start counting and the capacity must begin to climb. If any of the three does not move, it is not discharging.",
+                    "zh":"按 ON1。CH1 下方的方框应由 Load Off 变为 Load On，计时应开始走动，容量数值应开始上升。三者中任何一项没有变化，即表示并未放电。",
+                    "es":"Pulse ON1. El recuadro bajo CH1 debe pasar de Load Off a Load On, el tiempo debe empezar a correr y la capacidad a subir. Si alguna de las tres cosas no se mueve, no está descargando."}},
+           {"id":"bat_auto_stop","code":"BAT-009",
+            "label":{"en":"It stopped on its own at the cut-off","zh":"到达截止电压后自动停止","es":"Se detuvo sola al llegar al corte"},
+            "help":{"en":"The load must stop by itself when the pack reaches the cut-off voltage. If somebody had to stop it by hand, the cut-off was set wrong and the reading is not comparable with any other.",
+                    "zh":"电池组达到截止电压时，负载应自动停止。若需人工手动停止，说明截止电压设置有误，该读数无法与其他测量结果比较。",
+                    "es":"La carga debe detenerse sola cuando el pack llega al voltaje de corte. Si alguien tuvo que pararla a mano, el corte estaba mal puesto y la medición no es comparable con ninguna otra."}},
+           {"section":{"en":"Result","zh":"结果","es":"Resultado"},
+            "help":{"en":"Three numbers off the screen, written down rather than photographed. A figure inside a picture cannot be compared with the next pack, summed across a lot or put in a column, which is the whole reason this test is run.",
+                    "zh":"从屏幕上读取三个数值并填写，而不是拍照。照片里的数字无法与下一只电池组比较、无法在整批中汇总、也无法列成表格，而这正是本测试的意义所在。",
+                    "es":"Tres números de la pantalla, escritos en vez de fotografiados. Una cifra dentro de una foto no se puede comparar con el pack siguiente, ni sumar sobre un lote, ni poner en una columna, que es la razón entera por la que esta prueba se hace."}},
+           {"id":"bat_nominal","measure":{"unit":"mAh","step":"1"},
+            "label":{"en":"Rated capacity printed on the pack","zh":"电池组标称容量","es":"Capacidad nominal impresa en el pack"},
+            "help":{"en":"Copy it from the label, exactly as printed. Without it the measured figure below is a number with nothing to be measured against.",
+                    "zh":"照标签原样抄录。没有它，下面的实测数值就是一个无从比较的数字。",
+                    "es":"Cópiela de la etiqueta, tal como está impresa. Sin ella, la cifra medida de abajo es un número sin nada contra qué compararse."}},
+           {"id":"bat_measured","measure":{"unit":"mAh","step":"1"},
+            "label":{"en":"Measured capacity","zh":"实测容量","es":"Capacidad medida"},
+            "help":{"en":"The figure the load shows as Cap when the discharge has finished. Write it as it reads.",
+                    "zh":"放电结束时负载显示的 Cap 数值。照读数填写。",
+                    "es":"La cifra que muestra la carga en Cap al terminar la descarga. Escríbala tal como se lee."}},
+           {"id":"bat_time","measure":{"unit":{"en":"s","zh":"秒","es":"s"},"step":"1"},
+            "label":{"en":"Total discharge time","zh":"总放电时间","es":"Tiempo total de descarga"},
+            "help":{"en":"The seconds the load counted, from Time on the screen. Two packs of the same rating that empty in very different times are telling you about the cells inside them.",
+                    "zh":"负载累计的秒数，取屏幕上的 Time。相同标称容量的两只电池组放电时间相差很大，说明的是内部电芯的差异。",
+                    "es":"Los segundos que contó la carga, del campo Time de la pantalla. Dos packs de la misma capacidad que se vacían en tiempos muy distintos están hablando de las celdas que llevan dentro."}}]},
 
         /* ===== LESHENG — wireless microphone system =========================
            A different product, so a different plan: two microphones and a
