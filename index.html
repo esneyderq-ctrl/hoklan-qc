@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="8.3">
+<meta name="app-version" content="8.4">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -36,6 +36,8 @@ h2{font-size:19px;margin:0 0 4px;color:var(--accent)}
   border-radius:10px;padding:10px 12px;margin:0 0 14px}
 .brw b{display:block;color:#e9b45c;font-size:13px;line-height:1.45;
   font-weight:600}
+.brw span{display:block;color:var(--grey);font-size:12.5px;line-height:1.5;
+  margin-top:5px}
 /* Storage trouble, on the checklist. Amber for the photographs, red for the
    answers: they are not the same size of problem and must not look alike. */
 .swarn{background:rgba(196,132,26,.15);border:1px solid rgba(214,158,60,.5);
@@ -692,7 +694,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 50,
+      "plan_version": 52,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -2418,6 +2420,11 @@ const CONFIG = {
            a box that can be compared, summed and put in a column. */
         {"id":"BAT_CAPACITY","optional":true,"only_factory":["YIS"],
          "skip":["HK-KAP103","HK-KAP330"],"evidence":[],
+         "first":2,
+         "long":{"t":{"en":"The discharge is running","zh":"放电正在进行中","es":"La descarga está en curso"},
+                 "n":{"en":"Come back when the load stops on its own — about four hours — to write the figures down. Meanwhile you can carry on with the rest of the plan.",
+                      "zh":"待负载自动停止后（约四小时）再回来填写数值。期间可继续进行计划中的其他测试。",
+                      "es":"Vuelva cuando la carga se detenga sola —unas cuatro horas— para anotar las cifras. Mientras tanto puede seguir con el resto del plan."}},
          "label":{"en":"SPECIFICATION CHECK · BATTERY CAPACITY",
                   "zh":"规格验证 · 电池容量",
                   "es":"VERIFICACIÓN DE ESPECIFICACIONES · CAPACIDAD DE BATERÍA"},
@@ -2524,7 +2531,7 @@ const CONFIG = {
            packed. Sampling, like the battery test, and last in the plan with
            it. */
         {"id":"RMS_POWER","optional":true,"only_factory":["YIS","RHY"],
-         "skip":["HK-KAP103","HK-KAP330"],"evidence":[],
+         "skip":["HK-KAP103","HK-KAP330"],"evidence":[],"first":3,
          "label":{"en":"SPECIFICATION CHECK · RMS POWER",
                   "zh":"规格验证 · RMS 功率",
                   "es":"VERIFICACIÓN DE ESPECIFICACIONES · POTENCIA RMS"},
@@ -2598,7 +2605,7 @@ const CONFIG = {
                     "es":"Fotografíe la pantalla con la onda y el valor de V RMS a la vista. La onda de la foto debe ser la limpia, con las puntas redondeadas."}}]},
 
         /* ===== Aging · four hours ===========================================
-           Four hours of continuous playing, flat out, warm and damp, with the
+           Four hours of continuous playing, flat out, in a warm room, with the
            speaker listened to on the hour. Nothing here is measured: the test
            either survives it or it does not, and what it looks for is the fault
            that only shows up once everything inside has come up to temperature.
@@ -2617,27 +2624,32 @@ const CONFIG = {
               is a reasonable thing to want; it is just not this procedure. */
          "id":"AGING","optional":true,"only_factory":["YIS","RHY"],
          "skip":["HK-KAP103","HK-KAP330","HK-BAS115A1","HK-BAS118A1"],"evidence":[],
+         "first":1,
+         "long":{"t":{"en":"This test is still running","zh":"本测试仍在进行中","es":"Esta prueba sigue en curso"},
+                 "n":{"en":"Come back on each hour to answer the checks. Meanwhile you can carry on with the rest of the plan.",
+                      "zh":"请每小时回来填写检查项。期间可继续进行计划中的其他测试。",
+                      "es":"Vuelva cada hora a responder las revisiones. Mientras tanto puede seguir con el resto del plan."}},
          "label":{"en":"AGING · 4 HOURS","zh":"老化测试 · 4 小时","es":"ENVEJECIMIENTO · 4 HORAS"},
          "steps":[
-           {"en":"Put the speaker in a warm, damp, well-ventilated place","zh":"将音箱置于温暖、潮湿且通风良好的场所","es":"Ponga el parlante en un sitio cálido, húmedo y bien ventilado"},
+           {"en":"Put the speaker in a warm, well-ventilated place","zh":"将音箱置于温暖且通风良好的场所","es":"Ponga el parlante en un sitio cálido y bien ventilado"},
            {"en":"Play the USB D playlist with everything at maximum","zh":"播放 USB D 中的曲目，所有旋钮开到最大","es":"Reproduzca la lista de la USB D con todo al máximo"},
            {"en":"Leave it running four hours without stopping it","zh":"连续运行四小时，中途不得停止","es":"Déjelo sonando cuatro horas sin detenerlo"},
            {"en":"Listen for 20 seconds on each hour","zh":"每小时试听 20 秒","es":"Escuche 20 segundos en cada hora"}],
          "points":[
-           {"section":{"en":"The test area","zh":"测试场所","es":"El área de prueba"},
-            "help":{"en":"Warm and damp on purpose. Read both figures before starting and write them down.",
-                    "zh":"刻意选择高温高湿环境。开始前读取并记录两个数值。",
-                    "es":"Cálido y húmedo a propósito. Lea las dos cifras antes de empezar y anótelas."}},
+           {/* Humidity came out at HOKLAN's request. The source procedure asks
+                for more than 50%, and measuring it needs a hygrometer the
+                factory does not necessarily have on the bench — a condition
+                nobody can read is a condition everybody marks N/A. Temperature
+                stays, and it is the one that stresses the amplifier. */
+            "section":{"en":"The test area","zh":"测试场所","es":"El área de prueba"},
+            "help":{"en":"Warm on purpose. Read the temperature before starting and write it down.",
+                    "zh":"刻意选择高温环境。开始前测量温度并记录。",
+                    "es":"Cálido a propósito. Lea la temperatura antes de empezar y anótela."}},
            {"id":"age_temp","code":"AGE-001","measure":{"unit":"°C","step":"0.1"},
             "label":{"en":"Temperature between 35 °C and 45 °C","zh":"温度介于 35 °C 与 45 °C 之间","es":"Temperatura entre 35 °C y 45 °C"},
             "help":{"en":"Measure it where the speaker is going to sit and write it in the box. Outside that range the test does not count.",
                     "zh":"在音箱放置位置测量并填入方框。超出该范围，本次测试无效。",
                     "es":"Mídala donde va a quedar el parlante y escríbala en el recuadro. Fuera de ese rango la prueba no cuenta."}},
-           {"id":"age_hum","code":"AGE-001","measure":{"unit":"%","step":"1"},
-            "label":{"en":"Relative humidity above 50%","zh":"相对湿度高于 50%","es":"Humedad relativa por encima del 50%"},
-            "help":{"en":"Measure it in the same place and write it in the box.",
-                    "zh":"在同一位置测量并填入方框。",
-                    "es":"Mídala en el mismo sitio y escríbala en el recuadro."}},
            {"id":"age_place","code":"AGE-001",
             "label":{"en":"Stable, well-ventilated spot","zh":"稳固、通风良好的位置","es":"Sitio estable y bien ventilado"},
             "help":{"en":"On a firm surface where nobody will move it for four hours, with air around it. Not shut in a box and not against a wall.",
@@ -2647,6 +2659,17 @@ const CONFIG = {
             "help":{"en":"Everything at maximum: this is the hardest the speaker will ever work.",
                     "zh":"全部开到最大：这是音箱所能承受的最严苛工况。",
                     "es":"Todo al máximo: es lo más duro que va a trabajar el parlante."}},
+           {/* First point of the group, and it has to be. This test used to run
+                after ALIMENTACIÓN AC, which reads the voltage selector before
+                anything is plugged in. Now aging runs first, so the check comes
+                with it: a cabinet set to 115 V and plugged into 230 V burns in
+                the first second, and four hours of aging would never start.
+                RHYME only — its panels are the ones with the selector. */
+            "id":"age_volt","code":"PWR-005","only_factory":["RHY"],
+            "label":{"en":"Voltage selector set for the destination market","zh":"电压选择开关与目的地市场一致","es":"Selector de voltaje en la posición del mercado"},
+            "help":{"en":"With the cabinet unplugged, read the position of the selector and compare it against the destination on the order. Do it before plugging it in.",
+                    "zh":"在断电状态下读取电压开关的位置，并与订单目的地核对。务必在接电之前完成。",
+                    "es":"Con la cabina desconectada, lea la posición del selector y compárela con el destino de la orden. Hágalo antes de enchufarla."}},
            {"id":"age_ac","code":"PWR-001",
             "label":{"en":"Connected to AC power","zh":"已接入市电","es":"Conectado a la red AC"},
             "help":{"en":"Mains, not battery. Four hours on a battery is a battery test, not an aging test.",
@@ -2667,6 +2690,17 @@ const CONFIG = {
             "help":{"en":"Start the playlist and note the time. From here it must not be stopped, paused or touched for four hours.",
                     "zh":"开始播放并记录时间。此后四小时内不得停止、暂停或触碰。",
                     "es":"Inicie la lista y anote la hora. A partir de aquí no debe detenerse, pausarse ni tocarse durante cuatro horas."}},
+           {/* Taken with the camera and not from the gallery, unlike the two
+                measurement tests. The app stamps a photograph with the moment
+                it was attached, not the moment it was shot, so two pictures
+                picked out of the gallery at the end of the day both carry the
+                end of the day. Here the two times are the evidence: they are
+                what say the speaker ran for four hours. */
+            "id":"age_photo_start","code":"AGE-001","photo":true,
+            "label":{"en":"Photo at the start","zh":"开始时的照片","es":"Foto al iniciar"},
+            "help":{"en":"Photograph the speaker in the test area, connected and playing, with the display showing USB mode. Take it now, with the camera.",
+                    "zh":"在测试场所拍摄音箱：已接电、正在播放，显示屏显示 USB 模式。请当场用相机拍摄。",
+                    "es":"Fotografíe el parlante en el área de prueba, conectado y sonando, con la pantalla mostrando el modo USB. Tómela ahora, con la cámara."}},
            {"section":{"en":"On the hour","zh":"每小时检查","es":"Cada hora"},
             "help":{"en":"Four visits, 20 seconds of listening each. The same four things every time: it is playing, without cuts, without switching off or restarting, and without noise or distortion.",
                     "zh":"共四次，每次试听 20 秒。每次检查同样四项：有声音、无断续、未关机或重启、无异响或失真。",
@@ -2704,7 +2738,12 @@ const CONFIG = {
             "label":{"en":"Nothing damaged after the test","zh":"测试后无部件损坏","es":"Ningún componente dañado al terminar"},
             "help":{"en":"Go over the speaker once the four hours are up: no smell of heat, no deformed or discoloured part, no loose or rattling component, and it still plays as it did at the start.",
                     "zh":"四小时结束后整体检查：无焦糊气味，无部件变形或变色，无松动或异响部件，且播放状态与开始时一致。",
-                    "es":"Revise el parlante al cumplirse las cuatro horas: sin olor a caliente, sin piezas deformadas ni descoloridas, sin componentes flojos ni traqueteando, y sigue sonando como al principio."}}]},
+                    "es":"Revise el parlante al cumplirse las cuatro horas: sin olor a caliente, sin piezas deformadas ni descoloridas, sin componentes flojos ni traqueteando, y sigue sonando como al principio."}},
+           {"id":"age_photo_end","code":"AGE-001","photo":true,
+            "label":{"en":"Photo at the end","zh":"结束时的照片","es":"Foto al terminar"},
+            "help":{"en":"Photograph the same speaker in the same place, still playing, with the four hours completed. Take it now, with the camera: the two times are what say how long it ran.",
+                    "zh":"在同一位置拍摄同一台音箱，仍在播放，四小时已完成。请当场用相机拍摄：两张照片的时间正是运行时长的证据。",
+                    "es":"Fotografíe el mismo parlante en el mismo sitio, todavía sonando, con las cuatro horas cumplidas. Tómela ahora, con la cámara: las dos horas son lo que dice cuánto tiempo estuvo funcionando."}}]},
 
         /* ===== LESHENG — wireless microphone system =========================
            A different product, so a different plan: two microphones and a
@@ -4383,6 +4422,8 @@ const T = {
   a_no_plan:"This reference has no tests yet.\n\nIt is in the catalogue, but its inspection plan has not been published. Ask HOKLAN before inspecting it.",
   po_min_hint:"At least %n digits.",
   a_pending:"%n point(s) still to answer.",
+  leave_pending:"LEAVE PENDING",
+  a_left_tests:"%n test(s) still to answer.\n\nThe inspection cannot be closed and the report cannot be issued until they are finished.",
   a_photo:"Photo missing.\n\nEvery test must be left with evidence, pass or fail.",
   a_video:"Video missing.\n\nEvery test must be left with a clip of it being run, pass or fail.",
   a_both:"Photo and video missing.\n\nEvery test must be left with at least one photo and one video, pass or fail.",
@@ -4589,6 +4630,8 @@ const T = {
   a_no_plan:"Esta referencia aún no tiene pruebas.\n\nEstá en el catálogo, pero su plan de inspección todavía no se ha publicado. Consulte con HOKLAN antes de inspeccionarla.",
   po_min_hint:"Al menos %n dígitos.",
   a_pending:"Faltan %n punto(s) por responder.",
+  leave_pending:"DEJAR PENDIENTE",
+  a_left_tests:"Faltan %n prueba(s) por responder.\n\nNo se puede cerrar la inspección ni generar el informe hasta terminarlas.",
   a_photo:"Falta la foto.\n\nToda prueba debe quedar con evidencia, apruebe o falle.",
   a_video:"Falta el video.\n\nToda prueba debe quedar con un clip de su ejecución, apruebe o falle.",
   a_both:"Faltan la foto y el video.\n\nToda prueba debe quedar con al menos una foto y un video, apruebe o falle.",
@@ -4791,6 +4834,8 @@ const T = {
   a_no_plan:"本型号尚无测试项目。\n\n它已在型号目录中，但检验方案尚未发布。检验前请与 HOKLAN 确认。",
   po_min_hint:"至少 %n 位数字。",
   a_pending:"还有 %n 项未回答。",
+  leave_pending:"暂时搁置",
+  a_left_tests:"还有 %n 项测试未回答。\n\n在完成之前，无法结束本次检验，也无法生成报告。",
   a_photo:"缺少照片。\n\n无论合格与否，每项测试都必须留下照片证据。",
   a_video:"缺少视频。\n\n无论合格与否，每项测试都必须留下测试过程的视频。",
   a_both:"缺少照片和视频。\n\n无论合格与否，每项测试都必须留下至少一张照片和一段视频。",
@@ -5039,8 +5084,21 @@ function fits(o){
 }
 /* Every test this reference carries. This is the whole plan, and it is what
    Admin offers to choose from. */
+/* Every test this reference carries, in the order it is meant to be run.
+
+   `first` pulls a test to the front without moving it in the file. The three
+   sampling tests — aging, battery capacity, RMS power — belong at the start of
+   the plan and are written at the end of it: aging and the discharge each take
+   four hours, so they are set going first and the rest of the inspection is
+   worked through while they run. Moving four hundred lines of plan to say that
+   would be four hundred lines of risk for an ordering decision that may change
+   again next month.
+
+   Sort is stable, so everything without `first` keeps the order it has in the
+   file, which is the order it was written in. */
 const planTests = () => plan().tests
-  .filter(t => (t.plan || "") === planTagOf(S.model) && fits(t));
+  .filter(t => (t.plan || "") === planTagOf(S.model) && fits(t))
+  .sort((a, b) => (a.first || 99) - (b.first || 99));
 /* The tests this inspection actually runs. Same thing, unless Admin picked a
    subset — then the checklist, the progress bar, the verdict and the report all
    work off the subset, which is why the filter lives here and nowhere else. */
@@ -6211,9 +6269,43 @@ function nextTest(){
   advance();
 }
 
+/* Which tests still have no verdict, on any speaker. Walked by index rather
+   than with array methods for the same reason unitVerdict is: jumping straight
+   to test 11 leaves 0-9 as holes, and holes are skipped. */
+function unansweredTests(){
+  const n = tests().length, out = [];
+  for(let i = 0; i < n; i++){
+    let missing = false;
+    allUnits().forEach(u => {
+      const r = unitRows(u)[i];
+      if(!r || !r.verdict) missing = true;
+    });
+    if(missing) out.push(i);
+  }
+  return out;
+}
+
 function advance(){
   S.index++;
-  if(S.index >= tests().length){ S.screen = "done"; markFinished(); }
+  if(S.index >= tests().length){
+    /* The last test is not the end of the inspection — it is only the end of
+       the list. Reaching it after jumping about, which is now the normal way to
+       work a plan that opens with a four-hour test, used to drop straight onto
+       the finish screen with half the plan unanswered. The report said
+       INCOMPLETE, so it never lied, but it let a packet be downloaded for an
+       inspection that had not happened. */
+    const left = unansweredTests();
+    if(left.length){
+      S.index = tests().length - 1;
+      S.screen = "index";
+      window.scrollTo(0,0);
+      render(); save();
+      ensureTranslations();
+      alert(fmt("a_left_tests",{n:left.length}));
+      return;
+    }
+    S.screen = "done"; markFinished();
+  }
   window.scrollTo(0,0);
   render(); save();
   // Translate the note just left behind while the operator reads the next test:
@@ -9254,6 +9346,7 @@ function renderTest(){
           written that way; if a released reference ever needs it, this is the
           line to widen. */""}
     ${isDevRef(S.model) ? panelRow(t) : ""}
+    ${longNotice(t)}
     ${groups}
     ${/* The whole card disappears on a test that asks for nothing. It used to
           stay, saying "nothing is required here" over two buttons — a box that
@@ -9303,9 +9396,12 @@ function renderTest(){
     </div>
     ${abortBlock()}`;
 
+  const pend = !!t.long && pendingCount() > 0 && done + 1 < total;
   actions.innerHTML = `
     ${done>0?`<button class="skip" style="flex:0 0 52px" onclick="prevTest()">‹</button>`:""}
-    <button class="primary" id="btn-next" style="flex:4${ready?"":";opacity:.5"}" onclick="nextTest()">
+    ${pend?`<button class="skip" style="flex:1;border-color:var(--amber);color:var(--amber)"
+      onclick="leavePending()">${tr("leave_pending")}</button>`:""}
+    <button class="primary" id="btn-next" style="flex:${pend?1:4}${ready?"":";opacity:.5"}" onclick="nextTest()">
       ${done+1===total?tr("finish"):tr("next")}</button>
 `;
 }
@@ -9593,6 +9689,29 @@ function renderPhotoTest(t, r, done, total){
 }
 
 function showIndex(){ S.screen = "index"; render(); }
+
+/* Leaves a long test where it is and opens the next one. The same thing the
+   index screen does in two taps, named after what the operator is trying to do.
+   No verdict is written: the test stays unanswered, the index shows it as such,
+   and the block above will not let the inspection close while it is. */
+function leavePending(){
+  const n = tests().length;
+  if(S.index + 1 >= n){ showIndex(); return; }
+  S.index++;
+  S.screen = "test";
+  window.scrollTo(0,0);
+  render(); save();
+}
+
+/* Shown on a test that is written to take hours, and only while something in it
+   is still unanswered. On every other test an unlit NEXT means "you have missed
+   something", which is the right message; here it would mean "wait four hours",
+   which is not something a dimmed button can say. */
+function longNotice(t){
+  if(!t || !t.long || pendingCount() === 0) return "";
+  return `<div class="brw"><b>${esc(L(t.long.t))}</b>
+    <span>${esc(L(t.long.n))}</span></div>`;
+}
 function goTest(i){
   S.index = i; S.screen = "test";
   window.scrollTo(0,0);   // a new test must start at its first step
