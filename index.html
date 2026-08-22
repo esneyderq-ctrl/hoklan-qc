@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="8.5">
+<meta name="app-version" content="8.6">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -694,7 +694,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 53,
+      "plan_version": 54,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -766,22 +766,24 @@ const CONFIG = {
          "only":["HK-BAS115A1","HK-BAS118A1"],
          "label":{"en":"INPUTS AND OUTPUTS","zh":"输入与输出","es":"ENTRADAS Y SALIDAS"},
          "steps":[
-           {"en":"Feed the test source into the XLR inputs, one side at a time","zh":"用测试音源分别接入左右 XLR 输入","es":"Lleve la fuente de prueba a las entradas XLR, un lado a la vez"},
+           {"en":"Feed the test source into the input jacks, one side at a time","zh":"用测试音源分别接入左右输入口","es":"Lleve la fuente de prueba a las entradas, un lado a la vez"},
            {"en":"Connect a full-range cabinet to each output in turn","zh":"依次将全频音箱接到每一路输出","es":"Conecte una cabina de rango completo a cada salida por turnos"},
            {"en":"Listen to what comes out of the 120 Hz output before judging it","zh":"判定之前先听清 120 Hz 输出的声音","es":"Escuche lo que sale por la salida de 120 Hz antes de juzgarla"}],
          "points":[
            {"section":{"en":"Inputs","zh":"输入","es":"Entradas"},
-            "help":{"en":"One side at a time. With both connected a dead input is inaudible, because the other one is covering for it.",
-                    "zh":"一次只接一侧。两侧同时接入时，即使一路已损坏也听不出来，因为另一路把它掩盖了。",
-                    "es":"Un lado a la vez. Con las dos conectadas, una entrada muerta no se oye, porque la otra la está tapando."}},
-           {"id":"in_l","code":"AUX-001","label":{"en":"XLR input L","zh":"XLR 输入 L","es":"Entrada XLR izquierda"},
-            "help":{"en":"Feed the source into the L input only. Audio must come through.",
-                    "zh":"仅将音源接入 L 输入，应有声音传出。",
-                    "es":"Lleve la fuente sólo a la entrada L. Debe entrar audio."}},
-           {"id":"in_r","code":"AUX-001","label":{"en":"XLR input R","zh":"XLR 输入 R","es":"Entrada XLR derecha"},
-            "help":{"en":"Now the R input only. Same result.",
-                    "zh":"改为仅接 R 输入，结果应相同。",
-                    "es":"Ahora sólo la entrada R. El mismo resultado."}},
+            "help":{"en":"They are hybrid jacks: the same socket takes an XLR plug or a 6.3 mm one. Check one side at a time — with both connected a dead input is inaudible, because the other one is covering for it.",
+                    "zh":"这是复合插孔：同一个孔既可插 XLR，也可插 6.3 mm 插头。一次只接一侧检查——两侧同时接入时，即使一路已损坏也听不出来，因为另一路把它掩盖了。",
+                    "es":"Son jacks híbridos: el mismo conector recibe un plug XLR o uno de 6.3 mm. Revise un lado a la vez — con las dos conectadas, una entrada muerta no se oye, porque la otra la está tapando."}},
+           {"id":"in_l","code":"AUX-001",
+            "label":{"en":"Input L — hybrid 6.3 mm / XLR","zh":"输入 L — 6.3 mm / XLR 复合口","es":"Entrada izquierda — híbrida 6.3 mm / XLR"},
+            "help":{"en":"Feed the source into the L input only. Audio must come through. Try both plug types in the same socket: a combo jack can take the XLR and fail on the 6.3 mm, and half the customers use the 6.3 mm.",
+                    "zh":"仅将音源接入 L 输入，应有声音传出。同一个孔要试两种插头：复合插孔可能 XLR 正常而 6.3 mm 无声，而有一半客户用的正是 6.3 mm。",
+                    "es":"Lleve la fuente sólo a la entrada L. Debe entrar audio. Pruebe los dos tipos de plug en el mismo jack: un combo puede recibir bien el XLR y fallar con el de 6.3 mm, y la mitad de los clientes usa el de 6.3 mm."}},
+           {"id":"in_r","code":"AUX-001",
+            "label":{"en":"Input R — hybrid 6.3 mm / XLR","zh":"输入 R — 6.3 mm / XLR 复合口","es":"Entrada derecha — híbrida 6.3 mm / XLR"},
+            "help":{"en":"Now the R input only, with both plug types again. Same result.",
+                    "zh":"改为仅接 R 输入，同样试两种插头，结果应相同。",
+                    "es":"Ahora sólo la entrada R, otra vez con los dos tipos de plug. El mismo resultado."}},
            {"section":{"en":"Outputs","zh":"输出","es":"Salidas"},
             "help":{"en":"Connect a full-range cabinet to each output and listen to what it is actually being sent.",
                     "zh":"将全频音箱接到每一路输出，听清实际送出的是什么信号。",
@@ -2538,7 +2540,15 @@ const CONFIG = {
            packed. Sampling, like the battery test, and last in the plan with
            it. */
         {"id":"RMS_POWER","optional":true,"only_factory":["YIS","RHY"],
-         "skip":["HK-KAP103","HK-KAP330"],"evidence":[],"first":3,
+         /* Written for a full-range cabinet, and only for one: the tone goes in
+            over Bluetooth and the tone controls are part of the measurement.
+            The BAS subwoofers have neither. They also carry a low-pass filter
+            set between 80 and 200 Hz, which removes the 1 kHz tone this test
+            measures — a good sub would read near zero and fail. Measuring them
+            needs a low tone through the input jack and the filter wide open,
+            which is a different test, not a variant of this one. */
+         "skip":["HK-KAP103","HK-KAP330","HK-BAS115A1","HK-BAS118A1"],
+         "evidence":[],"first":3,
          "label":{"en":"SPECIFICATION CHECK · RMS POWER",
                   "zh":"规格验证 · RMS 功率",
                   "es":"VERIFICACIÓN DE ESPECIFICACIONES · POTENCIA RMS"},
