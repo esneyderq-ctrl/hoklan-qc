@@ -692,7 +692,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 49,
+      "plan_version": 50,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -2611,8 +2611,12 @@ const CONFIG = {
            Sampling, like the two measurements above it, and last in the plan
            with them: a unit that has run flat out for four hours is not the
            unit that goes into the box. */
-        {"id":"AGING","optional":true,"only_factory":["YIS","RHY"],
-         "skip":["HK-KAP103","HK-KAP330"],"evidence":[],
+        {/* Not the subwoofers. The test runs the speaker off a playlist on the
+              USB D drive, and a BAS has neither a USB socket nor a playback
+              mode — its signal comes in over XLR from something else. Aging one
+              is a reasonable thing to want; it is just not this procedure. */
+         "id":"AGING","optional":true,"only_factory":["YIS","RHY"],
+         "skip":["HK-KAP103","HK-KAP330","HK-BAS115A1","HK-BAS118A1"],"evidence":[],
          "label":{"en":"AGING · 4 HOURS","zh":"老化测试 · 4 小时","es":"ENVEJECIMIENTO · 4 HORAS"},
          "steps":[
            {"en":"Put the speaker in a warm, damp, well-ventilated place","zh":"将音箱置于温暖、潮湿且通风良好的场所","es":"Ponga el parlante en un sitio cálido, húmedo y bien ventilado"},
