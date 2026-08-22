@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="8.0">
+<meta name="app-version" content="8.1">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -690,7 +690,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 42,
+      "plan_version": 43,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -2481,7 +2481,7 @@ const CONFIG = {
             "help":{"en":"Three numbers off the screen, written down rather than photographed. A figure inside a picture cannot be compared with the next pack, summed across a lot or put in a column, which is the whole reason this test is run.",
                     "zh":"从屏幕上读取三个数值并填写，而不是拍照。照片里的数字无法与下一只电池组比较、无法在整批中汇总、也无法列成表格，而这正是本测试的意义所在。",
                     "es":"Tres números de la pantalla, escritos en vez de fotografiados. Una cifra dentro de una foto no se puede comparar con el pack siguiente, ni sumar sobre un lote, ni poner en una columna, que es la razón entera por la que esta prueba se hace."}},
-           {"id":"bat_nominal","measure":{"unit":"mAh","step":"1"},
+           {"id":"bat_nominal","measure":{"unit":"mAh","step":"1"},"sample":"bat_nominal",
             "label":{"en":"Rated capacity printed on the pack","zh":"电池组标称容量","es":"Capacidad nominal impresa en el pack"},
             "help":{"en":"Copy it from the label, exactly as printed. Without it the measured figure below is a number with nothing to be measured against.",
                     "zh":"照标签原样抄录。没有它，下面的实测数值就是一个无从比较的数字。",
@@ -3482,6 +3482,13 @@ expandPerMic();
    to be a quiet blank rather than a broken page.
 ------------------------------------------------------------------------- */
 const REF_IMG_DIR = "img/";
+/* The extensions a photograph can arrive as, tried in the order they actually
+   turn up. .jpeg was missing and it cost a round of uploads: a phone that
+   writes .jpeg is not doing anything wrong, and nobody should have to rename
+   six files to satisfy a list in here. One list, used by the reference photos,
+   the example photos and the panel alike, so the screen and the report never
+   disagree about which file exists. */
+const IMG_EXTS = [".jpg", ".jpeg", ".png"];
 /* JPG first, PNG second. It used to be the other way round, on the theory that
    the catalogue exports PNG — and it does, at three megabytes and sometimes at
    fifteen. What actually gets published is the resized JPG, sixty kilobytes of
@@ -3539,7 +3546,10 @@ async function ensureRefImg(){
   const m = String(S.model || "");
   if(!m || REF_IMG_DATA.model === m) return;
   REF_IMG_DATA = {model:m, url:""};
-  const exts = ["jpg", "png"];
+  // Same three extensions, same order, as everywhere else that looks for a
+  // photograph. Kept as one list so the report and the screen never disagree
+  // about which file exists.
+  const exts = IMG_EXTS.map(e => e.slice(1));
   for(let i = 0; i < exts.length; i++){
     try{
       const res = await fetch(refImgUrl(m, exts[i]));
@@ -8137,8 +8147,8 @@ function refImageRow(model){
    a panel, so a copy per reference would be the same picture twice and two
    places to forget when a button moves. The day a development reference turns
    up with a different panel, this is where the exception goes. */
-const PANEL_IMG = REF_IMG_DIR + "panel.jpg";
-const CONN_IMG  = REF_IMG_DIR + "Conectores.jpg";
+const PANEL_BASE = REF_IMG_DIR + "panel";
+const CONN_BASE  = REF_IMG_DIR + "Conectores";
 
 /* Which map a test needs, worked out from the test itself rather than declared
    twice. Every point already carries the control it is about — B1 to B8, P1,
@@ -8159,24 +8169,32 @@ function refShotsFor(t){
      starts with a letter sent the operator of the POWER test to a photograph
      that does not contain the only control that test is about. */
   if(tags.some(x => /(^|\s)(B\d|P\d)/.test(x)))
-    out.push({src: PANEL_IMG, label: tr("panel_ref")});
+    out.push({base: PANEL_BASE, label: tr("panel_ref")});
   if(tags.some(x => /(^|\s)(C\d|S\d)/.test(x)))
-    out.push({src: CONN_IMG, label: tr("conn_ref")});
+    out.push({base: CONN_BASE, label: tr("conn_ref")});
   return out;
 }
 
 function panelRow(t){
   return refShotsFor(t).map(s => `<div class="card panel-ref">
       <label style="margin-top:0">${esc(s.label)}</label>
-      <div class="pr-box" onclick="zoomUrl('${esc(s.src)}','${esc(s.label)}')">
-        <img src="${esc(s.src)}" alt="" onerror="panelFail(this)">
+      <div class="pr-box" onclick="zoomSample(this.firstElementChild)">
+        <img src="${esc(s.base)}${IMG_EXTS[0]}" data-base="${esc(s.base)}" alt=""
+          onerror="panelFail(this)">
       </div>
     </div>`).join("");
 }
-/* Removes its own card rather than leaving an empty frame. A picture that is
-   not there yet must not take up the top of the checklist, and the other one
-   must still show. */
+/* Walks the three extensions first, and only then removes its own card rather
+   than leaving an empty frame. A picture that is not there must not take up the
+   top of the checklist, and the other one must still show. */
 function panelFail(img){
+  const base = img.getAttribute("data-base") || "";
+  const at = (img.dataset.ext | 0) + 1;
+  if(base && at < IMG_EXTS.length){
+    img.dataset.ext = at;
+    img.src = base + IMG_EXTS[at];
+    return;
+  }
   const card = img.closest(".panel-ref");
   if(card) card.remove();
 }
@@ -8189,13 +8207,13 @@ function refImgOk(){
 }
 
 function refImgFail(img){
-  // One retry as .png before giving up: whoever exports the photos should not
-  // have to care which of the two formats came out of the catalogue. The order
-  // matches ensureRefImg — jpg first, png second — so a reference that has both
-  // is served the small one on screen and in the report alike.
-  if(!img.dataset.retry){
-    img.dataset.retry = "1";
-    img.src = refImgUrl(S.model, "png");
+  /* Retried through the same three extensions as the example photographs, in
+     the same order: jpg, jpeg, png. Whoever exports a photo should not have to
+     care which one the phone chose. */
+  const at = (img.dataset.ext | 0) + 1;
+  if(at < IMG_EXTS.length){
+    img.dataset.ext = at;
+    img.src = refImgUrl(S.model, IMG_EXTS[at].slice(1));
     return;
   }
   const row = document.getElementById("refimg");
@@ -8788,7 +8806,12 @@ function sampleBox(p){
    and the point is answered as usual. */
 function sampleFallback(img){
   const base = img.getAttribute("data-base") || "";
-  if(base && !img.dataset.tried){ img.dataset.tried = "1"; img.src = base + ".png"; return; }
+  const at = (img.dataset.ext | 0) + 1;
+  if(base && at < IMG_EXTS.length){
+    img.dataset.ext = at;
+    img.src = base + IMG_EXTS[at];
+    return;
+  }
   if(img.parentNode) img.parentNode.remove();
 }
 function zoomSample(img){
