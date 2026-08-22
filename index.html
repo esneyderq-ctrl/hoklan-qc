@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="8.6">
+<meta name="app-version" content="8.7">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -606,6 +606,8 @@ const CONFIG = {
     "AUD-017":{"en":"Channel volume does not work","zh":"通道音量无效","es":"El volumen del canal no funciona"},
     "AUD-018":{"en":"DSP mode does not change the sound","zh":"DSP 模式不改变声音","es":"El modo DSP no cambia el sonido"},
     "PWR-010":{"en":"No start-up tone or greeting","zh":"无开机音或问候语","es":"Sin sonido de arranque ni saludo"},
+    "PWR-011":{"en":"Start-up sound at the wrong level","zh":"开机声音音量不当","es":"Sonido de arranque con el nivel equivocado"},
+    "PWR-012":{"en":"Start-up sound is not the same every time","zh":"每次开机声音不一致","es":"El sonido de arranque no es igual todas las veces"},
     "MOD-001":{"en":"Mode button does not change mode","zh":"模式键无法切换模式","es":"La tecla de modo no cambia de modo"},
     "MOD-002":{"en":"Does not switch to USB when the drive is connected","zh":"插入 U 盘后未切换到 USB","es":"No pasa a USB al conectar la memoria"},
     "MOD-003":{"en":"Does not leave the mode when the source is removed","zh":"移除信号源后未退出该模式","es":"No sale del modo al retirar la fuente"},
@@ -694,7 +696,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 54,
+      "plan_version": 55,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -1766,19 +1768,14 @@ const CONFIG = {
            {"en":"Switch off and on again to check it remembers","zh":"关机后再开机，确认是否记忆","es":"Apague y vuelva a encender para comprobar que recuerda"}],
          "points":[
            {"section":{"en":"Switch S1","zh":"S1 开关","es":"Switch S1"},
-            "help":{"en":"The greeting is the first thing the customer hears out of the box, and the last thing anybody checks. It is also the cheapest way to tell whether the firmware loaded at all.",
-                    "zh":"开机提示音是客户拆箱后听到的第一个声音，却往往是最后才有人去检查的。它同时也是判断固件是否正常加载最省事的办法。",
-                    "es":"El saludo es lo primero que el cliente oye al sacarla de la caja, y lo último que alguien revisa. Es además la forma más barata de saber si el firmware cargó."}},
+            "help":{"en":"Whether it comes up, goes off and remembers. What it sounds like on the way up is the next test.",
+                    "zh":"本节检查能否开机、关机以及是否记忆模式。开机时的声音由下一项测试负责。",
+                    "es":"Si arranca, si apaga y si recuerda. Cómo suena al arrancar es la prueba siguiente."}},
            {"id":"kap_on","code":"PWR-001","tag":"S1",
             "label":{"en":"Switches the cabinet on","zh":"可正常开机","es":"Enciende la cabina"},
-            "help":{"en":"Move S1 to ON. The cabinet must come up on its own, with no thump from the driver.",
-                    "zh":"将 S1 拨到开。应能自行启动，喇叭不应有砰声。",
-                    "es":"Lleve S1 a encendido. Debe arrancar sola, sin golpe en el parlante."}},
-           {"id":"kap_intro","code":"PWR-010","tag":"S1",
-            "label":{"en":"Brand tone and HOLA greeting","zh":"品牌开机音与 HOLA 问候语","es":"Sonido de marca y saludo HOLA"},
-            "help":{"en":"On start-up it must play the brand tone and then say HOLA. Both, in that order. A cabinet that starts silent has either the wrong firmware or no prompt file, and it ships sounding like nobody's product.",
-                    "zh":"开机时应先播放品牌音效，再播报 HOLA。两者都要有，且顺序正确。开机无声的机器，要么固件不对，要么缺少提示音文件，出厂后听起来不像任何品牌的产品。",
-                    "es":"Al arrancar debe sonar el tono de marca y luego decir HOLA. Los dos, y en ese orden. Una cabina que arranca muda tiene el firmware equivocado o le falta el archivo de voz, y sale sonando como el producto de nadie."}},
+            "help":{"en":"Move S1 to ON. The cabinet must come up on its own.",
+                    "zh":"将 S1 拨到开。应能自行启动。",
+                    "es":"Lleve S1 a encendido. Debe arrancar sola."}},
            {"id":"kap_off","code":"PWR-001","tag":"S1",
             "label":{"en":"Switches it off","zh":"可正常关机","es":"La apaga"},
             "help":{"en":"Move S1 to OFF. It must go off cleanly, with no lights left on and no noise from the driver.",
@@ -1789,6 +1786,61 @@ const CONFIG = {
             "help":{"en":"Leave it in a mode that is not the default, switch off, wait a few seconds and switch on. It must return to the same mode. If that mode was radio or USB/SD and the source is no longer there, it must fall back to Bluetooth — not to silence and not to a mode nobody chose.",
                     "zh":"停在一个非默认模式，关机，等待几秒后开机。应回到同一模式。若该模式为收音或 USB/SD 而信号源已不在，应退回蓝牙——而不是无声，也不是进入一个没人选择的模式。",
                     "es":"Déjela en un modo que no sea el de arranque, apague, espere unos segundos y encienda. Debe volver al mismo modo. Si ese modo era radio o USB/SD y la fuente ya no está, debe caer en Bluetooth — no en silencio ni en un modo que nadie escogió."}}]},
+
+        /* El arranque de un prototipo es donde primero se nota que el firmware
+           cargado no es el que se pidió: el archivo de voz viene de otro
+           proyecto, el tono sale recortado porque nadie ajustó su nivel, o
+           suena distinto en cada encendido. Va inmediatamente después de
+           ENCENDIDO y antes de todo lo demás, porque el resto de las pruebas
+           obliga a apagar y encender muchas veces y para entonces el operador
+           ya dejó de oírlo. */
+        {"id":"KAP_BOOT","optional":false,"only_factory":["YIS"],"evidence":[],
+         "only":["HK-KAP103","HK-KAP330"],
+         "label":{"en":"START-UP SOUND","zh":"开机声音","es":"SONIDO DE INICIO"},
+         "steps":[
+           {"en":"Leave the volume at about half before switching on","zh":"开机前将音量置于约一半","es":"Deje el volumen a la mitad antes de encender"},
+           {"en":"Switch on in a quiet room, with nothing playing","zh":"在安静环境下开机，不播放任何内容","es":"Encienda en un sitio silencioso y sin nada reproduciéndose"},
+           {"en":"Listen to the whole start-up before touching anything","zh":"完整听完开机过程后再操作","es":"Escuche todo el arranque antes de tocar nada"},
+           {"en":"Switch off and repeat three times in all","zh":"关机后重复，共三次","es":"Apague y repita, tres veces en total"}],
+         "points":[
+           {"section":{"en":"Tone and voice","zh":"提示音与语音","es":"Tono y voz"},
+            "help":{"en":"The start-up sound is the first thing the customer hears out of the box, and the cheapest way to tell whether the firmware that loaded is the right one.",
+                    "zh":"开机声音是客户拆箱后听到的第一个声音，也是判断所载固件是否正确最省事的办法。",
+                    "es":"El sonido de arranque es lo primero que el cliente oye al sacarla de la caja, y la forma más barata de saber si el firmware que cargó es el que corresponde."}},
+           {"id":"boot_tone","code":"PWR-010","tag":"S1",
+            "label":{"en":"The brand tone sounds","zh":"品牌开机音有响","es":"Suena el tono de marca"},
+            "help":{"en":"On switching on, the brand tone must play. A cabinet that starts silent has the wrong firmware or no prompt file.",
+                    "zh":"开机时应播放品牌音效。开机无声的机器，要么固件不对，要么缺少提示音文件。",
+                    "es":"Al encender debe sonar el tono de marca. Una cabina que arranca muda tiene el firmware equivocado o le falta el archivo de voz."}},
+           {"id":"boot_voice","code":"PWR-010","tag":"S1",
+            "label":{"en":"The spoken message follows it","zh":"随后播报语音提示","es":"Después suena el mensaje de voz"},
+            "help":{"en":"After the tone the cabinet must speak. It must be understandable and reach the end of the phrase without cutting off.",
+                    "zh":"提示音之后应有语音播报，须清晰可辨，且完整播完不中断。",
+                    "es":"Después del tono la cabina debe hablar. Debe entenderse y llegar al final de la frase sin cortarse."}},
+           {"id":"boot_seq","code":"PWR-012","tag":"S1",
+            "label":{"en":"Same order and same sound all three times","zh":"三次开机顺序与声音一致","es":"El mismo orden y el mismo sonido las tres veces"},
+            "help":{"en":"First the tone, then the voice, never overlapping. Switch off and on three times: the three start-ups must be identical. One that varies means the firmware is not reading the files the same way every time.",
+                    "zh":"先提示音，后语音，二者不应重叠。关机再开机，共三次：三次开机应完全一致。若有差异，说明固件每次读取提示音文件的方式并不相同。",
+                    "es":"Primero el tono y luego la voz, sin solaparse. Apague y encienda tres veces: los tres arranques deben ser iguales. Uno que varía significa que el firmware no está leyendo los archivos igual todas las veces."}},
+           {"section":{"en":"Level and cleanliness","zh":"音量与纯净度","es":"Nivel y limpieza"},
+            "help":{"en":"On a prototype the start-up sound is often left at whatever level it was recorded at, and nobody hears it until the first customer does.",
+                    "zh":"样机的开机声音往往保持在录制时的原始电平，无人察觉，直到第一位客户听到。",
+                    "es":"En un prototipo el sonido de arranque suele quedarse en el nivel al que fue grabado, y nadie lo nota hasta que lo oye el primer cliente."}},
+           {"id":"boot_level","code":"PWR-011","tag":"P1",
+            "label":{"en":"Level matches the volume that is set","zh":"音量与旋钮设定相符","es":"El nivel corresponde al volumen puesto"},
+            "help":{"en":"With the volume at half it must be heard clearly across the room, without startling anyone. One that comes out at full level whatever the knob says is a fault, and so is one that can barely be heard.",
+                    "zh":"音量置于一半时，应能在房间内清晰听到，但不应令人受惊。无论旋钮在何位置都以满音量播放的属于缺陷，几乎听不见的同样属于缺陷。",
+                    "es":"Con el volumen a la mitad debe oírse con claridad en el cuarto, sin sobresaltar a nadie. Uno que sale a todo volumen sin importar dónde esté la perilla es una falla, y uno que apenas se oye también."}},
+           {"id":"boot_clean","code":"AUD-003",
+            "label":{"en":"No clipping or distortion","zh":"无削顶或失真","es":"Sin recorte ni distorsión"},
+            "help":{"en":"The tone must come out clean, without breaking up or rasping. A start-up sound recorded too hot distorts on every single unit and gets blamed on the speaker.",
+                    "zh":"提示音应干净，不破音、不沙哑。录制电平过高的开机音会在每一台机器上都失真，而问题往往被归咎于喇叭。",
+                    "es":"El tono debe salir limpio, sin quebrarse ni raspar. Un sonido de arranque grabado con demasiado nivel distorsiona en todas las unidades y la culpa se le echa al parlante."}},
+           {"id":"boot_thump","code":"AUD-005",
+            "label":{"en":"No thump or click from the speaker","zh":"喇叭无砰声或咔哒声","es":"Sin golpe ni chasquido del parlante"},
+            "help":{"en":"Between switching on and the tone there must be no thump, click or crack. That noise is the amplifier reaching the speaker before it is ready, and it shortens the life of the driver.",
+                    "zh":"从开机到提示音之间，不应有砰声、咔哒声或爆音。该噪声是功放在尚未就绪时已接通喇叭所致，会缩短单元寿命。",
+                    "es":"Entre el encendido y el tono no debe haber golpe, chasquido ni crujido. Ese ruido es el amplificador llegando al parlante antes de estar listo, y le acorta la vida al driver."}}]},
 
         {"id":"KAP_MODES","optional":false,"only_factory":["YIS"],"evidence":["video"],
          "only":["HK-KAP103","HK-KAP330"],
