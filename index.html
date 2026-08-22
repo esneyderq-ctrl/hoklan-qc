@@ -12,7 +12,7 @@
      truth — APP_VERSION reads it — so there is one number to bump, not two.
      It is not printed anywhere: neither on screen nor in the report. This tag
      is where it is meant to be read. -->
-<meta name="app-version" content="8.4">
+<meta name="app-version" content="8.5">
 <title>HOKLAN QC</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1a2c'/><text y='68' x='50' font-size='52' text-anchor='middle' fill='%232ea3f2' font-family='sans-serif' font-weight='bold'>QC</text></svg>">
 <style>
@@ -694,7 +694,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 52,
+      "plan_version": 53,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -1740,8 +1740,15 @@ const CONFIG = {
            Los conectores se nombran como están impresos en la cabina — C4 es
            AUX 2 y C5 es AUX 3 — y no como los llama el esquema, porque el
            operador lee la serigrafía y no el documento. La consideración 7 del
-           esquema dice que el micrófono alámbrico entra por C3; C3 es la ranura
-           micro SD. Se escribió contra C4 y C5, que es donde entra de verdad.
+           esquema dice C3, que es la ranura micro SD; se escribió contra C4 y
+           C5, que es donde entra el micrófono de verdad.
+
+           Esa misma consideración menciona micrófono inalámbrico, y no es un
+           error del documento: la cabina no trae receptor, pero se le puede
+           conectar uno externo por C4 o C5 y trabajar inalámbrico. Por eso las
+           pruebas se escriben contra el jack y no contra el micrófono — lo que
+           se comprueba es la entrada, sirva a un micrófono de cable o a un
+           receptor.
 
            Las pruebas fotográficas no se repiten aquí: PARTES EXTERNAS,
            ACCESORIOS, MATERIAL IMPRESO y PARTES INTERNAS son las mismas de
@@ -2001,9 +2008,9 @@ const CONFIG = {
            {"en":"B8 changes what the P1 knob does","zh":"B8 用于切换 P1 旋钮的功能","es":"B8 cambia lo que hace la perilla P1"}],
          "points":[
            {"section":{"en":"The two inputs","zh":"两个输入口","es":"Las dos entradas"},
-            "help":{"en":"They are printed AUX 2 and AUX 3 on the cabinet, which is what the operator reads, and they are C4 and C5 on the scheme. Same two sockets. Both are checked because a cabinet with one working input ships looking complete.",
-                    "zh":"面板上印的是 AUX 2 和 AUX 3，这是操作员看到的；功能表上称为 C4 和 C5。指的是同两个插孔。两个都要检查，因为只有一个输入口能用的音箱，外观上看不出任何问题。",
-                    "es":"En la cabina están impresas AUX 2 y AUX 3, que es lo que lee el operador, y en el esquema son C4 y C5. Son los mismos dos jacks. Se comprueban los dos porque una cabina con una sola entrada buena sale de fábrica pareciendo completa."}},
+            "help":{"en":"They are printed AUX 2 and AUX 3 on the cabinet, which is what the operator reads, and they are C4 and C5 on the scheme. Same two sockets. Both are checked because a cabinet with one working input ships looking complete. Either a cable microphone or a wireless one with its external receiver may be used: the cabinet carries no receiver of its own, and what is being checked is the input, not the microphone.",
+                    "zh":"面板上印的是 AUX 2 和 AUX 3，这是操作员看到的；功能表上称为 C4 和 C5。指的是同两个插孔。两个都要检查，因为只有一个输入口能用的音箱，外观上看不出任何问题。可用有线麦克风，也可用配外接接收器的无线麦克风：本机不自带接收器，这里检查的是输入口，不是麦克风。",
+                    "es":"En la cabina están impresas AUX 2 y AUX 3, que es lo que lee el operador, y en el esquema son C4 y C5. Son los mismos dos jacks. Se comprueban los dos porque una cabina con una sola entrada buena sale de fábrica pareciendo completa. Puede usarse un micrófono de cable o uno inalámbrico con su receptor externo: la cabina no trae receptor propio, y lo que se comprueba es la entrada, no el micrófono."}},
            {"id":"kap_mic_c4","code":"MIC-001","tag":"C4 · AUX 2",
             "label":{"en":"The microphone is heard","zh":"麦克风有声","es":"Se oye el micrófono"},
             "help":{"en":"Plug a microphone in and speak. It must be heard clearly, with no hum and no cutting in and out when you move the plug in the socket.",
