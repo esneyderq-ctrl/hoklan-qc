@@ -611,6 +611,8 @@ const CONFIG = {
     "MOD-005":{"en":"Bluetooth sounds outside Bluetooth mode","zh":"非蓝牙模式下蓝牙仍出声","es":"El Bluetooth suena fuera del modo Bluetooth"},
     "EQ-001":{"en":"EQ setting does not change the sound","zh":"均衡设置对音质无影响","es":"El ajuste de EQ no cambia el sonido"},
     "AUD-019":{"en":"Knob does not swap function or does not return","zh":"旋钮功能无法切换或不自动恢复","es":"La perilla no cambia de función o no regresa"},
+    "AGE-001":{"en":"Fault during or after the aging test","zh":"老化测试期间或之后出现异常","es":"Falla durante o después de la prueba de envejecimiento"},
+    "AUD-020":{"en":"RMS measurement not set up or not completed","zh":"RMS 测量未正确设置或未完成","es":"Medición de RMS mal montada o sin completar"},
     "BAT-009":{"en":"Capacity test not set up or not completed","zh":"容量测试未正确设置或未完成","es":"Prueba de capacidad mal montada o sin completar"},
     "BAT-008":{"en":"No low battery warning or no automatic shutdown","zh":"无低电量提示或不自动关机","es":"Sin aviso de batería baja o sin apagado automático"},
     "DSP-005":{"en":"Mode change does not work","zh":"模式切换无效","es":"El cambio de modo no funciona"},
@@ -690,7 +692,7 @@ const CONFIG = {
 
   "plans": {
     "default": {
-      "plan_version": 47,
+      "plan_version": 49,
       "tests": [
         /* ------------------------------------------------------------------
            RHYME: mains-powered cabinets.
@@ -2416,7 +2418,9 @@ const CONFIG = {
            a box that can be compared, summed and put in a column. */
         {"id":"BAT_CAPACITY","optional":true,"only_factory":["YIS"],
          "skip":["HK-KAP103","HK-KAP330"],"evidence":[],
-         "label":{"en":"REAL BATTERY CAPACITY","zh":"电池实际容量","es":"CAPACIDAD REAL DE LA BATERÍA"},
+         "label":{"en":"SPECIFICATION CHECK · BATTERY CAPACITY",
+                  "zh":"规格验证 · 电池容量",
+                  "es":"VERIFICACIÓN DE ESPECIFICACIONES · CAPACIDAD DE BATERÍA"},
          "steps":[
            {"en":"Charge one production pack to full with the speaker's own charger","zh":"用音箱原装充电器将一只量产电池组充满","es":"Cargue al máximo un pack de producción con el cargador del propio parlante"},
            {"en":"Connect it to CH1 of the RK8510D electronic load","zh":"将其接到 RK8510D 电子负载的 CH1","es":"Conéctelo al CH1 de la carga electrónica RK8510D"},
@@ -2507,6 +2511,196 @@ const CONFIG = {
             "help":{"en":"Photograph the load's screen once the discharge has stopped. Cap and Time must both be legible in the picture, and must match what you wrote in the boxes above.",
                     "zh":"放电停止后拍摄负载的显示屏。照片中 Cap 与 Time 均须清晰可读，并与上方方框中填写的数值一致。",
                     "es":"Fotografíe la pantalla de la carga una vez detenida la descarga. En la foto deben quedar legibles Cap y Time, y coincidir con lo que escribió en los recuadros de arriba."}}]},
+
+        /* ===== Specification check · RMS power ==============================
+           The second of the two measurements that answer a printed figure. The
+           box claims watts; this is what the amplifier actually delivers into a
+           load of the right impedance, with the tone controls where a customer
+           would leave them and the volume as high as it goes without the
+           amplifier clipping.
+
+           The woofer comes out and a resistor goes in, so this is bench work on
+           a sampled unit, not something done to a speaker that is going to be
+           packed. Sampling, like the battery test, and last in the plan with
+           it. */
+        {"id":"RMS_POWER","optional":true,"only_factory":["YIS","RHY"],
+         "skip":["HK-KAP103","HK-KAP330"],"evidence":[],
+         "label":{"en":"SPECIFICATION CHECK · RMS POWER",
+                  "zh":"规格验证 · RMS 功率",
+                  "es":"VERIFICACIÓN DE ESPECIFICACIONES · POTENCIA RMS"},
+         "steps":[
+           {"en":"Take the woofer out and put a load resistor of the same impedance in its place","zh":"拆下低音单元，换上同阻抗的负载电阻","es":"Saque el woofer y ponga en su lugar una carga de la misma impedancia"},
+           {"en":"Put the oscilloscope on CH1 across the load","zh":"将示波器 CH1 接到负载两端","es":"Conecte el osciloscopio en CH1 sobre la carga"},
+           {"en":"Send a 1 kHz tone over Bluetooth with the tone controls at maximum","zh":"通过蓝牙播放 1 kHz 测试音，音调旋钮全部开到最大","es":"Envíe un tono de 1 kHz por Bluetooth con los controles de tono al máximo"},
+           {"en":"Raise the volume to just before the wave clips and read V RMS","zh":"缓慢提高音量至波形即将削顶，读取 V RMS","es":"Suba el volumen hasta justo antes de que la onda recorte y lea V RMS"}],
+         "points":[
+           {"section":{"en":"Setting up","zh":"montaje","es":"Montaje"},
+            "help":{"en":"The woofer is replaced by a resistor so the amplifier works into a known impedance and nothing depends on the speaker moving air.",
+                    "zh":"用电阻替代低音单元，使功放工作在已知阻抗上，测量结果不受喇叭发声状态影响。",
+                    "es":"El woofer se sustituye por una resistencia para que el amplificador trabaje sobre una impedancia conocida."}},
+           {"id":"rms_z","code":"AUD-020","measure":{"unit":"Ω","step":"0.1"},
+            "label":{"en":"Woofer impedance","zh":"低音单元阻抗","es":"Impedancia del woofer"},
+            "help":{"en":"Read it off the magnet and write it in the box. Normally 4 Ω or 8 Ω. This is the figure the load has to match and the one the formula divides by.",
+                    "zh":"从磁钢上读取并填入方框，通常为 4 Ω 或 8 Ω。负载阻抗须与之一致，公式中也用这个数值作除数。",
+                    "es":"Léala en el imán y escríbala en el recuadro. Normalmente 4 Ω u 8 Ω. Es la que debe tener la carga y por la que divide la fórmula."}},
+           {"id":"rms_load","code":"AUD-020",
+            "label":{"en":"Load resistor fitted in place of the woofer","zh":"已用负载电阻替代低音单元","es":"Carga conectada en lugar del woofer"},
+            "help":{"en":"Disconnect the woofer and connect a resistor of the same impedance, rated for enough power that it does not overheat during the test.",
+                    "zh":"断开低音单元，接入同阻抗的电阻，其功率规格须足够，测试过程中不应过热。",
+                    "es":"Desconecte el woofer y conecte una resistencia de la misma impedancia, de potencia suficiente para que no se caliente durante la prueba."}},
+           {"id":"rms_scope","code":"AUD-020",
+            "label":{"en":"Oscilloscope on CH1 across the load","zh":"示波器 CH1 接在负载两端","es":"Osciloscopio en CH1 sobre la carga"},
+            "help":{"en":"Both probe leads on the two terminals of the resistor, on channel 1. Not on the speaker output of the panel: what is measured is what reaches the load.",
+                    "zh":"探头两根引线接在电阻的两个端子上，使用通道 1。不要接在面板的喇叭输出端：所测的是到达负载的信号。",
+                    "es":"Las dos puntas sobre los dos bornes de la resistencia, en el canal 1. No en la salida de parlante del panel: lo que se mide es lo que llega a la carga."}},
+           {"section":{"en":"Signal","zh":"信号","es":"Señal"},
+            "help":{"en":"A 1 kHz tone from a phone, and the tone controls all the way up. Both are part of the measurement: the same amplifier gives a different figure with the bass down.",
+                    "zh":"由手机播放 1 kHz 测试音，音调旋钮全部开到最大。两者都是测量条件的一部分：低音调低时，同一台功放测出的数值会不同。",
+                    "es":"Un tono de 1 kHz desde el teléfono, y los controles de tono arriba del todo. Las dos cosas forman parte de la medición: el mismo amplificador da otra cifra con los graves abajo."}},
+           {"id":"rms_bt","code":"BT-004",
+            "label":{"en":"Phone paired over Bluetooth","zh":"手机已通过蓝牙连接","es":"Teléfono emparejado por Bluetooth"},
+            "help":{"en":"Pair a phone and confirm the speaker is in Bluetooth mode.",
+                    "zh":"配对手机，并确认音箱处于蓝牙模式。",
+                    "es":"Empareje un teléfono y confirme que el parlante está en modo Bluetooth."}},
+           {"id":"rms_tone","code":"AUD-020",
+            "label":{"en":"1 kHz tone playing","zh":"正在播放 1 kHz 测试音","es":"Tono de 1 kHz reproduciéndose"},
+            "help":{"en":"Play a continuous 1 kHz sine tone from the phone. On the oscilloscope it must show as a steady wave, not as music.",
+                    "zh":"用手机播放连续的 1 kHz 正弦音。示波器上应显示为稳定的波形，而不是音乐信号。",
+                    "es":"Reproduzca un tono senoidal continuo de 1 kHz desde el teléfono. En el osciloscopio debe verse una onda estable, no música."}},
+           {"id":"rms_eq","code":"AUD-020",
+            "label":{"en":"Bass, mid and treble at maximum","zh":"低音、中音、高音全部开到最大","es":"Graves, medios y agudos al máximo"},
+            "help":{"en":"Turn every tone control the speaker has fully up. Any the reference does not have, leave as they are.",
+                    "zh":"将音箱具备的所有音调旋钮全部旋到最大。本型号没有的旋钮保持原状。",
+                    "es":"Gire al máximo todos los controles de tono que tenga el parlante. Los que la referencia no tenga, déjelos como están."}},
+           {"section":{"en":"Measurement","zh":"测量","es":"Medición"},
+            "help":{"en":"The volume goes up slowly and stops at the last point where the wave is still clean. That point is the measurement.",
+                    "zh":"缓慢提高音量，停在波形仍然干净的最后一个位置。该位置即为测量点。",
+                    "es":"El volumen sube despacio y se detiene en el último punto donde la onda sigue limpia. Ese punto es la medición."}},
+           {"id":"rms_clip","code":"AUD-003",
+            "label":{"en":"Volume set just before clipping","zh":"音量设在即将削顶之前","es":"Volumen justo antes del recorte"},
+            "help":{"en":"Raise the volume slowly and watch the tips of the wave. They must stay rounded. The moment they flatten off at the top or the bottom you have gone too far: come back down until they are round again, and leave it there.",
+                    "zh":"缓慢提高音量并观察波峰。波峰应保持圆滑。一旦顶部或底部出现削平，说明已经过头：降回到波峰重新变圆的位置，并保持不变。",
+                    "es":"Suba el volumen despacio y mire las puntas de la onda. Deben verse redondeadas. En cuanto se aplanan por arriba o por abajo, ya se pasó: baje hasta que vuelvan a redondearse y déjelo ahí."}},
+           {"id":"rms_vrms","code":"AUD-020","measure":{"unit":"V","step":"0.01"},
+            "label":{"en":"V RMS on the oscilloscope","zh":"示波器上的 V RMS","es":"V RMS en el osciloscopio"},
+            "help":{"en":"Read the RMS voltage the oscilloscope shows and write it in the box. Make sure it is the RMS reading and not the peak or the peak-to-peak.",
+                    "zh":"读取示波器显示的 RMS 电压并填入方框。请确认读的是 RMS 值，而不是峰值或峰峰值。",
+                    "es":"Lea el voltaje RMS que muestra el osciloscopio y escríbalo en el recuadro. Asegúrese de que es el valor RMS y no el pico ni el pico a pico."}},
+           {"id":"rms_watts","code":"AUD-020","measure":{"unit":"W","step":"0.1"},
+            "label":{"en":"RMS power","zh":"RMS 功率","es":"Potencia RMS"},
+            "help":{"en":"V RMS multiplied by itself, divided by the impedance. 8.0 V into 4 Ω → 8.0 × 8.0 ÷ 4 = 16 W. Write the result in the box.",
+                    "zh":"V RMS 自乘后除以阻抗。8.0 V、4 Ω → 8.0 × 8.0 ÷ 4 = 16 W。将结果填入方框。",
+                    "es":"V RMS multiplicado por sí mismo, dividido entre la impedancia. 8,0 V sobre 4 Ω → 8,0 × 8,0 ÷ 4 = 16 W. Escriba el resultado en el recuadro."}},
+           {"id":"rms_photo","code":"AUD-020","photo":true,"gallery":true,
+            "label":{"en":"Photo of the oscilloscope screen","zh":"示波器屏幕照片","es":"Foto de la pantalla del osciloscopio"},
+            "help":{"en":"Photograph the screen with the wave and the V RMS reading both visible. The wave in the picture must be the clean one, with rounded tips.",
+                    "zh":"拍摄屏幕，波形与 V RMS 读数须同时入镜。照片中的波形应为波峰圆滑的干净波形。",
+                    "es":"Fotografíe la pantalla con la onda y el valor de V RMS a la vista. La onda de la foto debe ser la limpia, con las puntas redondeadas."}}]},
+
+        /* ===== Aging · four hours ===========================================
+           Four hours of continuous playing, flat out, warm and damp, with the
+           speaker listened to on the hour. Nothing here is measured: the test
+           either survives it or it does not, and what it looks for is the fault
+           that only shows up once everything inside has come up to temperature.
+
+           Four hours, and the hourly checks stop at the fourth. The source
+           procedure says five in one step, lists checks to the fifth hour in
+           the next, and then closes with "after completing 4 hours" — HOKLAN
+           settled it at four. Worth correcting at the source.
+
+           Sampling, like the two measurements above it, and last in the plan
+           with them: a unit that has run flat out for four hours is not the
+           unit that goes into the box. */
+        {"id":"AGING","optional":true,"only_factory":["YIS","RHY"],
+         "skip":["HK-KAP103","HK-KAP330"],"evidence":[],
+         "label":{"en":"AGING · 4 HOURS","zh":"老化测试 · 4 小时","es":"ENVEJECIMIENTO · 4 HORAS"},
+         "steps":[
+           {"en":"Put the speaker in a warm, damp, well-ventilated place","zh":"将音箱置于温暖、潮湿且通风良好的场所","es":"Ponga el parlante en un sitio cálido, húmedo y bien ventilado"},
+           {"en":"Play the USB D playlist with everything at maximum","zh":"播放 USB D 中的曲目，所有旋钮开到最大","es":"Reproduzca la lista de la USB D con todo al máximo"},
+           {"en":"Leave it running four hours without stopping it","zh":"连续运行四小时，中途不得停止","es":"Déjelo sonando cuatro horas sin detenerlo"},
+           {"en":"Listen for 20 seconds on each hour","zh":"每小时试听 20 秒","es":"Escuche 20 segundos en cada hora"}],
+         "points":[
+           {"section":{"en":"The test area","zh":"测试场所","es":"El área de prueba"},
+            "help":{"en":"Warm and damp on purpose. Read both figures before starting and write them down.",
+                    "zh":"刻意选择高温高湿环境。开始前读取并记录两个数值。",
+                    "es":"Cálido y húmedo a propósito. Lea las dos cifras antes de empezar y anótelas."}},
+           {"id":"age_temp","code":"AGE-001","measure":{"unit":"°C","step":"0.1"},
+            "label":{"en":"Temperature between 35 °C and 45 °C","zh":"温度介于 35 °C 与 45 °C 之间","es":"Temperatura entre 35 °C y 45 °C"},
+            "help":{"en":"Measure it where the speaker is going to sit and write it in the box. Outside that range the test does not count.",
+                    "zh":"在音箱放置位置测量并填入方框。超出该范围，本次测试无效。",
+                    "es":"Mídala donde va a quedar el parlante y escríbala en el recuadro. Fuera de ese rango la prueba no cuenta."}},
+           {"id":"age_hum","code":"AGE-001","measure":{"unit":"%","step":"1"},
+            "label":{"en":"Relative humidity above 50%","zh":"相对湿度高于 50%","es":"Humedad relativa por encima del 50%"},
+            "help":{"en":"Measure it in the same place and write it in the box.",
+                    "zh":"在同一位置测量并填入方框。",
+                    "es":"Mídala en el mismo sitio y escríbala en el recuadro."}},
+           {"id":"age_place","code":"AGE-001",
+            "label":{"en":"Stable, well-ventilated spot","zh":"稳固、通风良好的位置","es":"Sitio estable y bien ventilado"},
+            "help":{"en":"On a firm surface where nobody will move it for four hours, with air around it. Not shut in a box and not against a wall.",
+                    "zh":"放在四小时内不会被移动的稳固台面上，四周须留有空气流通。不得封闭在箱内，也不得紧贴墙面。",
+                    "es":"Sobre una superficie firme donde nadie lo vaya a mover en cuatro horas, con aire alrededor. No encerrado en una caja ni contra la pared."}},
+           {"section":{"en":"Setting it going","zh":"启动","es":"Puesta en marcha"},
+            "help":{"en":"Everything at maximum: this is the hardest the speaker will ever work.",
+                    "zh":"全部开到最大：这是音箱所能承受的最严苛工况。",
+                    "es":"Todo al máximo: es lo más duro que va a trabajar el parlante."}},
+           {"id":"age_ac","code":"PWR-001",
+            "label":{"en":"Connected to AC power","zh":"已接入市电","es":"Conectado a la red AC"},
+            "help":{"en":"Mains, not battery. Four hours on a battery is a battery test, not an aging test.",
+                    "zh":"使用市电，而非电池。用电池运行四小时属于电池测试，而非老化测试。",
+                    "es":"A la red, no a batería. Cuatro horas con batería es una prueba de batería, no de envejecimiento."}},
+           {"id":"age_usb","code":"USB-001",
+            "label":{"en":"USB D inserted and USB mode selected","zh":"已插入 USB D 并切换到 USB 模式","es":"USB D insertada y modo USB seleccionado"},
+            "help":{"en":"The USB D drive with the aging playlist. The speaker must read it and show USB mode.",
+                    "zh":"使用装有老化测试曲目的 USB D。音箱应能识别并显示 USB 模式。",
+                    "es":"La memoria USB D con la lista de envejecimiento. El parlante debe leerla y mostrar el modo USB."}},
+           {"id":"age_max","code":"AGE-001",
+            "label":{"en":"Volume, bass and treble at maximum","zh":"音量、低音、高音全部开到最大","es":"Volumen, graves y agudos al máximo"},
+            "help":{"en":"Master volume fully up, and every tone control fully up with it.",
+                    "zh":"主音量旋到最大，所有音调旋钮同样旋到最大。",
+                    "es":"Volumen maestro arriba del todo, y con él todos los controles de tono."}},
+           {"id":"age_start","code":"AGE-001",
+            "label":{"en":"Playlist started","zh":"曲目已开始播放","es":"Lista iniciada"},
+            "help":{"en":"Start the playlist and note the time. From here it must not be stopped, paused or touched for four hours.",
+                    "zh":"开始播放并记录时间。此后四小时内不得停止、暂停或触碰。",
+                    "es":"Inicie la lista y anote la hora. A partir de aquí no debe detenerse, pausarse ni tocarse durante cuatro horas."}},
+           {"section":{"en":"On the hour","zh":"每小时检查","es":"Cada hora"},
+            "help":{"en":"Four visits, 20 seconds of listening each. The same four things every time: it is playing, without cuts, without switching off or restarting, and without noise or distortion.",
+                    "zh":"共四次，每次试听 20 秒。每次检查同样四项：有声音、无断续、未关机或重启、无异响或失真。",
+                    "es":"Cuatro visitas, 20 segundos de escucha cada una. Las mismas cuatro cosas siempre: suena, sin cortes, sin apagarse ni reiniciarse, y sin ruidos ni distorsión."}},
+           {"id":"age_h1","code":"AGE-001",
+            "label":{"en":"Hour 1","zh":"第 1 小时","es":"Hora 1"},
+            "help":{"en":"Listen for 20 seconds. Sound present, no cuts, no shutdown or restart, no abnormal noise or distortion.",
+                    "zh":"试听 20 秒。有声音，无断续，未关机或重启，无异响或失真。",
+                    "es":"Escuche 20 segundos. Hay sonido, sin cortes, sin apagones ni reinicios, sin ruidos anormales ni distorsión."}},
+           {"id":"age_h2","code":"AGE-001",
+            "label":{"en":"Hour 2","zh":"第 2 小时","es":"Hora 2"},
+            "help":{"en":"The same four checks, 20 seconds.",
+                    "zh":"同样四项检查，试听 20 秒。",
+                    "es":"Las mismas cuatro comprobaciones, 20 segundos."}},
+           {"id":"age_h3","code":"AGE-001",
+            "label":{"en":"Hour 3","zh":"第 3 小时","es":"Hora 3"},
+            "help":{"en":"The same four checks, 20 seconds.",
+                    "zh":"同样四项检查，试听 20 秒。",
+                    "es":"Las mismas cuatro comprobaciones, 20 segundos."}},
+           {"id":"age_h4","code":"AGE-001",
+            "label":{"en":"Hour 4","zh":"第 4 小时","es":"Hora 4"},
+            "help":{"en":"The same four checks, 20 seconds. This is the last one.",
+                    "zh":"同样四项检查，试听 20 秒。这是最后一次。",
+                    "es":"Las mismas cuatro comprobaciones, 20 segundos. Esta es la última."}},
+           {"section":{"en":"At the end","zh":"结束时","es":"Al terminar"},
+            "help":{"en":"Four hours completed and the speaker gone over once more, cold judgement rather than relief.",
+                    "zh":"四小时结束后，再整体检查一遍，应冷静判断，而非因结束而放松。",
+                    "es":"Cuatro horas cumplidas y una última revisión del parlante."}},
+           {"id":"age_done","code":"AGE-001",
+            "label":{"en":"Four hours completed without interruption","zh":"连续完成四小时，未中断","es":"Cuatro horas completas sin interrupción"},
+            "help":{"en":"It ran the whole four hours without stopping, switching off or being touched. If it was interrupted for any reason, the test does not count and starts again.",
+                    "zh":"整个四小时连续运行，未停止、未关机、未被触碰。若因任何原因中断，本次测试无效，须重新开始。",
+                    "es":"Sonó las cuatro horas sin detenerse, sin apagarse y sin que nadie lo tocara. Si se interrumpió por cualquier motivo, la prueba no cuenta y se repite desde el principio."}},
+           {"id":"age_after","code":"AGE-001",
+            "label":{"en":"Nothing damaged after the test","zh":"测试后无部件损坏","es":"Ningún componente dañado al terminar"},
+            "help":{"en":"Go over the speaker once the four hours are up: no smell of heat, no deformed or discoloured part, no loose or rattling component, and it still plays as it did at the start.",
+                    "zh":"四小时结束后整体检查：无焦糊气味，无部件变形或变色，无松动或异响部件，且播放状态与开始时一致。",
+                    "es":"Revise el parlante al cumplirse las cuatro horas: sin olor a caliente, sin piezas deformadas ni descoloridas, sin componentes flojos ni traqueteando, y sigue sonando como al principio."}}]},
 
         /* ===== LESHENG — wireless microphone system =========================
            A different product, so a different plan: two microphones and a
